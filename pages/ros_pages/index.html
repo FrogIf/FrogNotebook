@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <title>FrogNotebook</title>
+        <meta name="description" content="">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" href="../../assets/article.css">
+        <script src="../../assets/js/jquery-3.2.1.min.js"></script>
+        <script>
+            var active_url = '';
+            $(function () {
+                $('.menu-btn').click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if ($('.menu-container').hasClass('open')) {
+                        $('.menu-container').removeClass('open');
+                        $('.article-container').removeClass('compress');
+                    }else{
+                        $('.menu-container').addClass('open');
+                        $('.article-container').addClass('compress');
+                    }
+                })
+                $('.article-container').click(function (e) {
+                    if ($('.menu-container').hasClass('open')){
+                        $('.menu-container').removeClass('open');
+                        $('.article-container').removeClass('compress');
+                    }
+                })
+                $('.article-item').click(function(e){
+                    var url = $(e.target).data("url");
+                    if(url != active_url){
+                        active_url = url;
+                        $(".article-content").load(active_url);
+                        if(window.sessionStorage){
+                            window.sessionStorage.setItem("articleUrl", active_url);
+                        }
+                    }
+                })
+
+                var articleUrl = '';
+                if(window.sessionStorage){
+                    articleUrl = window.sessionStorage.getItem("articleUrl");
+                }
+                if(articleUrl != null && articleUrl.trim() != ''){
+                    active_url = articleUrl;
+                }else{
+                    active_url = $($('.article-item')[0]).data("url");
+                }
+                $(".article-content").load(active_url);
+            })
+        </script>
+    </head>
+    <body>
+        <div class="menu-btn">
+            <a href="/#">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+        <div class="post-main">
+            <div class="menu-container menu-container-bar">
+                <div class="menu-head">
+                    <a href="../../index.html">首页</a>
+                </div>
+                <div>
+                    <ul>
+                        <li><a data-url="./ros_install.html" class="article-item" href="javascript:;">ROS安装</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="article-container">
+                <div class="article-content">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
