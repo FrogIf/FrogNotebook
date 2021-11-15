@@ -20,8 +20,8 @@
 
 VS code中, 如果安装了很多插件, 可能会出现快捷键冲突, 可以这样排查, 解决:
 
-![image](./vscode/vscode_keyboard0.png)
-![image](./vscode/vscode_keyboard1.png)
+![image](./img/vscode_keyboard0.png)
+![image](./img/vscode_keyboard1.png)
 
 就可以找到冲突的快捷键了.
 
