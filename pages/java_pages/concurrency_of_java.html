@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>concurrency_of_java.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86-%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80">第一部分 理论基础</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<ul>
+<li>多线程的优势
+<ul>
+<li>发挥多处理器的强大功能
+<ul>
+<li>通过提高处理器资源的利用率来提升系统吞吐率</li>
+<li>例如: 程序在等待某个同步I/O操作完成时, 可以让出CPU, 使另一个线程继续运行</li>
+</ul>
+</li>
+<li>建模的简单性
+<ul>
+<li>通过使用线程, 可以将复杂并且异步的工作流进一步分解为一组简单并且同步的工作流, 每个工作流在一个单独的线程中运行, 并在特定的同步位置进行交互.</li>
+</ul>
+</li>
+<li>异步事件的简化处理
+<ul>
+<li>对于事件监听类逻辑, 如果单线程, 只能通过阻塞的方式, 来实现, 而通过多线程处理事件, 每个事件拥有自己独立的线程, 在处理请求时发生的阻塞不会影响到其他线程</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>多线程带来的风险
+<ul>
+<li>安全性问题
+<ul>
+<li>数据竞争: 多个线程同时读写一个数据</li>
+<li>竞态条件: 程序的执行结果依赖线程的执行顺序</li>
+</ul>
+</li>
+<li>活跃性问题
+<ul>
+<li>死锁</li>
+<li>活锁</li>
+<li>饥饿</li>
+</ul>
+</li>
+<li>性能问题</li>
+</ul>
+</li>
+<li>管程
+<ul>
+<li>管理共享变量以及对共享变量的操作过程，让他们支持并发</li>
+<li>三种不同的管程模型:
+<ul>
+<li>Hasen</li>
+<li>Hoare</li>
+<li>MESA: java管程采用的模型</li>
+</ul>
+</li>
+<li>并发编程的核心问题:
+<ul>
+<li>互斥: 同一时刻, 只允许一个线程访问共享资源</li>
+<li>同步: 线程之间的通信, 协作</li>
+</ul>
+</li>
+<li>管程解决互斥问题: 将共享变量以及对共享变量的操作统一封装起来. 任何对受管程管理的共享变量的操作, 都需要通过管程的调度来完成.</li>
+<li>管程解决同步问题:
+<ul>
+<li>入口等待队列: 同一时刻, 只有一个线程可以进入管程内部, 其余线程在<strong>入口等待队列</strong>中, 等待锁的获取</li>
+<li>条件等待队列: wait()方法, 会将管程内部的线程转移到<strong>条件等待队列</strong>中, 同时释放锁. notify, notifyAll方法, 会触发条件等待队列中的线程重新进入<strong>入口等待队列</strong></li>
+<li>synchronized的条件等待队列只有一个, Lock&amp;Condition的条件等待队列可以有多个.
+<img src="img/mesa.png" alt="image"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7">线程安全性</h2>
+<p>引发线程安全的必要条件有两个:</p>
+<ol>
+<li>可变的量</li>
+<li>多线程共享</li>
+</ol>
+<p>防止出现线程安全性, 问题的切入点, 有三个:</p>
+<ol>
+<li>可见性 -- CPU缓存导致的可见性问题</li>
+<li>原子性 -- 线程切换导致的原子性问题</li>
+<li>有序性 -- 编译优化导致的有序性问题</li>
+</ol>
+<h2 id="%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98%E4%B8%8E%E6%9C%89%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98">可见性问题与有序性问题</h2>
+<p>从引发原因, 可以知道, 解决这两类问题的根本手段是:</p>
+<ul>
+<li>禁用缓存</li>
+<li>禁用编译优化</li>
+</ul>
+<p>java提供的具体手段有:</p>
+<ul>
+<li>volatile -- 1. 禁用缓存; 2. 禁用重排序</li>
+<li>synchronized</li>
+<li>final
+<ul>
+<li>java1.5之前, 指令重拍导致线程可以看到final变量的值得变化; 1.5之后, 就没有这个问题了.</li>
+</ul>
+</li>
+<li>六项Happens-Before原则
+<ol>
+<li>程序的顺序性规则: 在单个线程中, 按照程序的顺序, 前面的操作Happens-Before于后续的任意操作</li>
+<li>volatile变量规则: 对一个volatile变量的写操作Happens-Before于后续的读操作</li>
+<li>传递性: 如果A Happens-Before B, B Happens-Before C, 那么 A  Happens-Before C</li>
+<li>管程中锁的规则: 一个锁的解锁Happens-Before于后续对这个锁的加锁</li>
+<li>线程start()规则: 线程的启动操作Happens-Before于后续该线程的任何操作</li>
+<li>线程join()规则: 子线程的任何操作Happens-Before于后续join后的操作</li>
+</ol>
+</li>
+</ul>
+<h2 id="%E5%8E%9F%E5%AD%90%E6%80%A7%E9%97%AE%E9%A2%98">原子性问题</h2>
+<p>原子性: 对于其他线程来说, 一组操作, 要么全都执行完成, 要么全都未执行, 原子性问题的根源是线程切换导致的. 解决原子性问题, 就是要保证一组操作不可分割, 操作的中间状态对外不可见.</p>
+<p>java提供的解决手段: 锁</p>
+<h2 id="java%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">java线程的生命周期</h2>
+<p>java线程中共有六个状态</p>
+<ol>
+<li>NEW - 初始化状态</li>
+<li>RUNNABLE - 可运行/运行状态</li>
+<li>BLOCKED - 阻塞状态</li>
+<li>WAITING - 无时限等待</li>
+<li>TIMED_WAITING - 有时限等待</li>
+<li>TERMINATED - 终止状态</li>
+</ol>
+<blockquote>
+<p>BLOCKED、WAITING、TIMED_WAITING在操作系统层面属于同一种状态: 休眠状态(释放CPU使用权, 注意, 不一定释放锁)</p>
+</blockquote>
+<p><strong>线程状态的转换</strong></p>
+<ol>
+<li>RUNNABLE --&gt; BLOCKED: 只有一种情况: 线程等待synchronized的隐式锁</li>
+<li>RUNNABLE --&gt; WAITING
+<ol>
+<li>synchronized内, 调用obj.wait()</li>
+<li>Thread.join()</li>
+<li>LockSupport.park(), java并发包中的锁都是基于这个实现的</li>
+</ol>
+</li>
+<li>RUNNABLE --&gt; TIMED_WAITING
+<ol>
+<li>Thread.sleep(xxx)</li>
+<li>obj.wait(xxx)</li>
+<li>Thread.join(xxx)</li>
+<li>LockSupport.parkNanos(xxx, xxx)</li>
+<li>LockSupport.parkUntil(xxx)</li>
+</ol>
+</li>
+<li>NEW --&gt; RUNNABLE: 调用start()</li>
+<li>RUNNABLE --&gt; TERMINATED:
+<ul>
+<li>调用interrupt, 具体下面再说</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>调用阻塞式API时(I/O操作等), 是否会由RUNNABLE转换为BLOCKED? 不会, 对于操作系统来说, 确实是进入了阻塞状态, 但是JVM 层面并不关心操作系统调度相关的状态, 在JVM看来, 等待CPU使用权和等待IO没有区别, 都是RUNNABLE状态.</p>
+</blockquote>
+<h2 id="%E7%BA%BF%E7%A8%8B%E6%95%B0%E7%9A%84%E7%A1%AE%E5%AE%9A">线程数的确定</h2>
+<p>使用多线程的目的, 可以归结为: 降低延迟，提高吞吐量. 多线程就是要解决CPU和I/O设备的综合利用率问题.</p>
+<ul>
+<li>CPU密集型程序
+<ul>
+<li>理论上: 线程数 = CPU核数</li>
+<li>工程实践中: 线程数 = CPU核数 + 1</li>
+</ul>
+</li>
+<li>I/O密集型程序
+<ul>
+<li>线程数: [1 + (I/O耗时/CPU耗时)] * CPU核数</li>
+</ul>
+</li>
+<li>最佳实践: 根据实际情况, 调整线程数, 使得硬件性能发挥到极致</li>
+</ul>
+<h1 id="%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86-%E5%B9%B6%E5%8F%91%E5%AE%9E%E8%B7%B5">第二部分 并发实践</h1>
+<h2 id="synchronized">synchronized</h2>
+<p>synchronized是java提供的内置锁, 可重入</p>
+<ul>
+<li>synchronized代码块中的锁对象是synchronized后指定的</li>
+<li>synchronized修饰实例方法, 锁对象就是this</li>
+<li>synchronized修饰静态方法, 锁对象就是Class对象</li>
+</ul>
+<p><strong>锁与等待-通知 的 最佳实践</strong></p>
+<ul>
+<li>wait, notify, notifyAll都只能在synchronized内部调用</li>
+<li>这三个方法的调用者必须是synchronized的锁对象</li>
+<li>调用wait, 会释放锁, 本身线程进入WAITING状态; 而调用notify和notifyAll的线程不会释放锁, 而是继续正常执行</li>
+<li>wait的调用, 标准做法是, 将其放入一个循环中</li>
+<li>一般使用notifyAll, 因为notify可能会导致某些线程永远不会被通知到</li>
+</ul>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; statusArr.length; i++){
+            <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> m = i;
+            <span class="hljs-keyword">new</span> Thread(() -&gt; {
+                <span class="hljs-keyword">try</span> {
+                    demoA(m);
+                } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+                    e.printStackTrace();
+                } 
+            }).start();
+        }
+
+        Thread.sleep(<span class="hljs-number">1000</span>);
+
+        <span class="hljs-keyword">while</span>(!mark){
+            demoB();
+        }
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object obj = <span class="hljs-keyword">new</span> Object();
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span>[] statusArr = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[<span class="hljs-number">10</span>];
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> mark = <span class="hljs-keyword">false</span>;
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">demoA</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i)</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+        <span class="hljs-keyword">synchronized</span>(obj){
+            <span class="hljs-keyword">while</span>(!mark){
+                <span class="hljs-comment">// System.out.println(i + " waiting.");</span>
+                obj.wait();
+            }
+            mark = <span class="hljs-keyword">false</span>;
+            statusArr[i] = <span class="hljs-number">1</span>;
+            displayProcess();
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">demoB</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+        <span class="hljs-keyword">synchronized</span>(obj){
+            mark = <span class="hljs-keyword">true</span>;
+            <span class="hljs-comment">// System.out.println("change mark...");</span>
+            obj.notifyAll();
+        }
+        Thread.sleep(<span class="hljs-number">100</span>);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">displayProcess</span><span class="hljs-params">()</span></span>{
+        String str = <span class="hljs-string">""</span>;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; statusArr.length; i++){
+            str += statusArr[i] == <span class="hljs-number">1</span> ? <span class="hljs-string">"o"</span> : <span class="hljs-string">"-"</span>;
+        }
+        System.out.println(str);
+    }
+</div></code></pre>
+<blockquote>
+<p>顺便提及一下, Thread.sleep不会释放锁, 仅仅是让渡CPU执行时间</p>
+</blockquote>
+<h2 id="threadlocal">ThreadLocal</h2>
+<p>使用ThreadLocal实现一个线程安全的SimpleDateFormat:</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        ExecutorService executorService = Executors.newFixedThreadPool(<span class="hljs-number">4</span>);
+
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++){
+            executorService.submit(() -&gt; {
+                System.out.println(SafeDateFormat.get().format(<span class="hljs-keyword">new</span> Date()));
+            });
+        }
+
+        executorService.shutdown();
+    }
+
+    <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SafeDateFormat</span></span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> ThreadLocal&lt;DateFormat&gt; tl = ThreadLocal.withInitial(() -&gt; <span class="hljs-keyword">new</span> SimpleDateFormat(<span class="hljs-string">"yyyy-MM-dd HH:mm:ss"</span>));
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> DateFormat <span class="hljs-title">get</span><span class="hljs-params">()</span></span>{
+            <span class="hljs-keyword">return</span> tl.get();
+        }
+    }
+</div></code></pre>
+<p>ThreadLocal工作原理:</p>
+<p>每一个线程Thread对象, 内部有一个ThreadLocalMap对象, ThreadLocalMap的key是ThreadLocal. 当调用ThreadLocal的get方法时, 大致是这样的:</p>
+<pre class="hljs"><code><div><span class="hljs-function">Object <span class="hljs-title">get</span><span class="hljs-params">()</span></span>{
+    ThreadLocalMap map = Thread.currentThread().threadLocals;
+    Entry e = map.getEntry(<span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">return</span> e.value;
+}
+</div></code></pre>
+<p>这样设计有几方面考虑:</p>
+<ol>
+<li>从数据亲缘性上, ThreadLocalMap属于Thread比较合理;</li>
+<li>不容易内存泄露, ThreadLocalMap中, 对ThreadLocal的引用都是弱引用, 只要Thread可以被回收, 那么ThreadLocalMap就可以被回收, 不受ThreadLocal的生命周期的影响.</li>
+</ol>
+<p>ThreadLocal的内存泄露:</p>
+<p>ThreadLocalMap对key(ThreadLocal)是弱引用, 只要ThreadLocal本身的生命周期结束了, 就可以回收了. 但是ThreadLocalMap对value是强引用, 如果一个线程一直存在(例如线程池中的线程对象), value就不会回收, 导致内存泄露. 解决方案是, 手动回收value, ThreadLocal提供了<code>remove()</code>方法, 会主动将自己从ThreadLocalMap中移除.</p>
+<p><strong>InheritableThreadLocal</strong></p>
+<p>如果想在一个线程创建的子线程中, 访问父线程的ThreadLocal中的变量, 需要使用InheritableThreadLocal. 但是, 不建议使用, 会导致继承关系混乱.</p>
+<h2 id="lock%E5%92%8Ccondition">Lock和Condition</h2>
+<p>Lock与synchronized功能几乎一致, 只不过, Lock在synchronized基础上又增加了一些支持:</p>
+<ul>
+<li>能够响应中断: 阻塞的线程能够响应中断信号 - lock.lockInterruptibly()</li>
+<li>支持超时: 一段时间内没有获取到锁, 抛出超时错误 - boolean tryLock(long time, TimeUnit unit) throws InterruptedException;</li>
+<li>非阻塞的获取锁: 获取锁失败, 不进入阻塞状态, 而是直接返回 - boolean tryLock();</li>
+</ul>
+<p>此外:</p>
+<ul>
+<li>上面的Happens-Before原则保证了synchronized的可见性和有序性, Lock内部通过利用volatile的Happens-Before原则达到了相同的效果.</li>
+<li>ReentrantLock支持可重入</li>
+<li>ReentrantLock支持两种构造函数, 带参构造, 可以用来指定是公平锁还是非公平锁. 无参构造, 是默认的非公平锁.
+<ul>
+<li>公平锁 - 先进入等待队列的先获取到锁, 后进入的后获取到锁</li>
+<li>非公平锁 - 新来的线程不会去排队, 直接获取到锁</li>
+</ul>
+</li>
+</ul>
+<p>Lock&amp;Condition简单示例:</p>
+<pre class="hljs"><code><div>    <span class="hljs-comment">/**
+     * 阻塞队列演示, 拥有两个条件Condition, 配合达到阻塞队列的效果
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BlockedQueueDemo</span></span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Lock lock = <span class="hljs-keyword">new</span> ReentrantLock();
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Condition notFull = lock.newCondition();
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Condition notEmpty = lock.newCondition();
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> MAX_CAPACITY = <span class="hljs-number">10</span>;
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> capacity = <span class="hljs-number">0</span>;
+        
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">enQueue</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+            lock.lock();
+            <span class="hljs-keyword">try</span>{
+                <span class="hljs-keyword">while</span>(capacity == MAX_CAPACITY){
+                    notFull.await();
+                }
+                capacity++;
+                System.out.println(<span class="hljs-string">"en queue"</span>);
+                notEmpty.signalAll();
+            }<span class="hljs-keyword">finally</span>{
+                lock.unlock();
+            }
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">deQueue</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+            lock.lock();
+            <span class="hljs-keyword">try</span>{
+                <span class="hljs-keyword">while</span>(capacity == <span class="hljs-number">0</span>){
+                    notEmpty.await();
+                }
+                capacity--;
+                System.out.println(<span class="hljs-string">"de queue"</span>);
+                notFull.signalAll();
+            }<span class="hljs-keyword">finally</span>{
+                lock.unlock();
+            }
+        }
+    }
+</div></code></pre>
+<h2 id="semaphore%E4%BF%A1%E5%8F%B7%E9%87%8F">Semaphore信号量</h2>
+<p>标准的信号量语义:</p>
+<ul>
+<li>init - 设置计数器初始值</li>
+<li>down - 计数器值减1</li>
+<li>up - 计数器值加1</li>
+</ul>
+<blockquote>
+<p>上述这三个操作都是原子性的</p>
+</blockquote>
+<p>对应java中的实现:</p>
+<ul>
+<li>init -- 构造方法</li>
+<li>down - release</li>
+<li>up - acquire</li>
+</ul>
+<p>使用Semaphore实现一个限流器:</p>
+<pre class="hljs"><code><div>    <span class="hljs-comment">/**
+     * 一个限流器, 保证最多只有size个exec操作执行
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Pool</span></span>{
+        <span class="hljs-keyword">final</span> Semaphore sem;
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Pool</span><span class="hljs-params">(<span class="hljs-keyword">int</span> size)</span></span>{
+            sem = <span class="hljs-keyword">new</span> Semaphore(size);
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">exec</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+            sem.acquire();
+            <span class="hljs-keyword">try</span>{
+                <span class="hljs-comment">// do something</span>
+                System.out.println(<span class="hljs-string">"execute."</span>);
+                Thread.sleep(<span class="hljs-number">2000</span>);
+            }<span class="hljs-keyword">finally</span>{
+                sem.release();
+            }
+        }
+    }
+</div></code></pre>
+<h2 id="readwritelock-%E8%AF%BB%E5%86%99%E9%94%81">ReadWriteLock-读写锁</h2>
+<p>ReadWriteLock适用于读多写少的场景, 即读写锁, 遵循一下三条基本原则:</p>
+<ul>
+<li>允许多个线程同时读共享变量</li>
+<li>只允许一个线程写共享变量</li>
+<li>如果一个线程正在执行写操作, 此时禁止读线程读共享变量</li>
+</ul>
+<p>Java读写锁注意事项:</p>
+<ul>
+<li>不支持锁升级: 即持有读锁的线程, 尝试获取写锁, 是不被允许的. 如果存在这种操作, 会导致永久的锁等待.</li>
+<li>支持锁降级: 即持有写锁的线程, 可以获取到读锁.</li>
+</ul>
+<p>读写锁演示:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Cache</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt;</span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;K, V&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ReadWriteLock rwl = <span class="hljs-keyword">new</span> ReentrantReadWriteLock();
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Lock r = rwl.readLock();
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Lock w = rwl.writeLock();
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> IDataLoader&lt;K, V&gt; loader;
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cache</span><span class="hljs-params">(IDataLoader&lt;K, V&gt; loader)</span></span>{
+            <span class="hljs-keyword">this</span>.loader = loader;
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> V <span class="hljs-title">get</span><span class="hljs-params">(K key)</span></span>{
+            V v = <span class="hljs-keyword">null</span>;
+            r.lock();
+            <span class="hljs-keyword">try</span>{
+                v = map.get(key);
+            }<span class="hljs-keyword">finally</span>{
+                r.unlock();
+            }
+            <span class="hljs-keyword">if</span>(v != <span class="hljs-keyword">null</span>){
+                <span class="hljs-keyword">return</span> v;
+            }<span class="hljs-keyword">else</span>{
+                <span class="hljs-comment">// 如果缓存没有命中, 则从数据源中获取, 并写入缓存</span>
+                w.lock();
+                <span class="hljs-keyword">try</span>{
+                    v = loader.load(key);
+                    map.put(key, v);
+                }<span class="hljs-keyword">finally</span>{
+                    w.unlock();
+                }
+            }
+            <span class="hljs-keyword">return</span> v;
+        }
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IDataLoader</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt;</span>{
+        <span class="hljs-function">V <span class="hljs-title">load</span><span class="hljs-params">(K key)</span></span>;
+    }
+</div></code></pre>
+<h2 id="stampedlock-%E6%82%B2%E8%A7%82%E9%94%81%E4%B9%90%E8%A7%82%E9%94%81">StampedLock-悲观锁&amp;乐观锁</h2>
+<ul>
+<li>写锁</li>
+<li>悲观读锁</li>
+<li>乐观读-注意, 这里乐观读是无锁操作</li>
+</ul>
+<p>数据库中的乐观锁:</p>
+<pre class="hljs"><code><div>数据库中, 乐观锁的使用是很常见的, 大致流程如下:
+1. 首先数据库中每一条记录, 存在一个version字段, 用来标记数据的版本: select id, ..., version from table_xxx where id = xxx;
+2. 获取到数据之后, 对数据进行修改;
+3. 保存数据时, 不是直接报错, 而是需要带上查询出来的version这个校验: update table_xxx set version = version + 1, ... where id = xxx and version = ??;
+4. 这时, 如果这条记录被并发的修改过, 则上面的语句执行不会影响任何记录(应为version对不上, 导致匹配不到任何记录), 如果数据没有被修改过, 就能保存成功.
+</div></code></pre>
+<p>java中StampedLock使用示例:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Point</span></span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> x, y;
+        <span class="hljs-keyword">final</span> StampedLock sl = <span class="hljs-keyword">new</span> StampedLock();
+
+        <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">distanceFromOrigin</span><span class="hljs-params">()</span></span>{
+            <span class="hljs-keyword">long</span> stamp = sl.tryOptimisticRead();    <span class="hljs-comment">// 乐观读</span>
+            <span class="hljs-keyword">int</span> curX = x, curY = y;
+            <span class="hljs-comment">// 如果执行过程中, 存在写操作, 导致stamp变更, 则返回false, 升级为悲观读锁</span>
+            <span class="hljs-keyword">if</span>(!sl.validate(stamp)){
+                stamp = sl.readLock();
+                <span class="hljs-keyword">try</span>{
+                    curX = x;
+                    curY = y;
+                }<span class="hljs-keyword">finally</span>{
+                    sl.unlockRead(stamp);   <span class="hljs-comment">// 释放悲观读锁</span>
+                }
+            }
+            <span class="hljs-keyword">return</span> (<span class="hljs-keyword">int</span>) Math.sqrt(curX * curX + curY * curY);
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">modifyCoordinate</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span></span>{
+            <span class="hljs-keyword">long</span> stamp = sl.writeLock();    <span class="hljs-comment">// 写锁</span>
+            <span class="hljs-keyword">try</span>{
+                <span class="hljs-keyword">this</span>.x = x;
+                <span class="hljs-keyword">this</span>.y = y;
+            }<span class="hljs-keyword">finally</span>{
+                sl.unlockWrite(stamp);
+            }
+        }
+    }
+</div></code></pre>
+<p>注意事项:</p>
+<ul>
+<li>StampedLock不可重入</li>
+<li>StampedLock的readLock和writeLock中如果遇到interrupt, 会导致CPU飙升, 这时需要使用readLockInterruptibly和writeLockInterruptibly</li>
+<li>StampedLock支持锁升级(tryConvertToWriteLock)和锁降级(tryConvertToReadLock), 但是, 在升级和降级过程中, 需要注意修改返回的stamp值</li>
+</ul>
+<h2 id="countdownlatch-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8D%8F%E4%BD%9C">CountDownLatch-多线程协作</h2>
+<p>CountDownLatch用于解决一个线程等待多个线程的场景</p>
+<pre class="hljs"><code><div>        ExecutorService executorService = Executors.newFixedThreadPool(<span class="hljs-number">9</span>);
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> task = <span class="hljs-number">100</span>;
+        CountDownLatch cdl = <span class="hljs-keyword">new</span> CountDownLatch(task);
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; task; i++){
+            executorService.execute(() -&gt; {
+                <span class="hljs-keyword">try</span> {
+                    Thread.sleep(<span class="hljs-number">1000</span>);
+                    cdl.countDown();
+                } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        <span class="hljs-keyword">try</span> {
+            cdl.await();
+        } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(<span class="hljs-string">"finish"</span>);
+        executorService.shutdown();
+</div></code></pre>
+<h2 id="cyclicbarrier-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8D%8F%E4%BD%9C">CyclicBarrier-多线程协作</h2>
+<p>CyclicBarrier用于解决一组线程之间互相等待, CyclicBarrier可以循环利用, 计数清零之后, 会自动重置</p>
+<pre class="hljs"><code><div>        ExecutorService executorService = Executors.newFixedThreadPool(<span class="hljs-number">2</span>);
+
+        CyclicBarrier cb = <span class="hljs-keyword">new</span> CyclicBarrier(<span class="hljs-number">2</span>, () -&gt; {
+            System.out.println(<span class="hljs-string">"all has finish."</span>);
+        });
+
+        Random r = <span class="hljs-keyword">new</span> Random();
+        executorService.execute(() -&gt; {
+            <span class="hljs-keyword">try</span> {
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++){
+                    System.out.println(<span class="hljs-string">"a start"</span>);
+                    Thread.sleep(r.nextInt(<span class="hljs-number">1000</span>));
+                    cb.await();
+                    System.out.println(<span class="hljs-string">"a pass"</span>);
+                }
+            } <span class="hljs-keyword">catch</span> (InterruptedException | BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+        });
+
+        executorService.execute(() -&gt; {
+            <span class="hljs-keyword">try</span> {
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++){
+                    System.out.println(<span class="hljs-string">"b start"</span>);
+                    Thread.sleep(r.nextInt(<span class="hljs-number">1000</span>));
+                    cb.await();
+                    System.out.println(<span class="hljs-string">"b pass"</span>);
+                }
+            } <span class="hljs-keyword">catch</span> (InterruptedException | BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+        });
+
+        executorService.shutdown();
+</div></code></pre>
+<h2 id="%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8">并发容器</h2>
+<ul>
+<li>同步容器
+<ul>
+<li>Collections.synchronizedList(xxx)</li>
+<li>Collections.synchronizedSet(xxx)</li>
+<li>Collections.synchronizedMap(xxx)</li>
+<li>Vector</li>
+<li>Stack</li>
+<li>Hashtable</li>
+</ul>
+</li>
+<li>并发容器
+<ul>
+<li>List
+<ul>
+<li>CopyOnWriteArrayList: 写入的时候, 会将变量复制一份; 读操作完全无锁.
+<ul>
+<li>适用于读多写少, 可以容忍读写的短暂不一致</li>
+<li>该容器的迭代器是只读的, 不支持增删改</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Map
+<ul>
+<li>ConcurrentHashMap: key是无序的, key和value都不能为null</li>
+<li>ConcurrentSkipListMap: key是有序的, key和value都不能为null
+<ul>
+<li>基于跳表实现, 插入, 删除, 查询的时间复杂度均为O(lgn)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Set
+<ul>
+<li>CopyOnWriteArraySet: 基于ConcurrentHashMap</li>
+<li>ConcurrentSkipListSet: 基于ConcurrentSkipListMap</li>
+</ul>
+</li>
+<li>Queue - 从两个维度来分类: 1. 阻塞与非阻塞(阻塞-队列已满, 入队阻塞, 队列已空, 出队阻塞); 2. 单端与双端(单端-只能队尾入队队首出队, 双端-队尾队首都可以入队出队)
+<ul>
+<li>单端阻塞队列:
+<ul>
+<li>ArrayBlockingQueue: 用数组实现队列</li>
+<li>LinkedBlockingQueue: 用链表实现队列</li>
+<li>SynchronousQueue: 不持有队列, 生产者的入队操作必须等待消费者的出队操作</li>
+<li>LinkedTransferQueue: 融合LinkedBlockingQueue和SynchronousQueue, 性能比LinkedBlockingQueue好</li>
+<li>PriorityBlockingQueue: 支持按照优先级出队</li>
+<li>DelayQueue: 支持延迟出队</li>
+</ul>
+</li>
+<li>双端阻塞队列
+<ul>
+<li>LinkedBlockingDeque</li>
+</ul>
+</li>
+<li>单端非阻塞队列
+<ul>
+<li>ConcurrentLinkedQueue</li>
+</ul>
+</li>
+<li>双端非阻塞队列
+<ul>
+<li>ConcurrentLinkedDeque</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意, 阻塞队列使用Blocking标识, 单端队列为Queue, 双端队列为Deque.
+使用队列时, 需要注意队列是否有界(内部队列是否有容量限制), 不建议使用无界队列, 数据量较大时会导致OOM. 上面的Queue中ArrayBlockingQueue和LinkedBlockingQueue支持有界.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>集合类</th>
+<th>key</th>
+<th>value</th>
+<th>是否线程安全</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HashMap</td>
+<td>允许为null</td>
+<td>允许为null</td>
+<td>否</td>
+</tr>
+<tr>
+<td>TreeMap</td>
+<td>不允许为null</td>
+<td>允许为null</td>
+<td>否</td>
+</tr>
+<tr>
+<td>HashTable</td>
+<td>不允许为null</td>
+<td>不允许为null</td>
+<td>是</td>
+</tr>
+<tr>
+<td>ConcurrentHashMap</td>
+<td>不允许为null</td>
+<td>不允许为null</td>
+<td>是</td>
+</tr>
+<tr>
+<td>ConcurrentSkipListMap</td>
+<td>不允许为null</td>
+<td>不允许为null</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p>需要注意的问题, 即使是同步问题, 在使用迭代器时, 也需要手动加锁:</p>
+<pre class="hljs"><code><div>
+List list = Collections.synchronizedList(<span class="hljs-keyword">new</span> ArrayList());
+<span class="hljs-keyword">synchronized</span> (list) {  
+  Iterator i = list.iterator(); 
+  <span class="hljs-keyword">while</span> (i.hasNext())
+    foo(i.next());
+}    
+</div></code></pre>
+<h2 id="%E5%8E%9F%E5%AD%90%E7%B1%BB">原子类</h2>
+<p>例程如下:</p>
+<pre class="hljs"><code><div>        AtomicInteger integer = <span class="hljs-keyword">new</span> AtomicInteger();
+        <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">while</span>(i &lt; <span class="hljs-number">100</span>){
+            integer.getAndIncrement();
+            i++;
+        }
+        System.out.println(integer.get());
+</div></code></pre>
+<p><strong>CAS</strong>: 原子类实现原理, 依赖与硬件的支持, CPU为解决并发问题, 提供了CAS(Compare And Swap)指令. CAS指令包含3个参数: 共享变量内存地址A, 用于比较的值B, 共享变量的新值C; 并且当内存中A处的值等于B时, 产能将内存中地址A出的值更新为新值C. 作为一条CPU指令, CAS指令本身是能保证原子性的.</p>
+<p><strong>自旋</strong>: 即循环尝试. 例如, ((AtomicLong)count).getAndIncrement()操作, 就是使用&quot;CAS+自旋&quot;的实现方案. 首先, newValue = count + 1; 然后, cas(count, newValue); 如果返回值不等于count, 说明执行cas执行没有成功; 这时, 重新获取当前count值, 重新计算newValue, 重新执行cas, 这样循环自旋, 直至成功.</p>
+<p><strong>ABA问题</strong>: CAS中常见的一个问题是ABA问题, 就是说一个值, 原来是A, 修改为B后, 又被修改为A, 这时, CAS是无法感知到这个修改过程的. 大多数时候, 不必关心ABA问题, 但有些时候, 也需要注意.</p>
+<p>原子类</p>
+<ul>
+<li>原子化基本类型: AtomicBoolean, AtomicInteger, AtomicLong</li>
+<li>原子化对象引用: AtomicReference, AtomicStampedReference, AtomicMarkableReference
+<ul>
+<li>其中后两者通过版本号, 解决了ABA问题</li>
+</ul>
+</li>
+<li>原子化数组: AtomicIntegerArray, AtomicLongArray, AtomicReferenceArray
+<ul>
+<li>可以原子化的更新数组中的每一个元素</li>
+</ul>
+</li>
+<li>原子化对象属性更新器: AtomicIntegerFieldUpdater, AtomicLongFieldUpdater, AtomicReferenceFieldUpdater
+<ul>
+<li>可以原子化的更新对象的属性</li>
+<li>利用的是反射机制</li>
+<li>被更新的对象属性必须是volatile类型, 只有这样才能保证可见性, 如果不是volatile, 则会抛出IllegalArgumentException异常.</li>
+</ul>
+</li>
+<li>原子化累加器: DoubleAccumulator, DoubleAdder, LongAccumulator, LongAdder
+<ul>
+<li>与原子化基本数据类型类似, 但是性能更优, 但是只支持累加操作</li>
+</ul>
+</li>
+</ul>
+<p>原子化基本类型的常用方法:</p>
+<pre class="hljs"><code><div>getAndIncrement() <span class="hljs-comment">//原子化i++</span>
+getAndDecrement() <span class="hljs-comment">//原子化的i--</span>
+incrementAndGet() <span class="hljs-comment">//原子化的++i</span>
+decrementAndGet() <span class="hljs-comment">//原子化的--i</span>
+<span class="hljs-comment">//当前值+=delta，返回+=前的值</span>
+getAndAdd(delta) 
+<span class="hljs-comment">//当前值+=delta，返回+=后的值</span>
+addAndGet(delta)
+<span class="hljs-comment">//CAS操作，返回是否成功</span>
+compareAndSet(expect, update)
+<span class="hljs-comment">//以下四个方法</span>
+<span class="hljs-comment">//新值可以通过传入func函数来计算</span>
+getAndUpdate(func)
+updateAndGet(func)
+getAndAccumulate(x,func)
+accumulateAndGet(x,func)
+</div></code></pre>
+<h2 id="%E7%BA%BF%E7%A8%8B%E6%B1%A0">线程池</h2>
+<p>线程池不同于其它的池化资源(申请-使用-释放), <strong>线程池实际上是一种生产者-消费者模式</strong>, 每次, 调用execute, submit等方法, 实际上就是向队列中放入一个任务, 然后由线程池中的工作线程来消费.</p>
+<p>java线程池的核心对象是ThreadPoolExecutor, 其最完备的构造函数如下:</p>
+<pre class="hljs"><code><div>ThreadPoolExecutor(
+  <span class="hljs-keyword">int</span> corePoolSize,
+  <span class="hljs-keyword">int</span> maximumPoolSize,
+  <span class="hljs-keyword">long</span> keepAliveTime,
+  TimeUnit unit,
+  BlockingQueue&lt;Runnable&gt; workQueue,
+  ThreadFactory threadFactory,
+  RejectedExecutionHandler handler
+)
+</div></code></pre>
+<ul>
+<li>corePoolSize: 线程池保有的最小线程数.</li>
+<li>maximumPoolSize: 线程池创建的最大线程数.</li>
+<li>keepAliveTime &amp; unit: 如果线程空闲时间超过这两个参数指定的时间, 空闲线程就会被释放, 当然, 会保证释放后线程池中最少有corePoolSize个线程.</li>
+<li>workQueue: 工作队列</li>
+<li>threadFactory: 自定义线程的创建, 可以用来给线程指定名称.</li>
+<li>handler: 拒绝策略, 当线程的工作队列已满(前提是该队列时有界队列), 那么, 此时提交的任务, 线程池就会拒绝接收.
+<ul>
+<li>拒绝策略
+<ul>
+<li>CallerRunsPolicy: 提交任务的线程自己去执行该任务</li>
+<li>AbortPolicy: 默认的拒绝策略, 抛出RejectedExecutionException</li>
+<li>DiscartPolicy: 直接丢弃, 没有任何异常</li>
+<li>DiscardOldestPolicy: 丢弃最老的任务</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>java1.6 增加了allowCoreThreadTimeOut(boolean value), 允许包括corePoolSize在内的所有线程都支持超时</p>
+</blockquote>
+<p>线程池使用注意事项:</p>
+<ul>
+<li>workQueue建议使用有界队列, 防止OOM</li>
+<li>谨慎的选择拒绝策略</li>
+</ul>
+<p>例程:</p>
+<pre class="hljs"><code><div>        ExecutorService executorService = <span class="hljs-keyword">new</span> ThreadPoolExecutor(
+            <span class="hljs-number">4</span>, 
+            <span class="hljs-number">4</span>, 
+            <span class="hljs-number">0</span>, 
+            TimeUnit.SECONDS, 
+            <span class="hljs-keyword">new</span> LinkedBlockingQueue&lt;&gt;(<span class="hljs-number">10</span>),
+            <span class="hljs-keyword">new</span> ThreadFactory(){
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> Thread <span class="hljs-title">newThread</span><span class="hljs-params">(Runnable r)</span> </span>{
+                    Thread t = <span class="hljs-keyword">new</span> Thread(r);
+                    t.setName(<span class="hljs-string">"AAA"</span>);
+                    <span class="hljs-keyword">return</span> t;
+                }
+                
+            },
+            <span class="hljs-keyword">new</span> CallerRunsPolicy());
+</div></code></pre>
+<h2 id="future-%E8%8E%B7%E5%8F%96%E5%AD%90%E7%BA%BF%E7%A8%8B%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C">Future-获取子线程执行结果</h2>
+<p>ThreadPoolExecutor提供了三个submit方法, 支持获取子线程执行结果:</p>
+<pre class="hljs"><code><div>Future&lt;?&gt; submit(Runnable task);    <span class="hljs-comment">// 提交Runnable任务</span>
+&lt;T&gt; <span class="hljs-function">Future&lt;T&gt; <span class="hljs-title">submit</span><span class="hljs-params">(Callable&lt;T&gt; task)</span></span>; <span class="hljs-comment">// 提交Callable任务</span>
+&lt;T&gt; <span class="hljs-function">Future&lt;T&gt; <span class="hljs-title">submit</span><span class="hljs-params">(Runnable task, T result)</span></span>;  <span class="hljs-comment">// 提交Runnable任务及结果引用</span>
+</div></code></pre>
+<p>其返回值Future接口, 有5个方法:</p>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">cancel</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> mayInterruptIfRunning)</span></span>;    <span class="hljs-comment">// 取消任务</span>
+<span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">isCancelled</span><span class="hljs-params">()</span></span>;   <span class="hljs-comment">// 判断任务是否已取消</span>
+<span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">isDone</span><span class="hljs-params">()</span></span>;    <span class="hljs-comment">// 判断任务是否已完成</span>
+get()   <span class="hljs-comment">// 获取执行结果</span>
+get(timeout, unit)  <span class="hljs-comment">//获取执行结果, 支持超时</span>
+</div></code></pre>
+<p>对于三个submit方法:</p>
+<ol>
+<li>提交Runnable任务, 由于Runnable的run()方法是没有返回值的, 所以这个方法返回的Future仅用于断言, 类似于Thread.join</li>
+<li>提交Callable任务, Callable的call()方法是有返回值的, 所以可以通过Future的get方法, 获取任务的执行结果</li>
+<li>提交Runnable任务及结果引用, 这里Future的get方法, 返回的是传入的result对象, 就是说Runnable内部, 会对result对象的属性做变更</li>
+</ol>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException, ExecutionException</span>{
+        ExecutorService service = Executors.newFixedThreadPool(<span class="hljs-number">1</span>);
+
+        MyTask mt = <span class="hljs-keyword">new</span> MyTask();
+        Future&lt;MyTask&gt; future = service.submit(() -&gt; { mt.a = <span class="hljs-number">12</span>; }, mt);
+        MyTask mtResult = future.get();
+        
+        System.out.println(mtResult.a);
+        System.out.println(mtResult == mt);
+        service.shutdown();
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTask</span></span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> a;
+    }
+</div></code></pre>
+<p><strong>FutureTask工具类</strong></p>
+<p>FutureTask类实现了Runnable接口和Future接口, 并且FutureTask的构造函数中, 可以接收Callable参数, 所以:</p>
+<ol>
+<li>可以直接被当做Runnable使用;</li>
+<li>可以直接被当做Future使用;</li>
+<li>可以实现submit(callable)的效果;</li>
+</ol>
+<pre class="hljs"><code><div>        FutureTask&lt;Integer&gt; ft = <span class="hljs-keyword">new</span> FutureTask&lt;&gt;(() -&gt; <span class="hljs-number">1</span> + <span class="hljs-number">2</span>);
+        
+        Thread t = <span class="hljs-keyword">new</span> Thread(ft);
+        t.start();
+
+        Integer r = ft.get();
+        System.out.println(r);
+</div></code></pre>
+<h2 id="completablefuture-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8D%8F%E4%BD%9C">CompletableFuture-多线程协作</h2>
+<p>CompletableFuture为异步编程提供了一套标准化的执行模板及底层支持</p>
+<p>使用CompletableFuture实现烧水泡茶:</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        CompletableFuture&lt;Void&gt; f1 = CompletableFuture.runAsync(() -&gt; {
+            System.out.println(<span class="hljs-string">"T1 : 洗水壶"</span>);
+            sleep(<span class="hljs-number">1</span>, TimeUnit.SECONDS);
+
+            System.out.println(<span class="hljs-string">"T1 : 烧开水"</span>);
+            sleep(<span class="hljs-number">15</span>, TimeUnit.SECONDS);
+        });
+
+        CompletableFuture&lt;String&gt; f2 = CompletableFuture.supplyAsync(() -&gt; {
+            System.out.println(<span class="hljs-string">"T2 : 洗茶壶"</span>);
+            sleep(<span class="hljs-number">1</span>, TimeUnit.SECONDS);
+
+            System.out.println(<span class="hljs-string">"T2 : 洗茶杯"</span>);
+            sleep(<span class="hljs-number">2</span>, TimeUnit.SECONDS);
+
+            System.out.println(<span class="hljs-string">"T2 : 取茶叶"</span>);
+            sleep(<span class="hljs-number">1</span>, TimeUnit.SECONDS);
+
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"龙井"</span>;
+        });
+
+        CompletableFuture&lt;String&gt; f3 = f1.thenCombine(f2, (__, tf) -&gt; { <span class="hljs-comment">// 这里__就是一个普通变量, 只不过f1没有返回值, 所以随便取了一个名字</span>
+            System.out.println(<span class="hljs-string">"T1 : 拿到茶叶 : "</span> + tf);
+            System.out.println(<span class="hljs-string">"T1 : 泡茶"</span>);
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"上茶:"</span> + tf;
+        });
+
+        System.out.println(f3.join());
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sleep</span><span class="hljs-params">(<span class="hljs-keyword">int</span> time, TimeUnit timeUnit)</span></span>{
+        <span class="hljs-keyword">try</span> {
+            timeUnit.sleep(time);
+        } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+</div></code></pre>
+<p>创建CompletableFuture有四个静态方法:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">//使用默认线程池</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> CompletableFuture&lt;Void&gt; <span class="hljs-title">runAsync</span><span class="hljs-params">(Runnable runnable)</span></span>;
+<span class="hljs-keyword">static</span> &lt;U&gt; <span class="hljs-function">CompletableFuture&lt;U&gt; <span class="hljs-title">supplyAsync</span><span class="hljs-params">(Supplier&lt;U&gt; supplier)</span></span>;
+<span class="hljs-comment">//可以指定线程池  </span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> CompletableFuture&lt;Void&gt; <span class="hljs-title">runAsync</span><span class="hljs-params">(Runnable runnable, Executor executor)</span></span>;
+<span class="hljs-keyword">static</span> &lt;U&gt; <span class="hljs-function">CompletableFuture&lt;U&gt; <span class="hljs-title">supplyAsync</span><span class="hljs-params">(Supplier&lt;U&gt; supplier, Executor executor)</span></span>;
+</div></code></pre>
+<p>建议使用后两者, 带有executor参数的, 根据不同业务类型创建不同的线程池, 以避免互相干扰. 此外, runAsync参数是Runnable, 没有返回值, supplyAsync参数是Supplier, 有返回值.</p>
+<h2 id="completionstage-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8D%8F%E4%BD%9C">CompletionStage-多线程协作</h2>
+<p>CompletableFuture实现了CompletionStage接口, 这个接口故名思议, &quot;完成状态&quot;, 用于协调多个异步操作. 按照线程之间的协调关系可以分为:1. 串行关系; 2. 并行关系; 3. 汇聚关系.</p>
+<p><strong>串行关系</strong></p>
+<pre class="hljs"><code><div><span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">thenApply</span><span class="hljs-params">(fn)</span></span>;
+<span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">thenApplyAsync</span><span class="hljs-params">(fn)</span></span>;
+<span class="hljs-function">CompletionStage&lt;Void&gt; <span class="hljs-title">thenAccept</span><span class="hljs-params">(consumer)</span></span>;
+<span class="hljs-function">CompletionStage&lt;Void&gt; <span class="hljs-title">thenAcceptAsync</span><span class="hljs-params">(consumer)</span></span>;
+<span class="hljs-function">CompletionStage&lt;Void&gt; <span class="hljs-title">thenRun</span><span class="hljs-params">(action)</span></span>;
+<span class="hljs-function">CompletionStage&lt;Void&gt; <span class="hljs-title">thenRunAsync</span><span class="hljs-params">(action)</span></span>;
+<span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">thenCompose</span><span class="hljs-params">(fn)</span></span>; <span class="hljs-comment">// 会创建子流程, 即新的CompletableFuture</span>
+<span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">thenComposeAsync</span><span class="hljs-params">(fn)</span></span>;
+</div></code></pre>
+<p><strong>AND汇聚关系</strong></p>
+<pre class="hljs"><code><div><span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">thenCombine</span><span class="hljs-params">(other, fn)</span></span>;
+<span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">thenCombineAsync</span><span class="hljs-params">(other, fn)</span></span>;
+<span class="hljs-function">CompletionStage&lt;Void&gt; <span class="hljs-title">thenAcceptBoth</span><span class="hljs-params">(other, consumer)</span></span>;
+<span class="hljs-function">CompletionStage&lt;Void&gt; <span class="hljs-title">thenAcceptBothAsync</span><span class="hljs-params">(other, consumer)</span></span>;
+<span class="hljs-function">CompletionStage&lt;Void&gt; <span class="hljs-title">runAfterBoth</span><span class="hljs-params">(other, action)</span></span>;
+<span class="hljs-function">CompletionStage&lt;Void&gt; <span class="hljs-title">runAfterBothAsync</span><span class="hljs-params">(other, action)</span></span>;
+</div></code></pre>
+<p><strong>Or汇聚关系</strong></p>
+<pre class="hljs"><code><div><span class="hljs-function">CompletionStage <span class="hljs-title">applyToEither</span><span class="hljs-params">(other, fn)</span></span>;
+<span class="hljs-function">CompletionStage <span class="hljs-title">applyToEitherAsync</span><span class="hljs-params">(other, fn)</span></span>;
+<span class="hljs-function">CompletionStage <span class="hljs-title">acceptEither</span><span class="hljs-params">(other, consumer)</span></span>;
+<span class="hljs-function">CompletionStage <span class="hljs-title">acceptEitherAsync</span><span class="hljs-params">(other, consumer)</span></span>;
+<span class="hljs-function">CompletionStage <span class="hljs-title">runAfterEither</span><span class="hljs-params">(other, action)</span></span>;
+<span class="hljs-function">CompletionStage <span class="hljs-title">runAfterEitherAsync</span><span class="hljs-params">(other, action)</span></span>;
+</div></code></pre>
+<p><strong>异常处理</strong></p>
+<p>fn, consumer, action都不允许抛出可检查异常, 但是无法限制抛出运行时异常, CompletionStage异常处理提供的方法如下:</p>
+<pre class="hljs"><code><div><span class="hljs-function">CompletionStage <span class="hljs-title">exceptionally</span><span class="hljs-params">(fn)</span></span>;  <span class="hljs-comment">// 可以理解为catch</span>
+<span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">whenComplete</span><span class="hljs-params">(consumer)</span></span>;  <span class="hljs-comment">// 可以理解为finally</span>
+<span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">whenCompleteAsync</span><span class="hljs-params">(consumer)</span></span>; <span class="hljs-comment">// 同上, 异步</span>
+<span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">handle</span><span class="hljs-params">(fn)</span></span>;  <span class="hljs-comment">// 可以理解为finally, 支持返回结果</span>
+<span class="hljs-function">CompletionStage&lt;R&gt; <span class="hljs-title">handleAsync</span><span class="hljs-params">(fn)</span></span>; <span class="hljs-comment">// 同上, 异步</span>
+</div></code></pre>
+<p><strong>三个核心接口</strong></p>
+<p>上面的代码中, 用fn, consumer, action指代了三个核心接口, 分别是:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Function</span>&lt;<span class="hljs-title">T</span>, <span class="hljs-title">R</span>&gt;</span>{ <span class="hljs-function">R <span class="hljs-title">apply</span><span class="hljs-params">(T t)</span></span>; }    <span class="hljs-comment">// 有入参, 有返回值</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Consumer</span>&lt;<span class="hljs-title">T</span>&gt; </span>{ <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">accept</span><span class="hljs-params">(T t)</span></span>; }  <span class="hljs-comment">// 有入参, 无返回值</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Runnable</span></span>{ <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span></span>; }    <span class="hljs-comment">// 无入参, 无返回值</span>
+</div></code></pre>
+<p>例程如下:</p>
+<pre class="hljs"><code><div>        <span class="hljs-comment">// 串行关系</span>
+        CompletableFuture&lt;String&gt; f0 = CompletableFuture.supplyAsync(() -&gt; <span class="hljs-string">"Hello world"</span>)
+                .thenApply(s -&gt; s + <span class="hljs-string">" QQ"</span>).thenApply(String::toUpperCase);
+        System.out.println(f0.join());
+
+        <span class="hljs-comment">// Or汇聚关系</span>
+        CompletableFuture&lt;String&gt; f1 = CompletableFuture.supplyAsync(() -&gt; {
+            <span class="hljs-keyword">int</span> t = <span class="hljs-keyword">new</span> Random().nextInt(<span class="hljs-number">5</span>) * <span class="hljs-number">2</span>;
+            <span class="hljs-keyword">try</span> {
+                Thread.sleep(t);
+            } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+                e.printStackTrace();
+            }
+            <span class="hljs-keyword">return</span> Integer.toString(t);
+        });
+        CompletableFuture&lt;String&gt; f2 = CompletableFuture.supplyAsync(() -&gt; {
+            <span class="hljs-keyword">int</span> t = <span class="hljs-keyword">new</span> Random().nextInt(<span class="hljs-number">5</span>) * <span class="hljs-number">2</span>;
+            <span class="hljs-keyword">try</span> {
+                Thread.sleep(t);
+            } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+                e.printStackTrace();
+            }
+            <span class="hljs-keyword">return</span> Integer.toString(t);
+        });
+
+        CompletableFuture&lt;String&gt; f3 = f1.applyToEither(f2, s -&gt; s);
+        System.out.println(f3.join());
+</div></code></pre>
+<h2 id="completionservice-%E6%89%B9%E9%87%8F%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86">CompletionService-批量任务处理</h2>
+<p>当需要批量提交异步任务的时候建议你使用 CompletionService。CompletionService 将线程池 Executor 和阻塞队列 BlockingQueue 的功能融合在了一起，能够让批量异步任务的管理更简单. 例程如下:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> ExecutorService executorService = <span class="hljs-keyword">new</span> ThreadPoolExecutor(<span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">0</span>, TimeUnit.SECONDS, <span class="hljs-keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="hljs-number">3</span>));
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        lowAsyncTask();
+        optimizeAsyncTask();
+        completionServiceAsyncTask();
+        executorService.shutdown();
+    }
+
+    <span class="hljs-comment">/**
+     * 使用CompletionService实现的异步任务, 其内部原理就是阻塞队列
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">completionServiceAsyncTask</span><span class="hljs-params">()</span></span>{
+        CompletionService&lt;Integer&gt; cs = <span class="hljs-keyword">new</span> ExecutorCompletionService&lt;&gt;(executorService);
+        cs.submit(() -&gt; {
+            randomSleep();
+            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+        });
+        cs.submit(() -&gt; {
+            randomSleep();
+            <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>;
+        });
+        cs.submit(() -&gt; {
+            randomSleep();
+            <span class="hljs-keyword">return</span> <span class="hljs-number">3</span>;
+        });
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++){
+            <span class="hljs-keyword">try</span> {
+                System.out.println(cs.take().get());
+            } <span class="hljs-keyword">catch</span> (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    <span class="hljs-comment">/**
+     * 使用阻塞队列, 对lowAsyncTask()进行优化, 使其中一个阻塞, 不会影响到其它线程
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">optimizeAsyncTask</span><span class="hljs-params">()</span></span>{
+        LinkedBlockingQueue&lt;Integer&gt; bq = <span class="hljs-keyword">new</span> LinkedBlockingQueue&lt;&gt;();
+
+        executorService.execute(() -&gt; {
+            randomSleep();
+            enqueue(bq, <span class="hljs-number">1</span>);
+        });
+
+        executorService.execute(() -&gt; {
+            randomSleep();
+            enqueue(bq, <span class="hljs-number">2</span>);
+        });
+
+        executorService.execute(() -&gt; {
+            randomSleep();
+            enqueue(bq, <span class="hljs-number">3</span>);
+        });
+
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++){
+            System.out.println(dequeue(bq));
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">enqueue</span><span class="hljs-params">(LinkedBlockingQueue&lt;Integer&gt; queue, Integer val)</span></span>{
+        <span class="hljs-keyword">try</span> {
+            queue.put(val);
+        } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Integer <span class="hljs-title">dequeue</span><span class="hljs-params">(LinkedBlockingQueue&lt;Integer&gt; queue)</span></span>{
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-keyword">return</span> queue.take();
+        } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+            e.printStackTrace();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+        }
+    }
+
+    <span class="hljs-comment">/**
+     * 一种不太好的异步执行方案, 首先f1, f2, f3与主线程之间是单纯的并行关系, 而不是汇聚关系
+     * 很有可能f2, f3先执行完成, 但是由于f1没有执行完成, 导致大家都阻塞在那里
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">lowAsyncTask</span><span class="hljs-params">()</span></span>{
+
+        Future&lt;Integer&gt; f1 = executorService.submit(() -&gt; {
+            randomSleep();
+            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+        });
+
+        Future&lt;Integer&gt; f2 = executorService.submit(() -&gt; {
+            randomSleep();
+            <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>;
+        });
+
+        Future&lt;Integer&gt; f3 = executorService.submit(() -&gt; {
+            randomSleep();
+            <span class="hljs-keyword">return</span> <span class="hljs-number">3</span>;
+        });
+
+        <span class="hljs-keyword">try</span> {
+            System.out.println(f1.get());
+            System.out.println(f2.get());
+            System.out.println(f3.get());
+        } <span class="hljs-keyword">catch</span> (InterruptedException | ExecutionException  e) {
+            e.printStackTrace();
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">randomSleep</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">int</span> sleepTime = <span class="hljs-keyword">new</span> Random().nextInt(<span class="hljs-number">100</span>) * <span class="hljs-number">10</span>;
+        <span class="hljs-keyword">try</span> {
+            Thread.sleep(sleepTime);
+        } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+</div></code></pre>
+<p>常用方法:</p>
+<pre class="hljs"><code><div><span class="hljs-function">Future&lt;V&gt; <span class="hljs-title">submit</span><span class="hljs-params">(Callable&lt;V&gt; task)</span></span>; <span class="hljs-comment">// 提交任务</span>
+<span class="hljs-function">Future&lt;V&gt; <span class="hljs-title">submit</span><span class="hljs-params">(Runnable task, V result)</span></span>;  <span class="hljs-comment">// 提交任务</span>
+<span class="hljs-function">Future&lt;V&gt; <span class="hljs-title">take</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException</span>;   <span class="hljs-comment">// 阻塞的从队列中获取</span>
+<span class="hljs-function">Future&lt;V&gt; <span class="hljs-title">poll</span><span class="hljs-params">()</span></span>;   <span class="hljs-comment">// 从队列中获取, 如果队列是空, 返回null</span>
+<span class="hljs-function">Future&lt;V&gt; <span class="hljs-title">poll</span><span class="hljs-params">(<span class="hljs-keyword">long</span> timeout, TimeUnit unit)</span> <span class="hljs-keyword">throws</span> InterruptedException</span>;    <span class="hljs-comment">// 阻塞的从队列中获取, 等待超时</span>
+</div></code></pre>
+<h2 id="forkjoin-%E5%88%86%E6%B2%BB">Fork/Join-分治</h2>
+<p>分治分为两个阶段:</p>
+<ol>
+<li>任务分解(Fork)</li>
+<li>结果合并(Join)</li>
+</ol>
+<p>Fork/Join计算框架主要包含两部分:</p>
+<ol>
+<li>分治任务的线程池ForkJoinPool --&gt; ThreadPoolExecutor</li>
+<li>分支任务ForkJoinTask --&gt; Runnable
+<ul>
+<li>子类
+<ul>
+<li>RecursiveAction -- 通过递归的方式处理分治任务, compute方法没有返回值</li>
+<li>RecursiveTask -- 通过递归的方式处理分治任务, compute方法存在返回值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>例程:</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        <span class="hljs-comment">/**
+         * java官方示例, 通过Fork/Join并行计算框架计算斐波那契数列
+         * 斐波那契数列: f(n) = f(n - 1) + f(n - 2)
+         */</span>
+        ForkJoinPool fjp = <span class="hljs-keyword">new</span> ForkJoinPool(<span class="hljs-number">4</span>);
+
+        Fibonacci fib = <span class="hljs-keyword">new</span> Fibonacci(<span class="hljs-number">30</span>);
+        Integer result = fjp.invoke(fib);
+
+        System.out.println(result);
+    }
+
+    <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Fibonacci</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">RecursiveTask</span>&lt;<span class="hljs-title">Integer</span>&gt;</span>{
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> n;
+        Fibonacci(<span class="hljs-keyword">int</span> n){ <span class="hljs-keyword">this</span>.n = n; }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">protected</span> Integer <span class="hljs-title">compute</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">if</span>(n &lt;= <span class="hljs-number">1</span>){
+                <span class="hljs-keyword">return</span> n;
+            }
+            Fibonacci f1 = <span class="hljs-keyword">new</span> Fibonacci(n - <span class="hljs-number">1</span>);
+            Fibonacci f2 = <span class="hljs-keyword">new</span> Fibonacci(n - <span class="hljs-number">2</span>);
+            f1.fork();
+
+            <span class="hljs-keyword">return</span> f2.compute() + f1.join();
+        }
+    }
+</div></code></pre>
+<blockquote>
+<p>为什么f1.fork(), 而f2.compute()?  这是因为f1.fork()会将任务f1交给另一个线程执行, 然后f2由当前线程自己执行, 这样充分利用了线程线程池.
+此外, 需要注意return是, 是先执行的f2.compute(), 而后执行的f1.join(), 如果先执行f1.join(), 会导致当前线程阻塞, f1完成之后, 才会去执行f2.compute</p>
+</blockquote>
+<p><strong>工作原理</strong></p>
+<p>ForkJoinPool本质上也是一个生产者-消费者实现, 内部有多个任务队列, 当执行invoke或者submit方法提交任务时, ForkJoinPool根据一定的路由规则把任务提交到一个任务队列中, 如果任务在执行过程中, 会创建出子任务, 那么子任务会提交到工作线程对应的任务队列中. 当工作线程的任务队列空了, ForkJoinPool支持&quot;任务窃取&quot;, 会从其他工作任务队列里&quot;窃取&quot;任务.</p>
+<p>ForkJoinPool任务队列采用的是双端队列, 工作线程正常获取任务和窃取任务分别从任务队列不同的端消费, 避免很多不必要的数据竞争.</p>
+
+</body>
+</html>
