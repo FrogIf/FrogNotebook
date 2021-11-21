@@ -48,6 +48,94 @@
 2. 原子性 -- 线程切换导致的原子性问题
 3. 有序性 -- 编译优化导致的有序性问题
 
+```java
+package sch.frog.concurrency;
+
+/**
+ * 线程安全问题演示
+ */
+public class ThreadSafeProblem {
+
+    public static void main(String[] args) throws InterruptedException{
+        // 数据竞争
+        DataRaceDemoObj dataRaceDemoObj = new DataRaceDemoObj();
+        playThreadSafeProblem(dataRaceDemoObj);
+        System.out.println("result is : " + dataRaceDemoObj.count);
+
+        // 竞态条件
+        RaceConditionDemoObj raceConditionDemoObj = new RaceConditionDemoObj();
+        playThreadSafeProblem(raceConditionDemoObj);
+        System.out.println("result is : " + raceConditionDemoObj.count);
+
+        // 线程安全
+        ThreadSafeObj threadSafeObj = new ThreadSafeObj();
+        playThreadSafeProblem(threadSafeObj);
+        System.out.println("result is : " + threadSafeObj.count);
+    }
+
+    private static void playThreadSafeProblem(AddRef ref) throws InterruptedException{
+        Thread t1 = new Thread(ref::add10K);
+        Thread t2 = new Thread(ref::add10K);
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+    }
+
+    private interface AddRef{
+        void add10K();
+    }
+
+    /**
+     * Demo: 数据竞争
+     * 两个线程并发的对同一个变量进行读写
+     */
+    private static final class DataRaceDemoObj implements AddRef{
+        private long count = 0;
+        public void add10K(){
+            int idx = 0;
+            while(idx++ < 10000){
+                count += 1;
+            }
+        }
+    }
+
+    /**
+     * Demo: 竞态条件
+     * 程序的执行结果依赖两个线程交替执行的顺序
+     * 注意, 这里RaceConditionDemoObj中的count并不会被两个线程并发的访问
+     */
+    private static final class RaceConditionDemoObj implements AddRef{
+        private volatile long count = 0;
+        private synchronized long get(){
+            return count;
+        }
+        private synchronized void set(long v){
+            this.count = v;
+        }
+        public void add10K(){
+            int idx = 0;
+            while(idx++ < 10000){
+                this.set(get() + 1);
+            }
+        }
+    }
+
+    /**
+     * 线程安全的对象
+     */
+    private static final class ThreadSafeObj implements AddRef{
+        private long count = 0;
+        public synchronized void add10K(){
+            int idx = 0;
+            while(idx++ < 10000){
+                count += 1;
+            }
+        }
+    }
+}
+```
+
 ## 可见性问题与有序性问题
 
 从引发原因, 可以知道, 解决这两类问题的根本手段是:
@@ -1092,3 +1180,229 @@ Fork/Join计算框架主要包含两部分:
 ForkJoinPool本质上也是一个生产者-消费者实现, 内部有多个任务队列, 当执行invoke或者submit方法提交任务时, ForkJoinPool根据一定的路由规则把任务提交到一个任务队列中, 如果任务在执行过程中, 会创建出子任务, 那么子任务会提交到工作线程对应的任务队列中. 当工作线程的任务队列空了, ForkJoinPool支持"任务窃取", 会从其他工作任务队列里"窃取"任务. 
 
 ForkJoinPool任务队列采用的是双端队列, 工作线程正常获取任务和窃取任务分别从任务队列不同的端消费, 避免很多不必要的数据竞争.
+
+## 其他知识
+
+### 活跃性问题的演示
+
+```java
+package sch.frog.concurrency;
+
+/**
+ * 活跃性问题演示
+ */
+public class LivenessProblem {
+
+    public static void main(String[] args){
+        // 死锁
+        // deadLockProblemDemo();
+        // 活锁
+        // liveLockProblemDemo();
+        // 饥饿
+        hungryProblemDemo();
+    }
+
+    /**
+     * 饥饿演示
+     * 两个线程的优先级不相同
+     */
+    public static void hungryProblemDemo(){
+        HungerProblemDemoObj obj = new HungerProblemDemoObj();
+        Thread t1 = new Thread(obj::playA);
+        Thread t2 = new Thread(obj::playB);
+        t1.setPriority(Thread.MAX_PRIORITY);
+        t2.setPriority(Thread.MIN_PRIORITY);
+        t1.start();
+        t2.start();
+    }
+
+    private final static class HungerProblemDemoObj{
+        private Object obj = new Object();
+        private volatile int a = 0;
+        public void playA(){
+            while(a != 3){
+                synchronized(obj){
+                    a = a | 1;
+                    System.out.println("play A.");
+                }
+            }
+        }
+        public void playB(){
+            while(a != 3){
+                synchronized(obj){
+                    System.out.println("play B.");
+                    a = a | 2;
+                }
+            }
+        }
+    } 
+
+    /**
+     * 活锁演示
+     */
+    private static void liveLockProblemDemo(){
+        LiveLockDemoObj obj = new LiveLockDemoObj();
+        Thread t1 = new Thread(() -> {
+            try {
+                obj.playA();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        Thread t2 = new Thread(() -> {
+            try {
+                obj.playB();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        t1.start();
+        t2.start();
+    }
+
+    /**
+     * 活锁演示对象
+     * 活锁的解决方案: 每个线程的重试时间都是不同的随机值
+     */
+    private static final class LiveLockDemoObj {
+        private final static long RETRY_WAIT_MILLIS = 500;
+        private volatile boolean aSelectLeft = true;
+        private volatile boolean bSelectLeft = true;
+        public void playA() throws InterruptedException{
+            while(aSelectLeft == bSelectLeft){
+                System.out.println("a: ok, i select " + (!aSelectLeft ? "right" : "left"));
+                Thread.sleep(500);  // 为了更容易的复现活锁的情况
+                aSelectLeft = !aSelectLeft;
+                Thread.sleep(RETRY_WAIT_MILLIS);  // 500ms后重试
+            }
+            System.out.println("a is processing...");
+        }
+        public void playB() throws InterruptedException{
+            while(aSelectLeft == bSelectLeft){
+                System.out.println("b: ok, i select " + (!bSelectLeft ? "right" : "left"));
+                Thread.sleep(500);  // 为了更容易的复现活锁的情况
+                bSelectLeft = !bSelectLeft;
+                Thread.sleep(RETRY_WAIT_MILLIS);  // 500ms后重试
+            }
+            System.out.println("b is processing...");
+        }
+    }
+
+    /**
+     * 死锁演示
+     */
+    private static void deadLockProblemDemo() {
+        DeadLockProblemDemoObj obj = new DeadLockProblemDemoObj();
+        Thread t1 = new Thread(() -> {
+            try {
+                obj.playA();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Thread t2 = new Thread(() -> {
+            try {
+                obj.playB();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        t1.start();
+        t2.start();
+    }
+    
+    /**
+     * 死锁演示对象
+     * 解决方案: 锁的获取保持顺序一致
+     */
+    public static final class DeadLockProblemDemoObj {
+        private final Object a = new Object();
+        private final Object b = new Object();
+        public void playA() throws InterruptedException {
+            synchronized(a){
+                Thread.sleep(1000);// 加一个等待, 要不然, 有一定概率复现不出来, sleep不会释放锁
+                System.out.println("wait b...");
+                synchronized(b){
+                    System.out.println("play a.");
+                }
+            }
+        }
+        public void playB() throws InterruptedException {
+            synchronized(b){
+                Thread.sleep(1000);// 同上
+                System.out.println("wait a...");
+                synchronized(a){
+                    System.out.println("play b.");
+                }
+            }
+        }
+    }
+}
+```
+
+### 指令重排存在的证明
+
+```java
+package sch.frog.concurrency;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+/**
+ * 证明指令重排序的存在
+ */
+public class Disorder {
+    
+    private static int a = 0;
+    private static int b = 0;
+    private static int x = 0;
+    private static int y = 0;
+
+    /**
+     * 证明指令重排序
+     * @param args
+     */
+    public static void main(String[] args) throws InterruptedException {
+        int count = 0;
+        Executor executor = Executors.newFixedThreadPool(2);
+
+        while (true) {
+            a = 0;
+            b = 0;
+            x = 0;
+            y = 0;
+
+            count ++;
+
+            CountDownLatch latch = new CountDownLatch(2);
+
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    a = 1;
+                    y = b;
+                    latch.countDown();
+                }
+            });
+
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    b = 1;
+                    x = a;
+                    latch.countDown();
+                }
+            });
+
+            latch.await();
+
+            if (x == 0 && y == 0) {
+                String message = "第" + count + "次出现指令重排，x=" + x + "，y=" + y;
+                System.err.println(message);
+                break;
+            }
+        }
+    }   
+}
+```

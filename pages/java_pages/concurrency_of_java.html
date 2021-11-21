@@ -446,6 +446,92 @@ code {
 <li>原子性 -- 线程切换导致的原子性问题</li>
 <li>有序性 -- 编译优化导致的有序性问题</li>
 </ol>
+<pre class="hljs"><code><div><span class="hljs-keyword">package</span> sch.frog.concurrency;
+
+<span class="hljs-comment">/**
+ * 线程安全问题演示
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ThreadSafeProblem</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+        <span class="hljs-comment">// 数据竞争</span>
+        DataRaceDemoObj dataRaceDemoObj = <span class="hljs-keyword">new</span> DataRaceDemoObj();
+        playThreadSafeProblem(dataRaceDemoObj);
+        System.out.println(<span class="hljs-string">"result is : "</span> + dataRaceDemoObj.count);
+
+        <span class="hljs-comment">// 竞态条件</span>
+        RaceConditionDemoObj raceConditionDemoObj = <span class="hljs-keyword">new</span> RaceConditionDemoObj();
+        playThreadSafeProblem(raceConditionDemoObj);
+        System.out.println(<span class="hljs-string">"result is : "</span> + raceConditionDemoObj.count);
+
+        <span class="hljs-comment">// 线程安全</span>
+        ThreadSafeObj threadSafeObj = <span class="hljs-keyword">new</span> ThreadSafeObj();
+        playThreadSafeProblem(threadSafeObj);
+        System.out.println(<span class="hljs-string">"result is : "</span> + threadSafeObj.count);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">playThreadSafeProblem</span><span class="hljs-params">(AddRef ref)</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+        Thread t1 = <span class="hljs-keyword">new</span> Thread(ref::add10K);
+        Thread t2 = <span class="hljs-keyword">new</span> Thread(ref::add10K);
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">AddRef</span></span>{
+        <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">add10K</span><span class="hljs-params">()</span></span>;
+    }
+
+    <span class="hljs-comment">/**
+     * Demo: 数据竞争
+     * 两个线程并发的对同一个变量进行读写
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataRaceDemoObj</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">AddRef</span></span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> count = <span class="hljs-number">0</span>;
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">add10K</span><span class="hljs-params">()</span></span>{
+            <span class="hljs-keyword">int</span> idx = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">while</span>(idx++ &lt; <span class="hljs-number">10000</span>){
+                count += <span class="hljs-number">1</span>;
+            }
+        }
+    }
+
+    <span class="hljs-comment">/**
+     * Demo: 竞态条件
+     * 程序的执行结果依赖两个线程交替执行的顺序
+     * 注意, 这里RaceConditionDemoObj中的count并不会被两个线程并发的访问
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RaceConditionDemoObj</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">AddRef</span></span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">long</span> count = <span class="hljs-number">0</span>;
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">long</span> <span class="hljs-title">get</span><span class="hljs-params">()</span></span>{
+            <span class="hljs-keyword">return</span> count;
+        }
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">set</span><span class="hljs-params">(<span class="hljs-keyword">long</span> v)</span></span>{
+            <span class="hljs-keyword">this</span>.count = v;
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">add10K</span><span class="hljs-params">()</span></span>{
+            <span class="hljs-keyword">int</span> idx = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">while</span>(idx++ &lt; <span class="hljs-number">10000</span>){
+                <span class="hljs-keyword">this</span>.set(get() + <span class="hljs-number">1</span>);
+            }
+        }
+    }
+
+    <span class="hljs-comment">/**
+     * 线程安全的对象
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ThreadSafeObj</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">AddRef</span></span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> count = <span class="hljs-number">0</span>;
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">add10K</span><span class="hljs-params">()</span></span>{
+            <span class="hljs-keyword">int</span> idx = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">while</span>(idx++ &lt; <span class="hljs-number">10000</span>){
+                count += <span class="hljs-number">1</span>;
+            }
+        }
+    }
+}
+</div></code></pre>
 <h2 id="%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98%E4%B8%8E%E6%9C%89%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98">可见性问题与有序性问题</h2>
 <p>从引发原因, 可以知道, 解决这两类问题的根本手段是:</p>
 <ul>
@@ -1495,6 +1581,225 @@ get(timeout, unit)  <span class="hljs-comment">//获取执行结果, 支持超�
 <p><strong>工作原理</strong></p>
 <p>ForkJoinPool本质上也是一个生产者-消费者实现, 内部有多个任务队列, 当执行invoke或者submit方法提交任务时, ForkJoinPool根据一定的路由规则把任务提交到一个任务队列中, 如果任务在执行过程中, 会创建出子任务, 那么子任务会提交到工作线程对应的任务队列中. 当工作线程的任务队列空了, ForkJoinPool支持&quot;任务窃取&quot;, 会从其他工作任务队列里&quot;窃取&quot;任务.</p>
 <p>ForkJoinPool任务队列采用的是双端队列, 工作线程正常获取任务和窃取任务分别从任务队列不同的端消费, 避免很多不必要的数据竞争.</p>
+<h2 id="%E5%85%B6%E4%BB%96%E7%9F%A5%E8%AF%86">其他知识</h2>
+<h3 id="%E6%B4%BB%E8%B7%83%E6%80%A7%E9%97%AE%E9%A2%98%E7%9A%84%E6%BC%94%E7%A4%BA">活跃性问题的演示</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">package</span> sch.frog.concurrency;
+
+<span class="hljs-comment">/**
+ * 活跃性问题演示
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LivenessProblem</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        <span class="hljs-comment">// 死锁</span>
+        <span class="hljs-comment">// deadLockProblemDemo();</span>
+        <span class="hljs-comment">// 活锁</span>
+        <span class="hljs-comment">// liveLockProblemDemo();</span>
+        <span class="hljs-comment">// 饥饿</span>
+        hungryProblemDemo();
+    }
+
+    <span class="hljs-comment">/**
+     * 饥饿演示
+     * 两个线程的优先级不相同
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">hungryProblemDemo</span><span class="hljs-params">()</span></span>{
+        HungerProblemDemoObj obj = <span class="hljs-keyword">new</span> HungerProblemDemoObj();
+        Thread t1 = <span class="hljs-keyword">new</span> Thread(obj::playA);
+        Thread t2 = <span class="hljs-keyword">new</span> Thread(obj::playB);
+        t1.setPriority(Thread.MAX_PRIORITY);
+        t2.setPriority(Thread.MIN_PRIORITY);
+        t1.start();
+        t2.start();
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HungerProblemDemoObj</span></span>{
+        <span class="hljs-keyword">private</span> Object obj = <span class="hljs-keyword">new</span> Object();
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> a = <span class="hljs-number">0</span>;
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">playA</span><span class="hljs-params">()</span></span>{
+            <span class="hljs-keyword">while</span>(a != <span class="hljs-number">3</span>){
+                <span class="hljs-keyword">synchronized</span>(obj){
+                    a = a | <span class="hljs-number">1</span>;
+                    System.out.println(<span class="hljs-string">"play A."</span>);
+                }
+            }
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">playB</span><span class="hljs-params">()</span></span>{
+            <span class="hljs-keyword">while</span>(a != <span class="hljs-number">3</span>){
+                <span class="hljs-keyword">synchronized</span>(obj){
+                    System.out.println(<span class="hljs-string">"play B."</span>);
+                    a = a | <span class="hljs-number">2</span>;
+                }
+            }
+        }
+    } 
+
+    <span class="hljs-comment">/**
+     * 活锁演示
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">liveLockProblemDemo</span><span class="hljs-params">()</span></span>{
+        LiveLockDemoObj obj = <span class="hljs-keyword">new</span> LiveLockDemoObj();
+        Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; {
+            <span class="hljs-keyword">try</span> {
+                obj.playA();
+            } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        Thread t2 = <span class="hljs-keyword">new</span> Thread(() -&gt; {
+            <span class="hljs-keyword">try</span> {
+                obj.playB();
+            } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        t1.start();
+        t2.start();
+    }
+
+    <span class="hljs-comment">/**
+     * 活锁演示对象
+     * 活锁的解决方案: 每个线程的重试时间都是不同的随机值
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LiveLockDemoObj</span> </span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">long</span> RETRY_WAIT_MILLIS = <span class="hljs-number">500</span>;
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> aSelectLeft = <span class="hljs-keyword">true</span>;
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> bSelectLeft = <span class="hljs-keyword">true</span>;
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">playA</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+            <span class="hljs-keyword">while</span>(aSelectLeft == bSelectLeft){
+                System.out.println(<span class="hljs-string">"a: ok, i select "</span> + (!aSelectLeft ? <span class="hljs-string">"right"</span> : <span class="hljs-string">"left"</span>));
+                Thread.sleep(<span class="hljs-number">500</span>);  <span class="hljs-comment">// 为了更容易的复现活锁的情况</span>
+                aSelectLeft = !aSelectLeft;
+                Thread.sleep(RETRY_WAIT_MILLIS);  <span class="hljs-comment">// 500ms后重试</span>
+            }
+            System.out.println(<span class="hljs-string">"a is processing..."</span>);
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">playB</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+            <span class="hljs-keyword">while</span>(aSelectLeft == bSelectLeft){
+                System.out.println(<span class="hljs-string">"b: ok, i select "</span> + (!bSelectLeft ? <span class="hljs-string">"right"</span> : <span class="hljs-string">"left"</span>));
+                Thread.sleep(<span class="hljs-number">500</span>);  <span class="hljs-comment">// 为了更容易的复现活锁的情况</span>
+                bSelectLeft = !bSelectLeft;
+                Thread.sleep(RETRY_WAIT_MILLIS);  <span class="hljs-comment">// 500ms后重试</span>
+            }
+            System.out.println(<span class="hljs-string">"b is processing..."</span>);
+        }
+    }
+
+    <span class="hljs-comment">/**
+     * 死锁演示
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">deadLockProblemDemo</span><span class="hljs-params">()</span> </span>{
+        DeadLockProblemDemoObj obj = <span class="hljs-keyword">new</span> DeadLockProblemDemoObj();
+        Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; {
+            <span class="hljs-keyword">try</span> {
+                obj.playA();
+            } <span class="hljs-keyword">catch</span> (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Thread t2 = <span class="hljs-keyword">new</span> Thread(() -&gt; {
+            <span class="hljs-keyword">try</span> {
+                obj.playB();
+            } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        t1.start();
+        t2.start();
+    }
+    
+    <span class="hljs-comment">/**
+     * 死锁演示对象
+     * 解决方案: 锁的获取保持顺序一致
+     */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DeadLockProblemDemoObj</span> </span>{
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Object a = <span class="hljs-keyword">new</span> Object();
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Object b = <span class="hljs-keyword">new</span> Object();
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">playA</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>{
+            <span class="hljs-keyword">synchronized</span>(a){
+                Thread.sleep(<span class="hljs-number">1000</span>);<span class="hljs-comment">// 加一个等待, 要不然, 有一定概率复现不出来, sleep不会释放锁</span>
+                System.out.println(<span class="hljs-string">"wait b..."</span>);
+                <span class="hljs-keyword">synchronized</span>(b){
+                    System.out.println(<span class="hljs-string">"play a."</span>);
+                }
+            }
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">playB</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>{
+            <span class="hljs-keyword">synchronized</span>(b){
+                Thread.sleep(<span class="hljs-number">1000</span>);<span class="hljs-comment">// 同上</span>
+                System.out.println(<span class="hljs-string">"wait a..."</span>);
+                <span class="hljs-keyword">synchronized</span>(a){
+                    System.out.println(<span class="hljs-string">"play b."</span>);
+                }
+            }
+        }
+    }
+}
+</div></code></pre>
+<h3 id="%E6%8C%87%E4%BB%A4%E9%87%8D%E6%8E%92%E5%AD%98%E5%9C%A8%E7%9A%84%E8%AF%81%E6%98%8E">指令重排存在的证明</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">package</span> sch.frog.concurrency;
+
+<span class="hljs-keyword">import</span> java.util.concurrent.CountDownLatch;
+<span class="hljs-keyword">import</span> java.util.concurrent.Executor;
+<span class="hljs-keyword">import</span> java.util.concurrent.Executors;
+
+<span class="hljs-comment">/**
+ * 证明指令重排序的存在
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Disorder</span> </span>{
+    
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> a = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> b = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> x = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> y = <span class="hljs-number">0</span>;
+
+    <span class="hljs-comment">/**
+     * 证明指令重排序
+     * <span class="hljs-doctag">@param</span> args
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>{
+        <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+        Executor executor = Executors.newFixedThreadPool(<span class="hljs-number">2</span>);
+
+        <span class="hljs-keyword">while</span> (<span class="hljs-keyword">true</span>) {
+            a = <span class="hljs-number">0</span>;
+            b = <span class="hljs-number">0</span>;
+            x = <span class="hljs-number">0</span>;
+            y = <span class="hljs-number">0</span>;
+
+            count ++;
+
+            CountDownLatch latch = <span class="hljs-keyword">new</span> CountDownLatch(<span class="hljs-number">2</span>);
+
+            executor.execute(<span class="hljs-keyword">new</span> Runnable() {
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+                    a = <span class="hljs-number">1</span>;
+                    y = b;
+                    latch.countDown();
+                }
+            });
+
+            executor.execute(<span class="hljs-keyword">new</span> Runnable() {
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+                    b = <span class="hljs-number">1</span>;
+                    x = a;
+                    latch.countDown();
+                }
+            });
+
+            latch.await();
+
+            <span class="hljs-keyword">if</span> (x == <span class="hljs-number">0</span> &amp;&amp; y == <span class="hljs-number">0</span>) {
+                String message = <span class="hljs-string">"第"</span> + count + <span class="hljs-string">"次出现指令重排，x="</span> + x + <span class="hljs-string">"，y="</span> + y;
+                System.err.println(message);
+                <span class="hljs-keyword">break</span>;
+            }
+        }
+    }   
+}
+</div></code></pre>
 
 </body>
 </html>
