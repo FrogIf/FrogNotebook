@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>exclusive_or.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%BC%82%E6%88%96">异或</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>在逻辑学中，逻辑算符异或（exclusive or）是对两个运算元的一种逻辑析取类型，符号为 XOR 或 EOR 或 ⊕（编程语言中常用^）。
+与一般的逻辑或不同，异或算符的值为真仅当两个运算元中恰有一个的值为真，而另外一个的值为非真。转化为命题，就是：“两者的值不同。”或“有且仅有一个为真。”</p>
+<blockquote>
+<p>以下使用java中的位运算符进行表示. 与(&amp;), 或(|), 非(~), 异或(^).</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Y</th>
+<th>B=0</th>
+<th>B=1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A=0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>A=1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>表达式:</p>
+<pre class="hljs"><code><div>Y = A ^ B = ~A &amp; B | A &amp; ~B
+</div></code></pre>
+<h2 id="%E5%BC%82%E6%88%96%E7%9A%84%E7%89%B9%E6%80%A7">异或的特性</h2>
+<ol>
+<li>恒等律:<pre class="hljs"><code><div> X ^ 0 = X
+</div></code></pre>
+</li>
+<li>归零律<pre class="hljs"><code><div> X ^ X = 0
+</div></code></pre>
+</li>
+<li>交换律<pre class="hljs"><code><div>A ^ B = B ^ A
+</div></code></pre>
+</li>
+<li>结合律<pre class="hljs"><code><div>A ^ (B ^ C) = (A ^ B) ^ C
+</div></code></pre>
+证明:<pre class="hljs"><code><div>A ^ (B ^ C) = A ^ (~B &amp; C | B &amp; ~C)
+     = ~A &amp; (~B &amp; C | B &amp; ~C) | (A &amp; ~(~B &amp; C | B &amp; ~C))
+     = (~A &amp; ~B &amp; C) | (~A &amp; B &amp; ~C) | (A &amp; (~(~B &amp; C) &amp; ~(B &amp; ~C)))
+     = (~A &amp; ~B &amp; C) | (~A &amp; B &amp; ~C) | (A &amp; ((B | ~C) &amp; (~B | C)))
+     = (~A &amp; ~B &amp; C) | (~A &amp; B &amp; ~C) | (A &amp; (((B | ~C) &amp; ~B) | ((B | ~C) &amp; C))
+     = (~A &amp; ~B &amp; C) | (~A &amp; B &amp; ~C) | (A &amp; ((~C &amp; ~B) | (B &amp; C))
+     = (~A &amp; ~B &amp; C) | (~A &amp; B &amp; ~C) | (A &amp; ~C &amp; ~B) | (A &amp; B &amp; C)
+     
+A ^ B ^ C = ((~A &amp; B) | (A &amp; ~B)) ^ C
+     = ~((~A &amp; B) | (A &amp; ~B)) &amp; C | (((~A &amp; B) | (A &amp; ~B)) &amp; ~C)
+     = (~(~A &amp; B) &amp; ~(A &amp; ~B)) &amp; C | ((~A &amp; B &amp; ~C) | (A &amp; ~B &amp; ~C))
+     = ((A | ~B) &amp; (~A | B)) &amp; C | (~A &amp; B &amp; ~C) | (A &amp; ~B &amp; ~C)
+     = ((A &amp; B) | (~B &amp; ~A)) &amp; C | (~A &amp; B &amp; ~C) | (A &amp; ~B &amp; ~C)
+     = (A &amp; B &amp; C) | (~A &amp; ~B &amp; C) | (~A &amp; B &amp; ~C) | (A &amp; ~B &amp; ~C)
+
+所以: A ^ B ^ C = A ^ (B ^ C)
+</div></code></pre>
+</li>
+</ol>
+<blockquote>
+<p>使用到的:<br>
+交换律: A &amp; B = B &amp; A, A | B = B | A<br>
+结合律: A &amp; B &amp; C = A &amp; (B &amp; C), A | B | C = A | (B | C)<br>
+分配律: A &amp; (B | C) = (A &amp; B) | (A &amp; C), A | (B &amp; C) = (A | B) &amp; (A | C)<br>
+摩尔定律: ~(A &amp; B) = ~A | ~B, ~(A | B) = ~A &amp; ~B</p>
+</blockquote>
+<ol start="5">
+<li>自反<pre class="hljs"><code><div>A ^ B ^ B = A
+</div></code></pre>
+</li>
+</ol>
+<h2 id="%E5%BC%82%E6%88%96%E7%9A%84%E5%BA%94%E7%94%A8">异或的应用</h2>
+<p><strong>快速比较两个值</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">boolean</span> eq = (a ^ b) == <span class="hljs-number">0</span>;    <span class="hljs-comment">// 比较两个int类型值a, b是否相等</span>
+</div></code></pre>
+<p><strong>使用异或翻转指定位</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">int</span> k = <span class="hljs-number">0b11111</span>;
+k = k ^ (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">3</span>);
+System.out.println(k);	<span class="hljs-comment">// DEC: 23, BIN: 10111</span>
+</div></code></pre>
+<p>使用的异或特性:</p>
+<pre class="hljs"><code><div>1 ^ 1 = 0
+0 ^ 1 = 1
+</div></code></pre>
+<p><strong>判断一个二进制数中1的数量是奇数个还是偶数个</strong></p>
+<p>例如：求10100001中1的数量是奇数还是偶数?
+答案：1 ^ 0 ^ 1 ^ 0 ^ 0 ^ 0 ^ 0 ^ 1 = 1</p>
+<blockquote>
+<p>结果为1就是奇数个1，结果为0就是偶数个1.</p>
+</blockquote>
+<blockquote>
+<p>这条性质可用于奇偶校验（Parity Check），比如在串口通信过程中，每个字节的数据都计算一个校验位，数据和校验位一起发送出去，这样接收方可以根据校验位粗略地判断接收到的数据是否有误.</p>
+</blockquote>
+<p><strong>校验和恢复</strong></p>
+<p>校验和恢复主要利用的了异或的特性：IF a ^ b = c THEN a ^ c = b.</p>
+<p>应用：一个很好的应用实例是RAID5，使用3块磁盘（A、B、C）组成RAID5阵列，当用户写数据时，将数据分成两部分，分别写到磁盘A和磁盘B，A ^ B的结果写到磁盘C；当读取A的数据时，通过B ^ C可以对A的数据做校验，当A盘出错时，通过B ^ C也可以恢复A盘的数据。(RAID5的实现比上述的描述复杂多了，但是原理就是使用 异或)</p>
+<p><strong>不使用其他空间，交换两个值</strong></p>
+<pre class="hljs"><code><div>a = a ^ b;
+b = a ^ b; //a ^ b ^ b = a ^ 0 = a;
+a = a ^ b;
+</div></code></pre>
+<blockquote>
+<p>非常经典的题目</p>
+</blockquote>
+<p><strong>一个整型数组里除了N个数字之外，其他的数字都出现了两次，找出这N个数字</strong></p>
+<ol>
+<li>一个整型数组中只有一个数字出现了一次, 其余数字都出现了两次</li>
+</ol>
+<p>假设这个数组为:{A, B, C, B, C, D, A}</p>
+<p>使用异或:</p>
+<pre class="hljs"><code><div>A ^ B ^ C ^ B ^ C ^ D ^ A
+= A ^ A ^ B ^ B ^ C ^ C ^ D
+= 0 ^ D
+= D
+</div></code></pre>
+<p>这样就把只出现一次的数组找出来了.</p>
+<ol start="2">
+<li>一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字?</li>
+</ol>
+<p>第一步：肯定还是像我们上面的解法一样，所有数进行异或，不过最终得到的结果是 a 和 b（假设 a 和 b 是落单的数字）两个值的异或结果 a ^ b，没有直接得到 a 和 b 的值;</p>
+<p>第二步: 假设上一步的结果是00001001, 那么这个数值为1的位上, 表示a, b两个数在这个位上不同(例如从右向左的第一位), 根据这个特点, 可以找到, 这个位上为1(例如第一位)的数进行异或, 就可以得到a或者b;</p>
+<p>第三步: 经过上步已经得到了a或者b(假设是a), 根据异或自反性可有: b = a ^ b ^ a;</p>
+<p>代码如下:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">int</span> aXORb = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span>[] arr = {<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>};
+    
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length; i++) {
+    	aXORb ^= arr[i];
+    }
+    
+    <span class="hljs-comment">// 输出 num 的低位中的第一个 1 的位置, 即 num &amp; -num</span>
+    <span class="hljs-keyword">int</span> firstOneBit = aXORb &amp; ~(aXORb - <span class="hljs-number">1</span>);  <span class="hljs-comment">// 1110 &amp; ~(1110 - 1) = 1110 &amp; ~(1101) = 1110 &amp; 0010 = 0010</span>
+    
+    <span class="hljs-keyword">int</span> a = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> b = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length; i++) {
+    	<span class="hljs-keyword">if</span>((firstOneBit &amp; arr[i]) != <span class="hljs-number">0</span>) {
+    		a ^= arr[i];
+    	}
+    }
+    b = aXORb ^ a;
+    
+    System.out.println(a);
+    System.out.println(b);
+</div></code></pre>
+
+</body>
+</html>
