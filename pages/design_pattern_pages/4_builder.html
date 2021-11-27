@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>4_builder.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F">建造者模式</h1>
+<h2 id="41-%E5%BB%BA%E9%80%A0%E8%80%85">4.1 建造者</h2>
+<p>Effective Java中提到了一种建造者, 以及建造者的应用场景. 当构建一个由多个域变量(或者说是状态)组成的对象时, 直接构建可能会比较复杂, 这时可以通过建造者作为一个缓冲或者中介, 将构建这个对象所需的&quot;材料&quot;逐步交给建造者, 最终由建造者完成构建.</p>
+<p>StringBuilder类就是一个String对象的建造者, 我们通过不断向StringBuilder实例中传递字符串变量, 并在最后使用toString()方法, 最终构建出一个String对象.</p>
+<p>代码示例如下:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// 需要构建的目标对象</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ObjectA</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> a;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> b;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> c;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> d;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String e;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> f;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">double</span> g;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ObjectA</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b, <span class="hljs-keyword">int</span> c, <span class="hljs-keyword">boolean</span> d, String e, <span class="hljs-keyword">long</span> f, <span class="hljs-keyword">double</span> g)</span> </span>{
+        <span class="hljs-keyword">this</span>.a = a;
+        <span class="hljs-keyword">this</span>.b = b;
+        <span class="hljs-keyword">this</span>.c = c;
+        <span class="hljs-keyword">this</span>.d = d;
+        <span class="hljs-keyword">this</span>.e = e;
+        <span class="hljs-keyword">this</span>.f = f;
+        <span class="hljs-keyword">this</span>.g = g;
+    }
+}
+
+<span class="hljs-comment">// 建造者</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ObjectABuilder</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> a = <span class="hljs-number">0</span>;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> b = <span class="hljs-number">1</span>;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> c;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> d = <span class="hljs-keyword">false</span>;
+
+    <span class="hljs-keyword">private</span> String e = <span class="hljs-keyword">null</span>;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> f = <span class="hljs-number">0</span>;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">double</span> g = <span class="hljs-number">0</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ObjectABuilder</span><span class="hljs-params">()</span> </span>{
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ObjectA <span class="hljs-title">builder</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">if</span>(c == <span class="hljs-number">0</span>){
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException(<span class="hljs-string">"c can not be 0."</span>);
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ObjectA(a, b, c, d, e, f, g);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getA</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> a;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setA</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a)</span> </span>{
+        <span class="hljs-keyword">this</span>.a = a;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getB</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> b;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setB</span><span class="hljs-params">(<span class="hljs-keyword">int</span> b)</span> </span>{
+        <span class="hljs-keyword">this</span>.b = b;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getC</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> c;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setC</span><span class="hljs-params">(<span class="hljs-keyword">int</span> c)</span> </span>{
+        <span class="hljs-keyword">this</span>.c = c;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isD</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> d;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setD</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> d)</span> </span>{
+        <span class="hljs-keyword">this</span>.d = d;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getE</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> e;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setE</span><span class="hljs-params">(String e)</span> </span>{
+        <span class="hljs-keyword">this</span>.e = e;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">long</span> <span class="hljs-title">getF</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> f;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setF</span><span class="hljs-params">(<span class="hljs-keyword">long</span> f)</span> </span>{
+        <span class="hljs-keyword">this</span>.f = f;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">double</span> <span class="hljs-title">getG</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> g;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setG</span><span class="hljs-params">(<span class="hljs-keyword">double</span> g)</span> </span>{
+        <span class="hljs-keyword">this</span>.g = g;
+    }
+
+}
+</div></code></pre>
+<p>如上所示, ObjectA的构建必须要保证多个参数一同传入, 并且假设我们需求需要保证构建的ObjectA中c变量不能为0. 这时通过建造者就达到了以上要求, 并且简化构建过程. 从上面可以看出, 如果在建造者对象中, 没有给某一个变量赋值, 构建器会给它一个默认值, 这也是一项构建器的特点.</p>
+<p>建造者是将构建的一组对象形成一个组装好的产品. 有时候, 建造过程还是有顺序存在, 这时就需要考虑构建顺序; 或者构建的一组对象中有些存在依赖关系, 这时还需要考虑构建一个一个对象的构建, 之后再组装起来. 总之, 建造者模式将复杂的构建过程封装, 对外提供简单的访问接口, 这样很好的符合迪米特法则.</p>
+<h2 id="42-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F">4.2 建造者模式</h2>
+<p>上面的建造者示例很简单, 建造者本身只是对需要的变量进行暂存, 在最终执行构建时, 直接将暂存的对象组装起来即可. 但是如果像上面最后考虑的那样, 构建过程中存在顺序依赖, 并且各个组件间存在依赖关系, 那么将这一起都放在建造者中实现不符合单一职责原则. 这样会导致, 如果多个具有相同构建过程的同类产品, 每一个产品都需要重新定义构建过程以及构建的具体实现. 所以, 可以把建造者中的构建过程的控制从建造者本身抽取出来. 这样, 不同的产品如果具有相似的构建过程, 那么这个构建过程是可以复用的, 此外, 如果整个构建过程修改, 只需修改一个控制构建过程的类即可.</p>
+<p>上面的建造者是简单的建造者模式, 不考虑多组产品复用构建过程的情况下, 完全够用了. 下面介绍标准的建造者模式:</p>
+<ol>
+<li>Director -- 导演, 即上面说的抽离出来的, 负责控制组装过程</li>
+<li>Builder  -- 抽象建造者, 提供构建者模板</li>
+<li>ConcreteBuilder  -- 具体建造者, 负责变量的收集, 以及最终组装</li>
+<li>Product  -- 产品</li>
+</ol>
+<p><strong>UML类图</strong>:</p>
+<p><img src="img/Builder.jpg" alt="image"></p>
+<h2 id="43-%E4%BE%8B%E7%A8%8B">4.3 例程</h2>
+<p><strong>文件结构如下</strong>:</p>
+<p><img src="img/builder_file_struct.png" alt="image"></p>
+<p><strong>Product</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// 接口</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IPartOne</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">one</span><span class="hljs-params">()</span></span>;
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IPartTwo</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">two</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function">IPartOne <span class="hljs-title">getPartOne</span><span class="hljs-params">()</span></span>;
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IProduct</span> </span>{
+    <span class="hljs-function">IPartTwo <span class="hljs-title">getPartTwo</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function">String <span class="hljs-title">getName</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">getValue</span><span class="hljs-params">()</span></span>;
+}
+
+<span class="hljs-comment">// A</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">APartOne</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IPartOne</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">one</span><span class="hljs-params">()</span> </span>{
+        System.out.println(<span class="hljs-string">"A one"</span>);
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">APartTwo</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IPartTwo</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> APartOne aPartOne;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">APartTwo</span><span class="hljs-params">(APartOne aPartOne)</span></span>{
+        <span class="hljs-keyword">this</span>.aPartOne = aPartOne;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">two</span><span class="hljs-params">()</span> </span>{
+        System.out.println(<span class="hljs-string">"part"</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> IPartOne <span class="hljs-title">getPartOne</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.aPartOne;
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AProduct</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IProduct</span> </span>{
+
+    <span class="hljs-keyword">private</span> APartTwo aPartTwo;
+
+    <span class="hljs-keyword">private</span> String name;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> value;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getName</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> name;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setName</span><span class="hljs-params">(String name)</span> </span>{
+        <span class="hljs-keyword">this</span>.name = name;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getValue</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> value;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setValue</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span> </span>{
+        <span class="hljs-keyword">this</span>.value = value;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> IPartTwo <span class="hljs-title">getPartTwo</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.aPartTwo;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setaPartTwo</span><span class="hljs-params">(APartTwo aPartTwo)</span> </span>{
+        <span class="hljs-keyword">this</span>.aPartTwo = aPartTwo;
+    }
+}
+
+<span class="hljs-comment">// B</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BPartOne</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IPartOne</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">one</span><span class="hljs-params">()</span> </span>{
+        System.out.println(<span class="hljs-string">"B one"</span>);
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BPartTwo</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IPartTwo</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> BPartOne bPartOne;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">BPartTwo</span><span class="hljs-params">(BPartOne bPartOne)</span></span>{
+        <span class="hljs-keyword">this</span>.bPartOne = bPartOne;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">two</span><span class="hljs-params">()</span> </span>{
+
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> IPartOne <span class="hljs-title">getPartOne</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.bPartOne;
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BProduct</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IProduct</span> </span>{
+
+    <span class="hljs-keyword">private</span> BPartTwo bPartTwo;
+
+    <span class="hljs-keyword">private</span> String name;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> value;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getName</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> name;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setName</span><span class="hljs-params">(String name)</span> </span>{
+        <span class="hljs-keyword">this</span>.name = name;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getValue</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> value;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setValue</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span> </span>{
+        <span class="hljs-keyword">this</span>.value = value;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> IPartTwo <span class="hljs-title">getPartTwo</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.bPartTwo;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setbPartTwo</span><span class="hljs-params">(BPartTwo bPartTwo)</span> </span>{
+        <span class="hljs-keyword">this</span>.bPartTwo = bPartTwo;
+    }
+}
+</div></code></pre>
+<p><strong>Builder</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Builder</span> </span>{
+
+    <span class="hljs-comment">// 部件一构建实现</span>
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">buildPartOne</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-comment">// 部件二构建实现</span>
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">buildPartTwo</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-function">IProduct <span class="hljs-title">build</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-function">Builder <span class="hljs-title">setName</span><span class="hljs-params">(String name)</span></span>;
+
+    <span class="hljs-function">Builder <span class="hljs-title">setValue</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>;
+
+}
+</div></code></pre>
+<p><strong>ConcreteBuilder</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AProductBuilder</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Builder</span> </span>{
+
+    <span class="hljs-keyword">private</span> APartOne aPartOne;
+
+    <span class="hljs-keyword">private</span> APartTwo aPartTwo;
+
+    <span class="hljs-keyword">private</span> String name;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> value;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartOne</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.aPartOne = <span class="hljs-keyword">new</span> APartOne();
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartTwo</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.aPartTwo = <span class="hljs-keyword">new</span> APartTwo(<span class="hljs-keyword">this</span>.aPartOne);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> IProduct <span class="hljs-title">build</span><span class="hljs-params">()</span> </span>{
+        AProduct product = <span class="hljs-keyword">new</span> AProduct();
+        product.setaPartTwo(<span class="hljs-keyword">this</span>.aPartTwo);
+        product.setName(<span class="hljs-keyword">this</span>.name);
+        product.setValue(<span class="hljs-keyword">this</span>.value);
+        <span class="hljs-keyword">return</span> product;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Builder <span class="hljs-title">setName</span><span class="hljs-params">(String name)</span> </span>{
+        <span class="hljs-keyword">this</span>.name = name;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Builder <span class="hljs-title">setValue</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span> </span>{
+        <span class="hljs-keyword">this</span>.value = value;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BProductBuilder</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Builder</span> </span>{
+
+    <span class="hljs-keyword">private</span> BPartOne partOne;
+
+    <span class="hljs-keyword">private</span> BPartTwo partTwo;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartOne</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.partOne = <span class="hljs-keyword">new</span> BPartOne();
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildPartTwo</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">this</span>.partTwo = <span class="hljs-keyword">new</span> BPartTwo(<span class="hljs-keyword">this</span>.partOne);
+    }
+
+    <span class="hljs-keyword">private</span> String name;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> value;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Builder <span class="hljs-title">setName</span><span class="hljs-params">(String name)</span></span>{
+        <span class="hljs-keyword">this</span>.name = name;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Builder <span class="hljs-title">setValue</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>{
+        <span class="hljs-keyword">this</span>.value = value;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> IProduct <span class="hljs-title">build</span><span class="hljs-params">()</span> </span>{
+        BProduct product = <span class="hljs-keyword">new</span> BProduct();
+        product.setbPartTwo(<span class="hljs-keyword">this</span>.partTwo);
+        product.setName(<span class="hljs-keyword">this</span>.name);
+        product.setValue(<span class="hljs-keyword">this</span>.value);
+        <span class="hljs-keyword">return</span> product;
+    }
+}
+</div></code></pre>
+<p><strong>Dircetor</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Director</span> </span>{
+
+    <span class="hljs-keyword">private</span> Builder builder;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Director</span><span class="hljs-params">(Builder builder)</span> </span>{
+        <span class="hljs-keyword">this</span>.builder = builder;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> IProduct <span class="hljs-title">construct</span><span class="hljs-params">()</span></span>{
+        builder.buildPartOne();
+        builder.buildPartTwo();
+        <span class="hljs-keyword">return</span> builder.build();
+    }
+}
+</div></code></pre>
+<p><strong>Demo</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BuilderPatternDemo</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        <span class="hljs-comment">// 构建产品A</span>
+        Builder builderA = <span class="hljs-keyword">new</span> AProductBuilder().setName(<span class="hljs-string">"A"</span>).setValue(<span class="hljs-number">12</span>);
+        IProduct productA = <span class="hljs-keyword">new</span> Director(builderA).construct();
+
+        <span class="hljs-comment">// 构建产品B</span>
+        Builder builderB = <span class="hljs-keyword">new</span> BProductBuilder().setName(<span class="hljs-string">"B"</span>).setValue(<span class="hljs-number">20</span>);
+        IProduct productB = <span class="hljs-keyword">new</span> Director(builderB).construct();
+
+
+        System.out.println(<span class="hljs-string">"----A----"</span>);
+        userProduct(productA);
+
+
+        System.out.println(<span class="hljs-string">"----B----"</span>);
+        userProduct(productB);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">userProduct</span><span class="hljs-params">(IProduct product)</span></span>{
+        System.out.println(product.getName() + <span class="hljs-string">" - "</span> + product.getValue());
+        product.getPartTwo().getPartOne().one();
+    }
+
+}
+</div></code></pre>
+<h2 id="44-%E5%B0%8F%E7%BB%93">4.4 小结</h2>
+<p>以上两中Builder都是建造者模式, 只不过一个将Builder与Director和在一起, 一个将其拆分开. 不同的场景都有应用. 如果construct()方法较为复杂，待构建产品的组成部分较多，建议还是将construct()方法单独封装在Director中.</p>
+<p>此外, construct方法其实也可以是静态方法.</p>
+<blockquote>
+<p>钩子方法: 不同的ConcreteBuilder构建过程可能存在差异, 并不一定Director规定的每一个构建方法都要执行, 这时可以在Builder和ConcreteBuilder加入&quot;isXxx&quot;方法, Director进行构建的时候, 会检查该方法返回的布尔值, 判断是否需要执行该步构建.</p>
+</blockquote>
+
+</body>
+</html>

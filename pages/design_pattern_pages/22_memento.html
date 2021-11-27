@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>22_memento.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F">备忘录模式</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>在不破坏封装性的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态，以便以后当需要时能将该对象恢复到原先保存的状态。该模式又叫快照模式。</p>
+<h2 id="%E7%BB%93%E6%9E%84">结构</h2>
+<p><strong>角色</strong></p>
+<ul>
+<li>发起人（Originator）角色：记录当前时刻的内部状态信息，提供创建备忘录和恢复备忘录数据的功能，实现其他业务功能，它可以访问备忘录里的所有信息;</li>
+<li>备忘录（Memento）角色：负责存储发起人的内部状态，在需要的时候提供这些内部状态给发起人;</li>
+<li>管理者（Caretaker）角色：对备忘录进行管理，提供保存与获取备忘录的功能，但其不能对备忘录的内容进行访问与修改.</li>
+</ul>
+<p><strong>UML</strong></p>
+<p><img src="img/memento.png" alt="image"></p>
+<p><strong>代码</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Memento</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">double</span> money;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> status;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Memento</span><span class="hljs-params">(<span class="hljs-keyword">double</span> money, <span class="hljs-keyword">int</span> status)</span> </span>{
+        <span class="hljs-keyword">this</span>.money = money;
+        <span class="hljs-keyword">this</span>.status = status;
+    }
+
+    <span class="hljs-comment">// 宽接口</span>
+    <span class="hljs-function"><span class="hljs-keyword">double</span> <span class="hljs-title">getMoney</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> money;
+    }
+
+    <span class="hljs-comment">// 窄接口</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getStatus</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> status;
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Caretaker</span> </span>{
+
+    <span class="hljs-keyword">private</span> Stack head = <span class="hljs-keyword">null</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addMemento</span><span class="hljs-params">(Memento memento)</span> </span>{
+        Stack stack = <span class="hljs-keyword">new</span> Stack(memento);
+        <span class="hljs-keyword">if</span>(head == <span class="hljs-keyword">null</span>){
+            head = stack;
+        }<span class="hljs-keyword">else</span>{
+            stack.setNext(head);
+            head = stack;
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Memento <span class="hljs-title">popMemento</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">if</span>(head != <span class="hljs-keyword">null</span>){
+            Memento memento = head.getMemento();
+            head = head.getNext();
+            <span class="hljs-keyword">return</span> memento;
+        }<span class="hljs-keyword">else</span>{
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+        }
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Stack</span></span>{
+        <span class="hljs-keyword">private</span> Memento memento;
+
+        <span class="hljs-keyword">private</span> Stack next;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Stack</span><span class="hljs-params">(Memento memento)</span></span>{
+            <span class="hljs-keyword">this</span>.memento = memento;
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> Memento <span class="hljs-title">getMemento</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> memento;
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setMemento</span><span class="hljs-params">(Memento memento)</span> </span>{
+            <span class="hljs-keyword">this</span>.memento = memento;
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> Stack <span class="hljs-title">getNext</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> next;
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setNext</span><span class="hljs-params">(Stack next)</span> </span>{
+            <span class="hljs-keyword">this</span>.next = next;
+        }
+    }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Originator</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">double</span> money;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> status;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Memento <span class="hljs-title">createMemento</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Memento(<span class="hljs-keyword">this</span>.money, <span class="hljs-keyword">this</span>.status);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span></span>{
+        money++;
+        status++;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">restoreMemento</span><span class="hljs-params">(Memento memento)</span></span>{
+        <span class="hljs-keyword">this</span>.setMoney(memento.getMoney());
+        <span class="hljs-keyword">this</span>.setStatus(memento.getStatus());
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">double</span> <span class="hljs-title">getMoney</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> money;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setMoney</span><span class="hljs-params">(<span class="hljs-keyword">double</span> money)</span> </span>{
+        <span class="hljs-keyword">this</span>.money = money;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getStatus</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> status;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setStatus</span><span class="hljs-params">(<span class="hljs-keyword">int</span> status)</span> </span>{
+        <span class="hljs-keyword">this</span>.status = status;
+    }
+}
+</div></code></pre>
+<p>client:</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        Originator originator = <span class="hljs-keyword">new</span> Originator();
+        Caretaker caretaker = <span class="hljs-keyword">new</span> Caretaker();
+
+        originator.run();
+        caretaker.addMemento(originator.createMemento());
+
+        originator.run();
+        caretaker.addMemento(originator.createMemento());
+
+        originator.run();
+        caretaker.addMemento(originator.createMemento());
+
+        originator.run();
+        caretaker.addMemento(originator.createMemento());
+
+        Memento memento = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">while</span>((memento = caretaker.popMemento()) != <span class="hljs-keyword">null</span>){
+            originator.restoreMemento(memento);
+            System.out.println(originator.getStatus());
+        }
+
+    }
+</div></code></pre>
+<p>输出</p>
+<pre class="hljs"><code><div>4
+3
+2
+1
+</div></code></pre>
+<h2 id="%E5%88%86%E6%9E%90">分析</h2>
+<p><strong>优点</strong></p>
+<ul>
+<li>提供了一种可以恢复状态的机制。当用户需要时能够比较方便地将数据恢复到某个历史的状态。</li>
+<li>实现了内部状态的封装。除了创建它的发起人之外，其他对象都不能够访问这些状态信息。</li>
+<li>简化了发起人类。发起人不需要管理和保存其内部状态的各个备份，所有状态信息都保存在备忘录中，并由管理者进行管理，这符合单一职责原则。</li>
+</ul>
+<p><strong>缺点</strong></p>
+<p>资源消耗大。如果要保存的内部状态信息过多或者特别频繁，将会占用比较大的内存资源。</p>
+<p><strong>宽接口与窄接口</strong></p>
+<p>宽接口是获取到信息多的接口, 窄接口是获取到信息少的接口.</p>
+<p>因为备忘录模式是在不破坏封装的情况下, 把对象的状态保存起来. 备忘录中的一部分数据是可以对外展示的(窄接口), 但是大部分数据是只允许发起人可以访问得到的(宽接口).</p>
+
+</body>
+</html>

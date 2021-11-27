@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>25_visitor.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F">访问者模式</h1>
+<h2 id="251-%E6%A6%82%E8%BF%B0">25.1 概述</h2>
+<p>公园中存在多个景点，也存在多个游客，不同的游客对同一个景点的评价可能不同；医院医生开的处方单中包含多种药元素，査看它的划价员和药房工作人员对它的处理方式也不同，划价员根据处方单上面的药品名和数量进行划价，药房工作人员根据处方单的内容进行抓药。</p>
+<p>这些被处理的数据元素相对稳定而访问方式多种多样的数据结构，如果用“访问者模式”来处理比较方便。</p>
+<p><strong>访问者（Visitor）模式的定义</strong>：将作用于某种数据结构中的各元素的操作分离出来封装成独立的类，使其在不改变数据结构的前提下可以添加作用于这些元素的新的操作，为数据结构中的每个元素提供多种访问方式。它将对数据的操作与数据结构进行分离，是行为类模式中最复杂的一种模式。</p>
+<p><strong>访问者模式基本上主要应用于实现动态绑定</strong></p>
+<h2 id="252-%E7%BB%93%E6%9E%84">25.2 结构</h2>
+<p><strong>角色</strong></p>
+<ul>
+<li>抽象访问者(Visitor): 定义一个访问具体元素的接口，为每个具体元素类对应一个访问操作 visit() ，该操作中的参数类型标识了被访问的具体元素。</li>
+<li>具体访问者(ConcreteVisitor): 实现抽象访问者角色中声明的各个访问操作，确定访问者访问一个元素时该做什么</li>
+<li>抽象元素(Element): 声明一个包含接受操作 accept() 的接口, 被接受的访问者对象作为 accept() 方法的参数</li>
+<li>具体元素(ConcreteElement): 实现抽象元素角色提供的 accept() 操作，其方法体通常都是 visitor.visit(this) ，另外具体元素中可能还包含本身业务逻辑的相关操作</li>
+<li>对象结构(ObjectStruct): 是一个包含元素角色的容器，提供让访问者对象遍历容器中的所有元素的方法，通常由 List、Set、Map 等聚合类实现。</li>
+</ul>
+<p><strong>UML</strong></p>
+<p><img src="img/visitor.png" alt="image"></p>
+<p><strong>代码</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IElement</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">accept</span><span class="hljs-params">(IVisitor visitor)</span></span>;
+
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IVisitor</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">visit</span><span class="hljs-params">(ConcreteElementA element)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">visit</span><span class="hljs-params">(ConcreteElementB element)</span></span>;
+
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteElementA</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IElement</span> </span>{
+
+    <span class="hljs-keyword">private</span> IVisitor visitor;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">accept</span><span class="hljs-params">(IVisitor visitor)</span> </span>{
+        <span class="hljs-keyword">this</span>.visitor = visitor;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">methodK</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">this</span>.visitor.visit(<span class="hljs-keyword">this</span>);
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteElementB</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IElement</span> </span>{
+
+    <span class="hljs-keyword">private</span> IVisitor visitor;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">accept</span><span class="hljs-params">(IVisitor visitor)</span> </span>{
+        <span class="hljs-keyword">this</span>.visitor = visitor;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">methodQ</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">this</span>.visitor.visit(<span class="hljs-keyword">this</span>);
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VisitorA</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IVisitor</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">visit</span><span class="hljs-params">(ConcreteElementA element)</span> </span>{
+        System.out.println(<span class="hljs-string">"visitor A do something for elementA"</span> + element.toString());
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">visit</span><span class="hljs-params">(ConcreteElementB element)</span> </span>{
+        System.out.println(<span class="hljs-string">"visitor A do something for elementB"</span> + element.toString());
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VisitorB</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IVisitor</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">visit</span><span class="hljs-params">(ConcreteElementA element)</span> </span>{
+        System.out.println(<span class="hljs-string">"visitor B do something for element A."</span> + element.toString());
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">visit</span><span class="hljs-params">(ConcreteElementB element)</span> </span>{
+        System.out.println(<span class="hljs-string">"visitor B do something for element B."</span> + element.toString());
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ObjectStruct</span> </span>{
+
+    List&lt;IElement&gt; elements = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">add</span><span class="hljs-params">(IElement element)</span></span>{
+        elements.add(element);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">remove</span><span class="hljs-params">(IElement element)</span></span>{
+        elements.remove(element);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pushVisitor</span><span class="hljs-params">(IVisitor visitor)</span></span>{
+        <span class="hljs-keyword">for</span> (IElement element : elements){
+            element.accept(visitor);
+        }
+    }
+
+}
+</div></code></pre>
+<p>client</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        IElement elementA = <span class="hljs-keyword">new</span> ConcreteElementA();
+        IElement elementB = <span class="hljs-keyword">new</span> ConcreteElementB();
+
+        ObjectStruct os = <span class="hljs-keyword">new</span> ObjectStruct();
+        os.add(elementA);
+        os.add(elementB);
+
+        os.pushVisitor(<span class="hljs-keyword">new</span> VisitorA());
+
+        ((ConcreteElementB) elementB).methodQ();
+
+        os.pushVisitor(<span class="hljs-keyword">new</span> VisitorB());
+        ((ConcreteElementA) elementA).methodK();
+
+    }
+</div></code></pre>
+<h2 id="253-%E5%88%86%E6%9E%90">25.3 分析</h2>
+<p><strong>优点</strong></p>
+<ul>
+<li>扩展性好。能够在不修改对象结构中的元素的情况下，为对象结构中的元素添加新的功能。</li>
+<li>复用性好。可以通过访问者来定义整个对象结构通用的功能，从而提高系统的复用程度。</li>
+<li>灵活性好。访问者模式将数据结构与作用于结构上的操作解耦，使得操作集合可相对自由地演化而不影响系统的数据结构。</li>
+<li>符合单一职责原则。访问者模式把相关的行为封装在一起，构成一个访问者，使每一个访问者的功能都比较单一。</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>增加新的元素类很困难。在访问者模式中，每增加一个新的元素类，都要在每一个具体访问者类中增加相应的具体操作，这违背了“开闭原则”。</li>
+<li>破坏封装。访问者模式中具体元素对访问者公布细节，这破坏了对象的封装性。</li>
+<li>违反了依赖倒置原则。访问者模式依赖了具体类，而没有依赖抽象类。</li>
+</ul>
+<h2 id="%E9%9D%99%E6%80%81%E7%BB%91%E5%AE%9A%E4%B8%8E%E5%8A%A8%E6%80%81%E7%BB%91%E5%AE%9A">静态绑定与动态绑定</h2>
+<p>java只支持静态绑定</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TypeA</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">IType</span></span>{
+    <span class="hljs-comment">// something...</span>
+} 
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TypeB</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">IType</span></span>{
+    <span class="hljs-comment">// something...</span>
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AClass</span></span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">(TypeA a)</span></span>{
+        <span class="hljs-comment">// do something.</span>
+    }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">(TypeB b)</span></span>{
+        <span class="hljs-comment">// do something.</span>
+    }
+}
+</div></code></pre>
+<p>常规使用AClass的重载时, 是这么用的:</p>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+    AClass ac = <span class="hljs-keyword">new</span> AClass();
+    TypeA a = <span class="hljs-keyword">new</span> TypeA();
+    ac.run(a);
+}
+</div></code></pre>
+<p>这是静态绑定, 在编译截断, 就已经确定下来调用的run方法是哪一个了. 但是有些场景下, 这种不能满足:</p>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">execute</span><span class="hljs-params">(IType type)</span></span>{
+    AClass ac = <span class="hljs-keyword">new</span> AClass();
+    ac.run(type);
+}
+</div></code></pre>
+<p>这样就遇到了一个很尴尬的局面, 首先入参由于多态可以是多种类型, 所以, 无法完成静态绑定, 编译期就会报错. 但是可以使用访问者模式解决这个问题:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IType</span></span>{
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">visit</span><span class="hljs-params">(AClass ac)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">execute</span><span class="hljs-params">(AClass ac)</span></span>{
+        visit(ac);
+    }
+} 
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TypeA</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">IType</span></span>{
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">visit</span><span class="hljs-params">(AClass ac)</span></span>{
+        ac.run(<span class="hljs-keyword">this</span>);
+    }
+} 
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TypeB</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">IType</span></span>{
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">visit</span><span class="hljs-params">(AClass ac)</span></span>{
+        ac.run(<span class="hljs-keyword">this</span>);
+    }
+}
+</div></code></pre>
+<p>然后就可以这样使用了:</p>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">execute</span><span class="hljs-params">(IType type)</span></span>{
+    AClass ac = <span class="hljs-keyword">new</span> AClass();
+    type.execute(ac);
+}
+</div></code></pre>
+<p>这就实现了动态绑定!</p>
+
+</body>
+</html>

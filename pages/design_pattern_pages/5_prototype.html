@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>5_prototype.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F">原型模式</h1>
+<h2 id="51-%E6%A6%82%E8%BF%B0">5.1 概述</h2>
+<p>原型模式就是用原型实例指定创建对象的种类，并且通过复制这些原型创建新的对象。</p>
+<p><strong>原型模式应用举例:</strong><br>
+Struts2中广泛采用原型模式. 正常情况下, Spring容器根据配置文件或者注解会在容器里生成类的唯一实例, 但是Struts2作为控制层, 对象中存在多个成员变量, 在并发请求时, 如果访问的都是同一个对象, 会导致多个线程对成员变量的并发访问, 存在线程安全问题. 为解决这一问题, 需要保证每一次请求时, 从Spring容器中取出的控制层对象都是不同的对象, 这时就用到了原型模式. Spring创建bean的配置中有一个属性scope, 这个属性默认为&quot;single&quot;, 在使用Struts时应该改为&quot;prototype&quot;, 即原型. 这样就确保了, 对象的线程隔离, 也就不存在线程安全问题了.</p>
+<h2 id="52-%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84">5.2 模式结构</h2>
+<p>代码如下:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ObjectA</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Cloneable</span></span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> a;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> b;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ObjectA</span><span class="hljs-params">()</span> </span>{
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getA</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> a;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setA</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a)</span> </span>{
+        <span class="hljs-keyword">this</span>.a = a;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getB</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> b;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setB</span><span class="hljs-params">(<span class="hljs-keyword">int</span> b)</span> </span>{
+        <span class="hljs-keyword">this</span>.b = b;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"ObjectA{"</span> +
+                <span class="hljs-string">"a="</span> + a +
+                <span class="hljs-string">", b="</span> + b +
+                <span class="hljs-string">'}'</span>;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ObjectA <span class="hljs-title">clone</span><span class="hljs-params">()</span></span>{ <span class="hljs-comment">// since jdk1.5, 协变返回值类型</span>
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-keyword">return</span> (ObjectA) <span class="hljs-keyword">super</span>.clone();
+        } <span class="hljs-keyword">catch</span> (CloneNotSupportedException e) {
+            e.printStackTrace();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+        }
+    }
+
+}
+</div></code></pre>
+<p>测试</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        ObjectA a = <span class="hljs-keyword">new</span> ObjectA();
+        a.setA(<span class="hljs-number">1</span>);
+        a.setB(<span class="hljs-number">2</span>);
+        ObjectA b = a.clone();
+        System.out.println(a.clone());
+        System.out.println(a == b);
+        System.out.println(a.equals(b));
+    }
+</div></code></pre>
+<p>输出:</p>
+<pre class="hljs"><code><div>ObjectA{a=1, b=2}
+false
+false
+</div></code></pre>
+<blockquote>
+<p>需要注意的是, 上面的ObjectA类必须实现Cloneable接口(或者如果它有父类, 它的父类实现也可以), 虽然该接口内没有任何方法, 但是如果不实现该接口, 执行clone方法时就会报错:CloneNotSupportedException. 在Effective Java中认为这是java语言一处很不好的设计.</p>
+</blockquote>
+<h2 id="53-%E5%85%8B%E9%9A%86-%E6%B7%B1%E5%85%8B%E9%9A%86%E4%B8%8E%E6%B5%85%E5%85%8B%E9%9A%86">5.3 克隆, 深克隆与浅克隆</h2>
+<p>Java的clone()方法:</p>
+<ol>
+<li>clone方法将对象复制了一份并返回给调用者。一般而言，clone（）方法满足</li>
+<li>对任何的对象x，都有x.clone() !=x  因为克隆对象与原对象不是同一个对象</li>
+<li>对任何的对象x，都有x.clone().getClass()= =x.getClass()//克隆对象与原对象的类型一样</li>
+<li>如果对象x的equals()方法定义恰当，那么x.clone().equals(x)应该成立</li>
+</ol>
+<p>Java中对象的克隆</p>
+<ol>
+<li>
+<p>为了获取对象的一份拷贝，我们可以利用Object类的clone()方法</p>
+</li>
+<li>
+<p>在派生类中覆盖基类的clone()方法，并声明为public</p>
+</li>
+<li>
+<p>在派生类的clone()方法中，调用super.clone()</p>
+</li>
+<li>
+<p>在派生类中实现Cloneable接口</p>
+</li>
+<li>
+<p>浅复制（浅克隆）</p>
+</li>
+</ol>
+<p>被复制对象的所有变量都含有与原来的对象相同的值，而所有的对其他对象的引用仍然指向原来的对象。换言之，浅复制仅仅复制所考虑的对象，而不复制它所引用的对象。</p>
+<ol start="2">
+<li>深复制（深克隆）</li>
+</ol>
+<p>被复制对象的所有变量都含有与原来的对象相同的值，除去那些引用其他对象的变量。那些引用其他对象的变量将指向被复制过的新对象，而不再是原有的那些被引用的对象。换言之，深复制把要复制的对象所引用的对象都复制了一遍。</p>
+<p>通过代码演示深克隆与浅克隆:</p>
+<p>实体类</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ObjA</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Cloneable</span></span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> a;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getA</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> a;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setA</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a)</span> </span>{
+        <span class="hljs-keyword">this</span>.a = a;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"ObjA{"</span> +
+                <span class="hljs-string">"a="</span> + a +
+                <span class="hljs-string">'}'</span>;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ObjA <span class="hljs-title">clone</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-keyword">return</span> (ObjA) <span class="hljs-keyword">super</span>.clone();
+        } <span class="hljs-keyword">catch</span> (CloneNotSupportedException e) {
+            e.printStackTrace();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+        }
+    }
+
+
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ObjB</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Cloneable</span></span>{
+
+    <span class="hljs-keyword">private</span> ObjA objA;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> b;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ObjA <span class="hljs-title">getObjA</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> objA;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setObjA</span><span class="hljs-params">(ObjA objA)</span> </span>{
+        <span class="hljs-keyword">this</span>.objA = objA;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getB</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> b;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setB</span><span class="hljs-params">(<span class="hljs-keyword">int</span> b)</span> </span>{
+        <span class="hljs-keyword">this</span>.b = b;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"ObjB{"</span> +
+                <span class="hljs-string">"objB="</span> + objA.toString() +
+                <span class="hljs-string">", b="</span> + b +
+                <span class="hljs-string">'}'</span>;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ObjB <span class="hljs-title">clone</span><span class="hljs-params">()</span></span>{    <span class="hljs-comment">// 浅克隆</span>
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-keyword">return</span> (ObjB) <span class="hljs-keyword">super</span>.clone();
+        } <span class="hljs-keyword">catch</span> (CloneNotSupportedException e) {
+            e.printStackTrace();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+        }
+    }
+}
+
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ObjC</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Cloneable</span></span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> c;
+
+    <span class="hljs-keyword">private</span> ObjA objA;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getC</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> c;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setC</span><span class="hljs-params">(<span class="hljs-keyword">int</span> c)</span> </span>{
+        <span class="hljs-keyword">this</span>.c = c;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ObjA <span class="hljs-title">getObjA</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> objA;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setObjA</span><span class="hljs-params">(ObjA objA)</span> </span>{
+        <span class="hljs-keyword">this</span>.objA = objA;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"ObjC{"</span> +
+                <span class="hljs-string">"c="</span> + c +
+                <span class="hljs-string">", objA="</span> + objA +
+                <span class="hljs-string">'}'</span>;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ObjC <span class="hljs-title">clone</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">try</span> {
+            ObjC c = (ObjC) <span class="hljs-keyword">super</span>.clone();
+            c.setObjA(<span class="hljs-keyword">this</span>.objA.clone());
+            <span class="hljs-keyword">return</span> c;
+        } <span class="hljs-keyword">catch</span> (CloneNotSupportedException e) {
+            e.printStackTrace();
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+        }
+    }
+}
+
+
+</div></code></pre>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        ObjB b = <span class="hljs-keyword">new</span> ObjB();
+        b.setObjA(<span class="hljs-keyword">new</span> ObjA());
+        ObjB bb = b.clone();
+        System.out.println(b == bb);
+        System.out.println(b.getObjA() == bb.getObjA());
+
+
+        ObjC c = <span class="hljs-keyword">new</span> ObjC();
+        c.setObjA(<span class="hljs-keyword">new</span> ObjA());
+        ObjC cc = c.clone();
+        System.out.println(c == cc);
+        System.out.println(c.getObjA() == cc.getObjA());
+    }
+</div></code></pre>
+<p>输出结果:</p>
+<pre class="hljs"><code><div>false
+true
+false
+false
+</div></code></pre>
+<blockquote>
+<p>并不是原型模式就是clone. clone只不过是原型模式的一种实现方式, 况且EffectiveJava推荐谨慎的使用clone. 原型模式是指, 依照某一个实例对象为原型, 去创建其他实例对象.</p>
+</blockquote>
+
+</body>
+</html>

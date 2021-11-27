@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>3_singleton.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F">单例模式</h1>
+<h2 id="31-%E6%A6%82%E8%BF%B0">3.1 概述</h2>
+<table>
+<thead>
+<tr>
+<th>实现方式</th>
+<th>特点</th>
+<th>推荐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>简单懒汉式</td>
+<td>支持懒加载, 线程不安全</td>
+<td>不推荐使用</td>
+</tr>
+<tr>
+<td>同步懒汉式</td>
+<td>支持懒加载, 线程安全, 性能低</td>
+<td>不推荐使用</td>
+</tr>
+<tr>
+<td>饿汉式</td>
+<td>不支持懒加载, 线程安全</td>
+<td>推荐在不需要懒加载的情况下使用</td>
+</tr>
+<tr>
+<td>双重校验锁</td>
+<td>支持懒加载, 线程安全</td>
+<td>可以使用</td>
+</tr>
+<tr>
+<td>静态内部类</td>
+<td>支持懒加载, 线程安全</td>
+<td>需要懒加载时, 推荐使用</td>
+</tr>
+<tr>
+<td>枚举</td>
+<td>不支持懒加载, 线程安全</td>
+<td>推荐使用, 在有序列化, 反序列化使用</td>
+</tr>
+</tbody>
+</table>
+<p>上面的各种单例模式都对构造器进行了私有化, 防止外部调用构造器创建对象, 导致单例失败. 另外构造器私有化还会导致这个类不能被子类继承.</p>
+<h2 id="32-%E7%AE%80%E5%8D%95%E6%87%92%E6%B1%89%E5%BC%8F">3.2 简单懒汉式</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleLazy</span></span>{
+	
+	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SimpleLazy instance;
+	
+	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SimpleLazy</span><span class="hljs-params">()</span> </span>{}
+	
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SimpleLazy <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>{
+		<span class="hljs-keyword">if</span>(instance == <span class="hljs-keyword">null</span>) {
+			instance = <span class="hljs-keyword">new</span> SimpleLazy();
+		}
+		<span class="hljs-keyword">return</span> instance;
+	}
+	
+}
+</div></code></pre>
+<h2 id="33-%E5%90%8C%E6%AD%A5%E6%87%92%E6%B1%89%E5%BC%8F">3.3 同步懒汉式</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SyncLazy</span> </span>{
+	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SyncLazy instance;
+	
+	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SyncLazy</span><span class="hljs-params">()</span> </span>{}
+	
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">synchronized</span> SyncLazy <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>{
+		<span class="hljs-keyword">if</span>(instance == <span class="hljs-keyword">null</span>) {
+			instance = <span class="hljs-keyword">new</span> SyncLazy();
+		}
+		<span class="hljs-keyword">return</span> instance;
+	}
+}
+</div></code></pre>
+<h2 id="34-%E9%A5%BF%E6%B1%89%E5%BC%8F">3.4 饿汉式</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HungryObject</span></span>{
+	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> HungryObject instance = <span class="hljs-keyword">new</span> HungryObject();
+	
+	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">HungryObject</span><span class="hljs-params">()</span> </span>{}
+	
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> HungryObject <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>{
+		<span class="hljs-keyword">return</span> instance;
+	}
+}
+</div></code></pre>
+<h2 id="35-%E5%8F%8C%E9%87%8D%E6%A0%A1%E9%AA%8C%E9%94%81">3.5 双重校验锁</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DCLObject</span></span>{
+	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> DCLObject instance;
+	
+	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">DCLObject</span><span class="hljs-params">()</span> </span>{}
+	
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> DCLObject <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>{
+		<span class="hljs-keyword">if</span>(instance == <span class="hljs-keyword">null</span>) {	<span class="hljs-comment">// check 1</span>
+			<span class="hljs-keyword">synchronized</span> (DCLObject<span class="hljs-class">.<span class="hljs-keyword">class</span>) </span>{
+				<span class="hljs-keyword">if</span>(instance == <span class="hljs-keyword">null</span>) {	<span class="hljs-comment">// check 2</span>
+					instance = <span class="hljs-keyword">new</span> DCLObject();
+				}
+			}
+		}
+		<span class="hljs-keyword">return</span> instance;
+	}
+}
+</div></code></pre>
+<blockquote>
+<p>在JDK1.5之后，双重检查锁定才能够正常达到单例效果</p>
+</blockquote>
+<h2 id="36-%E9%9D%99%E6%80%81%E5%86%85%E9%83%A8%E7%B1%BB">3.6 静态内部类</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StaticInnerClassObject</span> </span>{
+	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InstanceHolder</span></span>{	<span class="hljs-comment">//holder --&gt; 持有者</span>
+		<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> StaticInnerClassObject INSTANCE = <span class="hljs-keyword">new</span> StaticInnerClassObject();
+	}
+	
+	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">StaticInnerClassObject</span><span class="hljs-params">()</span> </span>{
+		System.out.println(<span class="hljs-string">"被实例化"</span>);
+	}
+	
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> StaticInnerClassObject <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>{	<span class="hljs-comment">// final修饰方法, 表示该方法不能被重写</span>
+		<span class="hljs-keyword">return</span> InstanceHolder.INSTANCE;
+	}
+}
+</div></code></pre>
+<blockquote>
+<p>内部类InstanceHolder在且只在getInstance方法第一次调用的时候加载, 从而实现了延迟加载的效果.</p>
+</blockquote>
+<h2 id="37-%E6%9E%9A%E4%B8%BE">3.7 枚举</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> EnumObject implements Singleton{
+	INSTANCE;
+	
+	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">EnumObject</span><span class="hljs-params">()</span> </span>{}
+	
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method1</span><span class="hljs-params">()</span> </span>{
+		<span class="hljs-comment">// ...</span>
+	}
+	
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method2</span><span class="hljs-params">()</span> </span>{
+		<span class="hljs-comment">// ...</span>
+	}
+	
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">whateverMethod</span><span class="hljs-params">()</span> </span>{
+		<span class="hljs-comment">// ...</span>
+	}
+}
+
+</div></code></pre>
+<blockquote>
+<p>JVM内部加持, 保证它永远单例, 它不仅能避免多线程同步问题，而且还能防止反序列化重新创建新的对象. Effective Java提倡的方式.</p>
+</blockquote>
+<blockquote>
+<p>工厂是控制对象的创建, 单例模式更进一步, 是保证只存在一个对象!!!<br>
+需要注意的是实际中会有多种单例: 线程内单例, 进程内单例, 分布式服务中实例唯一等等.
+所以开头说的单例模式使用以及推荐, 并不绝对, 例如, 线程内单例和分布式服务中实例唯一就不能通过静态内部类的方式来实现.</p>
+</blockquote>
+
+</body>
+</html>

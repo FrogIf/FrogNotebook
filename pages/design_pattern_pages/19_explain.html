@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>19_explain.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F">解释器模式</h1>
+<h2 id="191-%E6%A6%82%E8%BF%B0">19.1 概述</h2>
+<p>所谓解释器模式就是定义语言的文法, 并且建立一个解释器来解释该语言中的句子.</p>
+<p>解释器模式描述了如何构成一个简单的语言解释器, 主要应用在使用面向对象语言开发的编译器中. 它描述了如何为简单的语言定义一个文法, 如何在该语言中表示一个句子, 以及如何解释这些句子.</p>
+<h2 id="192-%E7%BB%93%E6%9E%84">19.2 结构</h2>
+<p><strong>角色</strong></p>
+<ol>
+<li>抽象表达式（Abstract Expression）: 定义解释器的接口，约定解释器的解释操作，主要包含解释方法 interpret()</li>
+<li>终结符表达式（Terminal    Expression）角色：是抽象表达式的子类，用来实现文法中与终结符相关的操作，文法中的每一个终结符都有一个具体终结表达式与之相对应</li>
+<li>非终结符表达式（Nonterminal Expression）角色：也是抽象表达式的子类，用来实现文法中与非终结符相关的操作，文法中的每条规则都对应于一个非终结符表达式</li>
+<li>上下文（Context）角色：通常包含各个解释器需要的数据或是公共的功能，一般用来传递被所有解释器共享的数据，后面的解释器可以从这里获取这些值</li>
+</ol>
+<p><strong>UML类图</strong></p>
+<p><img src="img/explain.png" alt="image"></p>
+<p><strong>代码</strong></p>
+<p>这是一个简易的四则运算计算器代码, 写的有点多,主要关注上面类图中所指示的方法即可.</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Expression</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">double</span> <span class="hljs-title">interpret</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">pushLeaf</span><span class="hljs-params">(Expression expression)</span></span>;
+    <span class="hljs-function">Expression <span class="hljs-title">getUnFull</span><span class="hljs-params">()</span></span>;
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NumberExpression</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Expression</span></span>{
+
+    StringBuilder sb = <span class="hljs-keyword">new</span> StringBuilder();
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">assemble</span><span class="hljs-params">(<span class="hljs-keyword">char</span> ch)</span></span>{ sb.append(ch); }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">double</span> <span class="hljs-title">interpret</span><span class="hljs-params">()</span> </span>{ 
+        <span class="hljs-keyword">return</span> Double.parseDouble(sb.toString()); 
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pushLeaf</span><span class="hljs-params">(Expression expression)</span> </span>{}
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getUnFull</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>; }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractMidExpression</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Expression</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> Expression <span class="hljs-title">getLeft</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> Expression <span class="hljs-title">getRight</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setLeft</span><span class="hljs-params">(Expression expression)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setRight</span><span class="hljs-params">(Expression expression)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isComplete</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> getLeft() != <span class="hljs-keyword">null</span> &amp;&amp; getRight() != <span class="hljs-keyword">null</span>;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getUnFull</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">if</span>(!isComplete()){
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+        }<span class="hljs-keyword">else</span>{
+            Expression blankExpress = getLeft().getUnFull();
+            <span class="hljs-keyword">if</span>(blankExpress != <span class="hljs-keyword">null</span>){
+                <span class="hljs-keyword">return</span> blankExpress;
+            }<span class="hljs-keyword">else</span>{
+                <span class="hljs-keyword">return</span> getRight().getUnFull();
+            }
+        }
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pushLeaf</span><span class="hljs-params">(Expression expression)</span></span>{
+        <span class="hljs-keyword">if</span>(getLeft() == <span class="hljs-keyword">null</span>){
+            setLeft(expression);
+        }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(getRight() == <span class="hljs-keyword">null</span>){
+            setRight(expression);
+        }<span class="hljs-keyword">else</span>{
+            <span class="hljs-keyword">if</span>(getUnFull() != <span class="hljs-keyword">null</span>) {
+                getUnFull().pushLeaf(expression);
+            }
+        }
+    }
+
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AddExpression</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractMidExpression</span> </span>{
+
+    <span class="hljs-keyword">private</span> Expression left;
+
+    <span class="hljs-keyword">private</span> Expression right;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">double</span> <span class="hljs-title">interpret</span><span class="hljs-params">()</span> </span>{ 
+        <span class="hljs-keyword">return</span> left.interpret() + right.interpret();
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getLeft</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> left; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setLeft</span><span class="hljs-params">(Expression left)</span> </span>{ <span class="hljs-keyword">this</span>.left = left; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getRight</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> right; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setRight</span><span class="hljs-params">(Expression right)</span> </span>{ <span class="hljs-keyword">this</span>.right = right; }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SubExpression</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractMidExpression</span> </span>{
+
+    <span class="hljs-keyword">private</span> Expression left;
+
+    <span class="hljs-keyword">private</span> Expression right;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getLeft</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> left; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setLeft</span><span class="hljs-params">(Expression left)</span> </span>{ <span class="hljs-keyword">this</span>.left = left; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getRight</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> right; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setRight</span><span class="hljs-params">(Expression right)</span> </span>{ <span class="hljs-keyword">this</span>.right = right; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">double</span> <span class="hljs-title">interpret</span><span class="hljs-params">()</span> </span>{ 
+        <span class="hljs-keyword">return</span> left.interpret() - right.interpret();
+    }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MultExpression</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractMidExpression</span> </span>{
+
+    <span class="hljs-keyword">private</span> Expression left;
+
+    <span class="hljs-keyword">private</span> Expression right;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">double</span> <span class="hljs-title">interpret</span><span class="hljs-params">()</span> </span>{ 
+        <span class="hljs-keyword">return</span> left.interpret() * right.interpret(); 
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getLeft</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> left; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setLeft</span><span class="hljs-params">(Expression left)</span> </span>{ <span class="hljs-keyword">this</span>.left = left; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getRight</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> right; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setRight</span><span class="hljs-params">(Expression right)</span> </span>{ <span class="hljs-keyword">this</span>.right = right; }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DivExpression</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractMidExpression</span> </span>{
+
+    <span class="hljs-keyword">private</span> Expression left;
+
+    <span class="hljs-keyword">private</span> Expression right;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">double</span> <span class="hljs-title">interpret</span><span class="hljs-params">()</span> </span>{ 
+        <span class="hljs-keyword">return</span> left.interpret() / right.interpret(); 
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getLeft</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> left; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setLeft</span><span class="hljs-params">(Expression left)</span> </span>{ <span class="hljs-keyword">this</span>.left = left; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Expression <span class="hljs-title">getRight</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> right; }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setRight</span><span class="hljs-params">(Expression right)</span> </span>{ <span class="hljs-keyword">this</span>.right = right; }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Context</span> </span>{
+
+    <span class="hljs-keyword">private</span> String expression;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Context</span><span class="hljs-params">(String expression)</span></span>{
+        <span class="hljs-keyword">this</span>.expression = expression.replaceAll(<span class="hljs-string">" "</span>, <span class="hljs-string">""</span>);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> Expression <span class="hljs-title">explain</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">char</span>[] chars = expression.toCharArray();
+
+        Expression root = <span class="hljs-keyword">null</span>;
+
+        NumberExpression number = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; chars.length; i++){
+            <span class="hljs-keyword">char</span> ch = chars[i];
+            <span class="hljs-keyword">if</span>(isNumber(ch) || isDot(ch)){
+                <span class="hljs-keyword">if</span>(number == <span class="hljs-keyword">null</span>){
+                    number = <span class="hljs-keyword">new</span> NumberExpression();
+                }
+                number.assemble(ch);
+                <span class="hljs-keyword">if</span>(i == chars.length - <span class="hljs-number">1</span>){
+                    root.pushLeaf(number);
+                }
+            }<span class="hljs-keyword">else</span>{
+                Expression operator = getExpresion(ch);
+
+                <span class="hljs-keyword">if</span>(root == <span class="hljs-keyword">null</span>) {
+                    root = operator;
+                }<span class="hljs-keyword">else</span>{
+                    operator.pushLeaf(root);
+                }
+
+                <span class="hljs-keyword">if</span>(number != <span class="hljs-keyword">null</span>){
+                    root.pushLeaf(number);
+                }
+
+                root = operator;
+                number = <span class="hljs-keyword">null</span>;
+            }
+        }
+
+        <span class="hljs-keyword">return</span> root;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> Expression <span class="hljs-title">getExpresion</span><span class="hljs-params">(<span class="hljs-keyword">char</span> symbol)</span></span>{
+        Expression exp = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">switch</span> (symbol){
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'+'</span>:
+                exp = <span class="hljs-keyword">new</span> AddExpression();
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'-'</span>:
+                exp = <span class="hljs-keyword">new</span> SubExpression();
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'*'</span>:
+                exp = <span class="hljs-keyword">new</span> MultExpression();
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'/'</span>:
+                exp = <span class="hljs-keyword">new</span> DivExpression();
+                <span class="hljs-keyword">break</span>;
+        }
+        <span class="hljs-keyword">return</span> exp;
+    }
+
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">double</span> <span class="hljs-title">calculate</span><span class="hljs-params">()</span></span>{ <span class="hljs-keyword">return</span> explain().interpret(); }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isNumber</span><span class="hljs-params">(<span class="hljs-keyword">char</span> ch)</span></span>{ <span class="hljs-keyword">return</span> ch &gt;= <span class="hljs-string">'0'</span> &amp;&amp; ch &lt;= <span class="hljs-string">'9'</span>; }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isDot</span><span class="hljs-params">(<span class="hljs-keyword">char</span> ch)</span></span>{ <span class="hljs-keyword">return</span> ch == <span class="hljs-string">'.'</span>; }
+
+}
+</div></code></pre>
+<p>测试:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InterpreterDemo</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        String expression = <span class="hljs-string">"1.4 + 12 * 2 / 3 / 4 * 5 - 6 + 7 * 8 / 9"</span>;
+
+        Context context = <span class="hljs-keyword">new</span> Context(expression);
+
+        System.out.println(context.calculate());
+    }
+
+}
+</div></code></pre>
+<blockquote>
+<p>这个计算器是不区分运算符优先级的</p>
+</blockquote>
+<h2 id="193-%E5%88%86%E6%9E%90">19.3 分析</h2>
+<p><strong>优点</strong></p>
+<ol>
+<li>扩展性好。由于在解释器模式中使用类来表示语言的文法规则，因此可以通过继承等机制来改变或扩展文法。</li>
+<li>容易实现。在语法树中的每个表达式节点类都是相似的，所以实现其文法较为容易。</li>
+</ol>
+<p><strong>缺点</strong></p>
+<ol>
+<li>执行效率较低。解释器模式中通常使用大量的循环和递归调用，当要解释的句子较复杂时，其运行速度很慢，且代码的调试过程也比较麻烦。</li>
+<li>会引起类膨胀。解释器模式中的每条规则至少需要定义一个类，当包含的文法规则很多时，类的个数将急剧增加，导致系统难以管理与维护。</li>
+<li>可应用的场景比较少。在软件开发中，需要定义语言文法的应用实例非常少，所以这种模式很少被使用到。</li>
+</ol>
+<h2 id="194-%E5%BA%94%E7%94%A8">19.4 应用</h2>
+<ol>
+<li>当语言的文法较为简单，且执行效率不是关键问题时。</li>
+<li>当问题重复出现，且可以用一种简单的语言来进行表达时。</li>
+<li>当一个语言需要解释执行，并且语言中的句子可以表示为一个抽象语法树的时候，如 XML 文档解释。</li>
+</ol>
+
+</body>
+</html>
