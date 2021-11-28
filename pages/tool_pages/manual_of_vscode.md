@@ -14,6 +14,7 @@
 * GitLens -- 可以查看每一行代码的修改等, 很强大
 * Java Extension Pack -- java开发工具包
 * Git History -- Git历史查看
+* Markdown Preview Enhanced -- markdown插件
 * Markdown PDF -- markdown导出pdf和html等
 
 ## 快捷键冲突
@@ -41,3 +42,10 @@ ctrl + P
 输入#
 输入要查询的类
 ```
+
+## Markdown Preview Enhanced插件介绍
+
+对于markdown, 一般的插件都支持将其导出为html, 但是如果想要导出的html中包含数学公式, 则需要使用这个插件:
+
+1. 右键, "Markdown Preview Enhanced:Open Preview to the Side" 或者使用快捷键"Ctrl K V"
+2. 在预览页面, 右键, 选择html, 导出即可
