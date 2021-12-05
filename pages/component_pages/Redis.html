@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Redis.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="redis">Redis</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>Redis，英文全称是Remote Dictionary Server（远程字典服务），是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
+<p>与MySQL数据库不同的是，Redis的数据是存在内存中的。它的读写速度非常快，每秒可以处理超过10万次读写操作。因此redis被广泛应用于缓存，另外，Redis也经常用来做分布式锁。除此之外，Redis支持事务、持久化、LUA 脚本、LRU 驱动事件、多种集群方案。</p>
+<h2 id="%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4">基本命令</h2>
+<ul>
+<li>dbsize 查询库中元素个数</li>
+<li>select <em>index</em> 选择指定的库, 范围: 0 -- 15</li>
+<li>auth <em>password</em> 输入密码</li>
+<li>ttl <em>key</em> 查询指定key的过期时间</li>
+<li>expire <em>key</em> <em>seconds</em> 指定一个key的过期时间</li>
+<li>exists <em>key</em> 判断一个key是否存在</li>
+<li>del <em>key1</em> <em>key2</em> ... 删除kv</li>
+<li>rename <em>key</em> <em>newkey</em> 重命名</li>
+</ul>
+<h2 id="redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">Redis中的数据类型</h2>
+<ul>
+<li>5种基本数据类型
+<ul>
+<li>String</li>
+<li>Hash</li>
+<li>List</li>
+<li>Set</li>
+<li>zset(有序集合)</li>
+</ul>
+</li>
+<li>3种特殊的数据类型
+<ul>
+<li>Geospatial</li>
+<li>Hyperloglog</li>
+<li>Bitmap</li>
+</ul>
+</li>
+</ul>
+<p><strong>String</strong></p>
+<p>特点:</p>
+<ul>
+<li>二进制安全, 可以存储图片或者序列化对象</li>
+<li>值最大存储为512M</li>
+</ul>
+<p>常用命令:</p>
+<ul>
+<li>set <em>key</em> <em>value</em></li>
+<li>get <em>key</em></li>
+<li>incr <em>key</em></li>
+<li>decr <em>key</em></li>
+</ul>
+<p>应用场景: session共享, 分布式锁, 计数器, 限流</p>
+<p>Redis使用SDS(simple dynamic string)封装, 并且3.2以上版本, 针对不同长度定义了不同的数据结构, 3.2下版本的大致结构如下:</p>
+<pre class="hljs"><code><div><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sdshdr</span>{</span>
+    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> len; <span class="hljs-comment">// 标记buf总长度</span>
+    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> <span class="hljs-built_in">free</span>;  <span class="hljs-comment">// 标记buf中未使用的元素个数</span>
+    <span class="hljs-keyword">char</span> buf[];
+}
+</div></code></pre>
+<p>redis之所以选择sds而不是使用c语言原生<code>char[]</code>是因为sds中, 可以在O(1)时间复杂度内, 就可以获取到字符串的长度, 而<code>char[]</code>则需要O(n).</p>
+<p><strong>Hash</strong></p>
+<p>Hash类型是指v本身又是一个键值对(k-v)结构</p>
+<p>常用命令:</p>
+<ul>
+<li>hset <em>key</em> <em>field</em> <em>value</em></li>
+<li>hget <em>key</em> <em>field</em></li>
+<li>hgetall <em>key</em> (如果使用hgetall, 当hash元素较多时, 可能会造成Redis阻塞, 可以使用hscan. 如果只是获取部分field, 建议使用hmget)</li>
+<li>hmget <em>key</em> <em>field1</em> <em>field2</em> ...</li>
+<li>hscan <em>key</em> <em>cursor</em> [match <em>pattern</em>] [count <em>count</em>] (cursor是一个数字, 初始时, 输入0, 下一次输入上一次返回的值)</li>
+</ul>
+<p>应用场景: 缓存用户信息等</p>
+<p><strong>List</strong></p>
+<p>列表(list)类型是用类存储多个有序的字符串, 一个列表最多可以存储2^32-1个元素</p>
+<p>常用命令:</p>
+<ul>
+<li>lpush <em>key</em> <em>value1</em> <em>value2</em> ...</li>
+<li>lrange <em>key</em> <em>start</em> <em>end</em></li>
+<li>rpush <em>key</em> <em>value1</em> <em>value2</em> ...</li>
+<li>lpop <em>key</em> [<em>count</em>]</li>
+<li>rpop <em>key</em> [<em>count</em>]</li>
+</ul>
+<p>应用场景:</p>
+<p>消息队列, 文章列表:</p>
+<ul>
+<li>栈: lpush + lpop</li>
+<li>队列: lpush + rpop</li>
+<li>有限集合: lpsh + ltrim</li>
+<li>消息队列: lpush + brpop</li>
+</ul>
+<p><strong>Set</strong></p>
+<p>用于保存多个的字符串元素, 不允许重复元素</p>
+<p>常用命令:</p>
+<ul>
+<li>sadd <em>key</em> <em>element1</em> <em>element2</em> ...</li>
+<li>smembers <em>key</em></li>
+</ul>
+<p>应用场景: 用户标签, 生成随机数抽奖, 社交需求</p>
+<blockquote>
+<p>smembers, lrange, hgetall都属于较重的命令, 如果元素过多, 存在阻塞Redis的可能性, 对于smembers可以使用sscan来完成.</p>
+</blockquote>
+<p><strong>zset</strong></p>
+<p>已排序的字符串集合, 元素不能重复</p>
+<p>常用命令:</p>
+<ul>
+<li>zadd <em>key</em> <em>score1</em> <em>member1</em> <em>score2</em> <em>member2</em> ...</li>
+<li>zrank <em>key</em> <em>member</em></li>
+</ul>
+<blockquote>
+<p>score越小, 越靠前</p>
+</blockquote>
+<p>应用场景: 排行榜, 社交需求(用户点赞等)</p>
+<p><strong>三种特殊数据类型</strong></p>
+<ul>
+<li>Geo: 3.2推出的, 地理位置定位, 用于存储地理位置信息, 并对存储的信息进行操作</li>
+<li>HyperLogLog: 用来做基数统计算法的数据结构, 如统计网站的UV</li>
+<li>Bitmaps: 用一个比特位来映射某个元素的状态, 在Redis中, 它的底层是基于字符串类型实现的, 可以把bitmaps看做为一个以bit为单位的数组.</li>
+</ul>
+<h2 id="redis%E9%80%9F%E5%BA%A6%E5%BF%AB%E7%9A%84%E5%8E%9F%E5%9B%A0">Redis速度快的原因</h2>
+<ol>
+<li>基于内存存储</li>
+<li>高效的数据结构
+<ul>
+<li>SDS简单动态字符串
+<ul>
+<li>字符串长度处理: 获取字符串长度的时间复杂度为O(1), 而C语言中, 需要从头开始遍历, 复杂度为O(n)</li>
+<li>空间预分配: 字符串修改越频繁, 内存分配越频繁, 就会越消耗性能, 而SDS修改和空间扩充, 会额外分配未使用的空间, 减少性能损耗</li>
+<li>惰性空间释放: SDS缩短时, 不是回收多余的内存空间, 而是free记录下多余的空间, 后续有变更, 直接使用free中记录的空间, 减少分配</li>
+<li>二进制安全: Redis可以用来存储二进制数据, 在C语言中字符串遇到'\0'会结束, 而SDS中标志字符串结束的是len属性</li>
+</ul>
+</li>
+<li>字典: 作为k-v数据库, 所有键值都是用字典来存储, 在O(1)时间复杂的就可以获得对应的值</li>
+<li>跳跃表: zset的底层实现, 就是在链表的基础上, 增加多级索引提升查找效率</li>
+</ul>
+</li>
+<li>合理的数据编码: Redis支持多种数据类型, 每种类型可能对多种数据结构, 什么时候使用什么编码, 是redis设计者总结优化的结果
+<ul>
+<li>String: 数字-int; 小于等于39字节-embsttr; 大于39字节-raw编码</li>
+<li>List: 如果列表的元素个数小于512个, 列表每个元素的值都小于64字节(默认), 使用ziplist(压缩列表), 否则使用linkedlist</li>
+<li>Hash: 哈希类型元素个数小于512个, 所有值都小于64字节, 使用ziplist,否则使用hashtable</li>
+<li>Set: 如果集合中元素都是整数且个数小于512个, 使用intset编码, 否则使用hashtable</li>
+<li>Zset: 当有序集合的元素个数小于128个, 每个元素的值小于64字节, 使用ziplist, 否则使用skiplist(跳跃表)</li>
+</ul>
+</li>
+<li>合理的线程模型
+<ul>
+<li>I/O多路复用(epoll), 多个连接复用同一个线程, 让单个线程更高效的处理多个连接请求.</li>
+<li>单线程模型: redis是单线程模型, 避免了CPU不必要的上下问切换和竞争锁消耗. 但是, 如果某个命令执行过长, 会造成阻塞.
+<ul>
+<li>redis6.0引入多线程提速, 但是执行命令操作内存仍然是单线程. 只是使用多线程来处理数据读写和协议解析. 因为redis性能瓶颈在于网络IO而非CPU, 使用多线程能提升IO读写效率, 从而提升redis性能</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>虚拟内存机制
+<ul>
+<li>redis构建了自己的VM机制, 不会像一般的系统的会调用系统函数处理, 浪费时间去移动和请求</li>
+<li>虚拟内存机制是指: 把暂时不经常访问的数据(冷数据)从内存交换到磁盘中, 从而腾出宝贵的内存空间用于其他需要访问的数据(热数据). 通过VM功能可以实现冷热数据分离, 使热数据仍在内存中, 冷数据保存在磁盘. 这样就可以避免因为内存不足而造成访问速度下降的问题.</li>
+</ul>
+</li>
+</ol>
+<h2 id="%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9">缓存击穿/缓存穿透/缓存雪崩</h2>
+<p><strong>缓存穿透</strong></p>
+<ul>
+<li>定义: 指缓存和数据库中都没有数据, 而用户不断发送请求, 如发起id为&quot;-1&quot;或者id为特别大不存在的数据. 这时的用户很可能是攻击者, 攻击会导致数据库压力过大</li>
+<li>解决方案:</li>
+</ul>
+<ol>
+<li>接口层增加校验, 如用户权鉴, id做基础校验, id&lt;=0直接拦截;</li>
+<li>从缓存取不到数据, 在数据库中也取不到, 这时可以将key-value写为key-null, 缓存有效时间可以设置短点(设置太长会导致正常情况下也没法使用). 这样就可以防止攻击用户反复用同一个id暴力攻击</li>
+<li>使用布隆过滤器, 快速判断数据是否存在. 即一个查询请求过来时, 先通过布隆过滤器判断值是否存在, 存在才继续往下查</li>
+</ol>
+<p><strong>缓存击穿</strong></p>
+<ul>
+<li>定义: 缓存击穿是指缓存中没有但是数据库中有数据(一般是缓存时间到期), 这时由于并发用户特别多, 同时读缓存没有读到数据, 有同时去数据库取数据, 引起数据库压力瞬间增大.</li>
+<li>解决方案:
+<ol>
+<li>设置热点数据永远不过期</li>
+<li>加互斥锁</li>
+<li>其中一个线程请求新值, 其余线程暂时使用旧值</li>
+</ol>
+</li>
+</ul>
+<p><strong>缓存雪崩</strong></p>
+<ul>
+<li>定义: 缓存雪崩是指缓存中数据大批量到期, 而查询数据量巨大, 引起数据库压力过大. 和缓存击穿不同的是, 缓存击穿是指并发查询同一条数据, 缓存雪崩是不同数据都过期了, 很多数据都查询不到从而查询数据库</li>
+<li>解决方案:
+<ol>
+<li>缓存数据的过期时间设置随机, 防止同一时间大量数据过期现象发生</li>
+<li>如果缓存数据库是分布式部署, 将热点数据均匀分布在不同缓存数据库中</li>
+<li>设置热点数据永远不过期</li>
+</ol>
+</li>
+</ul>
+
+</body>
+</html>
