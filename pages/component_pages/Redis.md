@@ -404,5 +404,203 @@ java客户端代码示例:
 		jedisCluster.close();
 	}
 ```
+
+## Redis分布式锁
+
+分布式锁就是用来控制同一时刻, 只有一个进程中的一个线程可以访问被保护的的资源.
+
+分布式锁应该满足的特性:
+
+1. 互斥 -- 任何给定时刻, 只有一个客户端可以持有锁
+2. 无死锁 -- 任何都有可能获得锁, 即使持有锁的客户端崩溃
+3. 容错 -- 只要大多数redis节点都已经启动, 客户端就可以获取和释放锁
+
+Redisson非常完备的实现了分布式锁, 以下是其中一些细节:
+
+1. 执行加锁/解锁操作原子性, 防止加锁/解锁过程中出现异常状态
+   * 保证加锁和设置超时操作是原子性的, 防止执行了加锁后, 没有机会执行设置超时命令, 导致锁无法释放, 所以redisson最终采用lua脚本, 使得原子性得到保障
+2. 锁超时, 防止锁持有者挂掉导致锁无法释放, 出现死锁
+   * 向redis设置kv时, 指定key的时间, 如果没有过期时间, 加锁的主机宕机后, 其他锁一致存在, 导致死锁
+3. 守护线程对锁持有进行续期, 防止持有者还没有执行完成, 锁过期失效
+   * key有了过期时间后, 有会导致一段时间后, key自动过期, 锁失效, 此时, 有可能持有锁的线程还没有执行完, 这就需要守护线程来完成锁的续期
+4. 防止非锁持有者释放锁
+   * 只有删除锁的客户端"签名"与锁中保存的value一致时, 才能删除它
+5. 可重入
+   * redisson通过redis hash实现可重入, 加锁后, 持有者线程再次尝试加锁时, 直接将加锁次数加1, 释放时减1, 只有加锁次数为0时, 才会真正释放锁.
+
+redisson中锁的在redis中存储的内容, 采用hash类型存储:
+
+```
+key field(uuid签名) val(加锁次数)
+```
+
+加锁的lua脚本实现:
+
+```lua
+---- 1 代表 true
+---- 0 代表 false
+if (redis.call('exists', KEYS[1]) == 0) then
+    redis.call('hincrby', KEYS[1], ARGV[2], 1);
+    redis.call('pexpire', KEYS[1], ARGV[1]);
+    return 1;
+end ;
+if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) then
+    redis.call('hincrby', KEYS[1], ARGV[2], 1);
+    redis.call('pexpire', KEYS[1], ARGV[1]);
+    return 1;
+end ;
+return 0;
+```
+
+解锁的lua脚本:
+
+```lua
+-- 判断 hash set 可重入 key 的值是否等于 0
+-- 如果为 0 代表 该可重入 key 不存在
+if (redis.call('hexists', KEYS[1], ARGV[1]) == 0) then
+    return nil;
+end ;
+-- 计算当前可重入次数
+local counter = redis.call('hincrby', KEYS[1], ARGV[1], -1);
+-- 小于等于 0 代表可以解锁
+if (counter > 0) then
+    return 0;
+else
+    redis.call('del', KEYS[1]);
+    return 1;
+end ;
+return nil;
+```
+
+**Redisson实际开发中遇到的问题**
+
+下面这段代码, 当非锁持有线程尝试释放锁时, 将会报错, 最终导致定时任务直接终止.
+
+```java
+private void initSchedule(){
+    ScheduledExecutorService scheduleExecutor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "ScheduleLockTestThread"));
+    scheduleExecutor.scheduleWithFixedDelay(this::scheduleTask, 5, 5, TimeUnit.SECONDS);
+}
+
+private void scheduleTask(){
+    // 这个方法代码块应该整体用try...catch...包起来, 防止定时任务意外终止
+    
+    RLock lock = null;
+    try {
+        lock = redissonClient.getLock("TestLock");
+        if(lock.tryLock(5, TimeUnit.SECONDS)){
+            logger.info("mark : {} get lock success, do something", mark);
+            Thread.sleep(new Random().nextInt(10) + 5000L);
+        }else{
+            logger.info("mark : {} failed to get lock.", mark);
+        }
+    } catch (InterruptedException e) {
+        logger.error("scheduleTask interrupted exception, msg : {}", e.getMessage(), e);
+        Thread.interrupted();
+    } catch (Throwable t){
+        logger.error("scheduleTask execute exception, msg : {}", t.getMessage(), t);
+    } finally{
+        if(lock != null){
+            // 如果锁不是当前线程持有, 该解锁操作将报错
+            lock.unlock();
+        }
+        // 这段代码才是正确的锁释放逻辑
+        // if(lock != null && lock.isLocked() && lock.isHeldByCurrentThread()){
+        //     lock.unlock();
+        // }
+    }
+}
+```
+
+**RedLock**
+
+redis集群高可用架构中, 通常都有主从架构. redis主从复制默认是异步的. 这就会存在一个问题. 客户端A在master节点上获取锁成功, 还没有把锁同步给slave时, master宕机. 这样会导致slave被选举为新master, 这时没有客户端A获取锁的数据. 客户端B就能成功获得客户端A持有的锁, 违背了分布式锁定义的互斥.
+
+红锁是为了解决主从架构中当主从切换导致多个客户端持有同一个锁而提出的一个算法, 目前还存在争议. 具体细节如下, 首先需要在不同的机器上部署5个redis主节点, 节点完全独立, 使用多个节点是为了容错. 具体细节略.
+
+## Redis双写一致性
+
+使用redis作为缓存时, 需要保证redis中的数据和数据库中的数据保持双写一致, 有以下三种方案:
+
+* 缓存延时双删
+* 删除缓存重试机制
+* 读取binlog异步删除缓存
+
+**延时双删**
+
+1. 先删除缓存
+2. 更新数据库
+3. 休眠一会, 再次删除缓存
+
+这个方案在休眠的时候, 可能会存在脏数据, 一般业务可以接受. 但是如果第二次删除缓存失败, 缓存和数据库就可能会不一致.
+
+**删除缓存重试**
+
+1. 更新数据库
+2. 删除缓存
+3. 把删除失败的缓存放到消息队列
+4. 获取消息队列中的key, 重新执行删除操作
+
+**读取binlog异步删除缓存**
+
+删除重试机制对业务代码入侵较多, 可以通过数据库binlog来异步淘汰key. 通过将binlog发送至消息队列, 然后异步删除这个key, 保证数据缓存一致性.
+
 ## Redis常见应用场景
 
+1. 缓存 - 不多赘述, 需要关注双写一致性问题;
+2. 排行榜 - 销量排行榜等等, 通过zset数据类型实现复杂的排行榜, 通常会用到下面这些命令:
+   * 排行榜新加入一个候选人: ```zadd category candidate score```
+   * 排行榜中一个候选人加1分: ```zincrby category candidate 1```
+   * 从排行榜中淘汰一个候选人: ```zrem category candidate```
+   * 查询排行榜中排名前三的候选人: ```zrevrangebyrank category 0 2```
+3. 计数器功能 - 实时展示播放量等, 主要使用的命令: ```incr key```, ```incrby key number```, ```decr key```, ```decrby key number```
+4. session共享
+5. 分布式锁
+6. 消息队列 - redis提供了发布/订阅及阻塞队列功能, 可以实现一个简单的消息队列系统, 常用命令有: ```subscribe channel```, ```psubscribe channel*```, ```publish channel content```
+
+## 其他
+
+**Redis事务**
+
+redis通过multi, exec, watch等一组指令来实现事务机制. 事务支持一次执行多个命令, 一个事务中所有命令都会被序列化. 在事务执行过程中, 会按照顺序串行化执行队列中的命令, 其他客户端提交的命令请求不会插入到事务执行命令序列中. 简而言之, redis事务就是顺序性, 一次性, 排他性的执行一个队列中的一系列命令. 
+
+redis执行事务的流程如下:
+
+1. 开始事务(multi)
+2. 命令入队
+3. 执行事务(exec), 撤销事务(discard)
+
+命令|描述
+-|-
+exec|执行所有事务块内的命令
+discard|取消事务, 放弃执行事务块内的所有命令
+multi|标记一个事务块的开始
+watch|监视key, 如果事务执行之前, 该key被其他命令所改动, 那么事务将被打断
+unwatch|取消watch命令对所有key的监视
+
+**Hash冲突**
+
+redis使用一张全局hash来保存所有的键值对. 这张hash表有多个hash桶, hash桶中的entry元素保存了key和value的指针, 其中key指针指向了实际的键, value指针指向了实际的值.
+
+不同的key, hash值可能相同, 这就会导致hash冲突. redis为了解决hash冲突, 采用的是链式hash. 这种结构与java.util.HashMap中的类似. 但是这样, 有可能导致冲突链表过长, 影响性能, 因此, redis会对hash表做rehash, 来增加hash桶, 减少冲突. 为了rehash更高效, redis还默认使用了两个全局hash表,  一个用于当前使用, 称为主hash表, 一个用于扩容, 称为备用hash表.
+
+**热Key问题**
+
+访问频率高的key称为热key. 如果某一热点key的请求到redis服务器主机时, 请求量特别大, 可能会导致redis资源不足, 甚至宕机. 
+
+产生原因:
+
+ * 用户消费的数据远大于生产的数据, 如秒杀, 热点新闻等;
+ * 请求分片几种, 超过单redis服务器的性能, 比如, 固定名称的key, hash落入同一台服务器, 瞬间访问量极大, 超过机器瓶颈.
+
+如何识别热点key:
+
+* 根据经验判断
+* 客户端统计
+* 服务代理统计
+
+解决方案:
+
+* redis集群扩容: 增加分片副本, 均衡读流量;
+* 将热点key分散到不同服务器中;
+* 使用二级缓存, 及jvm本地缓存, 减少redis读请求.
