@@ -19,5 +19,7 @@ APM(Application Performance Monitoring), 即应用程序性能监控. 主要集�
 * 度量:
   * Prometheus
   * Grafana
+  * OpenMetrics
 
-> 还有很多其他的
+> 还有很多其他的, 其中OpenTracing + OpenMetrics = OpenTelemetry
+
