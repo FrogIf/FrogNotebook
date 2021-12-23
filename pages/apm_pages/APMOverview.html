@@ -368,9 +368,9 @@ code {
 <h1 id="apm">APM</h1>
 <p>APM(Application Performance Monitoring), 即应用程序性能监控. 主要集中在三个维度对应用程序进行监控诊断分析:</p>
 <ul>
-<li>日志(Logging)</li>
-<li>链路追踪(Tracing)</li>
-<li>度量(Metrics)</li>
+<li>日志(Logging): 用于记录离散的事件. 例如, 应用程序的调试信息或错误信息. 它是我们诊断问题的依据.</li>
+<li>链路追踪(Tracing): 用于记录请求范围内的信息. 例如, 一次远程方法调用的执行过程和耗时. 它是我们排查系统性能问题的利器</li>
+<li>度量(Metrics): 于记录可聚合的数据. 例如, 队列的当前深度可被定义为一个度量值, 在元素入队或出队时被更新; HTTP 请求个数可被定义为一个计数器, 新请求到来时进行累加</li>
 </ul>
 <p><img src="img/log_trace_metric.png" alt="三个维度"></p>
 <p>这三个方向的监控系统有:</p>
