@@ -8,7 +8,7 @@
 
 使用桥接模式前:
 
-![image](img/BridgePattern.png)
+![image](img/BridgePatternBefore.png)
 
 使用桥接模式后:
 
