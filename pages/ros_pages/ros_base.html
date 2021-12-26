@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ros_base.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="ros%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5">ros基本概念</h1>
+<h2 id="%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4">工作空间</h2>
+<p>工作空间是程序包存储的地方. 在工作空间中, 可以创建新的程序包, 也可以安装现有的工具包.</p>
+<p>创建步骤:</p>
+<ol>
+<li>创建一个新的文件夹</li>
+</ol>
+<pre class="hljs"><code><div>&gt;&gt;&gt; mkdir -p helloworld/src
+</div></code></pre>
+<ol start="2">
+<li>在src目录中, 初始化工作空间</li>
+</ol>
+<pre class="hljs"><code><div>&gt;&gt;&gt; <span class="hljs-built_in">cd</span> helloworld/src
+
+&gt;&gt;&gt; catkin_init_workspace
+</div></code></pre>
+<ol start="3">
+<li>在工作空间根目录中, 编译工作空间</li>
+</ol>
+<pre class="hljs"><code><div>&gt;&gt;&gt; <span class="hljs-built_in">cd</span> ..
+
+&gt;&gt;&gt; catkin_make
+</div></code></pre>
+<p>下面简单介绍一下, 工作空间中的文件含义:</p>
+<pre class="hljs"><code><div>build
+.catkin_workspace
+devel
+src
+</div></code></pre>
+<ul>
+<li>src目录: 代码空间, 以程序包为单元, 存储源码</li>
+<li>build目录: 编译空间, src目录中的源码编译过程中, 产生的中间文件及缓存文件存储于该目录</li>
+<li>devel目录: 开发空间, src目录中的源码编译之后, 生成的可执行文件存储的位置</li>
+<li>install目录: 安装空间, devel目录中的可执行文件, 通过执行<code>catkin_make install</code>, 安装到install目录中. 安装空间不是必须的.</li>
+</ul>
+<p><strong>环境变量配置</strong></p>
+<p><code>catkin_make</code>编译完成之后, 工作空间中的程序包在系统全局中是找不到的, 如果想在系统全局去执行这个程序包, 需要配置环境变量, 以告诉系统, 目标程序包所在位置. 可以这样配置:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">source</span> devel/setup.bash
+</div></code></pre>
+<p>然后, 可以通过以下命令来检查配置是否生效:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">echo</span> <span class="hljs-variable">$ROS_PACKAGE_PATH</span>
+</div></code></pre>
+<p>上述方式, 配置的环境变量, 只能在当前终端中生效, 每新打开一个终端, 都需要重新配置, 如果希望在所有终端中生效, 需要在终端的配置文件中加入环境变量的设置:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">echo</span> <span class="hljs-string">"source /&lt;WORKSPACEPATH&gt;/devel/setup.bash"</span> &gt;&gt; ~/.bashrc
+</div></code></pre>
+<h2 id="%E7%A8%8B%E5%BA%8F%E5%8C%85%E5%8A%9F%E8%83%BD%E5%8C%85">程序包/功能包</h2>
+<p>程序包, 也可以叫做功能包. 是组织ros节点和函数库的一个代码集. 在src目录下执行命令, 以创建程序包.</p>
+<pre class="hljs"><code><div>catkin_create_pkg &lt;ros_package_name&gt; &lt;package_dependencies&gt;
+</div></code></pre>
+<p>举例:</p>
+<pre class="hljs"><code><div>catkin_create_pkg hello_one roscpp rospy std_msgs
+</div></code></pre>
+<p>这时, 在src目录下生成的文件目录:</p>
+<pre class="hljs"><code><div>hello_one
+    |---CMakeLists.txt
+    |---include
+        |---hello_one
+    |---package.xml
+    |---src
+</div></code></pre>
+<ul>
+<li>CMakeLists.txt -- 记录了c++程序编译组织策略</li>
+<li>package.xml -- 记录了程序包依赖的一些库以及自身一些信息</li>
+<li>src -- c++源码存放位置</li>
+<li>scripts -- python脚本存放位置</li>
+<li>include -- 包含了源程序的头文件以及第三方库文件</li>
+</ul>
+<h2 id="%E8%8A%82%E7%82%B9">节点</h2>
+<p>一个程序包中, 可以包含多个节点. 多个节点的源均放在src或scripts目录下.</p>
+<h2 id="ros%E9%80%9A%E4%BF%A1">ROS通信</h2>
+<p>ROS中多个节点之间通信使用的是TCP/UDP网络传输协议. 在架构上, ros主要通过ROS Master来组织多个节点之间的通讯, ros master实际上就是一个注册中心和配置中心, 所有的节点都会向ros master进行注册, 并且一些配置信息会存储在ros master上. ros1中只存在一个ros master, 不支持高可用.</p>
+<p>如果A节点要访问B节点, 首先A会先询问ros master, 获取B节点在网络中的位置. 接下来A会直接通过这个位置, 与B进行频繁的通讯, 这个过程中, 就再也不需要master的参与了.</p>
+<p>ros通讯有两种不同的形式:</p>
+<ol>
+<li>发布/订阅模式 -- 异步传输模式, 不关注返回结果</li>
+<li>服务模式 -- 同步传输模式, 需要等待返回结果</li>
+</ol>
+<p>相关命令:</p>
+<ul>
+<li>查看当前ros版本: <code>rosversion -d</code></li>
+<li>查看当前节点列表: <code>rosnode list</code></li>
+<li>查看当前参数列表: <code>rosparam list</code></li>
+<li>设置指定参数的值: <code>rosparam set &lt;param_name&gt; &lt;value&gt;</code></li>
+<li>获取指定参数的值: <code>rosparam get &lt;param_name&gt;</code></li>
+</ul>
+<p><strong>发布订阅模式</strong></p>
+<p>开发API:</p>
+<ul>
+<li>Publisher</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">"ros/ros.h"</span></span>
+
+<span class="hljs-comment">// 初始化ROS节点</span>
+ros::init(argc, argv, <span class="hljs-string">"node_name"</span>);
+
+<span class="hljs-comment">// 创建节点句柄</span>
+ros::NodeHandle n;
+
+<span class="hljs-comment">// 创建一个Publisher, 指定名称的topic, 并且指定消息类型</span>
+ros::Publisher pub = n.advertise&lt;msg_type&gt;(<span class="hljs-string">"topic_name"</span>, <span class="hljs-number">1000</span><span class="hljs-comment">/*消息队列大小, 超出消息删除策略:FIFO*/</span>);
+
+<span class="hljs-comment">// 设置循环的频率, 单位是Hz, 当调用Rate::sleep()时, ROS会根据此处设置的频率, 休眠相应的时间. 以保证维持一致的时间周期. (这里是的时间实际上是: 1000ms / 10 = 100ms)</span>
+<span class="hljs-function">ros::Rate <span class="hljs-title">loop_rate</span><span class="hljs-params">(<span class="hljs-number">10</span>)</span></span>;
+
+<span class="hljs-keyword">while</span>(ros::ok()){
+    <span class="hljs-comment">// 发布消息</span>
+    pub.publish(msg);
+
+    <span class="hljs-comment">/*
+     * 循环等待回调函数
+     * 如果一个节点既是发布者, 又订阅了一些topic, 而这些topic订阅是没有守护线程来维护回调的, 需要程序中自行处理 
+     * 那么, 如果没有这段语句, 程序将会一直进行发布相关逻辑, 订阅消息相关回调永远不会被执行
+     * 这条语句的作用, 就是停下手中的发布相关工作, 转而处理一下订阅消息的回调
+     */</span>
+    ros::spinOnce();
+
+    <span class="hljs-comment">// 按照循环频率延时</span>
+    loop_rate.sleep();
+}
+</div></code></pre>
+<ul>
+<li>Subscriber</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">"ros/ros.h"</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">topicCallback</span><span class="hljs-params">(<span class="hljs-keyword">const</span> ros_message_const_pointer&amp; pointer)</span></span>{
+    <span class="hljs-comment">// 获取数据</span>
+    pointer-&gt;data;
+}
+
+<span class="hljs-comment">// ---------------------------------------------</span>
+
+<span class="hljs-comment">// 初始化ros节点</span>
+ros::init(argc, argv, <span class="hljs-string">"node_name"</span>);
+
+<span class="hljs-comment">// 创建节点句柄</span>
+ros::NodeHandle n;
+
+ros::Subscriber sub = n.subscribe(<span class="hljs-string">"topic_name"</span>, <span class="hljs-number">1000</span><span class="hljs-comment">/*消息队列大小*/</span>, topicCallback);
+
+<span class="hljs-comment">// 线程阻塞/自旋, 监听订阅消息</span>
+ros::spin();
+</div></code></pre>
+<p>相关命令:</p>
+<ul>
+<li>查看当前topic列表: <code>rostopic list</code></li>
+<li>输出指定话题中的数据: <code>rostopic echo &lt;topic_name&gt;</code></li>
+<li>向话题发送数据: <code>rostopic pub &lt;topic_name&gt; &lt;msg_type&gt; &lt;data&gt;</code></li>
+<li>查看指定topic中的数据类型: <code>rostopic type &lt;topic_name&gt;</code></li>
+<li>查看指定消息的定义: <code>rosmsg show &lt;msg_type&gt;</code></li>
+</ul>
+<p><strong>服务模式</strong></p>
+<p>开发API:</p>
+<ul>
+<li>Server</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">"ros/ros.h"</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">callbackMethod</span><span class="hljs-params">(MessageType::Request &amp;req, MessageType::Response &amp;resp)</span></span>{
+    <span class="hljs-comment">// do something</span>
+}
+
+<span class="hljs-comment">// 初始化节点</span>
+ros::init(argc, argv, <span class="hljs-string">"node_name"</span>);
+
+<span class="hljs-comment">// 创建节点句柄</span>
+ros::NodeHandle n;
+
+<span class="hljs-comment">// 创建指定名称的服务, 注册回调函数</span>
+ros::ServiceServer service = n.advertiseService(<span class="hljs-string">"service_name"</span>, callbackMethod);
+
+<span class="hljs-comment">// 阻塞线程, 等待回调</span>
+ros::spin();
+</div></code></pre>
+<ul>
+<li>Client</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-comment">// 初始化节点</span>
+ros::init(argc, argv, <span class="hljs-string">"node_name"</span>);
+
+<span class="hljs-comment">// 创建节点句柄</span>
+ros::NodeHandle n;
+
+<span class="hljs-comment">// 创建一个client</span>
+ros::ServiceClient client = n.serviceClient&lt;MessageType&gt;(<span class="hljs-string">"service_name"</span>);
+
+MessageType param;
+param.request.field1 = xxx;
+<span class="hljs-comment">// ...</span>
+
+<span class="hljs-keyword">if</span>(client.call(param)){
+    <span class="hljs-comment">// 执行成功回调</span>
+}<span class="hljs-keyword">else</span>{
+    <span class="hljs-comment">// 执行失败回调</span>
+}
+</div></code></pre>
+<p>相关命令:</p>
+<ul>
+<li>查看当前service列表: <code>rosservice list</code></li>
+<li>调用指定的服务: <code>rosservice call &lt;service_name&gt; &lt;data&gt;</code></li>
+</ul>
+
+</body>
+</html>
