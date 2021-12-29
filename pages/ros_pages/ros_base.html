@@ -566,6 +566,142 @@ param.request.field1 = xxx;
 <li>查看当前service列表: <code>rosservice list</code></li>
 <li>调用指定的服务: <code>rosservice call &lt;service_name&gt; &lt;data&gt;</code></li>
 </ul>
+<h2 id="%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AF%9D%E9%A2%98%E6%B6%88%E6%81%AF">自定义话题消息</h2>
+<p>演示如下:</p>
+<ol>
+<li>在msg目录下, 新建一个文件<code>Person.msg</code>:</li>
+</ol>
+<pre class="hljs"><code><div>string name
+uint8 sex
+uint8 age
+
+uint8 unkonwn = 0
+uint8 male    = 1
+uint8 female  = 2
+</div></code></pre>
+<blockquote>
+<p>后三行是sex的枚举值</p>
+</blockquote>
+<blockquote>
+<p>为什么要在msg目录下, 别的目录不行吗? 不行, 在CMakeLists.txt文件中, 有描述:&quot;Generate messages in the 'msg' folder&quot;</p>
+</blockquote>
+<ol start="2">
+<li>手动修改package.xml文件, 添加依赖</li>
+</ol>
+<p>构建依赖:</p>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">build_depend</span>&gt;</span>message_generation<span class="hljs-tag">&lt;/<span class="hljs-name">build_depend</span>&gt;</span>
+</div></code></pre>
+<p>运行时依赖:</p>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">exec_depend</span>&gt;</span>message_runtime<span class="hljs-tag">&lt;/<span class="hljs-name">exec_depend</span>&gt;</span>
+</div></code></pre>
+<ol start="3">
+<li>CMakeLists.txt文件中添加相关编译选项</li>
+</ol>
+<pre class="hljs"><code><div>find_package(catkin REQUIRED COMPONENTS
+...
+  message_generation
+...
+)
+
+add_message_files(
+   FILES
+   Person.msg
+...
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
+catkin_package(
+...
+   CATKIN_DEPENDS roscpp std_msgs message_runtime
+...
+)
+</div></code></pre>
+<blockquote>
+<p><strong>注意</strong>: CMakeLists.txt中的配置是有顺序的, 需要根据文件中的注释, 进行修改, 不能随便放在一个位置</p>
+</blockquote>
+<ol start="4">
+<li>在工作空间根目录执行编译操作, 即可得到相关的头文件</li>
+</ol>
+<p>编译结束后, 在<code>&lt;workspace&gt;/devel/include/&lt;package_name&gt;/</code>目录下, 可以找到对应消息的头文件. 并且, 这时, 执行<code>rosmsg show Person</code>可以查看消息的定义.</p>
+<pre class="hljs"><code><div>frogif@frogif-VirtualBox:~/FrogRos/custom_message/devel/include$ rosmsg show Person
+[person_msg/Person]:
+uint8 unkonwn=0
+uint8 male=1
+uint8 female=2
+string name
+uint8 sex
+uint8 age
+</div></code></pre>
+<p><strong>自定义消息使用</strong></p>
+<p>通过查看devel下的头文件, 可以知道这个消息的namespace以及结构体内部结构, 就知道怎么用了.</p>
+<p>关键几点如下:</p>
+<p>Publisher:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">"person_msg/Person.h"</span></span>
+
+        person_msg::Person p;
+        p.name = <span class="hljs-string">"frog"</span>;
+        p.age = <span class="hljs-number">12</span>;
+        p.sex = person_msg::Person::male;
+</div></code></pre>
+<p>Subscriber:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">"person_msg/Person.h"</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">callback</span><span class="hljs-params">(<span class="hljs-keyword">const</span> person_msg::Person::ConstPtr&amp; person)</span></span>{
+    <span class="hljs-comment">// ...</span>
+}
+</div></code></pre>
+<h2 id="%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9C%8D%E5%8A%A1%E6%95%B0%E6%8D%AE">自定义服务数据</h2>
+<p>与自定义话题消息差不多.</p>
+<ol>
+<li>在srv目录下, 定义相关消息文件:</li>
+</ol>
+<pre class="hljs"><code><div>int64 a
+int64 b
+---
+int64 sum
+</div></code></pre>
+<p>这里<code>---</code>上边是request部分, 下边是<code>response</code>部分.</p>
+<ol start="2">
+<li>添加依赖, package.xml中依赖项与自定义话题完全一致.</li>
+<li>CMakeLists.txt文件中添加相关编译选项, 与自定义话题基本一致, 只是add_message_files改为add_service_files</li>
+</ol>
+<pre class="hljs"><code><div>add_service_files(
+    FILES
+    AddTwoInts.srv
+)
+</div></code></pre>
+<ol start="4">
+<li>执行<code>catkin_make</code>操作, 就可以把定义的服务数据转为c++头文件了, 依旧是在<code>&lt;workspace&gt;/devel/include/&lt;package_name&gt;/</code>目录下, 可以看到:</li>
+</ol>
+<pre class="hljs"><code><div>-rw-rw-r-- 1 frogif frogif 2665 12月 28 23:16 AddTwoInts.h
+-rw-rw-r-- 1 frogif frogif 5038 12月 28 23:16 AddTwoIntsRequest.h
+-rw-rw-r-- 1 frogif frogif 4904 12月 28 23:16 AddTwoIntsResponse.h
+</div></code></pre>
+<p>同样, 可以通过<code>rossrv show &lt;service_name&gt;</code>命令查看:</p>
+<pre class="hljs"><code><div>frogif@frogif-VirtualBox:~/FrogRos/custom_message/src/person_msg/src$ rossrv show person_msg/AddTwoInts
+int64 a
+int64 b
+---
+int64 sum
+</div></code></pre>
+<p><strong>自定义服务的使用</strong></p>
+<p>通过查看devel下的头文件, 可以知道这个消息的namespace以及结构体内部结构, 就知道怎么用了.</p>
+<p>关键的几点如下:</p>
+<p>客户端:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">"person_msg/AddTwoInts.h"</span></span>
+ros::ServiceClient client = n.serviceClient&lt;person_msg::AddTwoInts&gt;(<span class="hljs-string">"add_two_ints"</span>);
+</div></code></pre>
+<p>服务端:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">"person_msg/AddTwoInts.h"</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">add</span><span class="hljs-params">(person_msg::AddTwoInts::Request &amp;req, person_msg::AddTwoInts::Response &amp;resp)</span></span>{
+    <span class="hljs-comment">// ...</span>
+}
+</div></code></pre>
 
 </body>
 </html>

@@ -240,3 +240,174 @@ if(client.call(param)){
 
 * 查看当前service列表: ```rosservice list```
 * 调用指定的服务: ```rosservice call <service_name> <data>```
+
+## 自定义话题消息
+
+演示如下:
+
+1. 在msg目录下, 新建一个文件```Person.msg```:
+
+```
+string name
+uint8 sex
+uint8 age
+
+uint8 unkonwn = 0
+uint8 male    = 1
+uint8 female  = 2
+```
+
+> 后三行是sex的枚举值
+
+> 为什么要在msg目录下, 别的目录不行吗? 不行, 在CMakeLists.txt文件中, 有描述:"Generate messages in the 'msg' folder"
+
+2. 手动修改package.xml文件, 添加依赖
+
+构建依赖:
+
+```xml
+<build_depend>message_generation</build_depend>
+```
+
+运行时依赖:
+
+```xml
+<exec_depend>message_runtime</exec_depend>
+```
+
+3. CMakeLists.txt文件中添加相关编译选项
+
+```
+find_package(catkin REQUIRED COMPONENTS
+...
+  message_generation
+...
+)
+
+add_message_files(
+   FILES
+   Person.msg
+...
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
+catkin_package(
+...
+   CATKIN_DEPENDS roscpp std_msgs message_runtime
+...
+)
+```
+
+> **注意**: CMakeLists.txt中的配置是有顺序的, 需要根据文件中的注释, 进行修改, 不能随便放在一个位置
+
+4. 在工作空间根目录执行编译操作, 即可得到相关的头文件
+
+编译结束后, 在```<workspace>/devel/include/<package_name>/```目录下, 可以找到对应消息的头文件. 并且, 这时, 执行```rosmsg show Person```可以查看消息的定义.
+
+```
+frogif@frogif-VirtualBox:~/FrogRos/custom_message/devel/include$ rosmsg show Person
+[person_msg/Person]:
+uint8 unkonwn=0
+uint8 male=1
+uint8 female=2
+string name
+uint8 sex
+uint8 age
+```
+
+**自定义消息使用**
+
+通过查看devel下的头文件, 可以知道这个消息的namespace以及结构体内部结构, 就知道怎么用了.
+
+关键几点如下:
+
+Publisher:
+
+```c++
+#include "person_msg/Person.h"
+
+        person_msg::Person p;
+        p.name = "frog";
+        p.age = 12;
+        p.sex = person_msg::Person::male;
+```
+
+Subscriber:
+
+```c++
+#include "person_msg/Person.h"
+
+void callback(const person_msg::Person::ConstPtr& person){
+    // ...
+}
+```
+
+## 自定义服务数据
+
+与自定义话题消息差不多.
+
+1. 在srv目录下, 定义相关消息文件:
+
+```
+int64 a
+int64 b
+---
+int64 sum
+```
+
+这里```---```上边是request部分, 下边是```response```部分.
+
+2. 添加依赖, package.xml中依赖项与自定义话题完全一致.
+3. CMakeLists.txt文件中添加相关编译选项, 与自定义话题基本一致, 只是add_message_files改为add_service_files
+
+```
+add_service_files(
+    FILES
+    AddTwoInts.srv
+)
+```
+
+4. 执行```catkin_make```操作, 就可以把定义的服务数据转为c++头文件了, 依旧是在```<workspace>/devel/include/<package_name>/```目录下, 可以看到:
+
+```
+-rw-rw-r-- 1 frogif frogif 2665 12月 28 23:16 AddTwoInts.h
+-rw-rw-r-- 1 frogif frogif 5038 12月 28 23:16 AddTwoIntsRequest.h
+-rw-rw-r-- 1 frogif frogif 4904 12月 28 23:16 AddTwoIntsResponse.h
+```
+
+同样, 可以通过```rossrv show <service_name>```命令查看:
+
+```
+frogif@frogif-VirtualBox:~/FrogRos/custom_message/src/person_msg/src$ rossrv show person_msg/AddTwoInts
+int64 a
+int64 b
+---
+int64 sum
+```
+
+**自定义服务的使用**
+
+通过查看devel下的头文件, 可以知道这个消息的namespace以及结构体内部结构, 就知道怎么用了.
+
+关键的几点如下:
+
+客户端:
+
+```c++
+#include "person_msg/AddTwoInts.h"
+ros::ServiceClient client = n.serviceClient<person_msg::AddTwoInts>("add_two_ints");
+```
+
+服务端:
+
+```c++
+#include "person_msg/AddTwoInts.h"
+
+bool add(person_msg::AddTwoInts::Request &req, person_msg::AddTwoInts::Response &resp){
+    // ...
+}
+```
