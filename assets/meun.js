@@ -1,5 +1,7 @@
 var active_url = '';
+const baseUrl = location.pathname;
 $(function () {
+    console.log(baseUrl);
     $('.menu-btn').click(function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -12,7 +14,8 @@ $(function () {
         var url = $(e.target).data("url");
         if(url != active_url){
             active_url = url;
-            $(".article-content").load(active_url);
+            history.pushState('', '', baseUrl + active_url);
+            $(".article-content").load(getAbsolutePath(active_url));
             if(window.sessionStorage){
                 window.sessionStorage.setItem("articleUrl", active_url);
             }
@@ -43,9 +46,20 @@ $(function () {
     if(!find){
         active_url = firstUrl;
     }
-    $(".article-content").load(active_url);
+    history.pushState('', '', baseUrl + active_url);
+    $(".article-content").load(getAbsolutePath(active_url));
     menuOpen();
 })
+
+function getAbsolutePath(activeUrl){
+    if(activeUrl.startsWith("/")){
+        return activeUrl;
+    }else if(activeUrl.startsWith(".")){
+        return baseUrl + activeUrl.substring(1);
+    }else{
+        return baseUrl + activeUrl;
+    }
+}
 
 function toggleMenu(){
     if ($('.menu-container').hasClass('open')){
