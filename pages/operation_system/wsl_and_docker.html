@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>wsl_and_docker.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="wsl%E5%92%8Cdocker">WSL和Docker</h1>
+<ol start="0">
+<li><strong>说在前面</strong></li>
+</ol>
+<p>以下命令, 建议在管理员身份下运行powershell中</p>
+<ol>
+<li><strong>更新Win10</strong></li>
+</ol>
+<p>使用Windows Update自动更新到2004版本. 如果没有检测到更新, 可以去微软官网下载“易升”工具并安装运行. 工具会检测到更新并安装.</p>
+<ol start="2">
+<li><strong>启用系统功能</strong></li>
+</ol>
+<p>启用&quot;适用于Linux的Windows子系统&quot;可选组件:</p>
+<pre class="hljs"><code><div>Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+</div></code></pre>
+<!--启用“虚拟机平台”可选组件:-->
+<pre class="hljs"><code><div>Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
+</div></code></pre>
+<ol start="3">
+<li><strong>切换系统WSL默认版本到2</strong></li>
+</ol>
+<pre class="hljs"><code><div>wsl --set-default-version 2
+</div></code></pre>
+<p>这里可能会报错:</p>
+<pre class="hljs"><code><div>PS C:\WINDOWS\system32&gt; wsl --set-default-version 2
+WSL 2 requires an update to its kernel component. For information please visit https://aka.ms/wsl2kernel
+For information on key differences with WSL 2 please visit https://aka.ms/wsl2
+</div></code></pre>
+<p>这里需要去<a href="https://aka.ms/wsl2kernel">https://aka.ms/wsl2kernel</a>下载Linux 内核, 并安装.</p>
+<p>之后, 执行, 发现没有问题</p>
+<pre class="hljs"><code><div>PS C:\WINDOWS\system32&gt; wsl --set-default-version 2
+For information on key differences with WSL 2 please visit https://aka.ms/wsl2
+</div></code></pre>
+<ol start="4">
+<li><strong>下载并安装WSL</strong></li>
+</ol>
+<p>应用商店, 下载并安装WSL -- Linux -- Ubuntu 20.04 LTS, 注意, 安装之后, 需要手动点开一下, linux内部有些后续的安装.</p>
+<blockquote>
+<p>linux安装之后, Ubuntu的默认root密码是随机的, 即每次开机都有一个新的root密码, 我们可以在终端输入命令<code>sudo passwd</code>, 然后输入当前用户的密码, 终端会提示我们输入新的密码并确认, 此时的密码就是 root 新密码, 修改成功后, 输入命令<code>su root</code>, 再输入新的密码就ok了</p>
+</blockquote>
+<p>如果以前已经安装过了, 就不需要下载了, 但是, 有点问题, 需要修改一下:</p>
+<p>对于原来的Ubuntu, 可以执行:</p>
+<pre class="hljs"><code><div>PS C:\WINDOWS\system32&gt; wsl -l -v
+  NAME            STATE           VERSION
+* Ubuntu-20.04    Running         1
+</div></code></pre>
+<p>发现wsl版本还是1, 这就需要手动改一下了:</p>
+<p>windows powershell中输入:</p>
+<pre class="hljs"><code><div>wsl --shutdown
+</div></code></pre>
+<p>然后输入:</p>
+<pre class="hljs"><code><div>wsl --set-version Ubuntu-20.04 2
+</div></code></pre>
+<p>这样wsl2就完成了.</p>
+<p>检查Ubuntu是否在WSL2的环境下启动:</p>
+<pre class="hljs"><code><div>PS C:\WINDOWS\system32&gt; wsl -l -v
+  NAME            STATE           VERSION
+* Ubuntu-20.04    Running         2
+</div></code></pre>
+<ol start="5">
+<li><strong>wsl2修改默认安装目录到其他盘</strong></li>
+</ol>
+<p>(1)  查看已安装的linux发行版本<code>wsl -l --all -v</code></p>
+<p>(2)  导出分发版为tar文件到d盘<code>wsl --export Ubuntu-20.04 d:\wsl-ubuntu20.04.tar</code></p>
+<p>(3)  注销当前分发版<code>wsl --unregister Ubuntu-20.04</code></p>
+<p>(4)  重新导入并安装WSL在D盘<code>wsl --import Ubuntu-20.04 d:\ProgramData\wsl d:\wsl-ubuntu20.04.tar --version 2</code></p>
+<p>(5)  设置默认登陆用户为安装时用户名<code>ubuntu2004 config --default-user 用户名</code></p>
+<p>(6)  删除wsl-ubuntu20.04.tar<code>del d:\wsl-ubuntu20.04.tar</code></p>
+<ol start="6">
+<li><strong>安装docker</strong></li>
+</ol>
+<p>这里使用<code>Docker Desktop for Windows</code></p>
+<p>到docker官网下载该安装包, 然后安装即可.</p>
+<p>如果发现在WSL下无法执行docker命令, 可以通过如下操作打开:</p>
+<pre class="hljs"><code><div>docker setting界面 -- Resources -- WSL INTERGRATION -- Ubuntu-20.04的一个开关, 调整为开启状态
+</div></code></pre>
+<ol start="6">
+<li><strong>配置国内镜像源</strong></li>
+</ol>
+<p>这里使用阿里镜像, 登录阿里云, 在弹性计算中, 找到&quot;容器镜像服务-镜像加速&quot;, 复制加速地址.</p>
+<p>打开docker desktop设置, 在docker engine中修改如下:</p>
+<pre class="hljs"><code><div>{
+  &quot;registry-mirrors&quot;: [
+    &quot;https://xxxxxx.mirror.aliyuncs.com&quot;
+  ],
+  &quot;insecure-registries&quot;: [],
+  &quot;debug&quot;: true,
+  &quot;experimental&quot;: false
+}
+</div></code></pre>
+<p>重启之后, 执行<code>docker info</code>命令, 发现镜像地址已经改好了:</p>
+<p><img src="img/docker_image_address.png" alt="image"></p>
+<p>Docker本身的wsl也可以调整地方, 原来的安装位置是<code>C:\Users\frogif\AppData\Local\Docker\wsl</code>, 极度消耗c盘空间:</p>
+<pre class="hljs"><code><div>PS C:\Users\frogif&gt; wsl -l --all -v
+  NAME                   STATE           VERSION
+* Ubuntu-20.04           Stopped         2
+  docker-desktop         Stopped         2
+  docker-desktop-data    Stopped         2
+PS C:\Users\frogif&gt;  wsl --export docker-desktop d:\docker-desktop.tar
+PS C:\Users\frogif&gt; wsl --unregister docker-desktop
+Unregistering...
+PS C:\Users\frogif&gt; wsl --import docker-desktop d:\ProgramData\distro d:\docker-desktop.tar --version 2
+PS C:\Users\frogif&gt; del d:\docker-desktop.tar
+PS C:\Users\frogif&gt; wsl --export docker-desktop-data d:\docker-desktop-data.tar
+PS C:\Users\frogif&gt; wsl --unregister docker-desktop-data
+Unregistering...
+PS C:\Users\frogif&gt; wsl --import docker-desktop d:\ProgramData\data d:\docker-desktop-data.tar --version 2
+A distribution with the supplied name already exists.
+PS C:\Users\frogif&gt; wsl --import docker-desktop-data d:\ProgramData\data d:\docker-desktop-data.tar --version 2
+PS C:\Users\frogif&gt; del d:\docker-desktop-data.tar
+PS C:\Users\frogif&gt; wsl -l --all -v
+  NAME                   STATE           VERSION
+* Ubuntu-20.04           Stopped         2
+  docker-desktop         Stopped         2
+  docker-desktop-data    Stopped         2
+</div></code></pre>
+
+</body>
+</html>
