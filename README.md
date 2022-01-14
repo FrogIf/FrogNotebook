@@ -20,8 +20,8 @@
         ...
 
 
-        location / {
-            root   <项目根据路径>;
+        location /FrogNotebook/ { # 末尾必须要有/
+            alias   <项目路径>/FrogNotebook/; # 末尾必须要有/
         }
 ```
 
