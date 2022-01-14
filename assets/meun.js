@@ -1,7 +1,6 @@
 var active_url = '';
 const baseUrl = location.pathname;
 $(function () {
-    console.log(baseUrl);
     $('.menu-btn').click(function (e) {
         e.preventDefault();
         e.stopPropagation();
