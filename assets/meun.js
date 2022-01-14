@@ -1,27 +1,20 @@
 var active_url = '';
+const baseUrl = location.pathname;
 $(function () {
     $('.menu-btn').click(function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if ($('.menu-container').hasClass('open')) {
-            $('.menu-container').removeClass('open');
-            $('.article-container').removeClass('compress');
-        }else{
-            $('.menu-container').addClass('open');
-            $('.article-container').addClass('compress');
-        }
+        toggleMenu();
     })
     $('.article-container').click(function (e) {
-        if ($('.menu-container').hasClass('open')){
-            $('.menu-container').removeClass('open');
-            $('.article-container').removeClass('compress');
-        }
+        menuClose();
     })
     $('.article-item').click(function(e){
         var url = $(e.target).data("url");
         if(url != active_url){
             active_url = url;
-            $(".article-content").load(active_url);
+            history.pushState('', '', baseUrl + active_url);
+            $(".article-content").load(getAbsolutePath(active_url));
             if(window.sessionStorage){
                 window.sessionStorage.setItem("articleUrl", active_url);
             }
@@ -52,5 +45,36 @@ $(function () {
     if(!find){
         active_url = firstUrl;
     }
-    $(".article-content").load(active_url);
+    history.pushState('', '', baseUrl + active_url);
+    $(".article-content").load(getAbsolutePath(active_url));
+    menuOpen();
 })
+
+function getAbsolutePath(activeUrl){
+    if(activeUrl.startsWith("/")){
+        return activeUrl;
+    }else if(activeUrl.startsWith(".")){
+        return baseUrl + activeUrl.substring(1);
+    }else{
+        return baseUrl + activeUrl;
+    }
+}
+
+function toggleMenu(){
+    if ($('.menu-container').hasClass('open')){
+        menuClose();
+    }else{
+        menuOpen();
+    }
+}
+
+
+function menuOpen(){
+    $('.menu-container').addClass('open');
+    $('.article-container').addClass('compress');
+}
+
+function menuClose(){    
+    $('.menu-container').removeClass('open');
+    $('.article-container').removeClass('compress');
+}
