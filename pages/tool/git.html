@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>git.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="git%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0">GIT使用笔记</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>git本地仓库有三种不同的状态:</p>
+<ol>
+<li>已修改(modified)</li>
+<li>已暂存(staged)</li>
+<li>已提交(committed)</li>
+</ol>
+<p>这三种状态对应git的三个本地区域, 分别是:工作区, 暂存区, git本地仓库</p>
+<blockquote>
+<p>其实很好理解, 就是在工作区和仓库之间加了一个暂存区, 作为提交的缓冲.</p>
+</blockquote>
+<h2 id="%E5%91%BD%E4%BB%A4%E5%A4%87%E5%BF%98">命令备忘</h2>
+<ol>
+<li>git init // 创建一个本地仓库</li>
+<li>git add // 将工作区的指定的文件同步至暂存区<pre class="hljs"><code><div>    以下是针对git2.0以上版本的解释:
+    git add 文件名 // 将指定文件同步至暂存区
+    git add .   //将所有文件同步至暂存区(新增, 修改, 删除)
+    git add -A  //同上
+    git add --ignore-removal.   //将新增和修改的文件同步至暂存区(不暂存删除)
+    git add -u  // 将修改和删除的文件同步至暂存区(不暂存新增)
+</div></code></pre>
+</li>
+<li>git commit // 将暂存区的内容提交至本地仓库<pre class="hljs"><code><div>    git commit // 将暂存区内容同步至本地仓库, 会使用vim打开一个编辑器, 要求加入提交描述信息
+    git commit -m &quot;描述信息&quot; // 带着描述信息同步至暂存区的内容
+    git commit -a -m &quot;描述信息&quot; // 直接将工作区的文件同步至本地仓库(-a可以理解为git add, 需要注意的是该命令只能将被修改和被删除同步上去, 不会提交新增)
+    git commit --amend // 修改上次同步时输入的描述信息(进入vim编辑器界面)
+</div></code></pre>
+</li>
+<li>git diff <em>文件名</em>  // 比较指定文件在工作区和暂存区的区别</li>
+<li>git diff --cached // 比较暂存区和已提交的区别</li>
+<li>git status   // 查看当前git仓库的状态, 包括当前所在分支, 同步次数, 工作区文件, 暂存区文件等的状态</li>
+<li>git log  // 显示提交日志(注意, 只会显示提交日志)<pre class="hljs"><code><div>    git log --pretty=oneline    // 只显示commit id和提交版本时的描述信息
+</div></code></pre>
+</li>
+<li>git reflog   // 显示HEAD指向日志, 会显示每一次提交, 回退信息, 以及提交的版本号</li>
+<li>git checkout <em>文件名</em>   // 将指定文件恢复至和暂存区一致(如果暂存区没有, 再跟仓库中同步)</li>
+<li>git reset    // 将已提交至本地仓库的文件恢复至指定版本<pre class="hljs"><code><div>    git reset --hard 版本号 //将工作区, 暂存区, 本地仓库均回退至指定版本
+    git reset --soft 版本号 //只将本地仓库回退至指定版本, 工作区和暂存区不变
+    git reset --mixed 版本号    // 将本地仓库和暂存区回退至指定版本, 工作区不变, 这个是默认, 直接输入git reset 版本号与其一样, 另外该指令后面可以指定文件名
+    关于版本号的获取:
+        HEAD //表示当前版本号
+        HEAD^ //表示上一版本的版本号
+        HEAD^^ // 表示上上个版本号
+        HEAD^^^, HEAD^^^^ ....
+        HEAD~100 //向上返回100个版本
+        另外通过git reflog可以找到每一次同步之后的版本号
+    * 如果我们希望彻底丢掉本地修改但是又不希望更改branch所指向的commit，则执行git reset --hard = git reset --hard HEAD
+    * 如果一个文件已经提交至暂存区, 但是还没有提交至本地仓库, 可以使用git reset HEAD 文件名  丢弃所有更改
+</div></code></pre>
+</li>
+<li>git revert <em>commitId</em> // 将指定的提交撤回<pre class="hljs"><code><div>    git revert &lt;commitId&gt; -m &lt;n&gt; // 撤销某次合并, 并恢复至合并之前的其中一个上游, n为上游的编号, 一般都是1
+</div></code></pre>
+</li>
+<li>git checkout <em>分支名</em> // 切换至指定分支<pre class="hljs"><code><div>    git checkout -b ***分支名***    // 创建一个分支, 并切换至改分支
+    git checkout -b ***本地分支名*** ***远程仓库名***/***远程分支名***   // 从远程仓库检出一个分支
+</div></code></pre>
+</li>
+<li>git branch  // 查看所有本地分支<pre class="hljs"><code><div>    git branch -a // 查看所有分支, 包括本地分支和远程分支
+</div></code></pre>
+</li>
+<li>git merge <em>分支名</em>  // 将指定分支合并到当前分支</li>
+<li>git branch -d <em>分支名</em> // 删除指定的分支</li>
+<li>git pull <em>远程仓库名</em> // 将远程分支变更同步至本地</li>
+<li>git push <em>远程仓库名</em> // 将本地变更推送至远程仓库</li>
+<li>git push -u <em>远程仓库名</em> <em>远程分支名</em> // 把本地仓库推送至远程仓库, 没有指定远程分支名, 表示推送至同名分支, 如果没有则创建, -u表示将本地分支与远程分支关联起来, 可以简化以后推送命令<pre class="hljs"><code><div>    git push origin master  // 把本地仓库推送至远程仓库, 远程分支是与本地分支存在关联关系的分支, 一般先执行第一条命令, 这样就将本地分支与远程分支建立了联系, 然后每次都可以使用第二条命令了
+</div></code></pre>
+</li>
+<li>git checkout -b <em>分支名</em> <em>tag名</em> // 基于指定的tag建立分支</li>
+<li>git remote -v // 查看远程仓库地址</li>
+<li>git remote add <em>远程仓库名</em> <em>远程仓库的地址</em> // 本地仓库与远程仓库关联, 远程仓库名随便起的, 一般叫origin</li>
+<li>git clone <em>远程仓库的地址</em> // 克隆远程仓库地址</li>
+</ol>
+<h2 id="ssh%E4%BC%A0%E8%BE%93">SSH传输</h2>
+<ol>
+<li>
+<p>生成秘钥
+git远程传输采用SSH加密传输, 首先确认是否存在C:\Users.ssh目录以及该目录下是否有id_rsa和id_rsa.pub两个文件, 如果没有, 执行:</p>
+<pre class="hljs"><code><div>    ssh-keygen -t rsa -C <span class="hljs-string">"电子邮箱"</span>
+</div></code></pre>
+<p>也可以指定文件名.</p>
+<pre class="hljs"><code><div>    ssh-keygen -t rsa -C <span class="hljs-string">"邮箱地址"</span> -f 密钥文件名
+</div></code></pre>
+</li>
+<li>
+<p>将公钥告诉接收方(远程仓库)
+登录github或者码云等, 在账户设置里, 添加公钥, 将id_rsa.pub中的内容复制粘贴至key中.</p>
+<blockquote>
+<p>github和码云中公共代码都是可以大家看到的, 但是别人不具有修改权限, 如果把别人的key也放到账户秘钥中或者项目秘钥管理中, 那么那个人也可以操作这个账户的项目或者某一个项目</p>
+</blockquote>
+<pre class="hljs"><code><div>SSH公钥和私钥实现免密登录:
+不是随便一个人都可以把代码提交至指定的远程仓库中, 只有通过身份验证的人才可以. 这里采用SSH免密登录的方式进行身份验证.
+首先, 需要了解RSA非对称加密:
+1. 使用公钥加密的密文只能通过私钥来解密
+2. 使用私钥加密的密文只能通过公钥来解密
+3. 加密速度慢
+在提交代码之后, 服务器会使用铭文发送一段随机码给客户端; 客户端使用私钥进行加密, 然后返回给服务器端; 服务器端使用公钥进行解密, 得到解密后的随机码, 与发送过去的随机码进行匹配, 如果相同则认证通过.
+</div></code></pre>
+</li>
+</ol>
+<p>为兼容多个不同的项目, 分布在多个不同的远程仓库中的情况(github, gitee, gitlab...), 需要在密钥生成目录, 创建config文件, 手动指定映射关系:</p>
+<pre class="hljs"><code><div># 第一个
+Host gitee.com
+HostName gitee.com
+PreferredAuthentications publickey #写死定值
+IdentityFile ~/.ssh/gitee_id_rsa  #对应的密钥名称
+
+# 第二个...
+</div></code></pre>
+
+</body>
+</html>
