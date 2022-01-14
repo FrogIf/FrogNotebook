@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>windows_tip.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="windows%E4%BD%BF%E7%94%A8">Windows使用</h1>
+<h2 id="power-shell-%E6%9C%89%E4%BA%9B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%A4%B1%E8%B4%A5">power shell 有些命令执行失败</h2>
+<p>有些命令, 在cmd中可以执行, 在power shell中执行就报错了. 例如:</p>
+<pre class="hljs"><code><div>PS C:\WINDOWS\system32&gt; ng --version
+ng : File C:\Users\frogif\AppData\Roaming\npm\ng.ps1 cannot be loaded because running scripts is disabled on this system. For more information, see about_Execution_Policies at
+https:/go.microsoft.com/fwlink/?LinkID=135170.
+At line:1 char:1
++ ng --version
++ ~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+</div></code></pre>
+<p>可以设置一下:</p>
+<pre class="hljs"><code><div>PS C:\WINDOWS\system32&gt;  Set-ExecutionPolicy unrestricted
+
+Execution Policy Change
+The execution policy helps protect you from scripts that you do not trust. Changing the execution policy might expose you to the security risks described in the about_Execution_Policies help topic at
+https:/go.microsoft.com/fwlink/?LinkID=135170. Do you want to change the execution policy?
+[Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help (default is &quot;N&quot;): A
+</div></code></pre>
+<p>之后就可以了.</p>
+<blockquote>
+<p>注意, 是在管理员权限下执行的设置.</p>
+</blockquote>
+<h2 id="windows%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6">windows共享文件</h2>
+<ol>
+<li>在需要共享的文件夹下右键 --&gt; 属性 --&gt; 共享 --&gt; 点击共享 --&gt; 下拉列表中选择要共享的用户 --&gt; 点击添加 --&gt; 点击共享</li>
+<li>回到共享属性页 --&gt; 点击高级共享 --&gt; 勾选共享此文件夹 --&gt; 设置共享名并赋予访问者权限</li>
+<li>打开服务管理器 --&gt; 依次启动:Function Discovery Resource Publication、SSDP Discovery、UPnP Device Host三个服务</li>
+<li>打开网络Internet设置 --&gt; 点击共享选项 --&gt; 勾选启用网络发现</li>
+</ol>
+<p>访问共享文件:
+这台电脑 --&gt; 右键:映射网络驱动器 --&gt; 浏览, 选择要访问的资源, 输入密码等...</p>
+<h2 id="win--r%E6%89%A7%E8%A1%8C%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4">win + r执行相关命令</h2>
+<ul>
+<li>mstsc -- 远程控制</li>
+<li>services.msc -- 服务</li>
+</ul>
+<h2 id="%E6%9F%A5%E7%9C%8B%E7%AB%AF%E5%8F%A3%E5%8D%A0%E7%94%A8">查看端口占用</h2>
+<p>查看8093端口被哪一个应用使用了</p>
+<pre class="hljs"><code><div>PS C:\Users\tingyun&gt; netstat -ano | findstr &quot;8093&quot;
+  TCP    0.0.0.0:8093           0.0.0.0:0              LISTENING       14760
+  TCP    [::]:8093              [::]:0                 LISTENING       14760
+</div></code></pre>
+<p>发现是PID=14760的应用, 查看具体应用名</p>
+<pre class="hljs"><code><div>PS C:\Users\tingyun&gt; tasklist | findstr &quot;14760&quot;
+java.exe                     14760 Console                    1     54,708 K
+</div></code></pre>
+<p>同时, 可以根据这个pid, 在任务管理器中, 杀死这个进程.</p>
+<h2 id="win10%E6%AF%8F%E9%9A%942%E5%88%86%E9%92%9F%E8%87%AA%E5%8A%A8%E7%9D%A1%E7%9C%A0">win10每隔2分钟自动睡眠</h2>
+<p>这是系统无人值守时睡眠时间的设定，默认是两分钟。</p>
+<p>解决方法：</p>
+<pre class="hljs"><code><div>1.运行注册表管理器，win+r ，输入regedit.exe
+2.定位到HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\7bc4a2f9-d8fc-4469-b07b-33eb785aaca0
+3.修改attributes的值为2
+4.进入高级电源设置，在睡眠选项中会出现“无人参与系统睡眠超时”，将默认的2分钟修改成你想要的时间，我是改成了5分钟和10分钟。
+5.大功告成，可以自己试试
+</div></code></pre>
+<h2 id="%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E5%A4%B1%E8%B4%A5-credssp">远程连接失败, ..CredSSP...</h2>
+<ol>
+<li>WIN+R，然后运行 regedit 命令</li>
+<li>找到路径：：HKLM(缩写)\Software\Microsoft\Windows\CurrentVersion\Policies\System</li>
+<li>右键点击新建的Parameters文件夹，新建 DWORD（32）位值（D），文件名为 AllowEncryptionOracle ，设置其值为2</li>
+<li>现在再远程连接一下，应该就OK了！</li>
+</ol>
+<h2 id="%E5%B1%8F%E5%B9%95%E5%88%86%E8%BE%A8%E7%8E%87%E8%AE%BE%E7%BD%AE%E5%AF%BC%E8%87%B4%E5%B1%8F%E5%B9%95%E5%8F%91%E8%99%9A">屏幕分辨率设置导致屏幕发虚</h2>
+<p>设置 --&gt; 显示设置 --&gt; Advanced scaling setting --&gt; custom scaling
+将数值更改为100, 注销, 再设置为125
+或者将数值更改为125, 注销, 再设置为100</p>
+<h2 id="%E5%85%B3%E9%97%ADwindows-defender">关闭windows defender</h2>
+<ol>
+<li>打开注册表regedit</li>
+<li>找到HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SecurityHealthService</li>
+<li>然后在窗口右边找到“Start”并右键点击，然后选择“修改”</li>
+<li>将“数值数据”处的2修改成3，然后点击确定，然后关闭注册表</li>
+<li>然后，我们Ctrl+Alt+Delete打开任务管理器，点击启动</li>
+<li>然后右键点击“Windows Defender notification icon”将其禁用</li>
+<li>重新启动电脑</li>
+</ol>
+<h2 id="windows%E5%90%AF%E7%94%A8%E7%BD%91%E7%BB%9C%E5%8F%91%E7%8E%B0">windows启用网络发现</h2>
+<p>无法开启网络发现主要原因是“网络发现”所依赖的服务没有启用，或者被禁用；“网络发现”所依赖的服务如下：</p>
+<ul>
+<li>Function Discovery Resource Publication</li>
+<li>SSDP Discovery</li>
+<li>UPnP Device Host</li>
+</ul>
+<p>win + r 输入services.msc进入服务, 开启上述三个服务.</p>
+<p>win + r 输入control进入控制面板, 控制面板\网络和 Internet\网络和共享中心\高级共享设置 即可开启网络发现.</p>
+
+</body>
+</html>
