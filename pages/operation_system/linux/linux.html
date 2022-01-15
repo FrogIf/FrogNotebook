@@ -747,6 +747,54 @@ set nu</p>
 <blockquote>
 <p>which 查找某条命令的具体位置</p>
 </blockquote>
+<h2 id="ssh%E6%9C%8D%E5%8A%A1">ssh服务</h2>
+<p>ssh 服务端安装和配置:</p>
+<ol>
+<li>更新源列表:</li>
+</ol>
+<pre class="hljs"><code><div>sudo apt-get update
+</div></code></pre>
+<ol start="2">
+<li>安装服务器:</li>
+</ol>
+<pre class="hljs"><code><div>sudo apt-get install openssh-server
+</div></code></pre>
+<p>或者直接服务端客户端一起安装:</p>
+<pre class="hljs"><code><div>sudo apt-get install ssh
+</div></code></pre>
+<ol start="3">
+<li>ssh配置</li>
+</ol>
+<p>通过修改配置文件/etc/ssh/sshd_config，可以改ssh登录端口和禁止root登录:</p>
+<pre class="hljs"><code><div>sudo gedit /etc/ssh/sshd_config
+</div></code></pre>
+<p>把配置文件中的&quot;PermitRootLogin without-password&quot;加一个&quot;#&quot;号,把它注释掉--&gt;再增加一句&quot;PermitRootLogin yes&quot;--&gt;保存，修改成功。（&quot;PermitRootLogin yes&quot;的含义是允许root用户登录）</p>
+<p>重启ssh服务</p>
+<pre class="hljs"><code><div>sudo service ssh restart
+</div></code></pre>
+<ol start="4">
+<li>其他命令</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-comment">#停止服务</span>
+sudo service ssh stop
+
+<span class="hljs-comment">#启动服务</span>
+sudo service ssh start
+
+<span class="hljs-comment">#重启服务</span>
+sudo service ssh restart
+
+<span class="hljs-comment">#查看状态</span>
+sudo service ssh status
+</div></code></pre>
+<p><strong>连接至ssh</strong></p>
+<p>命令: <code>ssh [-llogin_name] [-p port] [user@]hostname</code></p>
+<p>直接连接:</p>
+<pre class="hljs"><code><div>ssh bbb@127.0.0.1
+</div></code></pre>
+<p>指定端口号:</p>
+<pre class="hljs"><code><div>ssh -p 8080 aaa@127.0.0.1
+</div></code></pre>
 <h2 id="tip">tip</h2>
 <ul>
 <li>查看是否有系统主动杀掉进程的问题:</li>
