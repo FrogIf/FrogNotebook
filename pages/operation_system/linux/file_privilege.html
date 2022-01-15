@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>linux.md</title>
+<title>file_privilege.md</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
 <style>
@@ -365,20 +365,34 @@ code {
           : 'default'
     });
   </script>
-<h1 id="linux">linux</h1>
-<h2 id="tip">tip</h2>
+<h1 id="linux%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90">Linux文件权限</h1>
+<p>chmod --&gt; (change mode)变更文件或目录的权限 --&gt; 格式: chmod [参数] [&lt;权限范围&gt;&lt;符号&gt;&lt;权限代号&gt;]</p>
+<p>参数: -R或--recursive 递归处理，将指定目录下的所有文件及子目录一并处理</p>
+<p>权限范围的表示法如下：</p>
 <ul>
-<li>查看是否有系统主动杀掉进程的问题:</li>
+<li>u：User，即文件或目录的拥有者。</li>
+<li>g：Group，即文件或目录的所属群组。</li>
+<li>o：Other，除了文件或目录拥有者或所属群组之外，其他用户皆属于这个范围。</li>
+<li>a：All，即全部的用户，包含拥有者，所属群组以及其他用户。</li>
 </ul>
-<pre class="hljs"><code><div>egrep -i -r 'killed process' /var/log
-</div></code></pre>
-<blockquote>
-<p>需要有权限, 才能查看</p>
-</blockquote>
+<p>符号：</p>
 <ul>
-<li>setsid命令</li>
+<li>+ 添加权限</li>
+<li>- 取消权限</li>
 </ul>
-<p>让进程运行在新的会话里, 从而成为不属于此终端的子进程. 从而实现进程后台运行.</p>
+<p>有关权限代号的部分，列表于下：</p>
+<ul>
+<li>r：读取权限，数字代号为&quot;4&quot;。</li>
+<li>w：写入权限，数字代号为&quot;2&quot;。</li>
+<li>x：执行或切换权限，数字代号为&quot;1&quot;。</li>
+<li>-：不具任何权限，数字代号为&quot;0&quot;。</li>
+</ul>
+<p>举例:
+chmod u-rwx xxx		#取消xxx目录，用户“读写执行”权限
+chmod g-rwx xxx 	#取消xxx目录，组“读写执行”权限
+chmod 777 xxx		#给xxx目录添加所有权限</p>
+<p>linux权限格式:</p>
+<p><img src="img/file_privilege.png" alt="005"></p>
 
 </body>
 </html>

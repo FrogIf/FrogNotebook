@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>linux.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="linux">linux</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>常用目录:</p>
+<ul>
+<li>/    根目录</li>
+<li>/root    root用户的家目录</li>
+<li>/home/username    普通用户的家目录</li>
+<li>/etc    配置文件目录</li>
+<li>/bin    命令目录</li>
+<li>/sbin    管理命令目录</li>
+<li>/usr/bin, /usr/sbin    系统预装的其他命令</li>
+</ul>
+<h2 id="%E5%B7%A5%E4%BD%9C%E4%B8%AD%E7%A7%AF%E7%B4%AF%E7%9A%84%E4%B8%80%E4%BA%9B%E5%91%BD%E4%BB%A4">工作中积累的一些命令</h2>
+<ul>
+<li>查看磁盘使用情况: <code>df -h</code></li>
+<li>汇总一个目录下各个文件/文件夹大小: <code>du -sh *</code></li>
+<li>查看端口监听: <code>lsof -i:端口号</code><pre class="hljs"><code><div>[root@localhost gitlab]# lsof -i:80
+COMMAND   PID       USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+nginx   10494       root    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
+nginx   10498 gitlab-www    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
+</div></code></pre>
+</li>
+</ul>
+<h2 id="%E5%B8%AE%E5%8A%A9">帮助</h2>
+<ul>
+<li>man
+<ul>
+<li>manual的缩写</li>
+<li>demo: man ls</li>
+<li>man 7 man</li>
+<li>章节</li>
+<li>man -a <command></li>
+</ul>
+</li>
+<li>help
+<ul>
+<li>help <command>   内部命令(shell解释器自带命令)</li>
+<li><command> --help     外部命令</li>
+<li>如何区分外部命令和内部命令: type <command></li>
+</ul>
+</li>
+<li>info
+<ul>
+<li>更详细的命令描述, 是help的补充</li>
+</ul>
+</li>
+</ul>
+<h2 id="%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86">文件管理</h2>
+<p><strong>文件查看</strong></p>
+<ul>
+<li>pwd
+<ul>
+<li>显示当前目录名称</li>
+</ul>
+</li>
+<li>ls
+<ul>
+<li>查看当前目录下的文件</li>
+<li>ls -l   长格式显示<pre class="hljs"><code><div>    root@DESKTOP-8U8SJ9D:/home# ls -l
+    total 4
+    drwxr-xr-x 5 frogif frogif 4096 Oct 13 09:18 frogif
+对应解释:
+    1[  2    ] 3 [  4 ] [ 5  ] [ 6] [      7   ] [  8  ]
+</div></code></pre>
+1 - 文件类型;
+2 - 权限;
+3 - 内部包含文件个数;
+4 - 创建人;
+5 - 创建人所属用户组;
+6 - 文件大小;
+7 - 最后修改时间;
+8 - 文件名;</li>
+<li>ls -a  显示隐藏文件和隐藏文件夹</li>
+<li>ls -r  以逆向的方式排序(默认是'文件名'进行排序)
+<ul>
+<li>ls -l -r</li>
+<li>ls -l -r -t   (-t指定以时间进行排序)</li>
+</ul>
+</li>
+<li>ls -R  递归显示</li>
+</ul>
+</li>
+<li>cd
+<ul>
+<li>目录位置的切换</li>
+<li>cd -   回到之前操作的目录(可以实现两个目录之间的切换)</li>
+<li>cd ..  进入上一级目录</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>命令的基本结构: <command> [options] [args...]</p>
+</blockquote>
+<blockquote>
+<p>清屏: clear 或 ctrl+L</p>
+</blockquote>
+<p><strong>目录创建及删除</strong></p>
+<ul>
+<li>mkdir
+<ul>
+<li>创建目录(后接多个路径可以建立多个目录)</li>
+<li>mkdir -p <path> 创建多级目录</li>
+</ul>
+</li>
+<li>rmdir
+<ul>
+<li>删除目录, 注意, 只能删除空白目录</li>
+</ul>
+</li>
+<li>rm
+<ul>
+<li>删除文件</li>
+<li>rm -r   递归删除</li>
+<li>rm -r -f  没有询问的递归删除</li>
+</ul>
+</li>
+<li>cp
+<ul>
+<li>文件复制</li>
+<li>cp [源文件路径] [目标目录]</li>
+<li>cp -r [源文件路径] [目标目录]  复制目录, 而不是文件</li>
+<li>cp -v ... 显示复制的详细过程信息</li>
+<li>cp -p ... 如果没有p, 复制之后, 文件的用户,权限,时间等都会变化, 加上-p会保证信息不回变化</li>
+<li>cp -a ... 等同于-dpR</li>
+</ul>
+</li>
+<li>mv
+<ul>
+<li>移动及重命名</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>通配符: *, ?</p>
+<ul>
+<li>
+<ul>
+<li>匹配多个字符
+? - 匹配单个字符</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>文本查看</strong></p>
+<ul>
+<li>cat
+<ul>
+<li>文本的内容显示到终端</li>
+</ul>
+</li>
+<li>head
+<ul>
+<li>查看文件的开头(默认查看10行)</li>
+<li>head -5 [filename] 查看前5行</li>
+</ul>
+</li>
+<li>tail
+<ul>
+<li>查看文件的结尾(默认查看10行)</li>
+<li>tail -f [filename] 同步更新</li>
+</ul>
+</li>
+<li>wc
+<ul>
+<li>统计文件内容信息</li>
+<li>wc -l [filename] 查看文件有多少行</li>
+</ul>
+</li>
+<li>more
+<ul>
+<li>分行显示, 一次显示一部分内容</li>
+</ul>
+</li>
+<li>less
+<ul>
+<li>类似于more</li>
+</ul>
+</li>
+</ul>
+<p><strong>打包与压缩</strong></p>
+<ul>
+<li>tar
+<ul>
+<li>打包</li>
+<li>tar cf [filename] [source] 打包成文件
+<ul>
+<li>c 打包</li>
+<li>f 打包成文件</li>
+</ul>
+</li>
+<li>tar czf [filename] [source] 打包并使用gzip压缩
+<ul>
+<li>z 使用gzip压缩</li>
+</ul>
+</li>
+<li>tar cjf [filename] [source] 打包并使用bzip2压缩
+<ul>
+<li>j 使用bzip2压缩</li>
+</ul>
+</li>
+<li>tar xf [filename] 解包</li>
+<li>tar xf [filename] -C [targetPath] 解包到指定的文件夹</li>
+<li>tar xzf 解压缩gzip压缩过的文件</li>
+<li>tar xjf 解压缩bzip2压缩过的文件</li>
+</ul>
+</li>
+<li>gzip
+<ul>
+<li>压缩/解压缩</li>
+</ul>
+</li>
+<li>bzip2
+<ul>
+<li>压缩/解压缩, 压缩率相较于gzip更高, 速度慢一些</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>一般, 文件.tar.gz, .tgz是gzip压缩的文件, .tar.bz2, tar.bzip2, .tbz2是bzip2压缩的文件. 压缩的时候, 也应该遵循这个规则进行命名</p>
+</blockquote>
+<p><strong>文本编辑器Vim</strong></p>
+<p>特性: 多模式</p>
+<ul>
+<li>正常模式(Normal-mode)
+<ul>
+<li>y -- 复制
+<ul>
+<li>yy -- 按行复制</li>
+<li>y$ -- 复制当前位置到光标结尾</li>
+<li>&lt;数字&gt;yy -- 复制多行</li>
+</ul>
+</li>
+<li>p -- 粘贴</li>
+<li>d -- 剪切
+<ul>
+<li>dd -- 按行剪切</li>
+<li>d$ -- 剪切当前位置到光标结尾</li>
+</ul>
+</li>
+<li>u -- 撤销</li>
+<li>ctrl + r -- 重做</li>
+<li>x -- 单个字符的删除</li>
+<li>r&lt;新字符&gt; -- 单个字符的替换</li>
+<li>G -- 移动到指定行
+<ul>
+<li>&lt;数字&gt;G -- 移动到指定行</li>
+<li>g -- 移动到第一行</li>
+<li>G -- 移动到最后一行</li>
+</ul>
+</li>
+<li>^  定位到行首</li>
+<li>$  定位到行尾</li>
+</ul>
+</li>
+<li>插入模式(Insert-mode)
+<ul>
+<li>i -- 进入插入模式</li>
+<li>I -- 进入插入模式, 光标定位到行开头</li>
+<li>a -- 进入插入模式, 光标定位到原位置的下一位</li>
+<li>A -- 进入插入模式, 光标定位到行结尾</li>
+<li>o -- 进入插入模式, 光标所在行的下一行插入空行</li>
+<li>O -- 进入插入模式, 光标所在行的上一行插入空行</li>
+</ul>
+</li>
+<li>命令模式(Command-mode)
+<ul>
+<li>: -- 进入命令模式</li>
+<li>w <path>  -- 保存到指定位置</li>
+<li>q -- 退出编辑器
+<ul>
+<li>q!  -- 不保存退出</li>
+<li>wq  -- 保存并退出</li>
+</ul>
+</li>
+<li>!&lt;命令&gt; -- 执行linux命令</li>
+<li>/&lt;内容&gt; -- 查找(不需要先按:)
+<ul>
+<li>n -- 定位到下一个</li>
+<li>N -- 定位到上一个</li>
+</ul>
+</li>
+<li>s/&lt;旧的字符&gt;/&lt;新的字符&gt; -- 替换(针对光标所在行)</li>
+<li>%s/&lt;旧的字符&gt;/&lt;新的字符&gt; -- 替换(针对全文)
+<ul>
+<li>%s/&lt;旧&gt;/&lt;新&gt;/g -- 全部替换</li>
+<li>&lt;数字&gt;,&lt;数字&gt;s/&lt;旧&gt;/&lt;新&gt; -- 针对指定行范围进行替换</li>
+</ul>
+</li>
+<li>set -- 设置
+<ul>
+<li>set nu -- 显示行号</li>
+<li>set nonu -- 不显示行号</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>可视模式(Visual-mode)
+<ul>
+<li>v -- 进入字符可视模式</li>
+<li>V -- 进入行可视模式</li>
+<li>ctrl + v -- 进入块可视模式
+<ul>
+<li>I -- 插入</li>
+<li>d -- 删除</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>全局配置:
+修改/etc/vimrc文件, 在最后一行, 例如加入:
+set nu</p>
+</blockquote>
+<h2 id="%E7%94%A8%E6%88%B7%E5%8F%8A%E7%94%A8%E6%88%B7%E7%BB%84">用户及用户组</h2>
+<p><strong>用户管理</strong></p>
+<ul>
+<li>useradd -- 新建用户
+<ul>
+<li>该命令执行之后, 系统都做了哪些事情?
+<ul>
+<li>创建了 /home/<username>目录</li>
+<li>/etc/passwd文件中, 会记录该用户</li>
+<li>/etc/shadow文件中, 会记录该用户</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>userdel -- 删除用户
+<ul>
+<li>userdel <username> /home/<username>数据如果还有用, 则不要加-r</li>
+<li>userdel -r <username> 如果需要同时删除/home/<username> 需要加-r</li>
+</ul>
+</li>
+<li>passwd -- 修改用户密码
+<ul>
+<li>更改自己的密码, 直接passwd</li>
+<li>更改其他用户的密码, passwd <username></li>
+</ul>
+</li>
+<li>usermod -- 修改用户的属性
+<ul>
+<li>修改用户的home目录等, 详见man</li>
+</ul>
+</li>
+<li>chage -- 修改用户的属性
+<ul>
+<li>修改用户多久修改一次密码等时间相关</li>
+</ul>
+</li>
+<li>id &lt;用户名&gt; -- 判断该用户是否存在</li>
+</ul>
+<p><strong>组管理</strong></p>
+<ul>
+<li>groupadd -- 新建用户组
+<ul>
+<li>usermod -g <group> <username> 修改某个用户的用户组</li>
+<li>useradd -g <group> <username> 新增用户同时指定用户组</li>
+</ul>
+</li>
+<li>groupdel -- 删除用户组</li>
+</ul>
+<p><strong>其他</strong></p>
+<ul>
+<li>su -- 切换用户
+<ul>
+<li>su - <username> 加上'-', 切换用户同时, 把当前运行环境也切换(就是说, 切换到指定用户的home目录)</li>
+</ul>
+</li>
+<li>exit -- 退回root用户</li>
+<li>sudo -- 以其他用户身份执行命令
+<ul>
+<li>visudo -- 打开配置文件</li>
+</ul>
+<pre class="hljs"><code><div>&lt;用户&gt; &lt;主机&gt;=&lt;命令1&gt;,&lt;命令2&gt; [NOPASSWD:主机]
+%&lt;用户组&gt; ...同上
+</div></code></pre>
+</li>
+</ul>
+<blockquote>
+<p>which 查找某条命令的具体位置</p>
+</blockquote>
+<h2 id="tip">tip</h2>
+<ul>
+<li>查看是否有系统主动杀掉进程的问题:</li>
+</ul>
+<pre class="hljs"><code><div>egrep -i -r 'killed process' /var/log
+</div></code></pre>
+<blockquote>
+<p>需要有权限, 才能查看</p>
+</blockquote>
+<p>或者下面这个命令:</p>
+<p>vim /var/log/messages</p>
+<p>有时候系统会主动杀掉tomcat等后台进程, 这时tomcat日志只会有一句: catalina.sh .... killed ....
+这时候就需要查看系统日志, 确定是不是被系统主动杀掉了.</p>
+<ul>
+<li>setsid命令</li>
+</ul>
+<p>让进程运行在新的会话里, 从而成为不属于此终端的子进程. 从而实现进程后台运行.</p>
+
+</body>
+</html>
