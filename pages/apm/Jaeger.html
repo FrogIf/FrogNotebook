@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jaeger.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="jaeger">Jaeger</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p><a href="https://www.jaegertracing.io/">Jaeger</a>是Uber推出的一套分布式链路追踪开源(Apache-2.0 License)解决方案. 兼容OpenTracing. 本身采用Go语言编写. 支持Go, Java, Node, Python, C++, C#.</p>
+<p><img src="img/jaeger-architecture-v1.png" alt="image"></p>
+<p>如图, 为jaeger整体架构图. 主要关注jaeger-client, jaeger-agent, jaeger-collector, jaeger-query即可.</p>
+<ul>
+<li>jaeger-client是需要手动嵌入到被监控应用中的一个sdk.(2022年jaeger-client被弃用, 官方推荐使用open-telemetry进行数据采集)</li>
+<li>jaeger-agent是用于接收jaeger-client采集到的数据的一个服务. jaeger-agent会收集到一些jaeger-client接收到的数据后, 批量发送给jaeger-collector. jaeger-agent还负责collector的发现和路由.</li>
+<li>jaeger-collector 接收jaeger-agent采集到的数据. jaeger-collector支持多种底层数据存储:
+<ul>
+<li>Cassandra - 开源分布式NoSQL数据库系统</li>
+<li>Elasticsearch - 一个基于Lucene的搜索服务器</li>
+<li>Kafka - 由Apache软件基金会开发的一个开源流处理平台, 它本身一般不能作为永久存储介质, 所以上面的架构图有调整, 如下图. 通过jaeger-ingester消费kafka中的数据, 最终写入ElasticSearch或者Cassandra</li>
+</ul>
+</li>
+<li>jaeger-query - 读取存储介质中的数据, 展示在ui界面上.</li>
+</ul>
+<p><img src="img/jaeger-architecture-v2.png" alt="image"></p>
+<h2 id="%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2">快速部署</h2>
+<p>这里直接采用jaeger-all-in-one这个docker镜像进行部署, jaeger-all-in-one中集成了jaeger-agent, jaeger-collector, jaeger-query. 此外, jaeger-all-in-one中默认不对采集到的数据进行持久化存储, 所有数据均存储在内存中. 官网的文档中有all-in-one的下载地址.</p>
+<blockquote>
+<p>以下演示环境为windows10 + wsl + Docker Desktop for Windows</p>
+</blockquote>
+<ol>
+<li>获取all-in-one镜像</li>
+</ol>
+<pre class="hljs"><code><div>docker pull jaegertracing/all-in-one
+</div></code></pre>
+<ol start="2">
+<li>安装运行</li>
+</ol>
+<pre class="hljs"><code><div>docker run -d --name jaeger -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p16686:16686 jaegertracing/all-in-one:latest --log-level=debug
+</div></code></pre>
+<p>或者想多暴露一些端口, 使用下面的命令:</p>
+<pre class="hljs"><code><div>docker run -d --name jaeger \
+  -p 5775:5775/udp \
+  -p 6831:6831/udp \
+  -p 6832:6832/udp \
+  -p 5778:5778 \
+  -p 16686:16686 \
+  -p 14250:14250 \
+  -p 14268:14268 \
+  -p 14269:14269 \
+  -p 9411:9411 \
+  jaegertracing/all-in-one:latest
+</div></code></pre>
+<p>上面的端口含义:</p>
+<ul>
+<li>16686是ui界面访问端口, 通过http://localhost:16686就可以访问jaeger-query界面</li>
+<li>6831是jaeger-agent监听端口, jaeger-client上传数据时, 需要指定这个端口</li>
+<li>6832与6831相同, 只是协议稍有区别, 一般用6831就行了, 具体区别见官方文档<a href="https://www.jaegertracing.io/docs/1.30/deployment/#agent">端口介绍</a></li>
+<li>14250是jaeger-collector监听端口, 如果单独部署了jaeger-agent, 需要指定这个端口</li>
+<li>其余端口介绍详见官方文档<a href="https://www.jaegertracing.io/docs/1.30/deployment/">文档</a></li>
+</ul>
+<p>以上, 整个jaeger接收展示服务就搭建好了. 访问http://127.0.0.1:16686/可以看到jaeger-query的ui界面.</p>
+<p><img src="img/jaeger-ui.png" alt="image"></p>
+<h2 id="client%E9%9B%86%E6%88%90">client集成</h2>
+<p>接下来, 将jaeger-client集成到被监测应用中去. 然后采集数据, 看一下展示的效果. 这里被监测的应用为java应用.</p>
+<blockquote>
+<p>虽然jaeger-client已经被弃用, 官方推荐使用open-telemetry, 但是这里依旧介绍一下.</p>
+</blockquote>
+<p>演示项目代码已经上传至github, 具体地址为: <a href="https://github.com/FrogIf/JaegerDemo">JaegerDemo</a>, 这时两个springboot项目, 没有采用最原始的jaeger-client进行集成, 而是使用了opentracing-spring-jaeger-cloud-starter, 虽然是springboot项目, 但是依旧可以使用cloud-starter, 实际上还有另外两个stater: opentracing-spring-jaeger-starter和opentracing-spring-jaeger-web-starter, 但是这两个支持的都不全面, opentracing-spring-jaeger-starter需要手动进行配置, opentracing-spring-jaeger-web-starter只能进行最基本的跨应用链路追踪, 不能对database等组件进行监控(详见<a href="https://github.com/opentracing-contrib/java-spring-jaeger">java-spring-jaeger</a>). 下面简要介绍一下关键配置:</p>
+<ul>
+<li>pom.xml:</li>
+</ul>
+<pre class="hljs"><code><div>		<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.opentracing.contrib<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>opentracing-spring-jaeger-cloud-starter<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+			<span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.3.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+		<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+</div></code></pre>
+<ul>
+<li>application.yml</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-attr">opentracing:</span>
+  <span class="hljs-attr">jaeger:</span>
+    <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">log-spans:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">udp-sender:</span>
+      <span class="hljs-attr">host:</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+      <span class="hljs-attr">port:</span> <span class="hljs-number">6831</span>
+    <span class="hljs-attr">tags:</span>
+      <span class="hljs-attr">frog-tag:</span> <span class="hljs-number">1234</span>
+    <span class="hljs-attr">remote-reporter:</span>
+      <span class="hljs-attr">flush-interval:</span> <span class="hljs-number">1000</span>
+      <span class="hljs-attr">max-queue-size:</span> <span class="hljs-number">1000</span>
+</div></code></pre>
+<p>除此之外, 不需要任何配置, 也不需要额外的代码开发. 下面看一下采集的结果:</p>
+<p><img src="img/jaeger-data-recevie1.png" alt="image"></p>
+<p>概览信息, 能看到采集到的trace列表, 以及时间等信息. 点击进入一条trace中.</p>
+<p><img src="img/jaeger-data-recevie2.png" alt="image"></p>
+<p>可以看到, 应用A调用了应用B, 并且调用了数据库(这里使用的是sqlite数据库, jaeger没有采集到具体的数据库名字), 右上角有一个&quot;Trace Timeline&quot;下拉, 切换至&quot;Trace Json&quot;可以看到上传的原始数据. 这里以json格式展示的, 由于篇幅限制, 这里只截取一部分:</p>
+<p><img src="img/jaeger-data-recevie3.png" alt="image"></p>
+<p>可以看到, 实际上, jaeger已经把执行的sql语句都采集上来了, 从详情界面上, 点开也能看到:</p>
+<p><img src="img/jaeger-data-recevie4.png" alt="image"></p>
+<p>其他的,还有拓扑图等功能.</p>
+<h2 id="%E8%87%AA%E5%B7%B1%E5%81%9A%E4%B8%80%E4%B8%AAcollector">自己做一个collector</h2>
+<p>关于jaeger上传的数据具体含义, 在open-telemetry的介绍中再详细说明. 这里简要介绍一下如何根据jaeger的协议, 自己创建一个collector. jaeger现在开始逐渐完全使用open-tracing的协议了, 所以没什么用, 主要是留作记录.</p>
+<p>首先, jaeger协议可以在如下地址获取: <a href="https://github.com/jaegertracing/jaeger-idl">jaeger-idl</a>, 其中/proto/api_v2/目录下的内容是接下来要处理的内容.</p>
+<p>jaeger数据传输使用的是grpc调用的方式, 想要自己创建一个collector, 首先需要创建grpc调用. 一般的grpc协议, 直接使用maven的一个插件, 就能直接编译成java类, 但是jaeger的这个比较特殊, 还引用了很多第三方的其他grpc文件, 所以需要用别的手段来处理.</p>
+<p>jaeger-idl的readme.md文件中有这样一段描述:</p>
+<pre class="hljs"><code><div>This repository does not publish the generated code, but it does run Thrift and protoc generators as part of the CI to verify all IDL files. See the Makefile for example. In particular, the classes for different languages can be compiled using the jaegertracing/protobuf Docker image (see README).
+</div></code></pre>
+<p>然后, 在jaegertracing/protobuf的readme中, 可以找到代码生成的方法.</p>
+<p>下面描述的方法是在windows操作系统, WSL中进行操作的步骤(注意是linux子系统中进行下列命令):</p>
+<ol>
+<li>下载jaegertracing/protobuf镜像.<code>docker pull jaegertracing/protobuf:latest</code></li>
+<li>clone jaegertracing/jaeger-idl仓库</li>
+<li>执行命令:</li>
+</ol>
+<pre class="hljs"><code><div>docker run --rm -v&lt;宿主机的目录&gt;:&lt;映射到容器内的目录&gt; -w&lt;容器内的工作目录(这里与前面挂载后的映射目录一致即可)&gt; jaegertracing/protobuf:latest --proto_path=&lt;proto文件所在目录&gt; --java_out=&lt;生成java文件输出目录&gt; -I&lt;依赖的其他proto所在路径&gt; &lt;待生成的目标proto&gt;
+</div></code></pre>
+<p>这里举一个例子:</p>
+<pre class="hljs"><code><div>docker run --rm -v/mnt/d/work/jaeger-idl/proto/api_v2:/jaeger-proto jaegertracing/protobuf:latest --proto_path=/jaeger-proto  --java_out=/jaeger-proto/output -I/usr/include/github.com/gogo/protobuf model.proto
+</div></code></pre>
+<p>WSL中的/mnt/d/work/jaeger-idl/proto/api_v2目录下存放着model.proto, query.proto, collector.proto等, 将该目录挂载到容器中的/jaeger-proto目录上, 指定proto文件所在的目录就是挂载的目录, 指定生成java文件所在目录为挂载的目录下的output目录, 这样生成的java文件就在宿主机的/mnt/d/work/jaeger-idl/proto/api_v2/output目录下了, -I指定的依赖的第三方proto文件, 这个是jaegertracing/protobuf容器内置的, 可以通过:</p>
+<pre class="hljs"><code><div>docker run --rm -it --entrypoint=/bin/sh jaegertracing/protobuf:latest -c &quot;find /usr/include -name *.proto&quot;
+</div></code></pre>
+<p>命令查看.
+例子的最后, 是xxx.proto, 也就是proto_path下, 需要编译为java文件的proto文件.</p>
+<p>下面列出需要执行的命令示例:</p>
+<pre class="hljs"><code><div>docker run --rm -v/mnt/d/work/jaeger-idl/proto/api_v2:/jaeger-proto jaegertracing/protobuf:latest --proto_path=/jaeger-proto  --java_out=/jaeger-proto/output -I/usr/include/github.com/gogo/protobuf collector.proto
+
+docker run --rm -v/mnt/d/work/jaeger-idl/proto/api_v2:/jaeger-proto jaegertracing/protobuf:latest --proto_path=/jaeger-proto  --java_out=/jaeger-proto/output -I/usr/include/github.com/gogo/protobuf model.proto
+
+docker run --rm -v/mnt/d/work/jaeger-idl/proto/api_v2:/jaeger-proto jaegertracing/protobuf:latest --proto_path=/jaeger-proto  --java_out=/jaeger-proto/output -I/usr/include/github.com/gogo/protobuf query.proto
+
+docker run --rm -v/mnt/d/work/jaeger-idl/proto/api_v2:/jaeger-proto jaegertracing/protobuf:latest --proto_path=/jaeger-proto  --java_out=/jaeger-proto/output -I/usr/include/github.com/gogo/protobuf sampling.proto
+</div></code></pre>
+<p>通过上述命令, 生成的结果, 并不完全, 当前版本, 还需要导出下列proto的java文件:</p>
+<ul>
+<li>/usr/include/protoc-gen-swagger/options/openapiv2.proto</li>
+<li>/usr/include/protoc-gen-swagger/options/annotations.proto</li>
+<li>/usr/include/github.com/gogo/protobuf/gogoproto/gogo.proto</li>
+</ul>
+<p>命令与上边的类似:</p>
+<pre class="hljs"><code><div>docker run --rm -v/mnt/d/work/jaeger-idl/proto/api_v2:/jaeger-proto jaegertracing/protobuf:latest --java_out=/jaeger-proto/output /usr/include/protoc-gen-swagger/options/openapiv2.proto
+
+docker run --rm -v/mnt/d/work/jaeger-idl/proto/api_v2:/jaeger-proto jaegertracing/protobuf:latest --java_out=/jaeger-proto/output /usr/include/protoc-gen-swagger/options/annotations.proto
+
+docker run --rm -v/mnt/d/work/jaeger-idl/proto/api_v2:/jaeger-proto jaegertracing/protobuf:latest --java_out=/jaeger-proto/output /usr/include/github.com/gogo/protobuf/gogoproto/gogo.proto
+</div></code></pre>
+<p>这时还没有结束, proto直接生成grpc service的方式已经不推荐了, 官方推荐的方式是通过插件的方式生成service, 百度搜索得到如下关键字<code>plugin</code>, <code>grpc-java_out</code>, 那么, 这里如果需要根据collector.proto生成collector的grpc代码, 还需要执行其他命令. 什么命令呢? readme中没有说明, 执行一下:<code>docker run --rm jaegertracing/protobuf --help</code>试试, 发现没有任何结果. readme中, 得知该项目是forked from<code>TheThingsIndustries/docker-protobuf</code>, 可以去这里边找一找. 下载镜像, 执行<code>docker run --rm thethingsindustries/protoc --help</code>, 发现了一些命令:</p>
+<pre class="hljs"><code><div> --plugin=EXECUTABLE         Specifies a plugin executable to use.
+                              Normally, protoc searches the PATH for
+                              plugins, but you may specify additional
+                              executables not in the path using this flag.
+                              Additionally, EXECUTABLE may be of the form
+                              NAME=PATH, in which case the given plugin name
+                              is mapped to the given executable even if
+                              the executable's own name differs.
+</div></code></pre>
+<p>就是这个了.指定一个插件. 那么这个插件在哪呢? 通过查看jaegertracing/protobuf的Dockerfile, 大概知道容器中实际上是有的. 然后从Dockerfile大致能猜出插件的位置:</p>
+<pre class="hljs"><code><div>...
+
+install -Ds protoc-gen-grpc-java /out/usr/bin/protoc-gen-grpc-java &amp;&amp; \
+
+...
+
+COPY --from=packer /out/ /
+RUN apk add --no-cache bash libstdc++ &amp;&amp; \
+    ln -s /usr/bin/grpc_cpp_plugin /usr/bin/protoc-gen-grpc-cpp &amp;&amp; \
+    ln -s /usr/bin/grpc_csharp_plugin /usr/bin/protoc-gen-grpc-csharp &amp;&amp; \
+    ln -s /usr/bin/grpc_node_plugin /usr/bin/protoc-gen-grpc-js &amp;&amp; \
+    ln -s /usr/bin/grpc_python_plugin /usr/bin/protoc-gen-grpc-python
+</div></code></pre>
+<p>所以, 应该在<code>/usr/bin/protoc-gen-grpc-java</code>下. 执行<code>docker run --rm -it --entrypoint=/bin/sh jaegertracing/protobuf:latest -c &quot;find /usr/bin -name proto*&quot;</code>发现确实在这个目录下.所以, 最终执行的命令是:</p>
+<pre class="hljs"><code><div>docker run --rm -v/mnt/d/work/jaeger-idl/proto/api_v2:/jaeger-proto jaegertracing/protobuf:latest --proto_path=/jaeger-proto --java-grpc_out=/jaeger-proto/output --plugin=protoc-gen-java-grpc=/usr/bin/protoc-gen-grpc-java -I/usr/include/github.com/gogo/protobuf collector.proto
+</div></code></pre>
+<p>综上, 所有的java文件均已生成完成.</p>
+<p>接下来, 就可以应用这些文件, 创建一个属于自己的collector了. 接下来的开发过程就不赘述了, 具体代码在<a href="https://github.com/FrogIf/JaegerDemo">JaegerDemo</a>, 然后运行起来, 看下效果:</p>
+<p>首先, 需要启动一个jaeger-agent. 这里使用windows下的<a href="https://www.jaegertracing.io/download/">jaeger-agent</a>. 启动命令如下:</p>
+<pre class="hljs"><code><div>jaeger-agent.exe --reporter.grpc.host-port=127.0.0.1:14250
+</div></code></pre>
+<p>这时, 该jaeger-agent监听的端口是6831, 接收到数据后, 发送到collector的14250端口.</p>
+<p>运行上面的测试程序, 可以看到collector日志中有日志输出:</p>
+<pre class="hljs"><code><div>2022-01-26 16:16:22.004 [grpc-default-executor-0] INFO  s.frog.jaeger.CustomJaegerCollector - receive data : spans {
+  trace_id: &quot;\000\000\000\000\000\000\000\000\375\226&amp;B\035}gF&quot;
+  span_id: &quot;\306\3435y\017x\203\035&quot;
+  operation_name: &quot;GET&quot;
+  references {
+    trace_id: &quot;\000\000\000\000\000\000\000\000\375\226&amp;B\035}gF&quot;
+    span_id: &quot;\375\226&amp;B\035}gF&quot;
+  }
+  flags: 1
+  start_time {
+    seconds: 1643184981
+    nanos: 74118000
+  }
+  duration {
+    nanos: 151977000
+  }
+  tags {
+    key: &quot;http.status_code&quot;
+    v_type: INT64
+    v_int64: 200
+  }
+  tags {
+    key: &quot;component&quot;
+    v_str: &quot;java-spring-rest-template&quot;
+  }
+  tags {
+    key: &quot;span.kind&quot;
+    v_str: &quot;client&quot;
+  }
+  tags {
+    key: &quot;http.url&quot;
+    v_str: &quot;http://localhost:9091/hello&quot;
+  }
+  tags {
+    key: &quot;peer.port&quot;
+    v_type: INT64
+    v_int64: 9091
+  }
+  tags {
+    key: &quot;http.method&quot;
+    v_str: &quot;GET&quot;
+  }
+}
+spans {
+  trace_id: &quot;\000\000\000\000\000\000\000\000\375\226&amp;B\035}gF&quot;
+  span_id: &quot;\202\211\255\206\v@\324\223&quot;
+  operation_name: &quot;Query&quot;
+</div></code></pre>
+
+</body>
+</html>
