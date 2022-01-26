@@ -249,7 +249,7 @@ sysctl -p
 1. 下载Kibana镜像.
 2. 启动镜像.
     ```
-    docker run -d --env ELASTICSEARCH_HOSTS=http://10.128.2.95:9200 --env ELASTICSEARCH_USERNAME=tingyun --env ELASTICSEARCH_PASSWORD=nEtben@2_19 --name kb95 -p 5601:5601 docker.elastic.co/kibana/kibana:7.4.2
+    docker run -d --env ELASTICSEARCH_HOSTS=http://10.128.2.95:9200 --env ELASTICSEARCH_USERNAME=frog --env ELASTICSEARCH_PASSWORD=frog --name kb95 -p 5601:5601 docker.elastic.co/kibana/kibana:7.4.2
     ```
 
 **Zookeeper安装**

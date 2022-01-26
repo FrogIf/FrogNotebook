@@ -52,7 +52,7 @@ https:/go.microsoft.com/fwlink/?LinkID=135170. Do you want to change the executi
 查看8093端口被哪一个应用使用了
 
 ```
-PS C:\Users\tingyun> netstat -ano | findstr "8093"
+PS C:\Users\frog> netstat -ano | findstr "8093"
   TCP    0.0.0.0:8093           0.0.0.0:0              LISTENING       14760
   TCP    [::]:8093              [::]:0                 LISTENING       14760
 ```
@@ -60,7 +60,7 @@ PS C:\Users\tingyun> netstat -ano | findstr "8093"
 发现是PID=14760的应用, 查看具体应用名
 
 ```
-PS C:\Users\tingyun> tasklist | findstr "14760"
+PS C:\Users\frog> tasklist | findstr "14760"
 java.exe                     14760 Console                    1     54,708 K
 ```
 

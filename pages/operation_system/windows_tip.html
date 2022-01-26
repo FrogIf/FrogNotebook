@@ -405,12 +405,12 @@ https:/go.microsoft.com/fwlink/?LinkID=135170. Do you want to change the executi
 </ul>
 <h2 id="%E6%9F%A5%E7%9C%8B%E7%AB%AF%E5%8F%A3%E5%8D%A0%E7%94%A8">查看端口占用</h2>
 <p>查看8093端口被哪一个应用使用了</p>
-<pre class="hljs"><code><div>PS C:\Users\tingyun&gt; netstat -ano | findstr &quot;8093&quot;
+<pre class="hljs"><code><div>PS C:\Users\frog&gt; netstat -ano | findstr &quot;8093&quot;
   TCP    0.0.0.0:8093           0.0.0.0:0              LISTENING       14760
   TCP    [::]:8093              [::]:0                 LISTENING       14760
 </div></code></pre>
 <p>发现是PID=14760的应用, 查看具体应用名</p>
-<pre class="hljs"><code><div>PS C:\Users\tingyun&gt; tasklist | findstr &quot;14760&quot;
+<pre class="hljs"><code><div>PS C:\Users\frog&gt; tasklist | findstr &quot;14760&quot;
 java.exe                     14760 Console                    1     54,708 K
 </div></code></pre>
 <p>同时, 可以根据这个pid, 在任务管理器中, 杀死这个进程.</p>
