@@ -117,6 +117,68 @@ opentracing:
 
 其他的,还有拓扑图等功能.
 
+**jaeger client配置**
+
+下面简单介绍一下jaeger client的配置, 单纯jaeger client, 不包含spring相关内容. 这里讨论的是java语言. 下面是项目中简单继承jaeger-client时的配置示例:
+
+```java
+    @Bean
+    public Tracer tracer(){
+        return Configuration.fromEnv(this.appName)
+        .withSampler(Configuration.SamplerConfiguration.fromEnv()
+                .withType(ConstSampler.TYPE)
+                .withParam(1)
+        )
+        .withReporter(Configuration.ReporterConfiguration.fromEnv()
+                .withFlushInterval(1000)
+                .withLogSpans(true)
+                .withMaxQueueSize(1000)
+                .withSender(Configuration.SenderConfiguration.fromEnv()
+                        .withAgentHost(this.agentHost)
+                        .withAgentPort(this.agentPort)
+                )
+        )
+        .getTracer();
+    }
+```
+
+此外, 还需要配置切面, 例如:
+
+```java
+@Component
+@Aspect
+public class TracerAop {
+    
+    @Autowired
+    private Tracer tracer;
+
+    @Around("within(sch.frog.jaeger.controller..*)")
+    public Object around(ProceedingJoinPoint pjp) throws Throwable{
+        Span parentSpan = tracer.scopeManager().activeSpan();
+        Signature signature = pjp.getSignature();
+        Span currentSpan = this.tracer.buildSpan(signature.getDeclaringTypeName() + "." + signature.getName())
+                .asChildOf(parentSpan)
+                .start();
+        currentSpan.setTag("class", signature.getDeclaringTypeName());
+        currentSpan.setTag("method", signature.getName());
+
+        Scope scope = tracer.scopeManager().activate(currentSpan);
+        try{
+            return pjp.proceed();
+        }finally{
+            try{
+                currentSpan.finish();
+            }finally{
+                scope.close();
+            }
+        }
+    }
+
+}
+```
+
+具体代码详见: [JaegerDemo](https://github.com/FrogIf/JaegerDemo)
+
 ## 自己做一个collector
 
 关于jaeger上传的数据具体含义, 在open-telemetry的介绍中再详细说明. 这里简要介绍一下如何根据jaeger的协议, 自己创建一个collector. jaeger现在开始逐渐完全使用open-tracing的协议了, 所以没什么用, 主要是留作记录.

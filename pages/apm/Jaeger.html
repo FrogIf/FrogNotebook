@@ -461,6 +461,60 @@ code {
 <p>可以看到, 实际上, jaeger已经把执行的sql语句都采集上来了, 从详情界面上, 点开也能看到:</p>
 <p><img src="img/jaeger-data-recevie4.png" alt="image"></p>
 <p>其他的,还有拓扑图等功能.</p>
+<p><strong>jaeger client配置</strong></p>
+<p>下面简单介绍一下jaeger client的配置, 单纯jaeger client, 不包含spring相关内容. 这里讨论的是java语言. 下面是项目中简单继承jaeger-client时的配置示例:</p>
+<pre class="hljs"><code><div>    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Tracer <span class="hljs-title">tracer</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> Configuration.fromEnv(<span class="hljs-keyword">this</span>.appName)
+        .withSampler(Configuration.SamplerConfiguration.fromEnv()
+                .withType(ConstSampler.TYPE)
+                .withParam(<span class="hljs-number">1</span>)
+        )
+        .withReporter(Configuration.ReporterConfiguration.fromEnv()
+                .withFlushInterval(<span class="hljs-number">1000</span>)
+                .withLogSpans(<span class="hljs-keyword">true</span>)
+                .withMaxQueueSize(<span class="hljs-number">1000</span>)
+                .withSender(Configuration.SenderConfiguration.fromEnv()
+                        .withAgentHost(<span class="hljs-keyword">this</span>.agentHost)
+                        .withAgentPort(<span class="hljs-keyword">this</span>.agentPort)
+                )
+        )
+        .getTracer();
+    }
+</div></code></pre>
+<p>此外, 还需要配置切面, 例如:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">@Component</span>
+<span class="hljs-meta">@Aspect</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TracerAop</span> </span>{
+    
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> Tracer tracer;
+
+    <span class="hljs-meta">@Around</span>(<span class="hljs-string">"within(sch.frog.jaeger.controller..*)"</span>)
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">around</span><span class="hljs-params">(ProceedingJoinPoint pjp)</span> <span class="hljs-keyword">throws</span> Throwable</span>{
+        Span parentSpan = tracer.scopeManager().activeSpan();
+        Signature signature = pjp.getSignature();
+        Span currentSpan = <span class="hljs-keyword">this</span>.tracer.buildSpan(signature.getDeclaringTypeName() + <span class="hljs-string">"."</span> + signature.getName())
+                .asChildOf(parentSpan)
+                .start();
+        currentSpan.setTag(<span class="hljs-string">"class"</span>, signature.getDeclaringTypeName());
+        currentSpan.setTag(<span class="hljs-string">"method"</span>, signature.getName());
+
+        Scope scope = tracer.scopeManager().activate(currentSpan);
+        <span class="hljs-keyword">try</span>{
+            <span class="hljs-keyword">return</span> pjp.proceed();
+        }<span class="hljs-keyword">finally</span>{
+            <span class="hljs-keyword">try</span>{
+                currentSpan.finish();
+            }<span class="hljs-keyword">finally</span>{
+                scope.close();
+            }
+        }
+    }
+
+}
+</div></code></pre>
+<p>具体代码详见: <a href="https://github.com/FrogIf/JaegerDemo">JaegerDemo</a></p>
 <h2 id="%E8%87%AA%E5%B7%B1%E5%81%9A%E4%B8%80%E4%B8%AAcollector">自己做一个collector</h2>
 <p>关于jaeger上传的数据具体含义, 在open-telemetry的介绍中再详细说明. 这里简要介绍一下如何根据jaeger的协议, 自己创建一个collector. jaeger现在开始逐渐完全使用open-tracing的协议了, 所以没什么用, 主要是留作记录.</p>
 <p>首先, jaeger协议可以在如下地址获取: <a href="https://github.com/jaegertracing/jaeger-idl">jaeger-idl</a>, 其中/proto/api_v2/目录下的内容是接下来要处理的内容.</p>
