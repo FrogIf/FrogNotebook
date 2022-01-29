@@ -368,19 +368,689 @@ code {
 <h1 id="opentelemetry">OpenTelemetry</h1>
 <h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
 <p>官网描述:</p>
-<p>OpenTelemetry is a collection of tools, APIs, and SDKs. Use it to instrument, generate, collect, and export telemetry data (metrics, logs, and traces) to help you analyze your software’s performance and behavior.</p>
-<p>OpenTelemetry将OpenTracing和OpenMetrics集成在了一块. 提供了多个维度的应用程序监控.</p>
-<h2 id="%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8">安装使用</h2>
+<pre class="hljs"><code><div>OpenTelemetry is a collection of tools, APIs, and SDKs. Use it to instrument, generate, collect, and export telemetry data (metrics, logs, and traces) to help you analyze your software’s performance and behavior.
+</div></code></pre>
+<p>OpenTelemetry将OpenTracing和OpenMetrics集成在了一块. 提供了多个维度的应用程序监控. 官网上还说:</p>
+<pre class="hljs"><code><div>OpenTelemetry is not an observability back-end like Jaeger or Prometheus. Instead, it supports exporting data to a variety of open-source and commercial back-ends. It provides a pluggable architecture so additional technology protocols and formats can be easily added.
+</div></code></pre>
+<p>也就是说, OpenTelemetry不提供展示相关的功能, 只负责数据采集.</p>
+<p>OpenTelemetry的架构图如下:</p>
+<p><img src="img/opentelemetry-architecture.png" alt="image"></p>
+<p>首先, 应用中集成了OpenTelemetry的Liberary或者探针, 然后, 就会将数据发送到collector, collector再将数据发送给第三方平台.</p>
+<p>所以, 接下来, 使用OpenTelemetry作为数据采集, 使用Jaeger作为展示, 来体验一下.</p>
+<p>截止目前, metrics还处于alpha截断, 还不稳定, 暂不介绍, 只介绍OpenTracing.</p>
+<h2 id="%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B">快速开始</h2>
 <p>这里只介绍java应用. 使用OpenTelemetry来监控应用的方式有两种:</p>
 <ol>
-<li>采用sdk, 这种方式控制灵活, 但是侵入性强;</li>
-<li>采用java探针的方式, 侵入小;</li>
+<li>采用sdk, 这种方式控制灵活, 但是具有侵入性, 开发难度大;</li>
+<li>采用java探针的方式, 侵入小, 但是不够灵活, 有些框架或者组件可能不支持, 就会捕捉不到;</li>
 </ol>
-<p>这里只介绍采用java agent的方式来安装:</p>
+<h3 id="%E6%89%8B%E5%8A%A8%E9%9B%86%E6%88%90">手动集成</h3>
+<p>手动集成文档参考<a href="https://opentelemetry.io/docs/instrumentation/java/manual/">opentelemetry官方文档</a></p>
+<p>有以下方面:</p>
+<ol>
+<li>配置整体的环境:
+<ol>
+<li>采样率</li>
+<li>exporter, 其中, opentelemetry目前官方支持以下exporter:
+<ol>
+<li>In-Memory Exporter: trace数据保留在本机内存中;</li>
+<li>Jaeger Exporter: trace数据发送到jaeger collector中;</li>
+<li>Zipkin Exporter: trace数据发送到Zipkin中;</li>
+<li>Logging Exporter: trace数据发送日志流中;</li>
+<li>OpenTelemetry Exporter: trace数据发送到OpenTelemetry自己的collector中.</li>
+</ol>
+</li>
+<li>为应用实例起一个可以识别的名字</li>
+</ol>
+</li>
+<li>嵌码
+<ul>
+<li>这里就具体情况具体分析了, 手动集成时, 会受很多语言/框架等的限制, 需要灵活的进行不同方式的嵌码.</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>手动嵌码时, 可能需要知道一些概念, 比如Span, Trace, Event等, 这些留在协议解析阶段进行介绍.</p>
+</blockquote>
+<p>最终代码参见: <a href="https://github.com/FrogIf/OpenTelemetryDemo">OpenTelemetryDemo</a></p>
+<p>这个演示例子中DemoAppA和DemoAppB采用手动嵌码的方式进行数据采集, 代码中实现了: 部分代码通过AOP方式进行跟踪; 实现了RestTemplate跨应用追踪; 异常捕捉; 额外日志输出等. 此外例子中, 使用的是Jaeger Exporter. 通过Jaeger的页面展示采集到的数据. 代码中没有配置采样率.</p>
+<h3 id="%E8%87%AA%E5%8A%A8%E5%B5%8C%E7%A0%81">自动嵌码</h3>
+<p>java自动嵌码, 需要使用java探针技术, 通过字节码编辑的方式, 进行嵌码.</p>
+<p>先尝试将数据发送到jaeger:</p>
 <ol>
 <li><a href="https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/">下载探针</a></li>
-<li>启动应用时, 命令中加入</li>
+<li>下载测试应用源码<a href="https://github.com/FrogIf/OpenTelemetryDemo">NormalApp</a></li>
+<li>maven打包: <code>mvn clean package</code></li>
+<li>在打包好的NormalApp.jar同级目录中, 新建目录<code>agent</code></li>
+<li>将下载的探针放入<code>agent</code>文件夹中</li>
+<li>在agent文件夹中增加配置文件, 内容如下:</li>
 </ol>
+<pre class="hljs"><code><div>otel.service.name=NormalApp
+
+# jaeger
+otel.traces.exporter=jaeger
+otel.exporter.jaeger.endpoint=http://localhost:14250
+otel.exporter.jaeger.timeout=10000
+</div></code></pre>
+<blockquote>
+<p>注意: 这里使用的agent版本为: 1.10.1, 不同版本, 配置可能会有差别, 详见<a href="https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/README.md">https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/README.md</a> 和 <a href="https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/agent-config.md">https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/agent-config.md</a></p>
+</blockquote>
+<ol start="7">
+<li>启动应用</li>
+</ol>
+<pre class="hljs"><code><div>java -javaagent:agent/opentelemetry-javaagent.jar -Dotel.javaagent.configuration-file=agent/conf.properties -jar NormalApp.jar
+</div></code></pre>
+<ol start="8">
+<li>访问页面: http://localhost:9093/hello</li>
+<li>查看jaeger界面, 可以看到已经获取到了数据.</li>
+</ol>
+<p><img src="img/opentelemetry-jaeger-trace.png" alt="img"></p>
+<blockquote>
+<p>最开始看到的数据可能不完整, 等一会就好了. 这时因为opentelemetry不是一次性上传一条完整的trace, 而是几个span为一组进行上传的, 最终前端显示时, 会将这些span拼装为一个完整的trace.</p>
+</blockquote>
+<h3 id="%E4%BD%BF%E7%94%A8opentelemetry-collector">使用OpenTelemetry-Collector</h3>
+<p>接下来尝试使用opentelemetry官方的collector来接收数据.</p>
+<p>collector有三个主要的组件:</p>
+<ol>
+<li>receiver: 接收探针上传上来的数据</li>
+<li>processor: 对接收到的数据进行进一步处理(可以没有)</li>
+<li>exporter: 将processor处理好的数据发送出去, opentelemetry没有展示及存储功能, 所以collector只是作为一个中转</li>
+</ol>
+<p>所以, 配置collector时, 主要就是配置这三个组件: 1. receiver需要暴露出来的端口; 2. processor需要进行的处理; 3. exporter需要将数据发送到的目标地址;</p>
+<p>我这里是windows环境, 使用<code>otelcol.exe</code>进行的实验. 配置如下:</p>
+<pre class="hljs"><code><div><span class="hljs-attr">receivers:</span>
+  <span class="hljs-attr">otlp:</span>
+    <span class="hljs-attr">protocols:</span> 
+      <span class="hljs-attr">grpc:</span> 
+        <span class="hljs-attr">endpoint:</span> <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span><span class="hljs-string">:19890</span>
+
+<span class="hljs-attr">processors:</span>
+  <span class="hljs-attr">memory_limiter:</span>
+    <span class="hljs-attr">check_interval:</span> <span class="hljs-string">5s</span>
+    <span class="hljs-attr">limit_mib:</span> <span class="hljs-number">4000</span>
+    <span class="hljs-attr">spike_limit_mib:</span> <span class="hljs-number">500</span>
+
+<span class="hljs-attr">exporters:</span>
+  <span class="hljs-attr">jaeger:</span>
+    <span class="hljs-attr">endpoint:</span> <span class="hljs-string">"localhost:14250"</span>
+    <span class="hljs-attr">tls:</span>
+      <span class="hljs-attr">insecure:</span> <span class="hljs-literal">true</span>
+  <span class="hljs-attr">file:</span>
+    <span class="hljs-attr">path:</span> <span class="hljs-string">./application.log</span>
+
+<span class="hljs-attr">service:</span>
+  <span class="hljs-attr">pipelines:</span>
+    <span class="hljs-attr">traces:</span>
+      <span class="hljs-attr">receivers:</span> <span class="hljs-string">[otlp]</span>
+      <span class="hljs-attr">processors:</span> <span class="hljs-string">[memory_limiter]</span>
+      <span class="hljs-attr">exporters:</span> <span class="hljs-string">[jaeger]</span>
+    <span class="hljs-attr">logs:</span>
+      <span class="hljs-attr">receivers:</span> <span class="hljs-string">[otlp]</span>
+      <span class="hljs-attr">exporters:</span> <span class="hljs-string">[file]</span>
+</div></code></pre>
+<blockquote>
+<p>不同版本的collector配置可能有所不同, 这里使用的collector版本是:0.43.0</p>
+</blockquote>
+<p>解释一下:</p>
+<ol>
+<li>receivers - 这里只定义了接收otlp(就是OpenTelemetry自己的)类型的数据, 监听的端口是19890. 这里需要配置ip地址, 个人认为是为了客户端发送数据时, 做熔断/重定向/负载均衡的时候, 能准确的将自己的地址告诉给客户端.</li>
+<li>processors - 这里使用了内存限制的一个processor, 防止collector发生内存溢出.当内存超过指定的阈值时, 会丢掉一部分数据, 并强制进行垃圾回收.</li>
+<li>exporters - 这里配置了两个exporter, 一个使用jaeger作为最终数据的接收端, 会将数据打到jaeger的collector去; 另一个是直接输出到本地文件</li>
+<li>service - service的pipelines是必须配的, 这里配置了traces的pipeline和logs的pipeline, 还可以配置metrics的pipeline. pipeline的作用主要是指定trace/metric/log数据经过指定的receiver接收, 通过指定的processor处理, 最后由指定的exporter输出.</li>
+</ol>
+<p>启动otelcol.exe, 命令<code>otelcol.exe --config=file:collector.yaml</code>, 之后, 探针连接到这个collector上, 就可以看到jaeger和application.log中的数据了.</p>
+<p>下面是应用探针的配置:</p>
+<pre class="hljs"><code><div>otel.service.name=NormalApp
+
+# opentelemetry
+otel.traces.exporter=otlp
+otel.logs.exporter=otlp
+otel.exporter.otlp.endpoint=http://localhost:19890
+</div></code></pre>
+<h2 id="%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90">协议解析</h2>
+<p>上面介绍了OpenTelemetry的基本使用, 接下来, 分析一下OpenTelemetry的trace协议, 从而了解分布式链路追踪的具体原理.</p>
+<p>分布式链路追踪的基本原理, 都是基于<a href="https://research.google/pubs/pub36356/">google dapper的论文</a>. 我们从OpenTelemetry的协议来理解这个原理. OpenTelemetry协议在这里: <a href="https://github.com/open-telemetry/opentelemetry-proto">opentelemetry proto</a>, 这里只分析trace的数据协议.</p>
+<p>首先, 应用上面的内容, 使用上面的应用, 可以获取到一条agent上传的trace数据:</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"resourceSpans"</span>: [
+    {
+      <span class="hljs-attr">"resource"</span>: {
+        <span class="hljs-attr">"attributes"</span>: [
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"host.arch"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"amd64"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"host.name"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"DESKTOP-N88B65R"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"os.description"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"Windows 10 10.0"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"os.type"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"windows"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"process.command_line"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"C:\\Program Files\\Eclipse Foundation\\jdk-11.0.12.7-hotspot;bin;java.exe -javaagent:D:/work/otel/agent/opentelemetry-javaagent.jar -Dotel.javaagent.configuration-file=D:/work/otel/agent/conf.properties -javaagent:D:\\Software\\JetBrains\\IntelliJ IDEA Community Edition 2021.3.1\\lib\\idea_rt.jar=64502:D:\\Software\\JetBrains\\IntelliJ IDEA Community Edition 2021.3.1\\bin -Dfile.encoding=UTF-8"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"process.executable.path"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"C:\\Program Files\\Eclipse Foundation\\jdk-11.0.12.7-hotspot;bin;java.exe"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"process.pid"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"9796"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"process.runtime.description"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"Eclipse Foundation OpenJDK 64-Bit Server VM 11.0.12+7"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"process.runtime.name"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"OpenJDK Runtime Environment"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"process.runtime.version"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"11.0.12+7"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"service.name"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"NormalApp"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"telemetry.auto.version"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"1.10.1"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"telemetry.sdk.language"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"java"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"telemetry.sdk.name"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"opentelemetry"</span>
+            }
+          },
+          {
+            <span class="hljs-attr">"key"</span>: <span class="hljs-string">"telemetry.sdk.version"</span>,
+            <span class="hljs-attr">"value"</span>: {
+              <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"1.10.1"</span>
+            }
+          }
+        ]
+      },
+      <span class="hljs-attr">"instrumentationLibrarySpans"</span>: [
+        {
+          <span class="hljs-attr">"instrumentationLibrary"</span>: {
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"io.opentelemetry.hibernate-common"</span>,
+            <span class="hljs-attr">"version"</span>: <span class="hljs-string">"1.10.1"</span>
+          },
+          <span class="hljs-attr">"spans"</span>: [
+            {
+              <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"4b82c8ec82686c7ae4e854ceb6eb865d"</span>,
+              <span class="hljs-attr">"spanId"</span>: <span class="hljs-string">"a2900b8330f358f3"</span>,
+              <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-string">"c3157c6c34fdd534"</span>,
+              <span class="hljs-attr">"name"</span>: <span class="hljs-string">"SELECT TestData"</span>,
+              <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"SPAN_KIND_INTERNAL"</span>,
+              <span class="hljs-attr">"startTimeUnixNano"</span>: <span class="hljs-string">"1643286174374579000"</span>,
+              <span class="hljs-attr">"endTimeUnixNano"</span>: <span class="hljs-string">"1643286174439692600"</span>,
+              <span class="hljs-attr">"attributes"</span>: [
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.name"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"http-nio-9093-exec-1"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.id"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"46"</span>
+                  }
+                }
+              ],
+              <span class="hljs-attr">"status"</span>: {
+                
+              }
+            },
+            {
+              <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"4b82c8ec82686c7ae4e854ceb6eb865d"</span>,
+              <span class="hljs-attr">"spanId"</span>: <span class="hljs-string">"4ec05e129f3bb920"</span>,
+              <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-string">"c3157c6c34fdd534"</span>,
+              <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Transaction.commit"</span>,
+              <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"SPAN_KIND_INTERNAL"</span>,
+              <span class="hljs-attr">"startTimeUnixNano"</span>: <span class="hljs-string">"1643286174443262500"</span>,
+              <span class="hljs-attr">"endTimeUnixNano"</span>: <span class="hljs-string">"1643286174443629200"</span>,
+              <span class="hljs-attr">"attributes"</span>: [
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.name"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"http-nio-9093-exec-1"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.id"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"46"</span>
+                  }
+                }
+              ],
+              <span class="hljs-attr">"status"</span>: {
+                
+              }
+            }
+          ]
+        },
+        {
+          <span class="hljs-attr">"instrumentationLibrary"</span>: {
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"io.opentelemetry.spring-data-1.8"</span>,
+            <span class="hljs-attr">"version"</span>: <span class="hljs-string">"1.10.1"</span>
+          },
+          <span class="hljs-attr">"spans"</span>: [
+            {
+              <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"4b82c8ec82686c7ae4e854ceb6eb865d"</span>,
+              <span class="hljs-attr">"spanId"</span>: <span class="hljs-string">"c3157c6c34fdd534"</span>,
+              <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-string">"cd34bde44865ee2b"</span>,
+              <span class="hljs-attr">"name"</span>: <span class="hljs-string">"CrudRepository.count"</span>,
+              <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"SPAN_KIND_INTERNAL"</span>,
+              <span class="hljs-attr">"startTimeUnixNano"</span>: <span class="hljs-string">"1643286174142328600"</span>,
+              <span class="hljs-attr">"endTimeUnixNano"</span>: <span class="hljs-string">"1643286174443780600"</span>,
+              <span class="hljs-attr">"attributes"</span>: [
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.name"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"http-nio-9093-exec-1"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.id"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"46"</span>
+                  }
+                }
+              ],
+              <span class="hljs-attr">"status"</span>: {
+                
+              }
+            }
+          ]
+        },
+        {
+          <span class="hljs-attr">"instrumentationLibrary"</span>: {
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"io.opentelemetry.tomcat-7.0"</span>,
+            <span class="hljs-attr">"version"</span>: <span class="hljs-string">"1.10.1"</span>
+          },
+          <span class="hljs-attr">"spans"</span>: [
+            {
+              <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"4b82c8ec82686c7ae4e854ceb6eb865d"</span>,
+              <span class="hljs-attr">"spanId"</span>: <span class="hljs-string">"24091a7805af2d16"</span>,
+              <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-string">""</span>,
+              <span class="hljs-attr">"name"</span>: <span class="hljs-string">"/hello"</span>,
+              <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"SPAN_KIND_SERVER"</span>,
+              <span class="hljs-attr">"startTimeUnixNano"</span>: <span class="hljs-string">"1643286174021367100"</span>,
+              <span class="hljs-attr">"endTimeUnixNano"</span>: <span class="hljs-string">"1643286174476828800"</span>,
+              <span class="hljs-attr">"attributes"</span>: [
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.response_content_length"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"7"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.status_code"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"200"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.scheme"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"http"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.method"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"GET"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.server_name"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"localhost"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.id"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"46"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.user_agent"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"net.peer.port"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"64543"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.host"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"localhost:9093"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"net.peer.ip"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"0:0:0:0:0:0:0:1"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.name"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"http-nio-9093-exec-1"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"net.transport"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"ip_tcp"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.flavor"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"1.1"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.target"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"/hello"</span>
+                  }
+                }
+              ],
+              <span class="hljs-attr">"status"</span>: {
+                
+              }
+            }
+          ]
+        },
+        {
+          <span class="hljs-attr">"instrumentationLibrary"</span>: {
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"io.opentelemetry.spring-webmvc-3.1"</span>,
+            <span class="hljs-attr">"version"</span>: <span class="hljs-string">"1.10.1"</span>
+          },
+          <span class="hljs-attr">"spans"</span>: [
+            {
+              <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"4b82c8ec82686c7ae4e854ceb6eb865d"</span>,
+              <span class="hljs-attr">"spanId"</span>: <span class="hljs-string">"cd34bde44865ee2b"</span>,
+              <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-string">"24091a7805af2d16"</span>,
+              <span class="hljs-attr">"name"</span>: <span class="hljs-string">"HelloBController.hello"</span>,
+              <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"SPAN_KIND_INTERNAL"</span>,
+              <span class="hljs-attr">"startTimeUnixNano"</span>: <span class="hljs-string">"1643286174127436500"</span>,
+              <span class="hljs-attr">"endTimeUnixNano"</span>: <span class="hljs-string">"1643286174473945000"</span>,
+              <span class="hljs-attr">"attributes"</span>: [
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.name"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"http-nio-9093-exec-1"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.id"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"46"</span>
+                  }
+                }
+              ],
+              <span class="hljs-attr">"status"</span>: {
+                
+              }
+            }
+          ]
+        },
+        {
+          <span class="hljs-attr">"instrumentationLibrary"</span>: {
+            <span class="hljs-attr">"name"</span>: <span class="hljs-string">"io.opentelemetry.jdbc"</span>,
+            <span class="hljs-attr">"version"</span>: <span class="hljs-string">"1.10.1"</span>
+          },
+          <span class="hljs-attr">"spans"</span>: [
+            {
+              <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"4b82c8ec82686c7ae4e854ceb6eb865d"</span>,
+              <span class="hljs-attr">"spanId"</span>: <span class="hljs-string">"0ed8fb3c38dfb586"</span>,
+              <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-string">"a2900b8330f358f3"</span>,
+              <span class="hljs-attr">"name"</span>: <span class="hljs-string">"SELECT test_data"</span>,
+              <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"SPAN_KIND_CLIENT"</span>,
+              <span class="hljs-attr">"startTimeUnixNano"</span>: <span class="hljs-string">"1643286174429059700"</span>,
+              <span class="hljs-attr">"endTimeUnixNano"</span>: <span class="hljs-string">"1643286174429397000"</span>,
+              <span class="hljs-attr">"attributes"</span>: [
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"db.operation"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"SELECT"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"db.sql.table"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"test_data"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.name"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"http-nio-9093-exec-1"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"db.connection_string"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"sqlite:"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"thread.id"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"intValue"</span>: <span class="hljs-string">"46"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"db.system"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"other_sql"</span>
+                  }
+                },
+                {
+                  <span class="hljs-attr">"key"</span>: <span class="hljs-string">"db.statement"</span>,
+                  <span class="hljs-attr">"value"</span>: {
+                    <span class="hljs-attr">"stringValue"</span>: <span class="hljs-string">"select count(*) as col_0_0_ from test_data testdata0_"</span>
+                  }
+                }
+              ],
+              <span class="hljs-attr">"status"</span>: {
+                
+              }
+            }
+          ]
+        }
+      ],
+      <span class="hljs-attr">"schemaUrl"</span>: <span class="hljs-string">"https://opentelemetry.io/schemas/1.8.0"</span>
+    }
+  ]
+}
+</div></code></pre>
+<p>首先看最外层, 结合着协议:</p>
+<pre class="hljs"><code><div>message TracesData {
+  repeated ResourceSpans resource_spans = 1;
+}
+
+message ResourceSpans {
+  opentelemetry.proto.resource.v1.Resource resource = 1;
+
+  repeated InstrumentationLibrarySpans instrumentation_library_spans = 2;
+
+  string schema_url = 3;
+}
+
+message InstrumentationLibrarySpans {
+  opentelemetry.proto.common.v1.InstrumentationLibrary instrumentation_library = 1;
+
+  repeated Span spans = 2;
+
+  string schema_url = 3;
+}
+</div></code></pre>
+<p>可知道, 一个数据包(TracesData)中可以包含多条ResourceSpans, 每一个ResourceSpans内部主要包含两部分内容: 1. resource; 2. instrumentation_library_spans. 其中, resource内部是系统资源信息, 包括操作系统信息, 进程信息等等, 包括每一个应用或者实例的名称也是包含在这里面面的. instrumentation_library_spans包含的是链路追踪数据.</p>
+<p>instrumentation_library主要包含两部分: 1. instrumentation_library; 2. spans. instrumentation_library是用来指示当前一系列span是哪一个插件采集上来的, 比如有些span是jdbc插件采集的, 有些span是spring-mvc的插件采集的. spans是我们关注的终点, 这里面存放的是链路追踪的数据.</p>
+<blockquote>
+<p>ResourceSpans和InstrumentationLibrarySpans中还有个属性叫schema_url, 这是一个url连接, 指向一个schema文件, 这个文件中描述了当前版本中, 哪些属性有变更. 大概就是做新老数据兼容, 使得新老探针采集到的数据都能正常展示的. 官方解释参见<a href="https://opentelemetry.io/docs/reference/specification/schemas/overview/#how-schemas-work">schemas</a></p>
+</blockquote>
+<p>接下来, 看span的协议定义:</p>
+<pre class="hljs"><code><div>message Span {
+  bytes trace_id = 1;
+
+  bytes span_id = 2;
+
+  string trace_state = 3;
+
+  bytes parent_span_id = 4;
+
+  string name = 5;
+
+  enum SpanKind {
+    SPAN_KIND_UNSPECIFIED = 0;
+
+    SPAN_KIND_INTERNAL = 1;
+
+    SPAN_KIND_SERVER = 2;
+
+    SPAN_KIND_CLIENT = 3;
+
+    SPAN_KIND_PRODUCER = 4;
+
+    SPAN_KIND_CONSUMER = 5;
+  }
+
+  SpanKind kind = 6;
+
+  fixed64 start_time_unix_nano = 7;
+
+  fixed64 end_time_unix_nano = 8;
+
+  repeated opentelemetry.proto.common.v1.KeyValue attributes = 9;
+
+  uint32 dropped_attributes_count = 10;
+
+  message Event {
+    fixed64 time_unix_nano = 1;
+
+    string name = 2;
+
+    repeated opentelemetry.proto.common.v1.KeyValue attributes = 3;
+
+    uint32 dropped_attributes_count = 4;
+  }
+
+  repeated Event events = 11;
+
+  uint32 dropped_events_count = 12;
+
+  message Link {
+    bytes trace_id = 1;
+
+    bytes span_id = 2;
+
+    string trace_state = 3;
+
+    repeated opentelemetry.proto.common.v1.KeyValue attributes = 4;
+
+    uint32 dropped_attributes_count = 5;
+  }
+
+  repeated Link links = 13;
+
+  uint32 dropped_links_count = 14;
+
+  Status status = 15;
+}
+
+message Status {
+  reserved 1;
+
+  string message = 2;
+
+  enum StatusCode {
+    STATUS_CODE_UNSET               = 0;
+    STATUS_CODE_OK                  = 1;
+    STATUS_CODE_ERROR               = 2;
+  };
+
+  StatusCode code = 3;
+}
+</div></code></pre>
+<p>属性比较多, 先把一些不太重要的介绍一下:</p>
+<ol>
+<li>tracestate: 这时w3c标准中, 请求头里面的. 网上说: The tracestate HTTP header field conveys information about request position in multiple distributed tracing graphs. 大概意思是用来在分布式链路追踪图中传递信息的.</li>
+<li>name: span的名字, 可以是方法名, 可以是请求地址, 就是上面手动嵌码时, 指定的<code>tracer.spanBuilder(spanName)</code></li>
+<li>kind: span的类型, 用来标识不同类型的span(server, client, producer, consumer...)上面手动嵌码时, 跨应用的情况下, 也用过(server, client).</li>
+<li>start_time_unix_nano: span开始时间(纳秒级别)</li>
+<li>end_time_unix_nano: span结束时间(纳秒级别), 用这两个时间就可以计算出一个span的耗时, 如果在减去子级span的时间, 就会得到该span的独占时间.</li>
+<li>attributes: 用来传递一些非结构化的额外信息, 供分析trace时使用.</li>
+<li>dropped_attributes_count: 丢失掉的attribute数量, 有时传递的attributes信息过多, 对于网络传输, 数据处理, 内存, 持久化都有一定的开销, 而且trace数据在不采样的情况下, 每一次请求就会产生一条trace(这里指整个链路, 其中还包含多个span), 积少成多...</li>
+<li>events: 就是log, 官方文档上有说明, 与应用生成的log不要重复, 如果应用生成了log, 就没有必要记录这个了, 这个就是对应用自己打的log的一个补充.</li>
+<li>dropped_events_count: 和dropped_attributes_count类似.</li>
+<li>links: 没有理解是干什么的, 参考官方文档: <a href="https://opentelemetry.io/docs/reference/specification/trace/sdk_exporters/jaeger/#links">link_to_jaeger</a> 以及<a href="https://opentelemetry.io/docs/instrumentation/java/manual/#create-spans-with-links">create-spans-with-links</a></li>
+<li>dropped_links_count: 和dropped_attributes_count类似.</li>
+<li>status: 指示一个span的状态, 如果是有异常, 状态可以设置为error, 这时jaeger的ui界面上时能看到一个红色感叹号图标. 上面手动嵌码的源码中也有相关设置.</li>
+</ol>
+<p>接下来介绍一下与链路追踪息息相关的:</p>
+<ol>
+<li>trace_id;</li>
+<li>span_id;</li>
+<li>parent_span_id;</li>
+</ol>
+<p>通过这三个, 就能串起一整条链路, 并且显示出堆栈调用的上下级关系.</p>
+<p>首先是trace_id, 在多级应用调用过程中, 以及每个应用内部的span中, trace_id都是相同的, 所以通过trace_id就能贯穿一整条链路追踪.</p>
+<p>接下来是span_id和parent_span_id, 通过这两个id能确定两个span之间的调用和被调用关系. 如果一个span的id是另一个span的parent_id, 那么, 前一个span就是后一个span的父span. 如果两个span的parent_id相同, 说明这两个是同级, 这时通过span的排列顺序或者start_time_unix_nano就可以确定这两个span在同一级别上的先后执行顺序. 此外, 请求入口的parent_span_id为空, 可以分辨出入口的位置.</p>
+<p>那么, 在跨应用的链路追踪过程中, 怎么保证trace_id在多个应用中保持一致呢. 对于http请求, 在请求头中放入特殊的请求头参数就可以了. 这个在上面手动嵌码的时候, 就是这么做的<a href="https://github.com/FrogIf/OpenTelemetryDemo/blob/main/DemoAppA/src/java/sch/frog/opentelemetry/config/OpenTelemetryInstrumentation.java">跨应用inject特殊请求头</a></p>
+<p>有了以上的这些了解, 实际上, 就可以通过程序制造一些假数据, 来模拟链路追踪. 例如这个源码: <a href="https://github.com/FrogIf/OpenTelemetryDemo/tree/main/OpenTelemetryTracePublisher">OpenTelemetryTracePublisher</a></p>
+<p><strong>协议整体分析</strong></p>
+<p>OpenTelemetry的trace协议, 主要以span为主, 这与jaeger, skywalking基本类似. 并且和jaeger一样, span并不是等一次响应结束了再发送给collector, 而是一部分一部分的发送, 这样的好处是每次的数据包较小, 对网络等的压力比较小. 如果中间环节使用kafka也不会出现因为kafka对消息大小的限制导致数据传输失败. skywalking则不同, skywalking是每个应用响应完成之后, 将整个数据一起发送过去, 这种整体发送也有一定好处, 可以想象, 通过trace数据, 是能分析出每一次响应的时间, 异常个数等的, 进而可以计算得到应用一些性能数据, 如果一个应用的一次响应数据作为一个整体发送到collector, collector就可以直接根据入口进行响应时间统计分析, 非常方便; 如果是分开发送, 这些指标的分析, 就会变得很困难(也可以, 比如在内存中先存储这条trace的部分数据, 待整条trace拼接完整后, 再进行其他操作).</p>
 
 </body>
 </html>
