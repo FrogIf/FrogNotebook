@@ -6,8 +6,9 @@ a notebook. record something.
 
 ## 计划
 
-* GuavaCache, CoffieCache
 * jvm问题排查
+* prometheus, Grafana
+* ElasticSearch, LogStash, kibana
 
 ## 本地部署
 
