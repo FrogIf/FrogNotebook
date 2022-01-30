@@ -79,7 +79,10 @@ git本地仓库有三种不同的状态:
 19. git checkout -b *分支名* *tag名* // 基于指定的tag建立分支
 20. git remote -v // 查看远程仓库地址
 21. git remote add *远程仓库名* *远程仓库的地址* // 本地仓库与远程仓库关联, 远程仓库名随便起的, 一般叫origin
-22. git clone *远程仓库的地址* // 克隆远程仓库地址
+    ```
+        这是因为远程仓库的某些文件不在本地仓库中, 执行git pull --rebase origin master即可.
+    ```
+22.  git clone *远程仓库的地址* // 克隆远程仓库地址
 
 
 ## SSH传输

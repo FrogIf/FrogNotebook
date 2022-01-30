@@ -435,7 +435,9 @@ code {
 </li>
 <li>git checkout -b <em>分支名</em> <em>tag名</em> // 基于指定的tag建立分支</li>
 <li>git remote -v // 查看远程仓库地址</li>
-<li>git remote add <em>远程仓库名</em> <em>远程仓库的地址</em> // 本地仓库与远程仓库关联, 远程仓库名随便起的, 一般叫origin</li>
+<li>git remote add <em>远程仓库名</em> <em>远程仓库的地址</em> // 本地仓库与远程仓库关联, 远程仓库名随便起的, 一般叫origin<pre class="hljs"><code><div>    这是因为远程仓库的某些文件不在本地仓库中, 执行git pull --rebase origin master即可.
+</div></code></pre>
+</li>
 <li>git clone <em>远程仓库的地址</em> // 克隆远程仓库地址</li>
 </ol>
 <h2 id="ssh%E4%BC%A0%E8%BE%93">SSH传输</h2>
