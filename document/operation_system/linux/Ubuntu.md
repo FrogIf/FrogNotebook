@@ -24,3 +24,10 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted 
 3. 更新软件中心```sudo apt-get update```(如果执行失败, 尝试把https改为http试试)
 4. 更新本地软件```sudo apt-get upgrade```
 5. 完成.
+
+## java安装
+
+1. 执行```sudo apt update```;
+2. 执行```sudo apt install openjdk-11-jdk```;
+3. 验证```java -version```;
+4. 完成.
