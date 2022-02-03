@@ -337,3 +337,11 @@ vim /var/log/messages
 * setsid命令
 
 让进程运行在新的会话里, 从而成为不属于此终端的子进程. 从而实现进程后台运行.
+
+
+## 环境变量配置
+
+1. 执行```export```查看当前所有环境变量;
+2. 修改系统环境变量配置```vim /etc/profile```(需root权限);
+3. 在文档末尾, 填写需要指定的环境变量, 例如:```export VAR_KEY=VAR_VALUE```;
+4. 执行```source /etc/profile```使其立即生效.
