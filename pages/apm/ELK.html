@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ELK.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="elk">ELK</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>在分布式架构中, 日志分散, 一旦遇到问题, 需要翻看每一个日志, 去定位问题, 效率低, 操作复杂. 这时可以通过Elastic Stack全家桶中的支持, 来解决这个痛点, 具体如下:</p>
+<ol>
+<li>收集 -- LogStash</li>
+<li>存储 -- ElasticSearch(也可以用Redis/kafka等)</li>
+<li>搜索+统计+展示 -- Kibana</li>
+</ol>
+<blockquote>
+<p>这一套组合简称为ELK</p>
+</blockquote>
+<h2 id="elasticsearch%E5%AE%89%E8%A3%85">ElasticSearch安装</h2>
+<p>这里介绍在Liunx Ubuntu环境下, 安装ElasticSearch.</p>
+<ol>
+<li>下载安装包: <a href="https://www.elastic.co/downloads/elasticsearch">ElasticSearch</a>;</li>
+<li>解压</li>
+<li>执行bin目录下的<code>nohup ./elasticsearch &amp;</code>(这样会后台执行);</li>
+<li>查看已安装插件<code>./elasticsearch-plugin list</code>;</li>
+<li>安装集群管理插件``````</li>
+<li>访问<code>http://localhost:9200/</code>, 成功.</li>
+</ol>
+<p>但是, 这时的elasticsearch是没有密码的, 下面配置密码:</p>
+<ol>
+<li>修改<code>config/elasticsearch.yml</code>文件, 并重启.</li>
+</ol>
+<pre class="hljs"><code><div>xpack.security.enabled: true
+xpack.license.self_generated.type: basic
+xpack.security.transport.ssl.enabled: true
+</div></code></pre>
+<ol start="2">
+<li>执行<code>bin/elasticsearch-setup-passwords interactive</code>, 这里需要为多个不同的账号设置密码:</li>
+</ol>
+<pre class="hljs"><code><div>Enter password for [elastic]:
+Reenter password for [elastic]:
+Enter password for [apm_system]:
+Reenter password for [apm_system]:
+Enter password for [kibana_system]:
+Reenter password for [kibana_system]:
+Enter password for [logstash_system]:
+Reenter password for [logstash_system]:
+Enter password for [beats_system]:
+Reenter password for [beats_system]:
+Enter password for [remote_monitoring_user]:
+Reenter password for [remote_monitoring_user]:
+</div></code></pre>
+<ol start="3">
+<li>访问<code>http://localhost:9200/</code>, 发现需要输入密码.(这时输入elastic的账号密码即可)</li>
+</ol>
+<h2 id="logstash%E5%AE%89%E8%A3%85">LogStash安装</h2>
+<p>LogStash是具备实时输出传输能力的管道, 负责将信息从管道的输入端传输到管道的输出端, 同时这根管道还可以在中间加上滤网. 相对应的概念就是:</p>
+<ul>
+<li>input: 负责产生事件, 常用的有: File, syslog, redis, beats</li>
+<li>filter: 负责数据处理和转换, 常用的有: grok, mutate, drop, clone, geoip</li>
+<li>output: 负责数据的输出, 常用的有: elasticsearch、file、graphite、statsd</li>
+</ul>
+<p>安装步骤:</p>
+<ol>
+<li>下载<a href="https://www.elastic.co/downloads/logstash">LogStash</a>;</li>
+<li>解压</li>
+<li>修改配置<code>config/pipelines.yml</code></li>
+</ol>
+<pre class="hljs"><code><div>- pipeline.id: froglog
+  pipeline.workers: 1
+  pipeline.batch.size: 1
+  path.config: &quot;/data/frog/logstash/config/*.cfg&quot;
+  queue.type: persisted
+</div></code></pre>
+<ol start="4">
+<li>增加配置<code>config/frog.cfg</code></li>
+</ol>
+<pre class="hljs"><code><div>input{
+    beats{
+        port =&gt; &quot;5044&quot;
+    }
+}
+output{
+    elasticsearch {
+        hosts =&gt; [&quot;localhost:9200&quot;]
+        user =&gt; &quot;elastic&quot;
+        password =&gt; &quot;123456&quot;
+        index =&gt; &quot;%{[@metadata][beat]}-%{+YYYY.MM.dd}&quot;
+    }
+}
+</div></code></pre>
+<ol start="5">
+<li>启动<code>nohup ./logstash &amp;</code>完成.</li>
+</ol>
+<p>logstash也可以直接指定input为一个文件, 例如:</p>
+<pre class="hljs"><code><div>input{
+    file{
+        path =&gt; &quot;xxxx&quot;
+    }
+}
+</div></code></pre>
+<h2 id="filebeats%E5%AE%89%E8%A3%85">Filebeats安装</h2>
+<p>接下来安装filebeats用来采集日志, 并发送给logstash. 这里在windows下安装一个filebeats演示一下.</p>
+<ol>
+<li>下载<a href="https://www.elastic.co/cn/downloads/beats/filebeat">FileBeats</a></li>
+<li>解压</li>
+<li>修改配置文件<code>filebeat.yml</code></li>
+</ol>
+<pre class="hljs"><code><div>filebeat.inputs:
+- type: filestream
+  enabled: true
+  paths:
+    - D:\Development\sparrow\logs\*.log
+
+output.logstash:
+  hosts: [&quot;localhost:5044&quot;]
+  index: 'sparrow'
+</div></code></pre>
+<ol start="4">
+<li>启动filebeat.exe, 就会收集<code>D:\Development\sparrow\logs\*.log</code>的内容了.</li>
+</ol>
+<blockquote>
+<p>实际上, filebeat可以直接将数据发送给es, 不需要经过logstash.</p>
+</blockquote>
+<h2 id="kibana%E5%AE%89%E8%A3%85">Kibana安装</h2>
+<ol>
+<li>下载<a href="https://www.elastic.co/downloads/kibana">Kibana</a></li>
+<li>解压</li>
+<li>修改<code>config/kibana.yml</code>配置.</li>
+</ol>
+<pre class="hljs"><code><div>server.name: &quot;kibana&quot;
+elasticsearch.hosts: [&quot;http://localhost:9200&quot;]
+elasticsearch.username: &quot;kibana_system&quot;
+elasticsearch.password: &quot;123456&quot;
+</div></code></pre>
+<ol start="4">
+<li>后台启动 <code>nohup ./kibana &amp;</code></li>
+<li>访问<code>http://localhost5601/</code>, 成功!</li>
+</ol>
+<blockquote>
+<p>访问成功的页面输入账号密码: elastic/123456和上面配置中的是不一样的.</p>
+</blockquote>
+<p>接下来, 进行配置, 使得可以在Kibana上面看到日志. 这里使用的ELK全套版本都是7.17.0版本.</p>
+<ol>
+<li>首先, 打开管理菜单<code>Management-Stack Management</code>:</li>
+</ol>
+<p><img src="img/elk_kibana_manage.png" alt="image"></p>
+<ol start="2">
+<li>在左侧找到&quot;Index Patterns&quot;:</li>
+</ol>
+<p><img src="img/elk_kibana_index_pattern.png" alt="image"></p>
+<ol start="3">
+<li>点击右上角&quot;Create index pattern&quot;, 输入Name以及timestamp等字段, 进行配置, 然后点击下方的&quot;Create index pattern&quot;保存配置.</li>
+</ol>
+<p><img src="img/elk_kibana_create_index.png" alt="image"></p>
+<ol start="4">
+<li>最后, 在<code>Analytics - Discover</code>中, 选择指定的index, 就可以看到相关日志了:</li>
+</ol>
+<p><img src="img/elk_kibana_view_log.png" alt="image"></p>
+<h2 id="%E4%BC%98%E5%8C%96">优化</h2>
+<p>有时候, 输入的日志会有多行, 上面的配置, 会导致kibana中展示的信息也将本属于一条日志的信息分多行显示了. 如图:</p>
+<p><img src="img/elk_kibana_multiline_problem.png" alt="image"></p>
+<p>这时需要调整filebeats的配置, 来优化日志收集:</p>
+<pre class="hljs"><code><div>filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - D:\Development\sparrow\logs\*.log
+  multiline:
+   type: pattern
+   pattern: ^\[ 
+   negate: true
+   match: after
+</div></code></pre>
+<blockquote>
+<p>注意, type必须改为log, 否则没有效果.</p>
+</blockquote>
+<p>解释一下几个配置:</p>
+<ul>
+<li>pattern：正则表达式</li>
+<li>negate：true 或 false；默认是false，匹配pattern的行合并到上一行；true，不匹配pattern的行合并到上一行</li>
+<li>match：after 或 before，合并到上一行的末尾或开头</li>
+</ul>
+<p>修改配置之后的显示效果如下:</p>
+<p><img src="img/elk_kibana_multiline_fix.png" alt="image"></p>
+<blockquote>
+<p>实际使用过程中, 日志输出格式不一样, pattern配置也就不一样, 需保证pattern和实际日志相互匹配.</p>
+</blockquote>
+<h2 id="%E5%85%B6%E4%BB%96">其他</h2>
+<p>kibana界面上展示的@timestamp字段和日志里输出的timestamp不是一个, 有时候, 由于日志量过大, 写入es速度过慢, 导致两者会差很多.</p>
+
+</body>
+</html>
