@@ -159,3 +159,8 @@ PS C:\Users\frogif> wsl -l --all -v
   docker-desktop         Stopped         2
   docker-desktop-data    Stopped         2
 ```
+
+
+## 其他命令
+
+1. 指定默认wsl发行版: ```wslconfig /setdefault Ubuntu-20.04```
