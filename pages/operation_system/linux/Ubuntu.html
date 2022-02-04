@@ -366,6 +366,29 @@ code {
     });
   </script>
 <h1 id="ubuntu">Ubuntu</h1>
+<h2 id="%E9%98%B2%E7%81%AB%E5%A2%99">防火墙</h2>
+<ol>
+<li>先看下是否安装了防火墙, <code>sudo ufw version</code>
+<ul>
+<li>安装过程如下:
+<ol>
+<li><code>sudo apt-get install ufw</code></li>
+</ol>
+</li>
+</ul>
+</li>
+<li>禁用防火墙<code>sudo ufw disable</code></li>
+</ol>
+<p>其他:</p>
+<ul>
+<li>启用防火墙<code>sudo ufw enable</code></li>
+<li>关闭所有外部访问<code>sudo ufw default deny</code></li>
+<li><code>sudo ufw allow smtp</code>  允许所有的外部IP访问本机的25/tcp (smtp)端口</li>
+<li><code>sudo ufw allow 22/tcp</code> 允许所有的外部IP访问本机的22/tcp (ssh)端口</li>
+<li><code>sudo ufw allow 53</code> 允许外部访问53端口(tcp/udp)</li>
+<li><code>sudo ufw allow from 192.168.1.100</code> 允许此IP访问所有的本机端口</li>
+<li>查看防火墙状态<code>sudo ufw status</code></li>
+</ul>
 <h2 id="%E6%8C%87%E5%AE%9A%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E7%9A%84%E9%95%9C%E5%83%8F%E6%BA%90">指定软件仓库的镜像源</h2>
 <p>系统中默认的镜像源可能访问不到, 需要手动修改镜像源.</p>
 <ol>
@@ -398,6 +421,46 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted 
 <li>验证<code>java -version</code>;</li>
 <li>完成.</li>
 </ol>
+<h2 id="mysql%E5%AE%89%E8%A3%85">mysql安装</h2>
+<p><strong>安装</strong></p>
+<ol>
+<li>检查是否已安装mysql<code>sudo netstat -tap | grep mysql</code>;</li>
+<li>安装mysql<code>sudo apt-get install mysql-server mysql-client</code></li>
+<li>验证是否安装成功<code>sudo netstat -tap | grep mysql</code></li>
+</ol>
+<p><strong>修改root密码</strong></p>
+<ol>
+<li>接下来修改随机生成的初始密码, 首先查看随机生成的密码<code>sudo cat /etc/mysql/debian.cnf</code></li>
+<li>根据文件中给出的用户名密码进行登录<code>mysql -udebian-sysmaint -pinput_the_password</code></li>
+<li>登录成功后, 执行<code>use mysql;</code></li>
+<li>修改密码为123456: <code>update mysql.user set authentication_string=password('123456') where user='root' and Host ='localhost';</code></li>
+<li>再执行这个<code>update user set  plugin=&quot;mysql_native_password&quot;; </code></li>
+<li>刷新权限<code>flush privileges;</code>, 至此, 密码修改完成;</li>
+</ol>
+<p><strong>使能外部访问</strong></p>
+<ol>
+<li>首先确定防火墙是否对该端口有限制(3306端口)</li>
+<li>登录mysql客户端;</li>
+<li>执行<code>use mysql;</code>;</li>
+<li>执行<code>select host from user where user='root';</code>发现确实限制了登录;</li>
+<li>执行<code>update user set host = '%' where user = 'root';</code>修改登录限制;</li>
+<li>刷新权限;</li>
+<li>修改配置文件(对于mysql8.0), <code>sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</code>, 修改其中的配置为<code>bind-address = 0.0.0.0</code>;</li>
+<li>重启mysql.</li>
+</ol>
+<p>mysql启停命令:</p>
+<pre class="hljs"><code><div>启动mysql：
+方式一：sudo /etc/init.d/mysql start
+方式二：sudo service mysql start
+
+停止mysql：
+方式一：sudo /etc/init.d/mysql stop
+方式二：sudo service mysql stop
+
+重启mysql：
+方式一：sudo/etc/init.d/mysql restart
+方式二：sudo service mysql restart
+</div></code></pre>
 
 </body>
 </html>
