@@ -513,6 +513,38 @@ code {
 <blockquote>
 <p>标准的MBean操作的方法以及返回值类型只能是基本类型, 例如String, int等.</p>
 </blockquote>
+<h2 id="spring%E4%B8%8Embeans">Spring与MBeans</h2>
+<p>上面描述了原始的MBean定义的简单方式, spring提供了注解的方式, 来定义MBean.</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> org.springframework.jmx.export.annotation.ManagedAttribute;
+<span class="hljs-keyword">import</span> org.springframework.jmx.export.annotation.ManagedOperation;
+<span class="hljs-keyword">import</span> org.springframework.jmx.export.annotation.ManagedResource;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Component;
+
+<span class="hljs-keyword">import</span> java.util.Random;
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-meta">@ManagedResource</span>(objectName = <span class="hljs-string">"frog.jmx:name=FrogTest"</span>, description = <span class="hljs-string">"frog test"</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FrogBean</span> </span>{
+
+    <span class="hljs-meta">@ManagedAttribute</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getName</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"Frog"</span>;
+    }
+
+    <span class="hljs-meta">@ManagedOperation</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getRandomNumber</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Random().nextInt(<span class="hljs-number">100</span>);
+    }
+
+}
+</div></code></pre>
+<p>然后, 在application.yml配置文件中, 启用jmx配置:</p>
+<pre class="hljs"><code><div><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">jmx:</span>
+    <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span>
+</div></code></pre>
+<p>最后, 通过jconsole就能看到了:</p>
+<p><img src="img/mbean_spring.png" alt="image"></p>
 <h2 id="%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3">参考文档</h2>
 <ul>
 <li><a href="http://www.tianshouzhi.com/api/tutorials/jmx/34">MBeans</a></li>

@@ -151,6 +151,50 @@ public class MBeanApplicationRunner implements ApplicationRunner {
 
 > 标准的MBean操作的方法以及返回值类型只能是基本类型, 例如String, int等.
 
+
+## Spring与MBeans
+
+上面描述了原始的MBean定义的简单方式, spring提供了注解的方式, 来定义MBean.
+
+```java
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.stereotype.Component;
+
+import java.util.Random;
+
+@Component
+@ManagedResource(objectName = "frog.jmx:name=FrogTest", description = "frog test")
+public class FrogBean {
+
+    @ManagedAttribute
+    public String getName(){
+        return "Frog";
+    }
+
+    @ManagedOperation
+    public int getRandomNumber(){
+        return new Random().nextInt(100);
+    }
+
+}
+```
+
+然后, 在application.yml配置文件中, 启用jmx配置:
+
+```yml
+spring:
+  jmx:
+    enabled: true
+```
+
+最后, 通过jconsole就能看到了:
+
+![image](img/mbean_spring.png)
+
+
+
 ## 参考文档
 
 * [MBeans](http://www.tianshouzhi.com/api/tutorials/jmx/34)
