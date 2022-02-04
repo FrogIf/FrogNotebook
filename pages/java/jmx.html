@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>jmx.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="jmx">JMX</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>JMX（Java Management Extensions，即Java管理扩展）是一个为应用程序、设备、系统等植入管理功能的框架.</p>
+<h2 id="%E6%9C%AC%E5%9C%B0jmx">本地JMX</h2>
+<p>本地使用jmx很简单:</p>
+<ol>
+<li>java_home下的bin目录中, 找到jconsole.exe, 双击启动;
+<img src="img/jmx_start.png" alt="image"></li>
+<li>选择要查看的应用, 点击connect;</li>
+<li>接下来就可以看到这个应用的各种指标了:
+<img src="img/jmx_metrics_local.png" alt="image"></li>
+</ol>
+<p>这些指标包括:</p>
+<ol>
+<li>内存使用情况:
+<ol>
+<li>堆内存使用</li>
+<li>非堆内存使用</li>
+<li>新生代, 老年代等等</li>
+</ol>
+</li>
+<li>线程使用情况:
+<ol>
+<li>当前线程数;</li>
+<li>每一个线程的栈信息;</li>
+</ol>
+</li>
+<li>类加载情况:
+<ol>
+<li>已加载的类数量;</li>
+</ol>
+</li>
+<li>虚拟机相关信息:
+<ol>
+<li>进程id, 启动时间, jvm版本等;</li>
+<li>线程概览信息;</li>
+<li>内存概览信息;</li>
+<li>操作系统信息;</li>
+<li>启动参数等;</li>
+</ol>
+</li>
+<li>被jmx管理的bean信息(这个下面会额外说)</li>
+</ol>
+<h2 id="%E8%BF%9C%E7%A8%8Bjmx">远程JMX</h2>
+<p>本地连接不需要什么配置, 但是远程连接, 需要对外开放相关端口.</p>
+<ol>
+<li>新建访问配置文件<code>jmxremote.access</code></li>
+</ol>
+<pre class="hljs"><code><div>frog readonly
+</div></code></pre>
+<ol start="2">
+<li>新建密码配置文件<code>jmxremote.password</code></li>
+</ol>
+<pre class="hljs"><code><div>frog pass123
+</div></code></pre>
+<ol start="3">
+<li>启动应用<code>java -Dcom.sun.management.jmxremote.authenticate=true -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9890 -Dcom.sun.management.jmxremote.password.file=jmxremote.password -Djava.rmi.server.hostname=172.28.48.143 -Dcom.sun.management.jmxremote.access.file=jmxremote.access -jar sparrow.jar</code></li>
+</ol>
+<p>这里介绍一下各个参数的含义:</p>
+<ul>
+<li>com.sun.management.jmxremote.authenticate: 是否使用授权(true-使用, false-不使用)</li>
+<li>com.sun.management.jmxremote.ssl: 是否启用ssl(true-启用, false-不启用)</li>
+<li>com.sun.management.jmxremote.port: 对外暴露的端口, jmx远程访问时, 就需要使用这个端口</li>
+<li>com.sun.management.jmxremote.password.file: 指定密码文件, 这个文件必须是只对当前用户可读可写, 对其他用户没有访问权限的, 否则启动会报错
+<ul>
+<li>linux下的话, 执行<code>chmod 600 &lt;filename&gt;</code></li>
+</ul>
+</li>
+<li>java.rmi.server.hostname: 本机ip地址</li>
+<li>com.sun.management.jmxremote.access.file: 访问控制文件, 内部需要配置用户名和用户名所对应的权限</li>
+</ul>
+<ol start="4">
+<li>使用jconsole远程访问</li>
+</ol>
+<p><img src="img/jmx_remote_connection.png" alt="image"></p>
+<h2 id="mbeans">MBeans</h2>
+<p>MBean是被管理的Java对象. 一个MBean可以代表一个设备, 一个应用程序或者任何需要被管理的资源. 简单的说, MBean就是应用程序中暴露出来的接口, 供JMX调用. MBean暴露一个管理接口, 包括以下内容:</p>
+<ul>
+<li>一组可读可写的属性, 或者两者都有;</li>
+<li>一组可调用的操作;</li>
+<li>一个自我描述.</li>
+</ul>
+<p>在MBean实例的声明周期中, 其管理接口不变. 当预定义的事件发生时, MBeans也可以发出通知.</p>
+<p>JMX定义了5种规范的MBean:</p>
+<ol>
+<li>标准的MBeans;</li>
+<li>动态的MBeans;</li>
+<li>Open MBeans;</li>
+<li>Model MBeans;</li>
+<li>MXBeans.</li>
+</ol>
+<p>下面介绍一下标准MBeans:</p>
+<p>定义一个普通的接口:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">HelloMBean</span> </span>{
+
+    <span class="hljs-function">String <span class="hljs-title">getName</span><span class="hljs-params">()</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span></span>;
+}
+</div></code></pre>
+<p>实现这个普通的接口:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Hello</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HelloMBean</span></span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getName</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"hello"</span>;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span> </span>{
+        <span class="hljs-keyword">return</span> a + b;
+    }
+}
+</div></code></pre>
+<p>将这个类的实例注册为MBean:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> org.slf4j.Logger;
+<span class="hljs-keyword">import</span> org.slf4j.LoggerFactory;
+<span class="hljs-keyword">import</span> org.springframework.boot.ApplicationArguments;
+<span class="hljs-keyword">import</span> org.springframework.boot.ApplicationRunner;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Component;
+<span class="hljs-keyword">import</span> sch.frog.sparrow.jmx.Hello;
+
+<span class="hljs-keyword">import</span> javax.management.MBeanServer;
+<span class="hljs-keyword">import</span> javax.management.ObjectName;
+<span class="hljs-keyword">import</span> java.lang.management.ManagementFactory;
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MBeanApplicationRunner</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ApplicationRunner</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(MBeanApplicationRunner<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">(ApplicationArguments args)</span> <span class="hljs-keyword">throws</span> Exception </span>{
+        MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
+        ObjectName objectName = <span class="hljs-keyword">new</span> ObjectName(<span class="hljs-string">"sch.frog.sparrow.jmx:type=Hello"</span>);
+        Hello hello = <span class="hljs-keyword">new</span> Hello();
+        platformMBeanServer.registerMBean(hello, objectName);
+
+        logger.info(<span class="hljs-string">"mbean {} init finish."</span>, objectName);
+    }
+
+}
+</div></code></pre>
+<p>接下来, 通过jconsole连接上这个应用, 就可以看到效果了:</p>
+<p><img src="img/mbean_attr.png" alt="image"></p>
+<p><img src="img/mbean_operation.png" alt="image"></p>
+<blockquote>
+<p>标准的MBean操作的方法以及返回值类型只能是基本类型, 例如String, int等.</p>
+</blockquote>
+<h2 id="%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3">参考文档</h2>
+<ul>
+<li><a href="http://www.tianshouzhi.com/api/tutorials/jmx/34">MBeans</a></li>
+</ul>
+
+</body>
+</html>
