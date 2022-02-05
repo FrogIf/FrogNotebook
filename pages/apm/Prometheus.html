@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Prometheus.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="prometheus">Prometheus</h1>
+<h2 id="overview">Overview</h2>
+<p>Prometheus是一个开源的系统监控和报警系统.</p>
+<p>接下来, 先快速搭建一个Prometheus应用; 然后, 对java应用进行监控使得对其有一个直观的了解; 然后, 再介绍一下其相关的概念以及其他东西.</p>
+<h2 id="%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B">快速开始</h2>
+<ol>
+<li>下载安装包<a href="https://prometheus.io/download/">Prometheus</a></li>
+<li>简单配置一下:</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-attr">global:</span>
+  <span class="hljs-attr">scrape_interval:</span>     <span class="hljs-string">15s</span> <span class="hljs-comment"># 从被监控目标上抓取数据的时间间隔</span>
+  <span class="hljs-comment"># 外部标签</span>
+  <span class="hljs-attr">external_labels:</span>
+    <span class="hljs-attr">monitor:</span> <span class="hljs-string">'codelab-monitor'</span>
+
+<span class="hljs-comment"># 抓取配置</span>
+<span class="hljs-attr">scrape_configs:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">'prometheus'</span>
+
+    <span class="hljs-comment"># 为这个抓取任务单独配置抓取数据时间间隔</span>
+    <span class="hljs-attr">scrape_interval:</span> <span class="hljs-string">5s</span>
+    <span class="hljs-comment"># 该任务监控的目标对象</span>
+    <span class="hljs-attr">static_configs:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> <span class="hljs-string">['localhost:9090']</span>
+</div></code></pre>
+<ol start="3">
+<li>启动<code>nohup ./prometheus --config.file=prometheus.yml &amp;</code></li>
+<li>访问<a href="http://localhost:9090/metrics">http://localhost:9090/metrics</a>, 可以看到所有监控的指标.</li>
+<li>访问<a href="http://localhost:9090/graph">http://localhost:9090/graph</a>, 进入图形化界面.</li>
+</ol>
+<p><img src="img/prometheus_start.png" alt="image"></p>
+<h2 id="%E5%B5%8C%E7%A0%81%E9%9B%86%E6%88%90">嵌码集成</h2>
+<p>Prometheus可以监控的组件有很多, 例如各种语言开发的应用, mysql, kafka, ElasticSearch等. 这里先以监控java应用为例.</p>
+<p>首先, 监控java应用的方式与OpenTelemetry类似, 也是分为手动嵌码和agent嵌码的方式. 但是, 对于链路追踪, 一般采用agent的方式比较好, 因为链路追踪的数据可定制性不高. 当时对于指标监控, 手动嵌码应该会更好些, 更容易做一些业务监控等. 下面首先演示手动嵌码:</p>
+<h3 id="%E6%89%8B%E5%8A%A8%E5%B5%8C%E7%A0%81">手动嵌码</h3>
+<ol>
+<li>springboot集成, 增加pom依赖:</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.micrometer<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>micrometer-registry-prometheus<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+</div></code></pre>
+<ol start="2">
+<li>启动类中, 增加配置(该配置是为了给当前应用下所有指标增加一个应用名称的标签, 这样, 在查看Prometheus数据的时候, 容易区分):</li>
+</ol>
+<pre class="hljs"><code><div>    <span class="hljs-meta">@Bean</span>(value = <span class="hljs-string">"meterRegistryCustomizer"</span>)
+    <span class="hljs-function"><span class="hljs-keyword">public</span> MeterRegistryCustomizer&lt;MeterRegistry&gt; <span class="hljs-title">meterRegistryCustomizer</span><span class="hljs-params">(@Value(<span class="hljs-string">"${spring.application.name}"</span>)</span> String applicationName) </span>{
+        <span class="hljs-keyword">return</span> meterRegistry -&gt; meterRegistry.config()
+                .commonTags(<span class="hljs-string">"application"</span>, applicationName);
+    }
+</div></code></pre>
+<ol start="3">
+<li>增加配置类, 这里增加了一个自定义的指标监控-请求数监控:</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PrometheusConfiguration</span> </span>{
+
+    <span class="hljs-meta">@Resource</span>
+    <span class="hljs-keyword">private</span> PrometheusMeterRegistry meterRegistry;
+
+    <span class="hljs-comment">/**
+     * 统计访问量
+     */</span>
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Counter <span class="hljs-title">requestTotalCountCollector</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> Counter.build().name(<span class="hljs-string">"sparrow_http_request_count"</span>)
+                .labelNames(<span class="hljs-string">"path"</span>, <span class="hljs-string">"method"</span>).help(<span class="hljs-string">"http请求数"</span>).register(meterRegistry.getPrometheusRegistry());
+    }
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> WebMvcConfigurer <span class="hljs-title">openTelemetryMvcConfigurer</span><span class="hljs-params">(@Qualifier(<span class="hljs-string">"requestTotalCountCollector"</span>)</span> <span class="hljs-keyword">final</span> Counter counter)</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> WebMvcConfigurer(){
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addInterceptors</span><span class="hljs-params">(InterceptorRegistry registry)</span></span>{
+                <span class="hljs-comment">// 注册 访问量统计的counter拦截器</span>
+                registry.addInterceptor(<span class="hljs-keyword">new</span> HandlerInterceptor(){
+                    <span class="hljs-meta">@Override</span>
+                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">preHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="hljs-keyword">throws</span> Exception </span>{
+                        String uri = request.getRequestURI();
+                        String method = request.getMethod();
+                        counter.labels(uri, method).inc();
+                        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+                    }
+                });
+            }
+        };
+    }
+
+}
+</div></code></pre>
+<blockquote>
+<p>第2步的代码不一定要放到启动类中, 第二步中注册的bean在<code>private PrometheusMeterRegistry meterRegistry;</code>注入之前执行就可以.</p>
+</blockquote>
+<ol start="4">
+<li>修改应用配置<code>application.yml</code></li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-attr">management:</span>
+  <span class="hljs-attr">server:</span>
+    <span class="hljs-attr">port:</span> <span class="hljs-number">9291</span>  <span class="hljs-comment"># 暴露出去的监控端口</span>
+  <span class="hljs-attr">metrics:</span>
+    <span class="hljs-attr">export:</span>
+      <span class="hljs-attr">prometheus:</span>
+        <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span>
+  <span class="hljs-attr">endpoint:</span>
+    <span class="hljs-attr">metrics:</span>
+      <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">prometheus:</span>
+      <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span>
+  <span class="hljs-attr">endpoints:</span>
+    <span class="hljs-attr">web:</span>
+      <span class="hljs-attr">exposure:</span>
+        <span class="hljs-attr">include:</span> <span class="hljs-string">["prometheus","health"]</span>
+</div></code></pre>
+<ol start="5">
+<li>
+<p>启动应用, 访问<a href="http://localhost:9291/actuator/prometheus">http://localhost:9291/actuator/prometheus</a>就可以看到所有该应用下被监控的指标了.</p>
+</li>
+<li>
+<p>配置Prometheus的target, 在<code>prometheus.yml</code>的<code>scrape_configs</code>中增加配置:</p>
+</li>
+</ol>
+<pre class="hljs"><code><div>  <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">"application"</span>
+    <span class="hljs-attr">metrics_path:</span> <span class="hljs-string">"/actuator/prometheus"</span>
+    <span class="hljs-attr">static_configs:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> <span class="hljs-string">["172.28.48.1:9291"]</span>
+</div></code></pre>
+<ol start="7">
+<li>重启prometheus, 可以看到效果:</li>
+</ol>
+<p><img src="img/prometheus_app_in1.png" alt="image"></p>
+<p><img src="img/prometheus_app_in2.png" alt="image"></p>
+<h3 id="%E8%87%AA%E5%8A%A8%E5%B5%8C%E7%A0%81">自动嵌码</h3>
+<p>自动嵌码时, 需要使用外部插件, 在Prometheus中称为exporter. 这里演示两个监控的exporter, 分别是: jmx_exporter用来监控java应用的基本指标; mysqld_exporter用来监控mysql的基本指标.</p>
+<p><strong>jmx_exporter</strong></p>
+<p>对java程序进行监控, 实际上使用了jvm的jmx技术, 参见: <a href="../../pages/java/jmx.html">jmx</a>. jmx_exporter可以收集所有jmx采集到的常规信息(内存, cpu, 线程等), 还可以对应用程序中暴露出来的MBean进行操作.</p>
+<ol>
+<li>配置jmx_exporter:</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-meta">---</span>
+<span class="hljs-attr">startDelaySeconds:</span> <span class="hljs-number">0</span>
+<span class="hljs-attr">ssl:</span> <span class="hljs-literal">false</span>
+<span class="hljs-attr">lowercaseOutputName:</span> <span class="hljs-literal">false</span>
+<span class="hljs-attr">lowercaseOutputLabelNames:</span> <span class="hljs-literal">false</span>
+<span class="hljs-attr">rules:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">pattern:</span> <span class="hljs-string">'frog&lt;name=(\w+)&gt;&lt;&gt;(\w+):'</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">frog_jmx_$2</span>
+    <span class="hljs-attr">labels:</span>
+      <span class="hljs-attr">"application":</span> <span class="hljs-string">"sparrow"</span>
+    <span class="hljs-attr">type:</span> <span class="hljs-string">COUNTER</span>
+    <span class="hljs-attr">attrNameSnakeCase:</span> <span class="hljs-literal">true</span>
+</div></code></pre>
+<p>对参数进行解释:</p>
+<ul>
+<li>startDelaySeconds - 处理请求前的延迟时间</li>
+<li>hostPort - 如果是远程连接jmx, 则需要这个参数, 指定远程jmx的主机端口</li>
+<li>username - 同上, 远程jmx的用户名</li>
+<li>password - 同上, 远程jmx的密码</li>
+<li>jmxUrl - 同上, 远程jmx的访问地址</li>
+<li>ssl - jmx通讯是否使用ssl, 如果启用, 还需要设置ssl的公钥私有之类的</li>
+<li>lowercaseOutputName - 是否把指标名称转为小写, 默认false</li>
+<li>lowercaseOutputLabelNames - 是否把标签名称转为小写, 默认false</li>
+<li>whitelistObjectNames - MBeans对象白名单, 默认是所有MBeans, 支持正则</li>
+<li>blacklistObjectNames - MBeans对象黑名单, 默认空, 支持正则</li>
+<li>rules - MBeans匹配规则, 默认以默认格式收集所有指标
+<ul>
+<li>pattern - MBeans匹配的正则, 需要注意的是这里只匹配MBeans的Attribute, 不会匹配Operation, 详细规则见下面</li>
+<li>attrNameSnakeCase - 属性是否转换为蛇形格式, 默认false</li>
+<li>name - 指标名称</li>
+<li>value - 指标值, 如果没有指定, 抓取attribute对应的value值</li>
+<li>valueFactor - 指标值乘数. 多用于单位转化.</li>
+<li>labels - 标签: 键值对形式</li>
+<li>help - 指标的帮助信息</li>
+<li>type - 指标类型: GAUGE, COUNTER, UNTYPED. 默认是UNTYPED.</li>
+</ul>
+</li>
+</ul>
+<p>关于pattern, 还没太搞明白, 官方解释翻译过来是这样的, 基本格式:</p>
+<pre class="hljs"><code><div>domain&lt;beanpropertyName1=beanPropertyValue1, beanpropertyName2=beanPropertyValue2, ...&gt;&lt;key1, key2, ...&gt;attrName: value
+</div></code></pre>
+<ul>
+<li>domain - ObjectName的冒号前面部分</li>
+<li>beanPropertyName/Value - bean的属性, 指的是ObjectName冒号后面部分</li>
+<li>keyN - 如果是复合数据或者表格数据, 属性名放入这部分列表中</li>
+<li>attrName - 属性名, 对于复合数据, 将是其中的字段名</li>
+<li>value - 属性值</li>
+</ul>
+<ol>
+<li>java程序</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> org.springframework.jmx.export.annotation.ManagedAttribute;
+<span class="hljs-keyword">import</span> org.springframework.jmx.export.annotation.ManagedResource;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Component;
+
+<span class="hljs-keyword">import</span> java.util.concurrent.atomic.AtomicInteger;
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-meta">@ManagedResource</span>(objectName = <span class="hljs-string">"frog:name=FrogTest"</span>, description = <span class="hljs-string">"frog test"</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FrogMonitor</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AtomicInteger access = <span class="hljs-keyword">new</span> AtomicInteger(<span class="hljs-number">0</span>);
+
+    <span class="hljs-meta">@ManagedAttribute</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getName</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"Frog"</span>;
+    }
+
+    <span class="hljs-meta">@ManagedAttribute</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getAccess</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> access.get();
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">accessIncrement</span><span class="hljs-params">()</span></span>{
+        access.incrementAndGet();
+    }
+
+}
+</div></code></pre>
+<ol start="3">
+<li>启动应用<code>-javaagent:D:\work\Prometheus\jmx_prometheus_javaagent-0.16.1.jar=9071:config.yaml</code></li>
+<li>访问<a href="http://localhost:9071/metric">http://localhost:9071/metric</a>, 可以观察到相关指标.</li>
+<li>查看Prometheus Graph, 可以找到相关数据:</li>
+</ol>
+<p><img src="img/prometheus_jmx_access.png" alt="image"></p>
+<p><strong>mysqld_exporter</strong></p>
+<ol>
+<li>在mysql中新建一个专门为mysqld_exporter提供的用户;</li>
+</ol>
+<p>创建用户, 并指定密码:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">USER</span> <span class="hljs-string">'exporter'</span>@<span class="hljs-string">'%'</span> <span class="hljs-keyword">IDENTIFIED</span> <span class="hljs-keyword">BY</span> <span class="hljs-string">'123456'</span> <span class="hljs-keyword">WITH</span> MAX_USER_CONNECTIONS <span class="hljs-number">3</span>;
+</div></code></pre>
+<p>用户授权:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">GRANT</span> PROCESS, <span class="hljs-keyword">REPLICATION</span> <span class="hljs-keyword">CLIENT</span>, <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">ON</span> *.* <span class="hljs-keyword">TO</span> <span class="hljs-string">'exporter'</span>@<span class="hljs-string">'%'</span>;
+</div></code></pre>
+<ol start="2">
+<li>配置mysqld_exporter, 创建配置文件<code>my.cnf</code></li>
+</ol>
+<pre class="hljs"><code><div>[client]
+host=127.0.0.1
+port=13306
+user=exporter
+password=123456
+</div></code></pre>
+<ol start="3">
+<li>启动mysqld_exporter, <code>mysqld_exporter.exe --config.my-cnf=my.cnf</code></li>
+</ol>
+<p>mysqld_exporter默认暴露端口是9104, 如果想修改, 需要启动是指定<code>--web.listen-address</code>, 例如:<code>mysqld_exporter.exe --config.my-cnf=my.cnf --web.listen-address=&quot;:9105&quot;</code></p>
+<ol start="4">
+<li>浏览器访问<a href="http://localhost:9104/metrics">http://localhost:9104/metrics</a>, 搜索mysql_up, 可以看到值为1, 说明监控成功了:</li>
+</ol>
+<pre class="hljs"><code><div># HELP mysql_up Whether the MySQL server is up.
+# TYPE mysql_up gauge
+mysql_up 1
+</div></code></pre>
+<ol start="5">
+<li>配置Prometheus监控</li>
+</ol>
+<pre class="hljs"><code><div>  - job_name: &quot;mysql&quot;
+    static_configs:
+      - targets: [&quot;172.28.48.1:9104&quot;]
+</div></code></pre>
+<blockquote>
+<p>这里我配置的时候, 出了点问题, 导致Prometheus服务直接访问不到mysqld_exporter, 后来通过nginx转发解决了.</p>
+</blockquote>
+<h2 id="%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5">基本概念</h2>
+<p>通过上面的基本演示, 对Prometheus有了一定的整体概念, 接下来, 详细解释一下这些概念.</p>
+<p>Prometheus中存储的数据都是时序数据. 每一个时序的数据都由<code>metric</code>和多个<code>label</code>键值对确定. label是可选的, 可以没有.</p>
+<ul>
+<li>metric - 指标名称;</li>
+<li>label - 指标的标签, 一个metric可以有多个标签, 也可以没有;</li>
+<li>sample - 采样, 实际的时序数据. 每一个采样点包含两部分数据:
+<ul>
+<li>一个float64的值</li>
+<li>一个精确到毫秒的时间戳</li>
+</ul>
+</li>
+<li>notation - 标记, 就是通过监控接口获取到的数据结构, 其结构是这样的: <code>&lt;metric name&gt;{&lt;label name&gt;=&lt;label value&gt;, ...}</code>, 如图所示:</li>
+</ul>
+<p><img src="img/prometheus_notation.png" alt="image"></p>
+<p><strong>metric type</strong></p>
+<p>Prometheus中metric有4中类型, 分别是:</p>
+<ol>
+<li>Counter - 计数器类型, 记录累加值, 一直增加, 不会减少, 进程重启后, 会被重置;</li>
+<li>Gauge - 常规数值, 可大可小;</li>
+<li>Histogram - 柱状图, 用来统计聚合, 强调分布情况等; 如下例子:</li>
+</ol>
+<p><img src="img/prometheus_histogram.png" alt="image"></p>
+<p>实际代码是这样的:</p>
+<pre class="hljs"><code><div>    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Histogram <span class="hljs-title">responseTimeCollector</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> Histogram.build().name(<span class="hljs-string">"sparrow_response_duration"</span>)
+                .labelNames(<span class="hljs-string">"method"</span>).help(<span class="hljs-string">"响应时间"</span>).exponentialBuckets(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>).register(meterRegistry.getPrometheusRegistry());
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PrometheusMonitorInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HandlerInterceptor</span> </span>{
+
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ThreadLocal&lt;Long&gt; requestStart = <span class="hljs-keyword">new</span> ThreadLocal&lt;&gt;();
+
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Histogram responseHistogram;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">PrometheusMonitorInterceptor</span><span class="hljs-params">(Histogram responseHistogram)</span> </span>{
+            <span class="hljs-keyword">this</span>.responseHistogram = responseHistogram;
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">preHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="hljs-keyword">throws</span> Exception </span>{
+            requestStart.set(System.currentTimeMillis());
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="hljs-keyword">throws</span> Exception </span>{
+            <span class="hljs-keyword">try</span>{
+                String uri = request.getRequestURI();
+                Long start = requestStart.get();
+                <span class="hljs-keyword">if</span>(start != <span class="hljs-keyword">null</span>){
+                    <span class="hljs-keyword">long</span> duration = System.currentTimeMillis() - start;
+                    <span class="hljs-keyword">this</span>.responseHistogram.labels(uri).observe(duration);
+                }
+            }<span class="hljs-keyword">finally</span> {
+                requestStart.remove();
+            }
+        }
+    }
+</div></code></pre>
+<p>实际上只采集了一个值, Prometheus客户端会直接进行聚合计算. 首先Histogram定义的时候指定了buckets桶(最小值1, 步长5, 指数增长, 共6个桶); 然后, 采集的duration会被统计到指定的bucket里边, 举个例子, 如果duration = 50, 那么le = 125.0, 625.0, 3125.0, +Inf都会自增1. 此外, 还会统计出<code>*_count</code>(总的样本数)和<code>*_sum</code>(所有duration值求和); 这样, 就可以计算出平均响应时间了<code>rate(sparrow_response_duration_sum[5m])/rate(sparrow_response_duration_count[5m])</code>, 此外还可以用来计算apdex, apdex的计算公式为: <code>(满意次数 + 可容忍次数 / 2) / 总请求数</code>.</p>
+<p><img src="img/prometheus_avg_response.png" alt="image"></p>
+<ol start="4">
+<li>Summary - 与Histogram类似, 只是它统计的不是数量, 而是分位值.</li>
+</ol>
+<p>如下示例:</p>
+<pre class="hljs"><code><div>    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Summary <span class="hljs-title">responseTimeSummaryCollector</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> Summary.build().name(<span class="hljs-string">"sparrow_response_duration_quantiles"</span>)
+                .labelNames(<span class="hljs-string">"method"</span>).help(<span class="hljs-string">"响应时间分位"</span>)
+                .quantile(<span class="hljs-number">0.5</span>, <span class="hljs-number">0.05</span>)
+                .quantile(<span class="hljs-number">0.9</span>, <span class="hljs-number">0.01</span>)
+                .quantile(<span class="hljs-number">0.99</span>, <span class="hljs-number">0.001</span>)
+                .register(meterRegistry.getPrometheusRegistry());
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PrometheusMonitorInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HandlerInterceptor</span> </span>{
+
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ThreadLocal&lt;Long&gt; requestStart = <span class="hljs-keyword">new</span> ThreadLocal&lt;&gt;();
+
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Summary responseTimeSummaryCollector;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">PrometheusMonitorInterceptor</span><span class="hljs-params">(Summary responseTimeSummaryCollector)</span> </span>{
+            <span class="hljs-keyword">this</span>.responseTimeSummaryCollector = responseTimeSummaryCollector;
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">preHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="hljs-keyword">throws</span> Exception </span>{
+            requestStart.set(System.currentTimeMillis());
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="hljs-keyword">throws</span> Exception </span>{
+            <span class="hljs-keyword">try</span>{
+                String uri = request.getRequestURI();
+                Long start = requestStart.get();
+                <span class="hljs-keyword">if</span>(start != <span class="hljs-keyword">null</span>){
+                    <span class="hljs-keyword">long</span> duration = System.currentTimeMillis() - start;
+                    <span class="hljs-keyword">this</span>.responseTimeSummaryCollector.labels(uri).observe(duration);
+                }
+            }<span class="hljs-keyword">finally</span> {
+                requestStart.remove();
+            }
+        }
+    }
+</div></code></pre>
+<p>一段时间的采样结果如下:</p>
+<pre class="hljs"><code><div># HELP sparrow_response_duration_quantiles 响应时间分位
+# TYPE sparrow_response_duration_quantiles summary
+sparrow_response_duration_quantiles{method=&quot;/randomResponse&quot;,quantile=&quot;0.5&quot;,} 4690.0
+sparrow_response_duration_quantiles{method=&quot;/randomResponse&quot;,quantile=&quot;0.9&quot;,} 7531.0
+sparrow_response_duration_quantiles{method=&quot;/randomResponse&quot;,quantile=&quot;0.99&quot;,} 7531.0
+sparrow_response_duration_quantiles_count{method=&quot;/randomResponse&quot;,} 13.0
+sparrow_response_duration_quantiles_sum{method=&quot;/randomResponse&quot;,} 68280.0
+</div></code></pre>
+<p>从结果上分析数, 有50%的请求平均响应时间是4690ms, 有70%的请求平均响应时间是7531ms, 有99%的请求平均响应时间是7531ms, 总的请求次数是13次, 总响应时间是68280ms.</p>
+<p>需要留意一下, 在这个Summary定义的时候, quantile方法有两个参数, 第一个是分位值, 第二个是误差<a href="https://prometheus.io/docs/practices/histograms/#errors-of-quantile-estimation">errors-of-quantile-estimation</a>. 误差存在的原因是这样的, 假设使用histogram来计算分位值, 如果响应时间有50%都接近350ms, 所以这50%会落在[125,625]的区间中, histogram在计算是最终会给出一个响应时间的数值, 而不是一个数, 这时不是计算区间的平均值(375), 而是将这个区间平均分为100段, 取第95段的值, 即600, 最终给出的结果是: 有50%的请求响应时间在600ms, 这显然距离真实结果差的很多(当然, 这里也也有采用指数分布bucket的缘故), 总之由于Histogram采样的结果是一个分布区间, 而且它的分位值计算需要再服务端进行, 所以会有很大的出入; 然后, 回到Summary上, Summary计算分位值是在客户端进行计算的, 它可以在内部存储每一采样原始的值, 所以可以很精确的计算出分位值, 但是, 这时有代价的, 需要保存每一个采样的原始值! 对内存和cpu都有一定的要求, 尤其是这个计算是在客户端, 所以, 这里会要求配置一个误差值, 使得在误差范围内丢掉一些采样数据; 例如, 配置的是0.95±0.01, 那么最终结果会保证位于0.94--0.96的区间.</p>
+<blockquote>
+<p>Histogram和Summary的应用场景之一是: 如果大多数 API 请求都维持在 100ms 的响应时间范围内，而个别请求的响应时间需要 5s，那么就会导致某些 WEB 页面的响应时间落到中位数的情况，而这种现象被称为长尾问题.</p>
+</blockquote>
+<p><strong>PromQL</strong></p>
+<p>关于PromQL, 详见<a href="https://prometheus.io/docs/prometheus/latest/querying/basics/">QUERYING PROMETHEUS</a></p>
+<p><strong>基本原理</strong></p>
+<p>Prometheus会每个一段时间, 向配置好的target中的地址发送请求, 获取指标数据.</p>
+<ul>
+<li>Retrieval - 负责在活跃的target主机上抓取监控指标数据</li>
+<li>TSDB - 数据持久化存储</li>
+<li>http server - 通过PromQL语言, 提供数据查询</li>
+</ul>
+<p><img src="img/prometheus_architecture.png" alt="image"></p>
+<h2 id="%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99">参考资料</h2>
+<ul>
+<li><a href="https://www.cnblogs.com/hujinzhong/p/14998683.html">Prometheus介绍</a></li>
+<li><a href="https://yunlzheng.gitbook.io/prometheus-book/">prometheus-book</a></li>
+</ul>
+
+</body>
+</html>
