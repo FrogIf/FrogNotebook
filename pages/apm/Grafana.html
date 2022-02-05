@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Grafana.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="grafana">Grafana</h1>
+<h1 id="overview">Overview</h1>
+<p>Grafana是一个跨平台的开源的度量分析和可视化工具，可以通过将采集的数据查询然后可视化的展示，并及时通知. 有以下特点:</p>
+<ol>
+<li>展示方式：快速灵活的客户端图表，面板插件有许多不同方式的可视化指标和日志，官方库中具有丰富的仪表盘插件，比如热图、折线图、图表等多种展示方式；</li>
+<li>数据源：Graphite，InfluxDB，OpenTSDB，Prometheus，Elasticsearch，CloudWatch和KairosDB等;</li>
+<li>通知提醒：以可视方式定义最重要指标的警报规则，Grafana将不断计算并发送通知，在数据达到阈值时通过Slack、PagerDuty等获得通知;</li>
+<li>混合展示：在同一图表中混合使用不同的数据源，可以基于每个查询指定数据源，甚至自定义数据源；</li>
+<li>注释：使用来自不同数据源的丰富事件注释图表，将鼠标悬停在事件上会显示完整的事件元数据和标记；</li>
+<li>过滤器：Ad-hoc过滤器允许动态创建新的键/值过滤器，这些过滤器会自动应用于使用该数据源的所有查询.</li>
+</ol>
+<h2 id="%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2">安装部署</h2>
+<ol>
+<li>这里采用压缩包的方式进行安装, 首先下载压缩包<code>wget https://dl.grafana.com/oss/release/grafana-8.3.4.linux-amd64.tar.gz</code></li>
+<li>解压;</li>
+<li>在解压后的文件夹根目录执行:<code>./bin/grafana-server web</code>, 启动成功;</li>
+<li>在启动日志中, 能找到:<code>INFO[02-05|19:47:33] HTTP Server Listen                       logger=http.server address=[::]:3000 protocol=http subUrl= socket=</code>, 说明访问端口是3000. 直接访问即可<a href="http://localhost:3000/">http://localhost:3000/</a></li>
+<li>首次登陆时, 默认的账号密码是:admin/admin;</li>
+</ol>
+<p><img src="img/grafana_start.png" alt="image"></p>
+<blockquote>
+<p>也可以修改访问端口, 在conf文件夹中, 将<code>defaults.ini</code>复制一份, 并命名为<code>custom.ini</code>, 然后, 找到里面的<code>http_port</code>, 修改为指定的值就可以了.</p>
+</blockquote>
+<h2 id="%E6%8E%A5%E5%85%A5prometheus">接入Prometheus</h2>
+<p>这个, Prometheus官网提供了详细的说明<a href="https://prometheus.io/docs/visualization/grafana/">https://prometheus.io/docs/visualization/grafana/</a>, 这里再复述一下:</p>
+<ol>
+<li>添加数据源, 位置&quot;齿轮 - Data Sources - Add data source&quot;;</li>
+<li>选择类型Prometheus;</li>
+<li>配置url, 以及其他配置;</li>
+<li>点击&quot;Save&amp;test&quot;.</li>
+</ol>
+<p>接下来创建一个图表, 这里Prometheus官网也提供的详细的步骤:</p>
+<ol>
+<li>新建Dashboard</li>
+</ol>
+<p><img src="img/grafana_new_dashboard.png" alt="image"></p>
+<ol start="2">
+<li>选择&quot;Add a new panel&quot;</li>
+</ol>
+<p><img src="img/grafana_edit_query.png" alt="image"></p>
+<ol start="3">
+<li>在下方query中, 选择metric, labels等</li>
+</ol>
+<p><img src="img/grafana_avg_resp.png" alt="image"></p>
+<p>最终效果图如下:</p>
+<p><img src="img/grafana_final.png" alt="image"></p>
+<h2 id="%E5%AF%BC%E5%85%A5%E5%B7%B2%E6%9C%89%E7%9A%84dashboards">导入已有的Dashboards</h2>
+<p>如果所有的指标都这样一个一个配置, 工作量是会很大的, 幸运的是, Grafana官网提供了很多现有的例子, 可以在<a href="https://grafana.com/grafana/dashboards/">这里</a>找到. 下面就尝试一个.</p>
+<p>在Grafana提供的页面找到<a href="https://grafana.com/grafana/dashboards/4701">JVM(Micrometer)</a>, 这里采用json的方式导入, 还有通过id直接联网导入的方式, 但是有些环境中, 是没有办法访问到外网的.</p>
+<ol>
+<li>在页面中&quot;Copy ID to Clipboard&quot;下方有一行小字&quot;Download JSON&quot;, 下载json;</li>
+<li>点击&quot;加号 - import&quot;;</li>
+<li>点击上传json文件, 选择好数据源;</li>
+</ol>
+<p><img src="img/grafana_import.png" alt="image"></p>
+<ol start="4">
+<li>点击import, 就完成了. 就可以在&quot;DashBoards - Browser&quot;中找到了.</li>
+</ol>
+<p><img src="img/grafana_browser.png" alt="image"></p>
+<p>这个仪表的内容非常丰富, IO, 线程, 堆内存, 非堆内存, 垃圾收集暂停等等:</p>
+<p><img src="img/grafana_sparrow_jvm_01.png" alt="image"></p>
+<p><img src="img/grafana_sparrow_jvm_02.png" alt="image"></p>
+<p><img src="img/grafana_sparrow_jvm_03.png" alt="image"></p>
+<p>再试一个mysql的, 看下效果, 下载<a href="https://grafana.com/grafana/dashboards/7362">Mysql Overview</a>, 然后导入.</p>
+<p><img src="img/grafana_mysql.png" alt="image"></p>
+<h2 id="%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3">参考文档</h2>
+<ul>
+<li><a href="https://www.cnblogs.com/imyalost/p/9873641.html">可视化工具Grafana：简介及安装</a></li>
+</ul>
+
+</body>
+</html>
