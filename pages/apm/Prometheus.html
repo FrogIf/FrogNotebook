@@ -413,15 +413,6 @@ code {
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
 </div></code></pre>
 <ol start="2">
-<li>启动类中, 增加配置(该配置是为了给当前应用下所有指标增加一个应用名称的标签, 这样, 在查看Prometheus数据的时候, 容易区分):</li>
-</ol>
-<pre class="hljs"><code><div>    <span class="hljs-meta">@Bean</span>(value = <span class="hljs-string">"meterRegistryCustomizer"</span>)
-    <span class="hljs-function"><span class="hljs-keyword">public</span> MeterRegistryCustomizer&lt;MeterRegistry&gt; <span class="hljs-title">meterRegistryCustomizer</span><span class="hljs-params">(@Value(<span class="hljs-string">"${spring.application.name}"</span>)</span> String applicationName) </span>{
-        <span class="hljs-keyword">return</span> meterRegistry -&gt; meterRegistry.config()
-                .commonTags(<span class="hljs-string">"application"</span>, applicationName);
-    }
-</div></code></pre>
-<ol start="3">
 <li>增加配置类, 这里增加了一个自定义的指标监控-请求数监控:</li>
 </ol>
 <pre class="hljs"><code><div><span class="hljs-meta">@Configuration</span>
@@ -430,13 +421,19 @@ code {
     <span class="hljs-meta">@Resource</span>
     <span class="hljs-keyword">private</span> PrometheusMeterRegistry meterRegistry;
 
+    <span class="hljs-comment">/* 
+     * 这里面由于使用的不是io.micrometer.core.instrument.Counter之类的, 
+     * 而是直接使用的Prometheus原生类, 所以要手动指定application, 公共tags配置在这里不生效
+     */</span>
+    <span class="hljs-meta">@Value</span>(<span class="hljs-string">"${spring.application.name}"</span>) <span class="hljs-keyword">private</span> String applicationName;
+
     <span class="hljs-comment">/**
      * 统计访问量
      */</span>
     <span class="hljs-meta">@Bean</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> Counter <span class="hljs-title">requestTotalCountCollector</span><span class="hljs-params">()</span></span>{
         <span class="hljs-keyword">return</span> Counter.build().name(<span class="hljs-string">"sparrow_http_request_count"</span>)
-                .labelNames(<span class="hljs-string">"path"</span>, <span class="hljs-string">"method"</span>).help(<span class="hljs-string">"http请求数"</span>).register(meterRegistry.getPrometheusRegistry());
+                .labelNames(<span class="hljs-string">"path"</span>, <span class="hljs-string">"method"</span>, <span class="hljs-string">"application"</span>).help(<span class="hljs-string">"http请求数"</span>).register(meterRegistry.getPrometheusRegistry());
     }
 
     <span class="hljs-meta">@Bean</span>
@@ -450,7 +447,7 @@ code {
                     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">preHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="hljs-keyword">throws</span> Exception </span>{
                         String uri = request.getRequestURI();
                         String method = request.getMethod();
-                        counter.labels(uri, method).inc();
+                        counter.labels(uri, method, applicationName).inc();
                         <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
                     }
                 });
@@ -470,6 +467,8 @@ code {
   <span class="hljs-attr">server:</span>
     <span class="hljs-attr">port:</span> <span class="hljs-number">9291</span>  <span class="hljs-comment"># 暴露出去的监控端口</span>
   <span class="hljs-attr">metrics:</span>
+    <span class="hljs-attr">tags:</span>
+      <span class="hljs-attr">application :</span> <span class="hljs-string">${spring.application.name}</span>
     <span class="hljs-attr">export:</span>
       <span class="hljs-attr">prometheus:</span>
         <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span>
@@ -660,7 +659,7 @@ mysql_up 1
 <pre class="hljs"><code><div>    <span class="hljs-meta">@Bean</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> Histogram <span class="hljs-title">responseTimeCollector</span><span class="hljs-params">()</span></span>{
         <span class="hljs-keyword">return</span> Histogram.build().name(<span class="hljs-string">"sparrow_response_duration"</span>)
-                .labelNames(<span class="hljs-string">"method"</span>).help(<span class="hljs-string">"响应时间"</span>).exponentialBuckets(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>).register(meterRegistry.getPrometheusRegistry());
+                .labelNames(<span class="hljs-string">"method"</span>, <span class="hljs-string">"application"</span>).help(<span class="hljs-string">"响应时间"</span>).exponentialBuckets(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>).register(meterRegistry.getPrometheusRegistry());
     }
 
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PrometheusMonitorInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HandlerInterceptor</span> </span>{
@@ -686,7 +685,7 @@ mysql_up 1
                 Long start = requestStart.get();
                 <span class="hljs-keyword">if</span>(start != <span class="hljs-keyword">null</span>){
                     <span class="hljs-keyword">long</span> duration = System.currentTimeMillis() - start;
-                    <span class="hljs-keyword">this</span>.responseHistogram.labels(uri).observe(duration);
+                    <span class="hljs-keyword">this</span>.responseHistogram.labels(uri, applicationName).observe(duration);
                 }
             }<span class="hljs-keyword">finally</span> {
                 requestStart.remove();
@@ -703,7 +702,7 @@ mysql_up 1
 <pre class="hljs"><code><div>    <span class="hljs-meta">@Bean</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> Summary <span class="hljs-title">responseTimeSummaryCollector</span><span class="hljs-params">()</span></span>{
         <span class="hljs-keyword">return</span> Summary.build().name(<span class="hljs-string">"sparrow_response_duration_quantiles"</span>)
-                .labelNames(<span class="hljs-string">"method"</span>).help(<span class="hljs-string">"响应时间分位"</span>)
+                .labelNames(<span class="hljs-string">"method"</span>, <span class="hljs-string">"application"</span>).help(<span class="hljs-string">"响应时间分位"</span>)
                 .quantile(<span class="hljs-number">0.5</span>, <span class="hljs-number">0.05</span>)
                 .quantile(<span class="hljs-number">0.9</span>, <span class="hljs-number">0.01</span>)
                 .quantile(<span class="hljs-number">0.99</span>, <span class="hljs-number">0.001</span>)
@@ -733,7 +732,7 @@ mysql_up 1
                 Long start = requestStart.get();
                 <span class="hljs-keyword">if</span>(start != <span class="hljs-keyword">null</span>){
                     <span class="hljs-keyword">long</span> duration = System.currentTimeMillis() - start;
-                    <span class="hljs-keyword">this</span>.responseTimeSummaryCollector.labels(uri).observe(duration);
+                    <span class="hljs-keyword">this</span>.responseTimeSummaryCollector.labels(uri, applicationName).observe(duration);
                 }
             }<span class="hljs-keyword">finally</span> {
                 requestStart.remove();
@@ -744,11 +743,11 @@ mysql_up 1
 <p>一段时间的采样结果如下:</p>
 <pre class="hljs"><code><div># HELP sparrow_response_duration_quantiles 响应时间分位
 # TYPE sparrow_response_duration_quantiles summary
-sparrow_response_duration_quantiles{method=&quot;/randomResponse&quot;,quantile=&quot;0.5&quot;,} 4690.0
-sparrow_response_duration_quantiles{method=&quot;/randomResponse&quot;,quantile=&quot;0.9&quot;,} 7531.0
-sparrow_response_duration_quantiles{method=&quot;/randomResponse&quot;,quantile=&quot;0.99&quot;,} 7531.0
-sparrow_response_duration_quantiles_count{method=&quot;/randomResponse&quot;,} 13.0
-sparrow_response_duration_quantiles_sum{method=&quot;/randomResponse&quot;,} 68280.0
+sparrow_response_duration_quantiles{method=&quot;/randomResponse&quot;,application=&quot;Sparrow&quot;,quantile=&quot;0.5&quot;,} 4690.0
+sparrow_response_duration_quantiles{method=&quot;/randomResponse&quot;,application=&quot;Sparrow&quot;,quantile=&quot;0.9&quot;,} 7531.0
+sparrow_response_duration_quantiles{method=&quot;/randomResponse&quot;,application=&quot;Sparrow&quot;,quantile=&quot;0.99&quot;,} 7531.0
+sparrow_response_duration_quantiles_count{method=&quot;/randomResponse&quot;,application=&quot;Sparrow&quot;,} 13.0
+sparrow_response_duration_quantiles_sum{method=&quot;/randomResponse&quot;,application=&quot;Sparrow&quot;,} 68280.0
 </div></code></pre>
 <p>从结果上分析数, 有50%的请求平均响应时间是4690ms, 有70%的请求平均响应时间是7531ms, 有99%的请求平均响应时间是7531ms, 总的请求次数是13次, 总响应时间是68280ms.</p>
 <p>需要留意一下, 在这个Summary定义的时候, quantile方法有两个参数, 第一个是分位值, 第二个是误差<a href="https://prometheus.io/docs/practices/histograms/#errors-of-quantile-estimation">errors-of-quantile-estimation</a>. 误差存在的原因是这样的, 假设使用histogram来计算分位值, 如果响应时间有50%都接近350ms, 所以这50%会落在[125,625]的区间中, histogram在计算是最终会给出一个响应时间的数值, 而不是一个数, 这时不是计算区间的平均值(375), 而是将这个区间平均分为100段, 取第95段的值, 即600, 最终给出的结果是: 有50%的请求响应时间在600ms, 这显然距离真实结果差的很多(当然, 这里也也有采用指数分布bucket的缘故), 总之由于Histogram采样的结果是一个分布区间, 而且它的分位值计算需要再服务端进行, 所以会有很大的出入; 然后, 回到Summary上, Summary计算分位值是在客户端进行计算的, 它可以在内部存储每一采样原始的值, 所以可以很精确的计算出分位值, 但是, 这时有代价的, 需要保存每一个采样的原始值! 对内存和cpu都有一定的要求, 尤其是这个计算是在客户端, 所以, 这里会要求配置一个误差值, 使得在误差范围内丢掉一些采样数据; 例如, 配置的是0.95±0.01, 那么最终结果会保证位于0.94--0.96的区间.</p>

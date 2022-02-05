@@ -54,17 +54,7 @@ Prometheus可以监控的组件有很多, 例如各种语言开发的应用, mys
 </dependency>
 ```
 
-2. 启动类中, 增加配置(该配置是为了给当前应用下所有指标增加一个应用名称的标签, 这样, 在查看Prometheus数据的时候, 容易区分):
-
-```java
-    @Bean(value = "meterRegistryCustomizer")
-    public MeterRegistryCustomizer<MeterRegistry> meterRegistryCustomizer(@Value("${spring.application.name}") String applicationName) {
-        return meterRegistry -> meterRegistry.config()
-                .commonTags("application", applicationName);
-    }
-```
-
-3. 增加配置类, 这里增加了一个自定义的指标监控-请求数监控:
+2. 增加配置类, 这里增加了一个自定义的指标监控-请求数监控:
 
 ```java
 @Configuration
@@ -73,13 +63,19 @@ public class PrometheusConfiguration {
     @Resource
     private PrometheusMeterRegistry meterRegistry;
 
+    /* 
+     * 这里面由于使用的不是io.micrometer.core.instrument.Counter之类的, 
+     * 而是直接使用的Prometheus原生类, 所以要手动指定application, 公共tags配置在这里不生效
+     */
+    @Value("${spring.application.name}") private String applicationName;
+
     /**
      * 统计访问量
      */
     @Bean
     public Counter requestTotalCountCollector(){
         return Counter.build().name("sparrow_http_request_count")
-                .labelNames("path", "method").help("http请求数").register(meterRegistry.getPrometheusRegistry());
+                .labelNames("path", "method", "application").help("http请求数").register(meterRegistry.getPrometheusRegistry());
     }
 
     @Bean
@@ -93,7 +89,7 @@ public class PrometheusConfiguration {
                     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
                         String uri = request.getRequestURI();
                         String method = request.getMethod();
-                        counter.labels(uri, method).inc();
+                        counter.labels(uri, method, applicationName).inc();
                         return true;
                     }
                 });
@@ -113,6 +109,8 @@ management:
   server:
     port: 9291  # 暴露出去的监控端口
   metrics:
+    tags:
+      application : ${spring.application.name}
     export:
       prometheus:
         enabled: true
@@ -321,7 +319,7 @@ Prometheus中metric有4中类型, 分别是:
     @Bean
     public Histogram responseTimeCollector(){
         return Histogram.build().name("sparrow_response_duration")
-                .labelNames("method").help("响应时间").exponentialBuckets(1, 5, 6).register(meterRegistry.getPrometheusRegistry());
+                .labelNames("method", "application").help("响应时间").exponentialBuckets(1, 5, 6).register(meterRegistry.getPrometheusRegistry());
     }
 
     private static class PrometheusMonitorInterceptor implements HandlerInterceptor {
@@ -347,7 +345,7 @@ Prometheus中metric有4中类型, 分别是:
                 Long start = requestStart.get();
                 if(start != null){
                     long duration = System.currentTimeMillis() - start;
-                    this.responseHistogram.labels(uri).observe(duration);
+                    this.responseHistogram.labels(uri, applicationName).observe(duration);
                 }
             }finally {
                 requestStart.remove();
@@ -368,7 +366,7 @@ Prometheus中metric有4中类型, 分别是:
     @Bean
     public Summary responseTimeSummaryCollector(){
         return Summary.build().name("sparrow_response_duration_quantiles")
-                .labelNames("method").help("响应时间分位")
+                .labelNames("method", "application").help("响应时间分位")
                 .quantile(0.5, 0.05)
                 .quantile(0.9, 0.01)
                 .quantile(0.99, 0.001)
@@ -398,7 +396,7 @@ Prometheus中metric有4中类型, 分别是:
                 Long start = requestStart.get();
                 if(start != null){
                     long duration = System.currentTimeMillis() - start;
-                    this.responseTimeSummaryCollector.labels(uri).observe(duration);
+                    this.responseTimeSummaryCollector.labels(uri, applicationName).observe(duration);
                 }
             }finally {
                 requestStart.remove();
@@ -412,11 +410,11 @@ Prometheus中metric有4中类型, 分别是:
 ```
 # HELP sparrow_response_duration_quantiles 响应时间分位
 # TYPE sparrow_response_duration_quantiles summary
-sparrow_response_duration_quantiles{method="/randomResponse",quantile="0.5",} 4690.0
-sparrow_response_duration_quantiles{method="/randomResponse",quantile="0.9",} 7531.0
-sparrow_response_duration_quantiles{method="/randomResponse",quantile="0.99",} 7531.0
-sparrow_response_duration_quantiles_count{method="/randomResponse",} 13.0
-sparrow_response_duration_quantiles_sum{method="/randomResponse",} 68280.0
+sparrow_response_duration_quantiles{method="/randomResponse",application="Sparrow",quantile="0.5",} 4690.0
+sparrow_response_duration_quantiles{method="/randomResponse",application="Sparrow",quantile="0.9",} 7531.0
+sparrow_response_duration_quantiles{method="/randomResponse",application="Sparrow",quantile="0.99",} 7531.0
+sparrow_response_duration_quantiles_count{method="/randomResponse",application="Sparrow",} 13.0
+sparrow_response_duration_quantiles_sum{method="/randomResponse",application="Sparrow",} 68280.0
 ```
 
 从结果上分析数, 有50%的请求平均响应时间是4690ms, 有70%的请求平均响应时间是7531ms, 有99%的请求平均响应时间是7531ms, 总的请求次数是13次, 总响应时间是68280ms. 
