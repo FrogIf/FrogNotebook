@@ -7,8 +7,7 @@ a notebook. record something.
 ## 计划
 
 * jvm问题排查
-* prometheus, Grafana
-* ElasticSearch, LogStash, kibana
+* Grafana
 
 ## 本地部署
 
