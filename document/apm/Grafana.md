@@ -74,6 +74,8 @@ Grafana是一个跨平台的开源的度量分析和可视化工具，可以通�
 
 ![image](img/grafana_sparrow_jvm_03.png)
 
+> 注意, 这个Dashboard中, 会自动根据labels中的application进行区分, 将不同的jvm的数据拆分开, 可以在上面的Application下拉选中选择要查看的应用. 所以, java应用中, 接入时注意需要配置一个label, 这个label的key是application, value是应用名.
+
 再试一个mysql的, 看下效果, 下载[Mysql Overview](https://grafana.com/grafana/dashboards/7362), 然后导入.
 
 ![image](img/grafana_mysql.png)

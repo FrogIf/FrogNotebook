@@ -428,6 +428,9 @@ code {
 <p><img src="img/grafana_sparrow_jvm_01.png" alt="image"></p>
 <p><img src="img/grafana_sparrow_jvm_02.png" alt="image"></p>
 <p><img src="img/grafana_sparrow_jvm_03.png" alt="image"></p>
+<blockquote>
+<p>注意, 这个Dashboard中, 会自动根据labels中的application进行区分, 将不同的jvm的数据拆分开, 可以在上面的Application下拉选中选择要查看的应用. 所以, java应用中, 接入时注意需要配置一个label, 这个label的key是application, value是应用名.</p>
+</blockquote>
 <p>再试一个mysql的, 看下效果, 下载<a href="https://grafana.com/grafana/dashboards/7362">Mysql Overview</a>, 然后导入.</p>
 <p><img src="img/grafana_mysql.png" alt="image"></p>
 <h2 id="%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3">参考文档</h2>
