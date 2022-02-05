@@ -7,7 +7,7 @@ a notebook. record something.
 ## 计划
 
 * jvm问题排查
-* Grafana
+* skywalking
 
 ## 本地部署
 
@@ -25,7 +25,7 @@ a notebook. record something.
 
 
         location /FrogNotebook/ { # 末尾必须要有/
-            alias   <项目路径>/FrogNotebook/; # 末尾必须要有/
+            alias   <项目路径>/FrogNotebook/docs/; # 末尾必须要有/
         }
 ```
 
