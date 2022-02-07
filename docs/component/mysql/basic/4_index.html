@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>4_index.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E7%B4%A2%E5%BC%95">索引</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<ul>
+<li>索引是提高SELECT操作性能的最佳途径.</li>
+<li>MyISAM和InnoDB存储引擎默认创建的都是Btree索引. MEMORY默认使用hash索引.</li>
+<li>MySQL目前不支持函数索引</li>
+</ul>
+<p>索引分类:</p>
+<ul>
+<li>B-Tree索引 : 常用索引, 大部分引擎都支持的索引</li>
+<li>Hash索引 : 只有Memory引擎支持, 使用场景简单</li>
+<li>R-Tree索引 : 空间索引, MyISAM的特殊索引类型, 主要用于地理空间数据类型</li>
+<li>Full-Text索引 : 全文索引</li>
+</ul>
+<blockquote>
+<p>btree索引和hash索引</p>
+<p>关于hash索引:</p>
+<ol>
+<li>只用于使用=和&lt;=&gt;的比较(不支持范围查询)</li>
+<li>hash索引不能加速Order by</li>
+<li>只能使用整个关键字来搜索一行</li>
+<li>通过hash索引, 查询更迅速</li>
+</ol>
+<p>关于btree索引:<br>
+使用&gt;, &lt;, &gt;=, &lt;=, BETWEEN, != 或者 &lt;&gt; 或者 like 'pattern'都可以使用相关列上的索引.</p>
+</blockquote>
+<blockquote>
+<p>Innodb表是根据主键顺序以索引的形式存放, 这种方式称为索引组织表.</p>
+</blockquote>
+<h2 id="%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%9B%E5%BB%BA%E5%88%A0%E9%99%A4">索引的创建删除</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">CREATE</span> [<span class="hljs-keyword">UNIQUE</span>|FULLTEXT|SPATIAL] <span class="hljs-keyword">INDEX</span> index_name [<span class="hljs-keyword">USING</span> index_type] <span class="hljs-keyword">ON</span> tbl_name(index_col_name, ...);
+
+index_col_name:
+    col_name[(length)] [ASC|DESC]
+</div></code></pre>
+<p>通过上面这个索引创建语句可以看到很多信息:</p>
+<ul>
+<li>[UNIQUE|FULLTEXT|SPATIAL] : 可选值, 不选则创建的是普通索引, 这三个关键字分别代表: 唯一索引, 全文索引, 空间索引</li>
+<li>[USING index_type] : 可选值, 指定索引是btree索引还是hash索引, MyISAM和InnoDB默认是btree索引</li>
+<li>index_col_name, ... : 可以指定单列索引, 也可以指定多列索引</li>
+<li>[(length)]: 可选值, 如果不写, 则是对该列值得全部进行索引, 如果指定长度, 则是前缀索引</li>
+<li>[ASC|DESC]: 索引排序, mysql8.0之后才有效</li>
+</ul>
+<p><strong>说明:</strong></p>
+<ul>
+<li>全文索引 : mysql5.0中只有MyISAM支持全文索引, 并且使用全文索引的字段必须是CHAR, VARCHAR, TEXT. 全文索引与前缀索引不兼容.</li>
+<li>前缀索引 : myisam引擎前缀索引最长长度为1000字节, InnoDB引擎前缀索引最长为767字节</li>
+<li>组合索引 : SELECT如果想使用组合索引, 必须满足最左前缀原则</li>
+</ul>
+<p><strong>ALTER TABLE 建立索引</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-keyword">ADD</span> [<span class="hljs-keyword">UNIQUE</span>|SPATIAL|FULLTEXT] <span class="hljs-keyword">INDEX</span> index_name(index_col_name, ...) [<span class="hljs-keyword">USING</span> index_type];
+
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-keyword">ADD</span> {PRIMARY <span class="hljs-keyword">KEY</span>|<span class="hljs-keyword">UNIQUE</span>|SPATIAL|FULLTEXT} (index_col_name, ...)
+
+index_col_name:
+    col_name[(<span class="hljs-keyword">length</span>)] [<span class="hljs-keyword">ASC</span>|<span class="hljs-keyword">DESC</span>]
+</div></code></pre>
+<p><strong>删除索引</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">INDEX</span> index_name <span class="hljs-keyword">ON</span> table_name;
+
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-keyword">DROP</span> PRIMARY <span class="hljs-keyword">KEY</span>;
+</div></code></pre>
+<p><strong>查看索引</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">SHOW</span> <span class="hljs-keyword">INDEX</span> <span class="hljs-keyword">FROM</span> table_name
+</div></code></pre>
+<h2 id="%E7%B4%A2%E5%BC%95%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99">索引设计原则</h2>
+<ul>
+<li>经常搜索的列可以建立索引, 其余列不要建立索引, 会影响增删速度</li>
+<li>使用重复值少的列建立索引, 如果索引列重复值较多, 不管搜索那个值, 都会得出一堆记录</li>
+<li>使用短索引, 可以减少索引占用的空间, 加快查询速度</li>
+<li>利用最左前缀</li>
+<li>不要过度索引</li>
+<li>InnoDB引擎表中, 记录会按照一定顺序保存, 如果有主键, 则按照主键顺序存储, 没有主键, 则按照唯一索引顺序存储, 如果都没有, 会自动生成一个内部列, 按照这个顺序存储. 所以InnoDB尽量自己指定主键, 并尽量选择经常查询的列作为主键, innodb表中普通索引都会保存主键的键值, 所以主键要选择较短的数据类型, 减少索引的磁盘引用.</li>
+</ul>
+<h2 id="%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95">使用索引</h2>
+<p>以下采用的是B-Tree索引</p>
+<ol>
+<li>全值匹配</li>
+<li>范围查询</li>
+<li>最左前缀匹配</li>
+<li>对索引进行查询(覆盖索引)</li>
+<li>column_name IS NULL</li>
+<li>索引下推</li>
+</ol>
+<p>存在索引, 但不能使用索引的情况:</p>
+<ol>
+<li>以%开头的like查询</li>
+<li>数据类型出现隐式类型转换</li>
+<li>不满足最左前缀原则</li>
+<li>有些情况下会评估出使用索引比全表扫描更慢, 这时不走索引(例如:查询&quot;S&quot;开头的标题, 如果需要返回的记录比例较大, Mysql觉得查索引还不如全表扫描快, 就直接全表扫描了)</li>
+<li>被or分割开的条件, 如果两侧的条件有一侧没有索引, 则不会使用索引(如果两侧都有索引, 则可以使用索引)</li>
+</ol>
+<p>关于上面第四条, 我认为, 查询列的索引首先不是主键索引, 如果走索引, 需要先通过索引找到所有主键, 在通过主键回表, 再查询结果集数据量较大时, 这样的效率不如直接全表扫描更快.</p>
+<h2 id="%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5">查看索引使用情况</h2>
+<p>一条命令:</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">status</span> <span class="hljs-keyword">like</span> <span class="hljs-string">'Handler_read%'</span>;
++<span class="hljs-comment">-----------------------+-------+</span>
+| Variable_name         | Value |
++<span class="hljs-comment">-----------------------+-------+</span>
+| Handler_read_first    | 0     |
+| Handler_read_key      | 0     |
+| Handler_read_last     | 0     |
+| Handler_read_next     | 0     |
+| Handler_read_prev     | 0     |
+| Handler_read_rnd      | 0     |
+| Handler_read_rnd_next | 0     |
++<span class="hljs-comment">-----------------------+-------+</span>
+7 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.11</span> sec)
+</div></code></pre>
+<ul>
+<li>Handler_read_key : 如果索引正在工作, 这个值会很高; 这个值表示一行被索引读的次数, 如果很低, 表示索引不经常使用.</li>
+<li>Handler_read_rnd_next : 该值过高表示查询效率低, 应该建立索引补救. 这个值表示在数据文件中读取下一行的请求数. 如果进行大量表扫描, 则该值会很高, 说明索引不正确或者没有利用索引.</li>
+</ul>
+
+</body>
+</html>

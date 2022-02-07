@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>3_storage_engine.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">存储引擎</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<ul>
+<li>mysql5.5之前默认存储引擎是MyISAM, 5.5及之后默认存储引擎为Innodb</li>
+<li>show engines;命令可以查看当前mysql支持的存储引擎</li>
+</ul>
+<h2 id="mysiam">MYSIAM</h2>
+<ul>
+<li>不支持事务</li>
+<li>不支持外键</li>
+<li>访问速度快</li>
+</ul>
+<p>MyISAM引擎的每一个表都存储为三个文件, 文件名都与表名相同, 扩展名分别是:</p>
+<ul>
+<li>.frm 存储表的定义</li>
+<li>.MYD (MYData)存储数据</li>
+<li>.MYI (MYIndex)存储索引</li>
+</ul>
+<p>支持三种存储格式:</p>
+<ul>
+<li>静态(固定长度)表(默认存储格式): 字段都是非变长字段, 每一条记录的长度都是固定的. 优点是存储迅速, 容易缓存, 出现故障容易恢复; 确定是占用空间大.</li>
+<li>动态表: 每一条记录的长度不固定, 占用空间小, 频繁更新删除会产生碎片, 需要定期指定OPTIMIZE TABLE来改善性能.</li>
+<li>压缩表: 有myisampack工具创建. 占用磁盘空间极小.</li>
+</ul>
+<h2 id="innodb">InnoDB</h2>
+<ul>
+<li>支持事务</li>
+<li>支持外键</li>
+</ul>
+<p><strong>自动增长列</strong></p>
+<p>InnoDB的自动增长列必须是索引, 如果是组合索引, 也必须是组合索引的第一列. 但是对于MyISAM, 自动增长列可以是组合索引的其他列, 这样插入记录后, 自动增长列是按照组合索引前面几列.进行排序后递增的.</p>
+<p>如下:</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> autoincre_demo
+    -&gt; (d1 <span class="hljs-built_in">int</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span> auto_increment,
+    -&gt; d2 <span class="hljs-built_in">int</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span>,
+    -&gt; <span class="hljs-keyword">name</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">10</span>),
+    -&gt; <span class="hljs-keyword">index</span>(d2, d1)
+    -&gt; )<span class="hljs-keyword">engine</span>=myisam;
+Query OK, 0 rows affected (0.09 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> autoincre_demo(d2, <span class="hljs-keyword">name</span>)<span class="hljs-keyword">values</span>(<span class="hljs-number">2</span>, <span class="hljs-string">'a'</span>), (<span class="hljs-number">3</span>,<span class="hljs-string">'b'</span>),(<span class="hljs-number">4</span>,<span class="hljs-string">'c'</span>), (<span class="hljs-number">2</span>, <span class="hljs-string">'a'</span>), (<span class="hljs-number">3</span>, <span class="hljs-string">'b'</span>), (<span class="hljs-number">4</span>, <span class="hljs-string">'c'</span>);
+Query OK, 6 rows affected (0.02 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> autoincre_demo;
++<span class="hljs-comment">----+----+------+</span>
+| d1 | d2 | name |
++<span class="hljs-comment">----+----+------+</span>
+|  1 |  2 | a    |
+|  1 |  3 | b    |
+|  1 |  4 | c    |
+|  2 |  2 | a    |
+|  2 |  3 | b    |
+|  2 |  4 | c    |
++<span class="hljs-comment">----+----+------+</span>
+6 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+<p><strong>外键约束</strong></p>
+<p>mysql中只有InnoDB支持外键约束.</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> country(country_id <span class="hljs-built_in">int</span> auto_increment <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span>, <span class="hljs-keyword">name</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">10</span>), primary <span class="hljs-keyword">key</span>(country_id));
+Query OK, 0 rows affected (0.28 sec)
+
+mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> city(
+    -&gt; city_id <span class="hljs-built_in">int</span> auto_increment <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span>,
+    -&gt; <span class="hljs-keyword">name</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span>,
+    -&gt; country_id <span class="hljs-built_in">int</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span>,
+    -&gt; primary <span class="hljs-keyword">key</span>(city_id),
+    -&gt; <span class="hljs-keyword">constraint</span> <span class="hljs-string">`fk_city_country`</span> <span class="hljs-keyword">foreign</span> <span class="hljs-keyword">key</span> (country_id) <span class="hljs-keyword">references</span> country(country_id) <span class="hljs-keyword">on</span> <span class="hljs-keyword">delete</span> restrict <span class="hljs-keyword">on</span> <span class="hljs-keyword">update</span> <span class="hljs-keyword">cascade</span>
+    -&gt; ) <span class="hljs-keyword">engine</span>=<span class="hljs-keyword">InnoDB</span>;
+Query OK, 0 rows affected (0.33 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> country(<span class="hljs-keyword">name</span>)<span class="hljs-keyword">values</span>(<span class="hljs-string">'china'</span>), (<span class="hljs-string">'en'</span>);
+Query OK, 2 rows affected (0.09 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> country;
++<span class="hljs-comment">------------+-------+</span>
+| country_id | name  |
++<span class="hljs-comment">------------+-------+</span>
+|          1 | china |
+|          2 | en    |
++<span class="hljs-comment">------------+-------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> city (country_id, <span class="hljs-keyword">name</span>)<span class="hljs-keyword">values</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'Beijing'</span>);
+Query OK, 1 row affected (0.04 sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> city;
++<span class="hljs-comment">---------+---------+------------+</span>
+| city_id | name    | country_id |
++<span class="hljs-comment">---------+---------+------------+</span>
+|       1 | Beijing |          1 |
++<span class="hljs-comment">---------+---------+------------+</span>
+1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">delete</span> <span class="hljs-keyword">from</span> country <span class="hljs-keyword">where</span> country_id = <span class="hljs-number">1</span>;
+ERROR 1451 (23000): Cannot <span class="hljs-keyword">delete</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">update</span> a <span class="hljs-keyword">parent</span> <span class="hljs-keyword">row</span>: a <span class="hljs-keyword">foreign</span> <span class="hljs-keyword">key</span> <span class="hljs-keyword">constraint</span> fails (<span class="hljs-string">`frog`</span>.<span class="hljs-string">`city`</span>, <span class="hljs-keyword">CONSTRAINT</span> <span class="hljs-string">`fk_city_country`</span> <span class="hljs-keyword">FOREIGN</span> <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`country_id`</span>) <span class="hljs-keyword">REFERENCES</span> <span class="hljs-string">`country`</span> (<span class="hljs-string">`country_id`</span>) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">CASCADE</span>)
+
+mysql&gt; <span class="hljs-keyword">update</span> country <span class="hljs-keyword">set</span> country_id = <span class="hljs-number">100</span> <span class="hljs-keyword">where</span> country_id = <span class="hljs-number">1</span>;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> country;
++<span class="hljs-comment">------------+-------+</span>
+| country_id | name  |
++<span class="hljs-comment">------------+-------+</span>
+|          2 | en    |
+|        100 | china |
++<span class="hljs-comment">------------+-------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> city;
++<span class="hljs-comment">---------+---------+------------+</span>
+| city_id | name    | country_id |
++<span class="hljs-comment">---------+---------+------------+</span>
+|       1 | Beijing |        100 |
++<span class="hljs-comment">---------+---------+------------+</span>
+1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+<p>上面建表语句中, 外键约束处有:</p>
+<pre class="hljs"><code><div>on <span class="hljs-keyword">delete</span> restrict <span class="hljs-keyword">on</span> <span class="hljs-keyword">update</span> <span class="hljs-keyword">cascade</span>
+</div></code></pre>
+<p>用于指定删除, 更新父表的时候, 对子表的相应操作:</p>
+<ul>
+<li>restrict : 子表有关联记录的情况下, 父表不能更新</li>
+<li>no action : 同上</li>
+<li>cascade : 父表在更新删除时, 同时更新/删除子表对应的记录</li>
+<li>set null : 父表在更新删除时, 同时将子表对应记录的外键设置为null</li>
+</ul>
+<blockquote>
+<p>在执行load data和alter table操作以及忽略顺序导入数据时, 可以暂时关闭外键检查: set foreign_key_checks=0;当操作完成后, 再打开检查:set foreign_key_checks=1;</p>
+</blockquote>
+<p><strong>存储方式</strong></p>
+<ul>
+<li>使用共享表空间存储: 表结构保存在.frm文件中, 数据和索引保存在innodb_data_home_dir和innodb_data_file_path定义的表空间中, 可以是多个文件.</li>
+<li>使用多表空间存储: 表结构仍保留在.frm文件中, 但是每个表的数据和索引单独保存在.ibd中. 如果是分区表, 则每个分区对应单独的.idb文件, 文件名是&quot;表名+分区名&quot;</li>
+</ul>
+<blockquote>
+<p>要是用多表空间存储, 需要设置innodb_file_per_table</p>
+</blockquote>
+<h2 id="memory">MEMORY</h2>
+<p>数据存放在内存中的数据库.</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> country;
++<span class="hljs-comment">------------+-------+</span>
+| country_id | name  |
++<span class="hljs-comment">------------+-------+</span>
+|          2 | en    |
+|        100 | china |
++<span class="hljs-comment">------------+-------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.11</span> sec)
+
+mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> demo_memory <span class="hljs-keyword">engine</span>=<span class="hljs-keyword">memory</span>
+    -&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> country;
+Query OK, 2 rows affected (1.69 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">tables</span>;
++<span class="hljs-comment">----------------+</span>
+| Tables_in_frog |
++<span class="hljs-comment">----------------+</span>
+| autoincre_demo |
+| city           |
+| country        |
+| datetest       |
+| demo_memory    |
+| myisam_vc      |
+| test           |
++<span class="hljs-comment">----------------+</span>
+7 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> demo_memory;
++<span class="hljs-comment">------------+-------+</span>
+| country_id | name  |
++<span class="hljs-comment">------------+-------+</span>
+|          2 | en    |
+|        100 | china |
++<span class="hljs-comment">------------+-------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+
+</body>
+</html>

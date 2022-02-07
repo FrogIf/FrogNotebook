@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DDL.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="ddl">DDL</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>DDL(Data Definition Language), 数据库定义语言.</p>
+<p>用于控制数据库, 表等的增删改查.</p>
+<ul>
+<li>增: create</li>
+<li>删: drop</li>
+<li>改: alter</li>
+<li>查: show</li>
+</ul>
+<blockquote>
+<p>以下只介绍数据库, 表, 列的DDL语句, 至于视图, 存储过程等的DDL单独介绍.</p>
+</blockquote>
+<h2 id="%E5%A2%9E">增</h2>
+<p><strong>创建数据库</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">DATABASE</span> dbname;
+</div></code></pre>
+<p><strong>创建表</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> tablename(
+    column_name_1 column_type_1 <span class="hljs-keyword">constraints</span>,
+    column_name_2 column_type_2 <span class="hljs-keyword">constraints</span>,
+    ...
+    column_name_n column_type_n  <span class="hljs-keyword">constraints</span>
+);
+</div></code></pre>
+<p>为了理解创建表的sql语句, 需要简单了解表与列的结构:</p>
+<p>表的属性:</p>
+<ol>
+<li>表名</li>
+<li>列</li>
+<li>存储引擎</li>
+<li>字符集</li>
+<li>校对</li>
+</ol>
+<p>列的属性:</p>
+<ol>
+<li>列名</li>
+<li>类型</li>
+<li>是否可以为空</li>
+<li>键类型</li>
+<li>默认值</li>
+<li>额外约束</li>
+<li>字符集</li>
+<li>校对</li>
+</ol>
+<blockquote>
+<p>当然还有很多, 就不详细介绍了</p>
+</blockquote>
+<p><strong>创建列</strong></p>
+<p>见下面修改列里面的sql语句.</p>
+<h2 id="%E5%88%A0">删</h2>
+<p><strong>删除数据库</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">DATABASE</span> dbname;
+</div></code></pre>
+<p><strong>删除表</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> tablename;
+</div></code></pre>
+<p><strong>删除列</strong></p>
+<p>见下面修改列里面的sql语句.</p>
+<h2 id="%E6%94%B9">改</h2>
+<p><strong>修改表</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> tablename <span class="hljs-keyword">RENAME</span> [<span class="hljs-keyword">TO</span>] new_tablename;
+</div></code></pre>
+<p><strong>修改列</strong></p>
+<pre class="hljs"><code><div><span class="hljs-comment"># 增加表字段</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> tablename <span class="hljs-keyword">ADD</span> [<span class="hljs-keyword">COLUMN</span>] column_definition [<span class="hljs-keyword">FIRST</span>/<span class="hljs-keyword">AFTER</span> col_name];
+
+<span class="hljs-comment"># 删除表字段</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> tablename <span class="hljs-keyword">DROP</span> [<span class="hljs-keyword">COLUMN</span>] col_name;
+
+<span class="hljs-comment"># 修改表字段定义</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> tablename <span class="hljs-keyword">MODIFY</span> [<span class="hljs-keyword">COLUMN</span>] column_definition [<span class="hljs-keyword">FIRST</span>/<span class="hljs-keyword">AFTER</span> col_name];
+
+<span class="hljs-comment"># 修改表字段名称</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> tablename <span class="hljs-keyword">CHANGE</span> [<span class="hljs-keyword">COLUMN</span>] old_col_name column_definition [<span class="hljs-keyword">FIRST</span>/<span class="hljs-keyword">AFTER</span> col_name];
+</div></code></pre>
+<blockquote>
+<p>关于change和modify, change是大的修改, modify是小的修改.</p>
+</blockquote>
+<h2 id="%E6%9F%A5">查</h2>
+<p><strong>查看数据库</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">SHOW</span> <span class="hljs-keyword">DATABASES</span>;
+</div></code></pre>
+<p><strong>查看表</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">SHOW</span> <span class="hljs-keyword">TABLES</span>;
+
+<span class="hljs-keyword">SHOW</span> <span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> tablename;
+</div></code></pre>
+<p><strong>查看列</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">SHOW</span> <span class="hljs-keyword">COLUMNS</span> <span class="hljs-keyword">FROM</span> tablename;
+
+DESC tablename;
+</div></code></pre>
+<h2 id="%E5%BA%94%E7%94%A8">应用</h2>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">databases</span>;
++<span class="hljs-comment">--------------------+</span>
+| Database           |
++<span class="hljs-comment">--------------------+</span>
+| information_schema |
+| crashcourse        |
+| mysql              |
+| performance_schema |
+| sys                |
++<span class="hljs-comment">--------------------+</span>
+5 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">database</span> frog;
+Query OK, 1 row affected (0.34 sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">databases</span>;
++<span class="hljs-comment">--------------------+</span>
+| Database           |
++<span class="hljs-comment">--------------------+</span>
+| information_schema |
+| crashcourse        |
+| frog               |
+| mysql              |
+| performance_schema |
+| sys                |
++<span class="hljs-comment">--------------------+</span>
+6 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">use</span> frog
+<span class="hljs-keyword">Database</span> <span class="hljs-keyword">changed</span>
+
+mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> tb_test(
+    -&gt; id_ <span class="hljs-built_in">int</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span> auto_increment,
+    -&gt; <span class="hljs-keyword">name</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span>,
+    -&gt; age <span class="hljs-built_in">int</span> <span class="hljs-literal">null</span>,
+    -&gt; sex <span class="hljs-built_in">char</span>(<span class="hljs-number">1</span>) <span class="hljs-literal">null</span>,
+    -&gt; primary <span class="hljs-keyword">key</span> (id_)
+    -&gt; )<span class="hljs-keyword">engine</span>=<span class="hljs-keyword">innodb</span>;
+Query OK, 0 rows affected (0.15 sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">tables</span>;
++<span class="hljs-comment">----------------+</span>
+| Tables_in_frog |
++<span class="hljs-comment">----------------+</span>
+| tb_test        |
++<span class="hljs-comment">----------------+</span>
+1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">columns</span> <span class="hljs-keyword">from</span> tb_test;
++<span class="hljs-comment">-------+-------------+------+-----+---------+----------------+</span>
+| Field | Type        | Null | Key | Default | Extra          |
++<span class="hljs-comment">-------+-------------+------+-----+---------+----------------+</span>
+| id_   | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(20) | NO   |     | NULL    |                |
+| age   | int(11)     | YES  |     | NULL    |                |
+| sex   | char(1)     | YES  |     | NULL    |                |
++<span class="hljs-comment">-------+-------------+------+-----+---------+----------------+</span>
+4 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">desc</span> tb_test;
++<span class="hljs-comment">-------+-------------+------+-----+---------+----------------+</span>
+| Field | Type        | Null | Key | Default | Extra          |
++<span class="hljs-comment">-------+-------------+------+-----+---------+----------------+</span>
+| id_   | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(20) | NO   |     | NULL    |                |
+| age   | int(11)     | YES  |     | NULL    |                |
+| sex   | char(1)     | YES  |     | NULL    |                |
++<span class="hljs-comment">-------+-------------+------+-----+---------+----------------+</span>
+4 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> tb_test;
++<span class="hljs-comment">---------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span>
+| Table   | <span class="hljs-keyword">Create</span> <span class="hljs-keyword">Table</span>                                                                                                                                                                                                                                                                                                |
++<span class="hljs-comment">---------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span>
+| tb_test | <span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`tb_test`</span> (
+  <span class="hljs-string">`id_`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT,
+  <span class="hljs-string">`name`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">COLLATE</span> utf8mb4_unicode_ci <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`age`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`sex`</span> <span class="hljs-built_in">char</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">COLLATE</span> utf8mb4_unicode_ci <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`id_`</span>)
+) <span class="hljs-keyword">ENGINE</span>=<span class="hljs-keyword">InnoDB</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">CHARSET</span>=utf8mb4 <span class="hljs-keyword">COLLATE</span>=utf8mb4_unicode_ci |
++<span class="hljs-comment">---------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span>
+<span class="hljs-number">1</span> <span class="hljs-keyword">row</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> tb_test \G;
+*************************** 1. row ***************************
+       Table: tb_test
+<span class="hljs-keyword">Create</span> <span class="hljs-keyword">Table</span>: <span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`tb_test`</span> (
+  <span class="hljs-string">`id_`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT,
+  <span class="hljs-string">`name`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">COLLATE</span> utf8mb4_unicode_ci <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`age`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`sex`</span> <span class="hljs-built_in">char</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">COLLATE</span> utf8mb4_unicode_ci <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`id_`</span>)
+) <span class="hljs-keyword">ENGINE</span>=<span class="hljs-keyword">InnoDB</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">CHARSET</span>=utf8mb4 <span class="hljs-keyword">COLLATE</span>=utf8mb4_unicode_ci
+<span class="hljs-number">1</span> <span class="hljs-keyword">row</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+<span class="hljs-keyword">ERROR</span>:
+<span class="hljs-keyword">No</span> <span class="hljs-keyword">query</span> specified
+
+mysql&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> tb_test <span class="hljs-keyword">rename</span> tb_test_test;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">tables</span>;
++<span class="hljs-comment">----------------+</span>
+| Tables_in_frog |
++<span class="hljs-comment">----------------+</span>
+| tb_test_test   |
++<span class="hljs-comment">----------------+</span>
+1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> tb_test_test <span class="hljs-keyword">add</span> remark <span class="hljs-built_in">varchar</span>(<span class="hljs-number">1000</span>) <span class="hljs-keyword">after</span> sex;
+Query OK, 0 rows affected (0.39 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql&gt; desc tb_test_test;
++<span class="hljs-comment">--------+---------------+------+-----+---------+----------------+</span>
+| Field  | Type          | Null | Key | Default | Extra          |
++<span class="hljs-comment">--------+---------------+------+-----+---------+----------------+</span>
+| id_    | int(11)       | NO   | PRI | NULL    | auto_increment |
+| name   | varchar(20)   | NO   |     | NULL    |                |
+| age    | int(11)       | YES  |     | NULL    |                |
+| sex    | char(1)       | YES  |     | NULL    |                |
+| remark | varchar(1000) | YES  |     | NULL    |                |
++<span class="hljs-comment">--------+---------------+------+-----+---------+----------------+</span>
+5 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> tb_test_test <span class="hljs-keyword">modify</span> remark <span class="hljs-built_in">varchar</span>(<span class="hljs-number">2000</span>);
+Query OK, 0 rows affected (0.00 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql&gt; desc tb_test_test;
++<span class="hljs-comment">--------+---------------+------+-----+---------+----------------+</span>
+| Field  | Type          | Null | Key | Default | Extra          |
++<span class="hljs-comment">--------+---------------+------+-----+---------+----------------+</span>
+| id_    | int(11)       | NO   | PRI | NULL    | auto_increment |
+| name   | varchar(20)   | NO   |     | NULL    |                |
+| age    | int(11)       | YES  |     | NULL    |                |
+| sex    | char(1)       | YES  |     | NULL    |                |
+| remark | varchar(2000) | YES  |     | NULL    |                |
++<span class="hljs-comment">--------+---------------+------+-----+---------+----------------+</span>
+5 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> tb_test_test <span class="hljs-keyword">change</span> remark remark_m <span class="hljs-built_in">varchar</span>(<span class="hljs-number">2000</span>);
+Query OK, 0 rows affected (0.00 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql&gt; desc tb_test_test;
++<span class="hljs-comment">----------+---------------+------+-----+---------+----------------+</span>
+| Field    | Type          | Null | Key | Default | Extra          |
++<span class="hljs-comment">----------+---------------+------+-----+---------+----------------+</span>
+| id_      | int(11)       | NO   | PRI | NULL    | auto_increment |
+| name     | varchar(20)   | NO   |     | NULL    |                |
+| age      | int(11)       | YES  |     | NULL    |                |
+| sex      | char(1)       | YES  |     | NULL    |                |
+| remark_m | varchar(2000) | YES  |     | NULL    |                |
++<span class="hljs-comment">----------+---------------+------+-----+---------+----------------+</span>
+5 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> tb_test_test <span class="hljs-keyword">drop</span> remark_m;
+Query OK, 0 rows affected (0.14 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql&gt; desc tb_test_test;
++<span class="hljs-comment">-------+-------------+------+-----+---------+----------------+</span>
+| Field | Type        | Null | Key | Default | Extra          |
++<span class="hljs-comment">-------+-------------+------+-----+---------+----------------+</span>
+| id_   | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(20) | NO   |     | NULL    |                |
+| age   | int(11)     | YES  |     | NULL    |                |
+| sex   | char(1)     | YES  |     | NULL    |                |
++<span class="hljs-comment">-------+-------------+------+-----+---------+----------------+</span>
+4 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">drop</span> <span class="hljs-keyword">table</span> tb_test_test;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">tables</span>;
+Empty <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">drop</span> <span class="hljs-keyword">database</span> frog;
+Query OK, 0 rows affected (0.11 sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">databases</span>;
++<span class="hljs-comment">--------------------+</span>
+| Database           |
++<span class="hljs-comment">--------------------+</span>
+| information_schema |
+| crashcourse        |
+| mysql              |
+| performance_schema |
+| sys                |
++<span class="hljs-comment">--------------------+</span>
+5 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+</div></code></pre>
+
+</body>
+</html>

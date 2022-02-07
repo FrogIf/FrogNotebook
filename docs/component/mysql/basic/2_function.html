@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>2_function.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0">常用函数</h1>
+<h2 id="%E5%87%BD%E6%95%B0">函数</h2>
+<p><strong>字符串函数</strong></p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>concat(s1, s2, ...)</td>
+<td>连接s1, s2, ...为一个字符串</td>
+</tr>
+<tr>
+<td>insert(str, x, y, instr)</td>
+<td>将字符串str从第x为开始, y个字符长的子串(x从1开始, 下同)</td>
+</tr>
+<tr>
+<td>lower(str)</td>
+<td>将str变为小写</td>
+</tr>
+<tr>
+<td>upper(str)</td>
+<td>将str变为大写</td>
+</tr>
+<tr>
+<td>left(str, x)</td>
+<td>返回str最左侧的x个字符</td>
+</tr>
+<tr>
+<td>right(str, x)</td>
+<td>返回str最右侧的x个字符</td>
+</tr>
+<tr>
+<td>lpad(str, n, pad)</td>
+<td>用字符串pad对str最左边进行填充, 直至长度达到n</td>
+</tr>
+<tr>
+<td>rpad(str, n, pad)</td>
+<td>用字符串pad对str最右边进行填充, 知道长度达到n</td>
+</tr>
+<tr>
+<td>ltrim(str)</td>
+<td>去掉字符串左侧的空格</td>
+</tr>
+<tr>
+<td>rtrim(str)</td>
+<td>去掉字符串右侧的空格</td>
+</tr>
+<tr>
+<td>trim(str)</td>
+<td>去掉字符串两侧的空格</td>
+</tr>
+<tr>
+<td>repeat(str, x)</td>
+<td>返回str重复x次的结果</td>
+</tr>
+<tr>
+<td>strcmp(s1, s2)</td>
+<td>比较字符串s1, s2的acsii码值大小</td>
+</tr>
+<tr>
+<td>substring(str, x, y)</td>
+<td>返回str从x起y长度的子串</td>
+</tr>
+</tbody>
+</table>
+<p><strong>数值函数</strong></p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>abs(x)</td>
+<td>返回x的绝对值</td>
+</tr>
+<tr>
+<td>ceil(x)</td>
+<td>向上取整</td>
+</tr>
+<tr>
+<td>floor(x)</td>
+<td>向下取整</td>
+</tr>
+<tr>
+<td>mod(x, y)</td>
+<td>x % y</td>
+</tr>
+<tr>
+<td>rand()</td>
+<td>返回0--1内的随机数</td>
+</tr>
+<tr>
+<td>round(x, y)</td>
+<td>x四舍五入, 保留y为小数</td>
+</tr>
+<tr>
+<td>truncate(x, y)</td>
+<td>返回数字x截断为y位小数的结果</td>
+</tr>
+</tbody>
+</table>
+<p><strong>时间日期函数</strong></p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>curdate()</td>
+<td>返回当前日期</td>
+</tr>
+<tr>
+<td>curtime()</td>
+<td>返回当前时间</td>
+</tr>
+<tr>
+<td>new()</td>
+<td>返回当前日期加时间</td>
+</tr>
+<tr>
+<td>unix_timestamp(date)</td>
+<td>返回日期date的unix时间戳(java中的new Date().getTime())</td>
+</tr>
+<tr>
+<td>from_unixtime(utime)</td>
+<td>返回utime的date值</td>
+</tr>
+<tr>
+<td>week(date)</td>
+<td>返回date是一年中的第几周</td>
+</tr>
+<tr>
+<td>year(date)</td>
+<td>返回日期date的年份</td>
+</tr>
+<tr>
+<td>hour(time)</td>
+<td>返回time的小时值</td>
+</tr>
+<tr>
+<td>minute(time)</td>
+<td>返回time的分钟值</td>
+</tr>
+<tr>
+<td>monthname(date)</td>
+<td>返回日期的月份名</td>
+</tr>
+<tr>
+<td>date_formate(date, fmt)</td>
+<td>格式化日期</td>
+</tr>
+<tr>
+<td>date_add(date, INTERVAL expr type)</td>
+<td>返回日期值加上一个时间间隔的时间值</td>
+</tr>
+<tr>
+<td>datediff(expr1, expr2)</td>
+<td>返回起始时间expr1和expr2之间的间隔天数</td>
+</tr>
+</tbody>
+</table>
+<p><strong>流程函数</strong></p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>if(value, t, f)</td>
+<td>value是真返回t, value是假返回f</td>
+</tr>
+<tr>
+<td>ifnull(value1, value2)</td>
+<td>如果value1不为空, 返回value1, 否则返回value2</td>
+</tr>
+<tr>
+<td>case when [value1] then [result1] ... else [default] end</td>
+<td>如果value1是真, 返回result1, ..., 否则返回default</td>
+</tr>
+<tr>
+<td>case [expr] when [value1] then [result1] ... else [default] end</td>
+<td>如果expr等于value1, 返回result1, ..., 否则返回default</td>
+</tr>
+</tbody>
+</table>
+<p><strong>其他函数</strong></p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>datebase()</td>
+<td>返回当前数据库名</td>
+</tr>
+<tr>
+<td>version()</td>
+<td>返回当前数据库版本</td>
+</tr>
+<tr>
+<td>user()</td>
+<td>返回当前登录用户</td>
+</tr>
+<tr>
+<td>inet_aton(ip)</td>
+<td>返回ip地址的数字表示</td>
+</tr>
+<tr>
+<td>inet_ntoa(num)</td>
+<td>返回数字代表的ip地址</td>
+</tr>
+<tr>
+<td>password(str)</td>
+<td>返回字符串str的加密版本</td>
+</tr>
+<tr>
+<td>md5(str)</td>
+<td>返回字符串str的md5值</td>
+</tr>
+</tbody>
+</table>
+<p><strong>聚合函数</strong></p>
+<p>聚合函数总共有5个:</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>COUNT()</td>
+<td>总行数</td>
+</tr>
+<tr>
+<td>MAX()</td>
+<td>最大值</td>
+</tr>
+<tr>
+<td>MIN()</td>
+<td>最小值</td>
+</tr>
+<tr>
+<td>SUM()</td>
+<td>求和</td>
+</tr>
+<tr>
+<td>AVG()</td>
+<td>求平均值</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>count(*)和count(1)的执行效率差别不大且很高, 效果仅仅是统计行数, 不会忽略null值.<br>
+count(col_name)效率要低一些, 但是会根据指定的col_name去统计, 会把指定col_name值为null的去除</p>
+</blockquote>
+<h2 id="%E5%BA%94%E7%94%A8">应用</h2>
+<p><strong>日期计算</strong></p>
+<ol>
+<li>MySQL 为日期增加一个时间间隔：date_add()</li>
+</ol>
+<ul>
+<li>now()       //now函数为获取当前时间</li>
+<li>select date_add(now(), interval 1 day); - 加1天</li>
+<li>select date_add(now(), interval 1 hour); -加1小时</li>
+<li>select date_add(now(), interval 1 minute); - 加1分钟</li>
+<li>select date_add(now(), interval 1 second); -加1秒</li>
+<li>select date_add(now(), interval 1 microsecond);-加1毫秒</li>
+<li>select date_add(now(), interval 1 week);-加1周</li>
+<li>select date_add(now(), interval 1 month);-加1月</li>
+<li>select date_add(now(), interval 1 quarter);-加1季</li>
+<li>select date_add(now(), interval 1 year);-加1年</li>
+</ul>
+<blockquote>
+<p>MySQL adddate(), addtime()函数，可以用date_add() 来替代。</p>
+</blockquote>
+<ol start="2">
+<li>MySQL 为日期减去一个时间间隔：date_sub()</li>
+</ol>
+<p>MySQL date_sub() 日期时间函数 和date_add() 用法一致。</p>
+<blockquote>
+<p>MySQL 中subdate(),subtime()函数，建议，用date_sub()来替代。</p>
+</blockquote>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">test</span>;
++<span class="hljs-comment">------+------+------+</span>
+| id_  | c    | v    |
++<span class="hljs-comment">------+------+------+</span>
+| 0001 | a    | aa   |
+| 0002 | b    | bb   |
+| 0003 | c    | cc   |
++<span class="hljs-comment">------+------+------+</span>
+3 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> <span class="hljs-keyword">if</span>(c = <span class="hljs-string">'a'</span>, <span class="hljs-string">'find it'</span>, <span class="hljs-string">'no!'</span>) <span class="hljs-keyword">from</span> <span class="hljs-keyword">test</span>;
++<span class="hljs-comment">-------------------------------+</span>
+| if(c = 'a', 'find it', 'no!') |
++<span class="hljs-comment">-------------------------------+</span>
+| find it                       |
+| no!                           |
+| no!                           |
++<span class="hljs-comment">-------------------------------+</span>
+3 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> <span class="hljs-keyword">test</span> (c, v) <span class="hljs-keyword">values</span>(<span class="hljs-literal">null</span>, <span class="hljs-string">'kk'</span>);
+Query OK, 1 row affected (0.04 sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> <span class="hljs-keyword">ifnull</span>(c, <span class="hljs-string">'n/a'</span>) <span class="hljs-keyword">from</span> <span class="hljs-keyword">test</span>;
++<span class="hljs-comment">------------------+</span>
+| ifnull(c, 'n/a') |
++<span class="hljs-comment">------------------+</span>
+| a                |
+| b                |
+| c                |
+| n/a              |
++<span class="hljs-comment">------------------+</span>
+4 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> <span class="hljs-keyword">case</span> c <span class="hljs-keyword">when</span> <span class="hljs-string">'a'</span> <span class="hljs-keyword">then</span> <span class="hljs-string">'is a'</span> <span class="hljs-keyword">when</span> <span class="hljs-string">'c'</span> <span class="hljs-keyword">then</span> <span class="hljs-string">'is c'</span> <span class="hljs-keyword">else</span> <span class="hljs-string">'i do not known'</span> <span class="hljs-keyword">end</span> <span class="hljs-keyword">from</span> <span class="hljs-keyword">test</span>;
++<span class="hljs-comment">----------------------------------------------------------------------------+</span>
+| case c when 'a' then 'is a' when 'c' then 'is c' else 'i <span class="hljs-keyword">do</span> <span class="hljs-keyword">not</span> known<span class="hljs-string">' end |
++----------------------------------------------------------------------------+
+| is a                                                                       |
+| i do not known                                                             |
+| is c                                                                       |
+| i do not known                                                             |
++----------------------------------------------------------------------------+
+4 rows in set (0.00 sec)
+</span></div></code></pre>
+
+</body>
+</html>

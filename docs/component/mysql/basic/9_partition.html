@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>9_partition.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%88%86%E5%8C%BA">分区</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>mysql从5.1开始支持分区功能. 分区是指根据指定的规则, 把数据库表分解成多个更小的, 更容易管理的部分. 对于访问数据库的应用而言, 逻辑上只有一个表或者索引, 每个分区都是独立的对象, 可以独自处理, 也可以作为标的一部分进行处理, 分区对于应用来说是完全透明的, 不影响应用的逻辑.</p>
+<p>优点:</p>
+<ol>
+<li>相比于当个磁盘或者文件的分区相比, 可以存储更多数据.</li>
+<li>优化查询. 在where子句中包含分区条件时, 可以只扫描必要的一个或者多个分区来提高查询效率; 同时在涉及sum, count这类聚合函数查询时, 可容易的在每个分区并行处理, 最终只需汇总所有分区得到的结果.</li>
+<li>对于已经过期或者不需要保存的数据, 可以使用删除与这些写数据有关的分区来快速删除数据.</li>
+<li>跨多个磁盘分散数据查询, 已获得更大的查询吞吐量.</li>
+</ol>
+<h2 id="%E4%BD%BF%E7%94%A8">使用</h2>
+<p><strong>分区的类型</strong></p>
+<ul>
+<li>RANGE : 基于给定的连续区间范围, 把数据分配到不同的分区</li>
+<li>LIST : 类似RANGE分区, 但是LIST分区是基于不连续的枚举值列表进行分区</li>
+<li>HASH : 基于给定的分区个数, 把数据分配到不同分区</li>
+<li>KEY : 类似HASH分区</li>
+</ul>
+<blockquote>
+<p>mysql5.1中range, list, hash分区的分区键必须是int类型或者通过表达式返回int类型.只有key分区是支持其他类型的分区键. 5.5以上版中, 支持非整型的range, list分区.</p>
+</blockquote>
+<blockquote>
+<p>无论哪种mysql分区类型, 分区表要么没有主键/唯一键, 要么主键/唯一键包含分区键. 也就是说不能使用主键/唯一键以外的字段进行分区(如果表中没有主键/唯一键就可以随便使用任意字段作为分区键了).</p>
+</blockquote>
+<h2 id="range%E5%88%86%E5%8C%BA">RANGE分区</h2>
+<p>利用取值范围将数据分成分区, 区间要连续并且不能互相重叠.</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_range_test_1(<span class="hljs-keyword">id</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span>, ename <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>), store_id <span class="hljs-built_in">int</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span>)
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">range</span> (store_id)(
+    -&gt; <span class="hljs-keyword">partition</span> p0 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">10</span>),
+    -&gt; <span class="hljs-keyword">partition</span> p1 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">20</span>),
+    -&gt; <span class="hljs-keyword">partition</span> p2 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">30</span>)
+    -&gt; );
+Query OK, 0 rows affected (0.46 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_range_test_1 (<span class="hljs-keyword">id</span>, ename, store_id) <span class="hljs-keyword">values</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'t1'</span>, <span class="hljs-number">3</span>), (<span class="hljs-number">2</span>, <span class="hljs-string">'t2'</span>, <span class="hljs-number">15</span>), (<span class="hljs-number">3</span>, <span class="hljs-string">'t3'</span>, <span class="hljs-number">25</span>);
+Query OK, 3 rows affected (0.03 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_range_test_1;
++<span class="hljs-comment">----+-------+----------+</span>
+| id | ename | store_id |
++<span class="hljs-comment">----+-------+----------+</span>
+|  1 | t1    |        3 |
+|  2 | t2    |       15 |
+|  3 | t3    |       25 |
++<span class="hljs-comment">----+-------+----------+</span>
+3 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_range_test_1 (<span class="hljs-keyword">id</span>, ename, store_id) <span class="hljs-keyword">values</span> (<span class="hljs-number">4</span>, <span class="hljs-string">'t4'</span>, <span class="hljs-number">36</span>);
+ERROR 1526 (HY000): Table has no partition for value 36
+</div></code></pre>
+<blockquote>
+<p>注意分区的定义需要按照顺序从低到高进行定义.</p>
+</blockquote>
+<p>上面命令最后插入的值任何一个分区都不满足, 所以报错了, 可以这样解决:</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> p_range_test_1 <span class="hljs-keyword">add</span> <span class="hljs-keyword">partition</span> (<span class="hljs-keyword">partition</span> p3 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> maxvalue);
+Query OK, 0 rows affected (0.12 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_range_test_1 (<span class="hljs-keyword">id</span>, ename, store_id) <span class="hljs-keyword">values</span> (<span class="hljs-number">4</span>, <span class="hljs-string">'t4'</span>, <span class="hljs-number">36</span>);
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_range_test_1;
++<span class="hljs-comment">----+-------+----------+</span>
+| id | ename | store_id |
++<span class="hljs-comment">----+-------+----------+</span>
+|  1 | t1    |        3 |
+|  2 | t2    |       15 |
+|  3 | t3    |       25 |
+|  4 | t4    |       36 |
++<span class="hljs-comment">----+-------+----------+</span>
+4 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+</div></code></pre>
+<p>mysql5.1如果想对日期分区, 需要这样做:</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_range_test_2(<span class="hljs-keyword">id</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">not</span> <span class="hljs-literal">null</span>, ename <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>), start_time datetime)
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">range</span> (<span class="hljs-keyword">year</span>(start_time))(
+    -&gt;    <span class="hljs-keyword">partition</span> p0 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">1990</span>),
+    -&gt;    <span class="hljs-keyword">partition</span> p1 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">2000</span>),
+    -&gt;    <span class="hljs-keyword">partition</span> p2 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">2010</span>)
+    -&gt; );
+Query OK, 0 rows affected (0.26 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_range_test_2 (<span class="hljs-keyword">id</span>, ename, start_time) <span class="hljs-keyword">values</span> (<span class="hljs-string">'a'</span>, <span class="hljs-string">'a'</span>, <span class="hljs-string">'1980-03-11 12:00:00'</span>), (<span class="hljs-string">'b'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'1995-05-15 13:25:23'</span>);
+Query OK, 2 rows affected (0.29 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_range_test_2;
++<span class="hljs-comment">----+-------+---------------------+</span>
+| id | ename | start_time          |
++<span class="hljs-comment">----+-------+---------------------+</span>
+| a  | a     | 1980-03-11 12:00:00 |
+| b  | b     | 1995-05-15 13:25:23 |
++<span class="hljs-comment">----+-------+---------------------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+<p>mysql5.5支持直接对日期进行分区, 但是需要使用range columns来定义表:</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_range_test_3(ename <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>), start_time datetime)
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">range</span> <span class="hljs-keyword">columns</span> (start_time)(
+    -&gt;     <span class="hljs-keyword">partition</span> p0 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-string">'1990-01-01 00:00:00'</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p1 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-string">'2000-01-01 00:00:00'</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p2 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-string">'2010-01-01 00:00:00'</span>)
+    -&gt; );
+Query OK, 0 rows affected (0.23 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_range_test_3(ename, start_time) <span class="hljs-keyword">values</span>(<span class="hljs-string">'a'</span>, <span class="hljs-string">'1980-03-11 12:00:00'</span>), (<span class="hljs-string">'b'</span>, <span class="hljs-string">'1995-05-15 13:25:23'</span>);
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_range_test_3;
++<span class="hljs-comment">-------+---------------------+</span>
+| ename | start_time          |
++<span class="hljs-comment">-------+---------------------+</span>
+| a     | 1980-03-11 12:00:00 |
+| b     | 1995-05-15 13:25:23 |
++<span class="hljs-comment">-------+---------------------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+</div></code></pre>
+<p>range分区删除指定分区数据:</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> p_range_test_1 <span class="hljs-keyword">drop</span> <span class="hljs-keyword">partition</span> p0;
+Query OK, 0 rows affected (0.11 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_range_test_1;
++<span class="hljs-comment">----+-------+----------+</span>
+| id | ename | store_id |
++<span class="hljs-comment">----+-------+----------+</span>
+|  2 | t2    |       15 |
+|  3 | t3    |       25 |
+|  4 | t4    |       36 |
++<span class="hljs-comment">----+-------+----------+</span>
+3 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+</div></code></pre>
+<h2 id="list%E5%88%86%E5%8C%BA">List分区</h2>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_list_test_1(sex, ename)
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> sex^C
+mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_list_test_1(sex <span class="hljs-built_in">int</span>(<span class="hljs-number">1</span>), ename <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>))
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">list</span>(sex)(
+    -&gt;     <span class="hljs-keyword">partition</span> p0 <span class="hljs-keyword">values</span> <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p1 <span class="hljs-keyword">values</span> <span class="hljs-keyword">in</span> (<span class="hljs-number">0</span>)
+    -&gt; );
+Query OK, 0 rows affected (0.20 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_list_test_1(sex, ename) <span class="hljs-keyword">values</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'a'</span>), (<span class="hljs-number">0</span>, <span class="hljs-string">'b'</span>);
+Query OK, 2 rows affected (0.29 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_list_test_1;
++<span class="hljs-comment">------+-------+</span>
+| sex  | ename |
++<span class="hljs-comment">------+-------+</span>
+|    1 | a     |
+|    0 | b     |
++<span class="hljs-comment">------+-------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_list_test_2(<span class="hljs-keyword">category</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">20</span>), gname <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>))
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">list</span> <span class="hljs-keyword">columns</span>(<span class="hljs-keyword">category</span>)(
+    -&gt;     <span class="hljs-keyword">partition</span> p0 <span class="hljs-keyword">values</span> <span class="hljs-keyword">in</span> (<span class="hljs-string">'fruits'</span>, <span class="hljs-string">'vegetables'</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p1 <span class="hljs-keyword">values</span> <span class="hljs-keyword">in</span> (<span class="hljs-string">'tools'</span>)
+    -&gt; );
+Query OK, 0 rows affected (0.45 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_list_test_2 (<span class="hljs-keyword">category</span>, gname) <span class="hljs-keyword">values</span> (<span class="hljs-string">'fruits'</span>, <span class="hljs-string">'orange'</span>), (<span class="hljs-string">'tools'</span>, <span class="hljs-string">'knife'</span>);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_list_test_2;
++<span class="hljs-comment">----------+--------+</span>
+| category | gname  |
++<span class="hljs-comment">----------+--------+</span>
+| fruits   | orange |
+| tools    | knife  |
++<span class="hljs-comment">----------+--------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+<h2 id="hash%E5%88%86%E5%8C%BA">HASH分区</h2>
+<p>hash分区主要用于分散热电读, 确保数据在预先确定个数的分区中尽可能均匀分布.</p>
+<p><strong>常规hash分区</strong></p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_hash_test_1(store_id <span class="hljs-built_in">int</span> primary <span class="hljs-keyword">key</span> auto_increment, ename <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>))
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">hash</span> (store_id) <span class="hljs-keyword">partitions</span> <span class="hljs-number">4</span>;
+Query OK, 0 rows affected (0.56 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_hash_test_1 (ename) <span class="hljs-keyword">values</span> (<span class="hljs-string">'a'</span>), (<span class="hljs-string">'b'</span>), (<span class="hljs-string">'c'</span>);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_hash_test_1;
++<span class="hljs-comment">----------+-------+</span>
+| store_id | ename |
++<span class="hljs-comment">----------+-------+</span>
+|        1 | a     |
+|        2 | b     |
+|        3 | c     |
++<span class="hljs-comment">----------+-------+</span>
+3 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+<p>常规哈希使用的算法是取余, 假设定义有4个hash分区, 则根据分区键key的值, 会被分配到(key%4)号分区上去.</p>
+<p><strong>线性hash分区</strong></p>
+<p>常规hash如果后期增加分区, 原来分区中的数据都需要重新分区, 所以常规hash不适合需要灵活变动分区的需求. 这时就需要使用线性hash分区.</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_hash_test_2(store_id <span class="hljs-built_in">int</span> primary <span class="hljs-keyword">key</span> auto_increment, ename <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>))
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> linear <span class="hljs-keyword">hash</span> (store_id) <span class="hljs-keyword">partitions</span> <span class="hljs-number">4</span>;
+Query OK, 0 rows affected (0.29 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_hash_test_2 (ename) <span class="hljs-keyword">values</span> (<span class="hljs-string">'a'</span>), (<span class="hljs-string">'b'</span>), (<span class="hljs-string">'c'</span>);
+Query OK, 3 rows affected (0.29 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_hash_test_2;
++<span class="hljs-comment">----------+-------+</span>
+| store_id | ename |
++<span class="hljs-comment">----------+-------+</span>
+|        1 | a     |
+|        2 | b     |
+|        3 | c     |
++<span class="hljs-comment">----------+-------+</span>
+3 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+<p>线性分区算法是这样的:</p>
+<pre class="hljs"><code><div>假设将要保存记录的分区编号为N; num是一个非负整数, 表示分割成分区的数量; key_value表示待插入数据的分区键值, 那么N可以通过以下算法得到.
+1. 找到大于等于num的2的幂次:
+    V = power(2, ceiling(log(2, num)))
+2. 计算N = key_value &amp; (V - 1)
+3. 如果N &gt;= num, 令N = N &amp; (V - 1)
+</div></code></pre>
+<p>线性分区的优点是在分区维护是更迅速, 缺点是数据分布不太均匀.</p>
+<h2 id="key%E5%88%86%E5%8C%BA">key分区</h2>
+<p>key分区与hash分区类似, 但是key分区不允许使用用户自定义的表达式, 需要使用mysql服务器提供的hash函数. key支持除blob和text以外的其他类型分区键.</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_key_test_1(id_ <span class="hljs-built_in">varchar</span>(<span class="hljs-number">36</span>) primary <span class="hljs-keyword">key</span>, ename <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>)) <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">key</span>(id_) <span class="hljs-keyword">partitions</span> <span class="hljs-number">4</span>;
+Query OK, 0 rows affected (0.59 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_key_test_1 (id_, ename)<span class="hljs-keyword">values</span>(<span class="hljs-keyword">uuid</span>(), <span class="hljs-string">'a'</span>), (<span class="hljs-keyword">uuid</span>(), <span class="hljs-string">'b'</span>);
+Query OK, 2 rows affected (0.28 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_key_test_1;
++<span class="hljs-comment">--------------------------------------+-------+</span>
+| id_                                  | ename |
++<span class="hljs-comment">--------------------------------------+-------+</span>
+| dfbf0830-a5e8-11e9-a2ef-000c29374e46 | a     |
+| dfbf0932-a5e8-11e9-a2ef-000c29374e46 | b     |
++<span class="hljs-comment">--------------------------------------+-------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+<p>key分区也可以使用linear, 效果与hash相同:</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_key_test_2(id_ <span class="hljs-built_in">varchar</span>(<span class="hljs-number">36</span>) primary <span class="hljs-keyword">key</span>, ename <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>)) <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> linear <span class="hljs-keyword">key</span> (id_) <span class="hljs-keyword">partitions</span> <span class="hljs-number">4</span>;
+Query OK, 0 rows affected (0.25 sec)
+
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_key_test_2 (id_, ename)<span class="hljs-keyword">values</span>(<span class="hljs-keyword">uuid</span>(), <span class="hljs-string">'a'</span>), (<span class="hljs-keyword">uuid</span>(), <span class="hljs-string">'b'</span>);
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_key_test_2;
++<span class="hljs-comment">--------------------------------------+-------+</span>
+| id_                                  | ename |
++<span class="hljs-comment">--------------------------------------+-------+</span>
+| 43073a40-a5e9-11e9-a2ef-000c29374e46 | a     |
+| 43073b45-a5e9-11e9-a2ef-000c29374e46 | b     |
++<span class="hljs-comment">--------------------------------------+-------+</span>
+2 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+<p>key分区可以不指定分区键, 这时会使用主键作为分区键, 如果没有主键, 会使用非空唯一键作为分区键. 如果没有主键也没有唯一键就必须手动指定分区键.</p>
+<h2 id="columns%E5%88%86%E5%8C%BA">Columns分区</h2>
+<p>就是上面range, list中使用的columns, mysql5.5开始支持.</p>
+<p>columns分区分为两种: list columns, range columns.</p>
+<p>columns分区支持整数(tinyint, smallint, mediumint, int, bigint), 日期(date, datetime), 字符串(char, varchar, binary, varbinary)作为分区键.</p>
+<p>columns支持多列分区:</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_columns_test_1(a <span class="hljs-built_in">int</span>, b <span class="hljs-built_in">int</span>)
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">range</span> <span class="hljs-keyword">columns</span> (a, b)(
+    -&gt;     <span class="hljs-keyword">partition</span> p0 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">0</span>, <span class="hljs-number">10</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p1 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">10</span>, <span class="hljs-number">10</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p2 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">10</span>, <span class="hljs-number">35</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p3 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (maxvalue, maxvalue)
+    -&gt; );
+mysql&gt; <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> p_columns_test_1 (a, b) <span class="hljs-keyword">values</span> (<span class="hljs-number">1</span>, <span class="hljs-number">10</span>);
+Query OK, 1 row affected (0.29 sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> p_columns_test_1;
++<span class="hljs-comment">------+------+</span>
+| a    | b    |
++<span class="hljs-comment">------+------+</span>
+|    1 |   10 |
++<span class="hljs-comment">------+------+</span>
+1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+</div></code></pre>
+<p>多列分区时插入规则与order by多列类似, 先检查第一列待插入值可以插入哪几个分区, 如果只有一个可以插入的分区, 直接插入, 如果有多个, 则检第二列值可以插入哪个分区, 然后再插入.</p>
+<h2 id="%E5%AD%90%E5%88%86%E5%8C%BA">子分区</h2>
+<p>对每一个分区再进行分区. range分区和list分区可以进行子分区, 子分区需使用hash分区或者key分区.</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> p_sub_test_1(id_ <span class="hljs-built_in">int</span>, ename <span class="hljs-built_in">varchar</span>(<span class="hljs-number">30</span>))
+    -&gt; <span class="hljs-keyword">partition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">range</span>(id_)
+    -&gt; <span class="hljs-keyword">subpartition</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">hash</span>(ename) <span class="hljs-keyword">subpartitions</span> <span class="hljs-number">2</span>
+    -&gt; (
+    -&gt;     <span class="hljs-keyword">partition</span> p0 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">0</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p1 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">10</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p2 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (<span class="hljs-number">20</span>),
+    -&gt;     <span class="hljs-keyword">partition</span> p3 <span class="hljs-keyword">values</span> <span class="hljs-keyword">less</span> <span class="hljs-keyword">than</span> (maxvalue)
+    -&gt; );
+Query OK, 0 rows affected (0.66 sec)
+</div></code></pre>
+<h2 id="%E5%88%86%E5%8C%BA%E5%A4%84%E7%90%86null%E5%80%BC">分区处理null值</h2>
+<p>range分区中会把null值当做0值或者最小值处理, list分区中, null值必须出现在枚举列表中, 否则不被接受; hash/key分区中, null值被当做0值处理.</p>
+<h2 id="rangelist%E5%88%86%E5%8C%BA%E7%AE%A1%E7%90%86">RANGE&amp;LIST分区管理</h2>
+<p><strong>删除分区</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">PARTITION</span> partition_name;
+</div></code></pre>
+<p><strong>增加分区</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">ALTER</span> TABEL <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">PARTITION</span> partition_name_define;
+</div></code></pre>
+<blockquote>
+<p>对于range分区, 只能向最大端增加分区, 不能在原有分区区间内继续新增分区.<br>
+对于list分区, 不能添加包含现有分区枚举值的分区.</p>
+</blockquote>
+<p><strong>重新定义分区</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> REORGANIZE <span class="hljs-keyword">PARTITION</span> partition_name1, ... <span class="hljs-keyword">INTO</span> (
+    partition_define_1, 
+    ...
+);
+</div></code></pre>
+<blockquote>
+<p>对于range分区, 重新定义分区时, 只能重新定义相邻的分区, 重新定义的分区必须覆盖之前分区所指定的所有区间.<br>
+对于list分区, 重新定义时, 也只能定义相邻分区.</p>
+</blockquote>
+<h2 id="hashkey%E5%88%86%E5%8C%BA">HASH&amp;KEY分区</h2>
+<p><strong>删除分区</strong></p>
+<p>hash分区和key分区不能删除. 须使用合并分区替代:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">COALESCE</span> <span class="hljs-keyword">PARTITION</span> partition_num;
+</div></code></pre>
+<p><strong>增加分区</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">PARTITIONS</span> partition_num;
+</div></code></pre>
+
+</body>
+</html>

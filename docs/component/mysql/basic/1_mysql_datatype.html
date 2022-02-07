@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>1_mysql_datatype.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">基本数据类型</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<table border="1">
+    <tr>
+        <th>分类</th>
+        <th colspan="4">描述</th>
+    </tr>
+    <tr>
+        <th rowspan="13">数值类型</th>
+        <th>整数类型</th>
+        <th>字节</th>
+        <th>最小值</th>
+        <th>最大值</th>
+    </tr>
+    <tr>
+        <td>TINYINT</td>
+        <td>1</td>
+        <td>有符号:-2^7<br/>无符号:0</td>
+        <td>有符号:2^7-1<br/>无符号:2^8-1=255</td>
+    </tr>
+    <tr>
+        <td>SMALLINT</td>
+        <td>2</td>
+        <td>有符号:-2^15<br/>无符号:0</td>
+        <td>有符号:2^15-1<br/>无符号:2^16-1=65535</td>
+    </tr>
+    <tr>
+        <td>MEDIUMINT</td>
+        <td>3</td>
+        <td>有符号:-2^23<br/>无符号:0</td>
+        <td>有符号:2^23-1<br/>无符号:2^24-1</td>
+    </tr>
+    <tr>
+        <td>INT, INTEGER</td>
+        <td>4</td>
+        <td>有符号:-2^31<br/>无符号:0</td>
+        <td>有符号:2^31-1<br/>无符号:2^32</td>
+    </tr>
+    <tr>
+        <td>BIGINT</td>
+        <td>8</td>
+        <td>有符号:-2^63<br/>无符号:0</td>
+        <td>有符号:2^63-1<br/>无符号:2^64</td>
+    </tr>
+    <tr>
+        <th>浮点数类型</th>
+        <th>字节</th>
+        <th>最小值</th>
+        <th>最大值</th>
+    </tr>
+    <tr>
+        <td>FLOAT</td>
+        <td>4</td>
+        <td>IEEE754标准:-2^128</td>
+        <td>IEEE754标准:+2^128</td>
+    </tr>
+    <tr>
+        <td>DOUBLE</td>
+        <td>8</td>
+        <td>IEEE754标准:-2^1024</td>
+        <td>IEEE754标准:2^1024</td>
+    </tr>
+    <tr>
+        <th>定点数</th>
+        <th>字节</th>
+        <th colspan="2">描述</th>
+    </tr>
+    <tr>
+        <td>DEC(M,D)<br/>DECIMAL(M,D)</td>
+        <td>M+2</td>
+        <td colspan="2">最大值取值范围与DOUBLE相同, 给定DECIMAL有效值范围由M和D决定</td>
+    </tr>
+    <tr>
+        <th>位类型</th>
+        <th>字节</th>
+        <th>最小值</th>
+        <th>最大值</th>
+    </tr>
+    <tr>
+        <td>BIT(M)</td>
+        <td>1 -- 8</td>
+        <td>BIT(1)</td>
+        <td>BIT(64)</td>
+    </tr>
+    <tr>
+        <th rowspan="6">日期时间类型</th>
+        <th>类型</th>
+        <th>字节</th>
+        <th>最小值</th>
+        <th>最大值</th>
+    </tr>
+    <tr>
+        <td>DATE</td>
+        <td>4</td>
+        <td>1000-01-01</td>
+        <td>9999-12-31</td>
+    </tr>
+    <tr>
+        <td>DATETIME</td>
+        <td>8</td>
+        <td>1000-01-01 00:00:00</td>
+        <td>9999-12-31 23:59:59</td>
+    </tr>
+    <tr>
+        <td>TIMESTAMP</td>
+        <td>4</td>
+        <td>19700101080001</td>
+        <td>2038年的某个时刻</td>
+    </tr>
+    <tr>
+        <td>TIME</td>
+        <td>3</td>
+        <td>-838:59:59</td>
+        <td>838:59:59</td>
+    </tr>
+    <tr>
+        <td>YEAR</td>
+        <td>1</td>
+        <td>1901</td>
+        <td>2155</td>
+    </tr>
+    <tr>
+        <th rowspan="14">字符串类型</th>
+        <th>类型</th>
+        <th>字节</th>
+        <th colspan="2">描述及存储需求</th>
+    </tr>
+    <tr>
+        <td>CHAR(M)</td>
+        <td>M</td>
+        <td colspan="2">M为0 - 255之间的整数</td>
+    </tr>
+    <tr>
+        <td>VARCHAR(M)</td>
+        <td>M</td>
+        <td colspan="2">M为0 - 65535之间的整数</td>
+    </tr>
+    <tr>
+        <td>TINYBLOB</td>
+        <td></td>
+        <td colspan="2">允许长度0 - 255字节, 值的长度+1个字节</td>
+    </tr>
+    <tr>
+        <td>BLOB</td>
+        <td></td>
+        <td colspan="2">允许长度0 - 65535字节, 值的长度+2个字节</td>
+    </tr>
+    <tr>
+        <td>MEDIUMBLOB</td>
+        <td></td>
+        <td colspan="2">允许长度0 - 2^24 - 1字节, 值的长度+3个字节</td>
+    </tr>
+    <tr>
+        <td>MEDIUMBLOB</td>
+        <td></td>
+        <td colspan="2">允许长度0 - 2^24 - 1字节, 值的长度+3个字节</td>
+    </tr>
+    <tr>
+        <td>LONGBLOB</td>
+        <td></td>
+        <td colspan="2">允许长度0 - 2^32 - 1字节, 值的长度+4个字节</td>
+    </tr>
+    <tr>
+        <td>TINYTEXT</td>
+        <td></td>
+        <td colspan="2">允许长度0 - 255字节, 值的长度+2个字节</td>
+    </tr>
+    <tr>
+        <td>TEXT</td>
+        <td></td>
+        <td colspan="2">允许长度0 - 65535字节, 值的长度+2个字节</td>
+    </tr>
+    <tr>
+        <td>MEDIUMTEXT</td>
+        <td></td>
+        <td colspan="2">允许长度0 - 2^24 - 1字节, 值的长度+3个字节</td>
+    </tr>
+    <tr>
+        <td>LONGTEXT</td>
+        <td></td>
+        <td colspan="2">允许长度0 - 2^32 - 1字节, 值的长度+4个字节</td>
+    </tr>
+    <tr>
+        <td>VARBINARY(M)</td>
+        <td>M</td>
+        <td colspan="2">允许长度0 - M个字节的变长字节字符串, 值的长度+1个字节</td>
+    </tr>
+    <tr>
+        <td>BINARY(M)</td>
+        <td>M</td>
+        <td colspan="2">允许长度0 - M个字节的变长字节字符串</td>
+    </tr>
+</table>
+<h2 id="%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B">数值类型</h2>
+<p><strong>整型</strong></p>
+<p>表中整型只是存储范围和存储方式不同, 使用起来都是一样的. 这里以int为例.</p>
+<pre class="hljs"><code><div>col_name int(M)
+</div></code></pre>
+<blockquote>
+<p>对于整型的括号中的M指示显示宽度, 显示宽度与存储大小或类型包含的值得范围无关. 但是不论显示宽度设定多少, 只要存的值在int指定的范围内, 就可以存储进去.
+如果指定显示宽度, 默认的显示宽度是11.</p>
+</blockquote>
+<p>整型的属性:</p>
+<ul>
+<li>zerofill : 数值长度不够足显示长度时, 使用0填充</li>
+<li>unsigned : 指定为无符号整型(当使用zerofill时, 会自动设置该列为无符号整型)</li>
+<li>auto_increment : 设定该整型列的值自增, 需要注意的是一个表只能有一个auto_increment列, 并且该列必须满足: 1. not null; 2. primary key/unique.</li>
+</ul>
+<p><strong>浮点数和定点数</strong></p>
+<pre class="hljs"><code><div>col_name float(M, D)
+col_name double(M, D)
+col_name decimal(M, D)
+</div></code></pre>
+<ul>
+<li>M 精度: 表示该值小数位+整数位的最大长度</li>
+<li>D 标度: 表示该值小数部分有多少位</li>
+</ul>
+<blockquote>
+<p>浮点数, 不指定精度和标度时, 会按照实际精度去存储(这个由操作系统决定)
+定点数, 不指定精度和标度时, 会按照decimal(10, 0)</p>
+</blockquote>
+<p>对于浮点数, 数值超过精度标度时, 如果不是传统sqlmode, 则会四舍五入, 不会报错. 对于定点数, 如果数据超越了精度和标度, 系统直接报错.</p>
+<p><strong>BIT</strong></p>
+<pre class="hljs"><code><div>col_name bit(M)
+</div></code></pre>
+<p>对于bit类型, 用于存放为字段值, bit(M)可以用来存放多为二进制数, M范围从1--64, 如果不写, 默认为1. 对于位字段, 直接使用select将不会看到结果. 可以使用bin()(显示为二进制格式)或者hex()(显示为十六进制格式)函数进行读取.</p>
+<blockquote>
+<p>如果插入的值位数大于M会报错.</p>
+</blockquote>
+<h2 id="%E6%97%A5%E6%9C%9F%E5%92%8C%E6%97%B6%E9%97%B4">日期和时间</h2>
+<p>略</p>
+<h2 id="%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B">字符串类型</h2>
+<p><strong>CHAR和VARCHAR和TEXT</strong></p>
+<pre class="hljs"><code><div>char(M)
+varchar(M)
+TEXT(M)
+</div></code></pre>
+<p>可存储的最大长度:</p>
+<ul>
+<li>CHAR : 255个<strong>字符</strong></li>
+<li>VARCHAR: 65535个<strong>字节</strong></li>
+<li>TEXT : 65535个<strong>字节</strong></li>
+</ul>
+<p>M的含义:</p>
+<ul>
+<li>三个数据类型中, M都是表示字符</li>
+<li>对于TEXT, M作用不大, 在字符长度超过M时依然可以存储</li>
+</ul>
+<p>关于char:</p>
+<ul>
+<li>char为固定长度列, 每插入一个值, 都是分配固定的字节空间来存储, 不管是否浪费</li>
+<li>虽然char是固定长度, 但是不足时, <em><strong>并不会采用空格来填充</strong></em></li>
+<li>保存char值时, 如果该字符串尾部有空格, 会自动取消</li>
+</ul>
+<p>关于varchar</p>
+<ul>
+<li>varhcar可存储的最大长度时65535<strong>字节</strong></li>
+<li>M的的取值范围受字符集编码限制, 在utf8下, M取值范围为:0-21844(utf8中每个字符占用3个字节)</li>
+</ul>
+<p>既然varchar和text都是存储65535个字节, 那么这两者应用上有什么区别吗? 一下是stackoverflow上给出了一些答案:</p>
+<pre class="hljs"><code><div>首先, 对于非innodb引擎:
+text和blob是offline存储, 记录内只存储数据的指针. varhcar是行内存储.
+对于innodb引擎, text和blob还有varchar都是行内存储.
+
+行内存储有以下优缺点:
+优点:
+1. 检索快
+
+缺点:
+1. 频繁增删会产生大量数据空洞
+2. mysql对每条记录的大小是有限制的, 如果其中一个字段占据很大的尺寸, 就会导致每行存储的列表变少
+
+因此Innodb引擎下, 使用text还是varchar都是无所谓的, 其余引擎下需要根据需求来取舍.
+</div></code></pre>
+<pre class="hljs"><code><div>TEXT and BLOB is stored off the table with the table just having a pointer to the location of the actual storage.
+VARCHAR is stored inline with the table. VARCHAR is faster when the size is reasonable, the tradeoff of which would be faster depends upon your data and your hardware, you'd want to benchmark a realworld scenario with your data.
+Whether VARCHAR or TEXT is stored inline, or off-record depends on data size, columns size, row_format, and MySQL version. It does not depend on &quot;text&quot; vs &quot;varchar&quot;.
+总结一下就是:
+text和blob类型不是存储在行内的, 每一行数据中只存在一个该数据的指针. varchar是将数据直接存储在行内的.
+所以采用text还是varchar需要考虑这个数据是否是经常增删的(如果经常增删则考虑使用text, 否则容易产生数据碎片), 是否是注重查询效率的(如果注重查询效率, 则使用varchar, 因为他是行内存储容易检索, 减少IO次数)
+</div></code></pre>
+<h2 id="%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9">使用帮助</h2>
+<pre class="hljs"><code><div>mysql&gt; ? data types
+You asked for <span class="hljs-keyword">help</span> about <span class="hljs-keyword">help</span> <span class="hljs-keyword">category</span>: <span class="hljs-string">"Data Types"</span>
+<span class="hljs-keyword">For</span> more information, <span class="hljs-keyword">type</span> <span class="hljs-string">'help &lt;item&gt;'</span>, <span class="hljs-keyword">where</span> &lt;item&gt; <span class="hljs-keyword">is</span> one <span class="hljs-keyword">of</span> the <span class="hljs-keyword">following</span>
+topics:
+   AUTO_INCREMENT
+   <span class="hljs-built_in">BIGINT</span>
+   <span class="hljs-built_in">BINARY</span>
+   <span class="hljs-built_in">BIT</span>
+   <span class="hljs-built_in">BLOB</span>
+   <span class="hljs-built_in">BLOB</span> <span class="hljs-keyword">DATA</span> <span class="hljs-keyword">TYPE</span>
+   <span class="hljs-built_in">BOOLEAN</span>
+   <span class="hljs-built_in">CHAR</span>
+   <span class="hljs-built_in">CHAR</span> <span class="hljs-keyword">BYTE</span>
+   <span class="hljs-built_in">DATE</span>
+   DATETIME
+   <span class="hljs-built_in">DEC</span>
+   <span class="hljs-built_in">DECIMAL</span>
+   <span class="hljs-keyword">DOUBLE</span>
+   <span class="hljs-keyword">DOUBLE</span> <span class="hljs-keyword">PRECISION</span>
+   ENUM
+   <span class="hljs-built_in">FLOAT</span>
+   <span class="hljs-built_in">INT</span>
+   <span class="hljs-built_in">INTEGER</span>
+   LONGBLOB
+   LONGTEXT
+   MEDIUMBLOB
+   MEDIUMINT
+   MEDIUMTEXT
+   <span class="hljs-keyword">SET</span> <span class="hljs-keyword">DATA</span> <span class="hljs-keyword">TYPE</span>
+   <span class="hljs-built_in">SMALLINT</span>
+   <span class="hljs-built_in">TEXT</span>
+   <span class="hljs-built_in">TIME</span>
+   <span class="hljs-built_in">TIMESTAMP</span>
+   TINYBLOB
+   <span class="hljs-built_in">TINYINT</span>
+   TINYTEXT
+   VARBINARY
+   <span class="hljs-built_in">VARCHAR</span>
+   <span class="hljs-keyword">YEAR</span> <span class="hljs-keyword">DATA</span> <span class="hljs-keyword">TYPE</span>
+
+mysql&gt; ? <span class="hljs-built_in">int</span>
+<span class="hljs-keyword">Name</span>: <span class="hljs-string">'INT'</span>
+Description:
+<span class="hljs-built_in">INT</span>[(M)] [<span class="hljs-keyword">UNSIGNED</span>] [ZEROFILL]
+
+A <span class="hljs-keyword">normal</span>-<span class="hljs-keyword">size</span> integer. The signed <span class="hljs-keyword">range</span> <span class="hljs-keyword">is</span> <span class="hljs-number">-2147483648</span> <span class="hljs-keyword">to</span> <span class="hljs-number">2147483647.</span>
+The <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">range</span> <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">to</span> <span class="hljs-number">4294967295.</span>
+
+<span class="hljs-keyword">URL</span>: <span class="hljs-keyword">http</span>://dev.mysql.com/doc/refman/<span class="hljs-number">5.7</span>/en/<span class="hljs-built_in">numeric</span>-<span class="hljs-keyword">type</span>-overview.html
+
+
+mysql&gt; ? <span class="hljs-built_in">varchar</span>
+<span class="hljs-keyword">Name</span>: <span class="hljs-string">'VARCHAR'</span>
+Description:
+[<span class="hljs-keyword">NATIONAL</span>] <span class="hljs-built_in">VARCHAR</span>(M) [<span class="hljs-built_in">CHARACTER</span> <span class="hljs-keyword">SET</span> charset_name] [<span class="hljs-keyword">COLLATE</span>
+collation_name]
+
+A <span class="hljs-keyword">variable</span>-<span class="hljs-keyword">length</span> string. M represents the maximum <span class="hljs-keyword">column</span> <span class="hljs-keyword">length</span> <span class="hljs-keyword">in</span>
+characters. The <span class="hljs-keyword">range</span> <span class="hljs-keyword">of</span> M <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">to</span> <span class="hljs-number">65</span>,<span class="hljs-number">535.</span> The effective maximum <span class="hljs-keyword">length</span>
+<span class="hljs-keyword">of</span> a <span class="hljs-built_in">VARCHAR</span> <span class="hljs-keyword">is</span> subject <span class="hljs-keyword">to</span> the maximum <span class="hljs-keyword">row</span> <span class="hljs-keyword">size</span> (<span class="hljs-number">65</span>,<span class="hljs-number">535</span> <span class="hljs-keyword">bytes</span>, which <span class="hljs-keyword">is</span>
+<span class="hljs-keyword">shared</span> among <span class="hljs-keyword">all</span> <span class="hljs-keyword">columns</span>) <span class="hljs-keyword">and</span> the <span class="hljs-built_in">character</span> <span class="hljs-keyword">set</span> used. <span class="hljs-keyword">For</span> example, utf8
+<span class="hljs-keyword">characters</span> can require up <span class="hljs-keyword">to</span> three <span class="hljs-keyword">bytes</span> per <span class="hljs-built_in">character</span>, so a <span class="hljs-built_in">VARCHAR</span>
+<span class="hljs-keyword">column</span> that uses the utf8 <span class="hljs-built_in">character</span> <span class="hljs-keyword">set</span> can be declared <span class="hljs-keyword">to</span> be a maximum
+<span class="hljs-keyword">of</span> <span class="hljs-number">21</span>,<span class="hljs-number">844</span> characters. See
+<span class="hljs-keyword">http</span>://dev.mysql.com/doc/refman/<span class="hljs-number">5.7</span>/en/<span class="hljs-keyword">column</span>-<span class="hljs-keyword">count</span>-limit.html.
+
+MySQL stores <span class="hljs-built_in">VARCHAR</span> <span class="hljs-keyword">values</span> <span class="hljs-keyword">as</span> a <span class="hljs-number">1</span>-<span class="hljs-keyword">byte</span> <span class="hljs-keyword">or</span> <span class="hljs-number">2</span>-<span class="hljs-keyword">byte</span> <span class="hljs-keyword">length</span> prefix plus
+data. The <span class="hljs-keyword">length</span> prefix indicates the <span class="hljs-built_in">number</span> <span class="hljs-keyword">of</span> <span class="hljs-keyword">bytes</span> <span class="hljs-keyword">in</span> the value. A
+<span class="hljs-built_in">VARCHAR</span> <span class="hljs-keyword">column</span> uses one <span class="hljs-keyword">length</span> <span class="hljs-keyword">byte</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">values</span> require <span class="hljs-keyword">no</span> more <span class="hljs-keyword">than</span> <span class="hljs-number">255</span>
+<span class="hljs-keyword">bytes</span>, two <span class="hljs-keyword">length</span> <span class="hljs-keyword">bytes</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">values</span> may require more <span class="hljs-keyword">than</span> <span class="hljs-number">255</span> bytes.
+
+*Note*:
+
+MySQL <span class="hljs-keyword">follows</span> the standard <span class="hljs-keyword">SQL</span> specification, <span class="hljs-keyword">and</span> does <span class="hljs-keyword">not</span> remove
+trailing spaces <span class="hljs-keyword">from</span> <span class="hljs-built_in">VARCHAR</span> values.
+
+<span class="hljs-built_in">VARCHAR</span> <span class="hljs-keyword">is</span> shorthand <span class="hljs-keyword">for</span> <span class="hljs-built_in">CHARACTER</span> VARYING. <span class="hljs-keyword">NATIONAL</span> <span class="hljs-built_in">VARCHAR</span> <span class="hljs-keyword">is</span> the
+standard <span class="hljs-keyword">SQL</span> way <span class="hljs-keyword">to</span> <span class="hljs-keyword">define</span> that a <span class="hljs-built_in">VARCHAR</span> <span class="hljs-keyword">column</span> should <span class="hljs-keyword">use</span> <span class="hljs-keyword">some</span>
+predefined <span class="hljs-built_in">character</span> set. MySQL uses utf8 <span class="hljs-keyword">as</span> this predefined <span class="hljs-built_in">character</span>
+set. <span class="hljs-keyword">http</span>://dev.mysql.com/doc/refman/<span class="hljs-number">5.7</span>/en/<span class="hljs-keyword">charset</span>-national.html.
+<span class="hljs-keyword">NVARCHAR</span> <span class="hljs-keyword">is</span> shorthand <span class="hljs-keyword">for</span> <span class="hljs-keyword">NATIONAL</span> VARCHAR.
+
+<span class="hljs-keyword">URL</span>: <span class="hljs-keyword">http</span>://dev.mysql.com/doc/refman/<span class="hljs-number">5.7</span>/en/<span class="hljs-keyword">string</span>-<span class="hljs-keyword">type</span>-overview.html
+</div></code></pre>
+<p>通过上面的帮助可以知道mysql所支持的所有数据类型, 并且知道了INT类型的取值范围.</p>
+<p>得知VARCHAR类型可以容纳65535个字节(2^16 - 1), 但是在定义varchar(m)时, m的值并不是字节, 而是字符, 所以, 不同字符编码下, m的最大值不同, 在utf-8下, m的最大值为21844.</p>
+
+</body>
+</html>
