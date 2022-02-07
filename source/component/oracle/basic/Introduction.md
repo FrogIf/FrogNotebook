@@ -96,43 +96,6 @@ swith(判断){
 	default: 表达式
 }
 
-### 常用函数
-
-#### 单行函数
-
-* 字符函数
-	* concat(str1, str2)	连接字符串
-	* length(str)	计算字符串的长度
-	* replace(str, str1, str2)	将str中的str1替换为str2
-	* lower(str)	将str全部转换为小写
-	* upper(str)	将str全部转换为大写
-
-* 数值函数
-	* round(num, len)	将num保留len位小数四舍五入, len可选,不写相当于了len=0
-	* trunc(num, len)	将num按len截断, len可选, 同上
-	* mod(num1, num2)	取模
-
-* 日期函数
-	* months_between(date1, date2)	计算两个日期之间的月份间隔
-	* add_months(date1, mon)	计算mon个月后的日期
-
-> 两个日期相减返回值为天数
-> 获取当前日期:sysdate
-
-* 转换函数
-	* to_char()
-		* 对日期进行转换:to_char(date, 'format_model');
-		* 对数字进行转换:to_char(number, 'format_model')
-	* to_number(str, 'format_model')	将字符串转换为数字
-	* to_date(str, 'format_model')		将字符串转换为日期
-
-* 通用函数
-	* nvl(arg1, arg2)	空值处理
-
-### 多行函数
-
-就是聚合函数: avg() count() max() min() sum()
-
 
 ### 多表查询
 

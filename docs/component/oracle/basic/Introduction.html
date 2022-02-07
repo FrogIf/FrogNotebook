@@ -465,62 +465,6 @@ case 值: 表达式;
 case 值: 表达式;
 default: 表达式
 }</p>
-<h3 id="%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0">常用函数</h3>
-<h4 id="%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0">单行函数</h4>
-<ul>
-<li>
-<p>字符函数</p>
-<ul>
-<li>concat(str1, str2)	连接字符串</li>
-<li>length(str)	计算字符串的长度</li>
-<li>replace(str, str1, str2)	将str中的str1替换为str2</li>
-<li>lower(str)	将str全部转换为小写</li>
-<li>upper(str)	将str全部转换为大写</li>
-</ul>
-</li>
-<li>
-<p>数值函数</p>
-<ul>
-<li>round(num, len)	将num保留len位小数四舍五入, len可选,不写相当于了len=0</li>
-<li>trunc(num, len)	将num按len截断, len可选, 同上</li>
-<li>mod(num1, num2)	取模</li>
-</ul>
-</li>
-<li>
-<p>日期函数</p>
-<ul>
-<li>months_between(date1, date2)	计算两个日期之间的月份间隔</li>
-<li>add_months(date1, mon)	计算mon个月后的日期</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>两个日期相减返回值为天数
-获取当前日期:sysdate</p>
-</blockquote>
-<ul>
-<li>
-<p>转换函数</p>
-<ul>
-<li>to_char()
-<ul>
-<li>对日期进行转换:to_char(date, 'format_model');</li>
-<li>对数字进行转换:to_char(number, 'format_model')</li>
-</ul>
-</li>
-<li>to_number(str, 'format_model')	将字符串转换为数字</li>
-<li>to_date(str, 'format_model')		将字符串转换为日期</li>
-</ul>
-</li>
-<li>
-<p>通用函数</p>
-<ul>
-<li>nvl(arg1, arg2)	空值处理</li>
-</ul>
-</li>
-</ul>
-<h3 id="%E5%A4%9A%E8%A1%8C%E5%87%BD%E6%95%B0">多行函数</h3>
-<p>就是聚合函数: avg() count() max() min() sum()</p>
 <h3 id="%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2">多表查询</h3>
 <ul>
 <li>内连接: 隐式, 显式</li>
