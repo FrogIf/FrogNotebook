@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>mysql_install_in_centos.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="centos%E5%AE%89%E8%A3%85mysql">CentOS安装mysql</h1>
+<h2 id="%E8%BD%AF%E4%BB%B6%E4%B8%8B%E8%BD%BD">软件下载</h2>
+<ol>
+<li>软件下载地址: https://www.mysql.com/downloads/</li>
+<li>选择community  server</li>
+<li>点击DOWLOAD</li>
+<li>选择版本</li>
+</ol>
+<h2 id="%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85">软件安装</h2>
+<ol>
+<li>解压与部署</li>
+</ol>
+<pre class="hljs"><code><div>1. mkdir /usr/local/mysql
+
+2. tar -zxvf mysql-5.7.26-linux-glibc2.12-x86_64.tar.gz
+
+3. mv mysql-5.7.26-linux-glibc2.12-x86_64 /usr/local/mysql
+</div></code></pre>
+<ol start="2">
+<li>添加系统Mysql组和Mysql用户</li>
+</ol>
+<pre class="hljs"><code><div>groupadd mysql
+
+useradd -r -g mysql mysql
+</div></code></pre>
+<ol start="3">
+<li>查看mysql数据目录
+数据库数据默认目录datadir=/var/lib/mysql，可通过vim /etc/my.cnf 查看</li>
+</ol>
+<pre class="hljs"><code><div>[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+</div></code></pre>
+<ol start="4">
+<li>修改目录权限</li>
+</ol>
+<pre class="hljs"><code><div>chown -R mysql:mysql  ./
+</div></code></pre>
+<blockquote>
+<p>在/usr/local/mysql/里执行. 以下命令如无特殊指明, 均为在/usr/local/mysql/目录下执行</p>
+</blockquote>
+<ol start="5">
+<li>执行安装命令</li>
+</ol>
+<ul>
+<li>5.7版本:</li>
+</ul>
+<pre class="hljs"><code><div>bin/mysqld --initialize --user=mysql
+</div></code></pre>
+<ul>
+<li>5.7以前版本</li>
+</ul>
+<pre class="hljs"><code><div>./scripts/mysql_install_db --user=mysql
+</div></code></pre>
+<blockquote>
+<p>如果报错: ./bin/mysqld: error while loading shared libraries: libnuma.so.1: cannot open shared object file: No such file or directory
+使用: yum install -y numactl 安装依赖</p>
+</blockquote>
+<ol start="6">
+<li>修改权限为root</li>
+</ol>
+<pre class="hljs"><code><div>chown -R root:root .
+chown -R mysql:mysql /var/lib/mysql
+</div></code></pre>
+<ol start="7">
+<li>添加启动服务</li>
+</ol>
+<pre class="hljs"><code><div>cp support-files/mysql.server /etc/init.d/mysql
+
+service mysql start
+</div></code></pre>
+<blockquote>
+<p>这一步会生成一个root用户的初始密码, 要记住这个密码(这里我的密码是:0Y&lt;aW:3G=S=D)</p>
+</blockquote>
+<ol start="8">
+<li>设置root用户密码</li>
+</ol>
+<p>在bin目录中执行</p>
+<pre class="hljs"><code><div>./mysql -uroot -p'0Y&lt;aW:3G=S=D'
+</div></code></pre>
+<p>如果报错:</p>
+<pre class="hljs"><code><div>mysqladmin: connect to server at 'localhost' failed
+error: 'Can't connect to local MySQL server through socket '/tmp/mysql.sock' (2)'
+Check that mysqld is running and that the socket: '/tmp/mysql.sock' exists!
+</div></code></pre>
+<p>需要修改配置/etc/my.cnf:</p>
+<pre class="hljs"><code><div>[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+
+[client]
+socket=/var/lib/mysql/mysql.sock
+
+[mysql]
+socket=/var/lib/mysql/mysql.sock
+</div></code></pre>
+<p>然后重启服务:</p>
+<pre class="hljs"><code><div>service mysql restart
+</div></code></pre>
+<p>然后再执行:</p>
+<pre class="hljs"><code><div>./mysql -uroot -p'0Y&lt;aW:3G=S=D'
+
+alter user user() identified by &quot;123456&quot;;
+</div></code></pre>
+<p>至此Mysql安装完成.</p>
+<h2 id="%E5%85%B6%E4%BB%96%E9%85%8D%E7%BD%AE">其他配置</h2>
+<ul>
+<li>建立超链接</li>
+</ul>
+<p>如果想在系统各个目录下, 输入mysql -uroot -p...都得到执行, 需要建立超链接:</p>
+<pre class="hljs"><code><div>ln -s /usr/local/mysql/bin/mysql /usr/bin
+</div></code></pre>
+<p>因为系统会自动到 &quot;/usr/bin&quot;目录下寻找相关程序. 建立超链接之后就可以了.</p>
+<ul>
+<li>开机自启</li>
+</ul>
+<pre class="hljs"><code><div>1. 将服务文件拷贝到init.d下，并重命名为mysql
+cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
+
+2、赋予可执行权限
+chmod +x /etc/init.d/mysqld
+
+3、添加服务
+chkconfig --add mysqld
+
+4、显示服务列表
+chkconfig --list
+
+如果看到mysql的服务，并且3,4,5都是开的话则成功，如果是关，则键入:
+    chkconfig --level 345 mysqld on
+    
+5、重启电脑
+reboot
+</div></code></pre>
+<ul>
+<li>修改字符集编码</li>
+</ul>
+<p>先查看一下当前字符集编码:</p>
+<pre class="hljs"><code><div>show variables like 'character%';
++--------------------------+----------------------------------+
+| Variable_name            | Value                            |
++--------------------------+----------------------------------+
+| character_set_client     | utf8                             |
+| character_set_connection | utf8                             |
+| character_set_database   | latin1                           |
+| character_set_filesystem | binary                           |
+| character_set_results    | utf8                             |
+| character_set_server     | latin1                           |
+| character_set_system     | utf8                             |
+| character_sets_dir       | /usr/local/mysql/share/charsets/ |
++--------------------------+----------------------------------+
+
+查看mysql支持的字符集 --&gt;
+show character set;
+</div></code></pre>
+<p>发现character_set_database和character_set_server采用的是latin1, 而其余为utf8, 而utf8是有问题的, 所以需要修改:</p>
+<pre class="hljs"><code><div>vi /etc/my.cnf
+</div></code></pre>
+<p>改为:</p>
+<pre class="hljs"><code><div>[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+init_connect='SET NAMES utf8mb4'
+skip-character-set-client-handshake = true
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+
+[client]
+socket=/var/lib/mysql/mysql.sock
+default-character-set=utf8mb4
+
+[mysql]
+socket=/var/lib/mysql/mysql.sock
+default-character-set=utf8mb4
+</div></code></pre>
+<p>重启服务, 再次检查:</p>
+<pre class="hljs"><code><div>mysql&gt; show variables like 'character%';
++--------------------------+----------------------------------+
+| Variable_name            | Value                            |
++--------------------------+----------------------------------+
+| character_set_client     | utf8mb4                          |
+| character_set_connection | utf8mb4                          |
+| character_set_database   | utf8mb4                          |
+| character_set_filesystem | binary                           |
+| character_set_results    | utf8mb4                          |
+| character_set_server     | utf8mb4                          |
+| character_set_system     | utf8                             |
+| character_sets_dir       | /usr/local/mysql/share/charsets/ |
++--------------------------+----------------------------------+
+</div></code></pre>
+<p>修改成功.</p>
+<ul>
+<li>允许远程使用root账户</li>
+</ul>
+<pre class="hljs"><code><div>[root@localhost ~]# mysql -uroot -p121212
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 5
+Server version: 5.7.26 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql&gt; use mysql
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql&gt; select host from user where user='root';
++-----------+
+| host      |
++-----------+
+| localhost |
++-----------+
+1 row in set (0.00 sec)
+
+mysql&gt; update user set host = '%' where user = 'root';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql&gt; select host from user where user='root';
++------+
+| host |
++------+
+| %    |
++------+
+1 row in set (0.00 sec)
+
+mysql&gt; flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+</div></code></pre>
+<blockquote>
+<p>mysql8.0以上版本还需要别的操作, 详见<a href="../../../operation_system/linux/Ubuntu.html">Ubuntu下安装mysql</a></p>
+</blockquote>
+
+</body>
+</html>

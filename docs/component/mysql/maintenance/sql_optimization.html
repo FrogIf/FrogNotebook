@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>sql_optimization.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="sql%E4%BC%98%E5%8C%96">SQL优化</h1>
+<p>sql优化的一般步骤:</p>
+<ol>
+<li>通过show status了解各种sql的执行效率</li>
+<li>定位执行效率较低的sql语句</li>
+<li>通过explain分析低效sql的执行计划</li>
+<li>通过show profile分析sql</li>
+<li>通过trace分析优化器如何选择执行计划</li>
+<li>确定问题并采取相应的优化措施</li>
+</ol>
+<p>定位效率低的sql的方法有两种:</p>
+<ol>
+<li>查看慢查询日志</li>
+<li>通过show processlist</li>
+</ol>
+<h2 id="1-show-status">1. SHOW STATUS</h2>
+<p>通过show status命令可以查看系统状态.</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">SHOW</span> <span class="hljs-keyword">STATUS</span> <span class="hljs-keyword">LIKE</span> <span class="hljs-string">'pattern'</span>
+</div></code></pre>
+<blockquote>
+<p>就是系统变量</p>
+</blockquote>
+<ul>
+<li>Com_xxx : 可以查看每一个xxx语句的执行次数.(xxx可以是insert, select, update, delete等)</li>
+<li>Innodb_rows_xxx : 查看innodb引擎各种操作的次数.(xxx可以是insert, read, update, delete等), 并且回滚也会累加.</li>
+<li>Com_commit, Com_rollback: 记录提交和回滚的次数, 对于回滚频繁的数据库, 可能存在问题.</li>
+<li>Connections : 试图连接mysql服务器的次数</li>
+<li>Uptime : 服务器工作时间</li>
+<li>Slow_queries : 慢查询次数</li>
+</ul>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">global</span> <span class="hljs-keyword">status</span> <span class="hljs-keyword">like</span> <span class="hljs-string">'Com_select'</span>;
++<span class="hljs-comment">---------------+-------+</span>
+| Variable_name | Value |
++<span class="hljs-comment">---------------+-------+</span>
+| Com_select    | 1     |
++<span class="hljs-comment">---------------+-------+</span>
+1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+<h2 id="2-show-processlist">2. SHOW PROCESSLIST</h2>
+<h3 id="%E5%91%BD%E4%BB%A4">命令</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">SHOW</span> [<span class="hljs-keyword">FULL</span>] <span class="hljs-keyword">processlist</span>;
+</div></code></pre>
+<ul>
+<li>SHOW PROCESSLIST显示正在运行(用户运行线程)的线程(或SHOW FULL PROCESSLIST显示更多信息)</li>
+<li>您还可以从表或mysqladmin processlist命令获取此信息.</li>
+<li>如果你有这个PROCESS特权, 你可以看到所有的线程. 否则, 您只能看到自己的线程(即与您正在使用的MySQL帐户相关联的线程).</li>
+<li>如果不使用该FULL关键字, 则每个语句的前100个字符都将显示在该Info字段中.</li>
+</ul>
+<blockquote>
+<p>可以理解为mysql的任务管理器.</p>
+</blockquote>
+<p>如果收到&quot;太多连接&quot;错误消息, 并且想要了解发生了什么, 该命令非常有用. MySQL保留一个额外的连接以供有权限的帐户使用SUPER, 以确保管理员始终能够连接和检查系统(假设您没有向所有用户授予此权限).</p>
+<p>除了show processlist命令, 查询INFORMATION_SCHEMA.PROCESSLIST或者PERFORMANCE_SCHEMA.THREADS表也可以得到同样的信息, 并且performance_schema.threads获得信息不需要互斥锁, 对服务器性能影响最小, performance_schema.threads还可以显示后台线程.</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">processlist</span>;
++<span class="hljs-comment">----+------+-----------+------+---------+------+----------+------------------+</span>
+| Id | User | Host      | db   | Command | Time | State    | Info             |
++<span class="hljs-comment">----+------+-----------+------+---------+------+----------+------------------+</span>
+|  2 | root | localhost | frog | Query   |    0 | starting | <span class="hljs-keyword">show</span> <span class="hljs-keyword">processlist</span> |
++<span class="hljs-comment">----+------+-----------+------+---------+------+----------+------------------+</span>
+<span class="hljs-number">1</span> <span class="hljs-keyword">row</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+</div></code></pre>
+<p>各列含义:</p>
+<ul>
+<li>id : 一个标识，你要kill一个语句的时候很有用.</li>
+<li>user : 显示当前用户，如果不是root，这个命令就只显示你权限范围内的sql语句</li>
+<li>host : 显示这个语句是从哪个ip 的哪个端口上发出的。可用来追踪出问题语句的用户</li>
+<li>db : 显示这个进程目前连接的是哪个数据库</li>
+<li>command : 显示这个线程此刻正在执行的命令，一般对应DDL或DML语句。</li>
+<li>time : 表示线程处于当前state的时间，单位是秒.</li>
+<li>state : 对应Command指令, 大多数状态对应于非常快速的操作. 如果线程在给定状态下保持多秒, 则可能存在需要调查的问题.</li>
+<li>info : 一般记录的是线程执行的语句. 默认只显示前100个字符, 也就是你看到的语句可能是截断了的, 要看全部信息, 需要使用 show full processlist.</li>
+</ul>
+<h3 id="command%E5%8F%AF%E9%80%89%E5%80%BC">Command可选值</h3>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Binlog Dump</td>
+<td>这是主服务器上的线程，用于将二进制日志内容发送到从服务器。</td>
+</tr>
+<tr>
+<td>Table Dump</td>
+<td>线程将表内容发送到从服务器。</td>
+</tr>
+<tr>
+<td>Change user</td>
+<td>线程正在执行改变用户操作。</td>
+</tr>
+<tr>
+<td>Close stmt</td>
+<td>线程正在关闭准备好的语句。</td>
+</tr>
+<tr>
+<td>Connect</td>
+<td>复制中，从服务器连接到其主服务器。</td>
+</tr>
+<tr>
+<td>Connect Out</td>
+<td>复制中，从服务器正在连接到其主服务器。</td>
+</tr>
+<tr>
+<td>Create DB</td>
+<td>线程正在执行create-database操作。</td>
+</tr>
+<tr>
+<td>Daemon</td>
+<td>此线程在服务器内部，而不是服务客户端连接的线程。</td>
+</tr>
+<tr>
+<td>Debug</td>
+<td>线程正在生成调试信息。</td>
+</tr>
+<tr>
+<td>Delayed insert</td>
+<td>线程是一个延迟插入处理程序。</td>
+</tr>
+<tr>
+<td>Drop DB</td>
+<td>线程正在执行drop-database操作。</td>
+</tr>
+<tr>
+<td>Execute</td>
+<td>线程正在执行一个准备好的语句（prepare statement类型就是预编译的语句，JDBC支持次类型执行SQL）。</td>
+</tr>
+<tr>
+<td>Fetch</td>
+<td>线程正在执行一个准备语句的结果。</td>
+</tr>
+<tr>
+<td>Field List</td>
+<td>线程正在检索表列的信息。</td>
+</tr>
+<tr>
+<td>Init DB</td>
+<td>线程正在选择默认数据库。</td>
+</tr>
+<tr>
+<td>Kill</td>
+<td>线程正在杀死另一个线程。</td>
+</tr>
+<tr>
+<td>Long Data</td>
+<td>该线程在执行一个准备语句的结果中检索长数据。</td>
+</tr>
+<tr>
+<td>Ping</td>
+<td>线程正在处理服务器ping请求。</td>
+</tr>
+<tr>
+<td>Prepare</td>
+<td>线程正在为语句生成执行计划。</td>
+</tr>
+<tr>
+<td>Processlist</td>
+<td>线程正在生成有关服务器线程的信息。</td>
+</tr>
+<tr>
+<td>Query</td>
+<td>该线程正在执行一个语句。</td>
+</tr>
+<tr>
+<td>Quit</td>
+<td>线程正在终止。</td>
+</tr>
+<tr>
+<td>Refresh</td>
+<td>线程是刷新表，日志或缓存，或重置状态变量或复制服务器信息。</td>
+</tr>
+<tr>
+<td>Register Slave</td>
+<td>线程正在注册从服务器。</td>
+</tr>
+<tr>
+<td>Reset stmt</td>
+<td>线程正在重置一个准备好的语句。</td>
+</tr>
+<tr>
+<td>Set optio</td>
+<td>线程正在设置或重置客户端语句执行选项。</td>
+</tr>
+<tr>
+<td>Shutdown</td>
+<td>线程正在关闭服务器。</td>
+</tr>
+<tr>
+<td>Sleep</td>
+<td>线程正在等待客户端向其发送新的语句。</td>
+</tr>
+<tr>
+<td>Statistics</td>
+<td>线程正在生成服务器状态信息。</td>
+</tr>
+<tr>
+<td>Time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="status%E5%8F%AF%E9%80%89%E5%80%BC">status可选值</h3>
+<p><strong>一般线程状态(State)值</strong></p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>After create</td>
+<td>当线程创建表(包括内部临时表)时, 会在创建表的函数的末尾创建. 即使由于某些错误而无法创建表, 也会使用此状态</td>
+</tr>
+<tr>
+<td>Analyzing</td>
+<td>线程正在计算MyISAM表密钥分布(例如:for ANALYZE TABLE)</td>
+</tr>
+<tr>
+<td>checking permissions</td>
+<td>线程正在检查服务器是否具有执行语句所需的权限</td>
+</tr>
+<tr>
+<td>Checking table</td>
+<td>线程正在执行表检查操作</td>
+</tr>
+<tr>
+<td>cleaning up</td>
+<td>线程已经处理了一个命令，正在准备释放内存并重置某些状态变量</td>
+</tr>
+<tr>
+<td>closing tables</td>
+<td>线程将更改的表数据刷新到磁盘并关闭已用表。这应该是一个快速的操作。如果没有，请验证您是否没有完整的磁盘，并且磁盘没有被非常大的使用</td>
+</tr>
+<tr>
+<td>copy to tmp table</td>
+<td>线程正在处理ALTER TABLE语句. 此状态发生在已创建新结构的表之后, 但是将行复制到该表之前. 对于此状态的线程, 可以使用性能模式来获取有关复制操作的进度</td>
+</tr>
+<tr>
+<td>Copying to group table</td>
+<td>如果语句具有不同ORDER BY和GROUP BY标准, 各行按组排列和复制到一个临时表</td>
+</tr>
+<tr>
+<td>Creating index</td>
+<td>线程正在处理ALTER TABLE … ENABLE KEYS一个MyISAM表</td>
+</tr>
+<tr>
+<td>Creating sort index</td>
+<td>线程正在处理一个SELECT使用内部临时表解析的线程</td>
+</tr>
+<tr>
+<td>creating table</td>
+<td>线程正在创建一个表，这包括创建临时表</td>
+</tr>
+<tr>
+<td>committing alter table to storage engine</td>
+<td>服务器已经完成就位ALTER TABLE并提交结果</td>
+</tr>
+<tr>
+<td>deleting from main table</td>
+<td>服务器正在执行多表删除的第一部分, 它仅从第一个表中删除, 并从其他（引用）表中保存要用于删除的列和偏移量</td>
+</tr>
+<tr>
+<td>deleting from reference tables</td>
+<td>服务器正在执行多表删除的第二部分, 并从其他表中删除匹配的行</td>
+</tr>
+<tr>
+<td>discard_or_import_tablespace</td>
+<td>线程正在处理ALTER TABLE … DISCARD TABLESPACE或ALTER TABLE … IMPORT TABLESPACE声明</td>
+</tr>
+<tr>
+<td>end</td>
+<td>这发生在结束, 但的清理之前ALTER TABLE, CREATE VIEW, DELETE, INSERT, SELECT或UPDATE语句</td>
+</tr>
+<tr>
+<td>executing</td>
+<td>该线程已经开始执行一个语句</td>
+</tr>
+<tr>
+<td>Execution of init_command</td>
+<td>线程正在init_command系统变量的值中执行语句</td>
+</tr>
+<tr>
+<td>freeing items</td>
+<td>线程已经执行了一个命令, 在这种状态下完成的项目的一些释放涉及查询缓存, 这个状态通常在后面cleaning up</td>
+</tr>
+<tr>
+<td>FULLTEXT initialization</td>
+<td>服务器正在准备执行自然语言全文搜索</td>
+</tr>
+<tr>
+<td>init</td>
+<td>此操作在初始化ALTER TABLE, DELETE, INSERT, SELECT, or UPDATE之前发生, 服务器在该状态中采取的操作包括刷新二进制日志、Innodb日志和一些查询缓存清理操作. 对于最终状态, 可能会发生以下操作: 更改表中的数据后删除查询缓存项、将事件写入二进制日志、释放内存缓冲区, 包括blob.</td>
+</tr>
+<tr>
+<td>Killed</td>
+<td>执行KILL语句, 向线程发送了一个声明, 下次检查kill标志时应该中断. 在MySQL的每个主循环中检查该标志, 但在某些情况下, 线程可能需要很短时间才能死掉. 如果线程被某个其他线程锁定, 则一旦其他线程释放锁定, 该kill就会生效</td>
+</tr>
+<tr>
+<td>Locking system tables</td>
+<td>线程正在尝试锁定系统表(例如, 时区或日志表</td>
+</tr>
+<tr>
+<td>login</td>
+<td>连接线程的初始状态, 直到客户端成功认证为止</td>
+</tr>
+<tr>
+<td>manage keys</td>
+<td>服务器启用或禁用表索引</td>
+</tr>
+<tr>
+<td>NULL</td>
+<td>该状态用于SHOW PROCESSLIST状态</td>
+</tr>
+<tr>
+<td>Opening system tables</td>
+<td>线程尝试打开系统表(例如, 时区或日志表)</td>
+</tr>
+<tr>
+<td>Opening tables</td>
+<td>线程正在尝试打开一个表, 这应该是非常快的程序, 除非有事情阻止打开. 例如, 一个ALTER TABLE或一个LOCK TABLE语句可以阻止打开一个表, 直到语句完成. 还可能需要关注table_open_cache参数的值是否足够大. 对于系统表, 使用Opening system tables状态</td>
+</tr>
+<tr>
+<td>optimizing</td>
+<td>服务器正在执行查询的初始优化</td>
+</tr>
+<tr>
+<td>preparing</td>
+<td>此状态发生在查询优化期间</td>
+</tr>
+<tr>
+<td>Purging old relay logs</td>
+<td>线程正在删除不需要的中继日志文件</td>
+</tr>
+<tr>
+<td>query end</td>
+<td>处理查询之后, freeing items状态之前会发生这种状态</td>
+</tr>
+<tr>
+<td>Removing duplicates</td>
+<td>该查询的使用SELECT DISTINCT方式使得MySQL不能在早期阶段优化不同的操作. 因此, MySQL需要一个额外的阶段来删除所有重复的行, 然后将结果发送给客户端</td>
+</tr>
+<tr>
+<td>removing tmp table</td>
+<td>处理语句后, 该线程正在删除一个内部临时表SELECT. 如果没有创建临时表, 则不使用该状态</td>
+</tr>
+<tr>
+<td>rename</td>
+<td>线程正在重命名一个表</td>
+</tr>
+<tr>
+<td>rename result table</td>
+<td>线程正在处理一个ALTER TABLE语句, 已经创建了新表, 并重新命名它来替换原始表</td>
+</tr>
+<tr>
+<td>Reopen tables</td>
+<td>线程获得了表的锁, 但在获得基础表结构更改的锁之后注意到. 它释放了锁, 关闭了table, 并试图重新打开它</td>
+</tr>
+<tr>
+<td>Repair by sorting</td>
+<td>修复代码正在使用排序来创建索引</td>
+</tr>
+<tr>
+<td>preparing for alter table</td>
+<td>服务器正在准备就地执行ALTER TABLE</td>
+</tr>
+<tr>
+<td>Repair done</td>
+<td>线程已经完成了一个MyISAM表的多线程修复</td>
+</tr>
+<tr>
+<td>Repair with keycache</td>
+<td>修复代码通过密钥缓存逐个使用创建密钥, 这比慢得多Repair by sorting</td>
+</tr>
+<tr>
+<td>Rolling back</td>
+<td>线程正在回滚事务</td>
+</tr>
+<tr>
+<td>Saving state</td>
+<td>对于MyISAM表操作(如修复或分析),  线程将新的表状态保存到.MYI文件头. 状态包括行数, AUTO_INCREMENT计数器和键分布等信息</td>
+</tr>
+<tr>
+<td>Searching rows for update</td>
+<td>线程正在进行第一阶段, 以便在更新之前查找所有匹配的行. 如果UPDATE要更改用于查找涉及的行的索引, 则必须执行此操作</td>
+</tr>
+<tr>
+<td>setup</td>
+<td>线程正在开始一个ALTER TABLE操作</td>
+</tr>
+<tr>
+<td>Sorting for group</td>
+<td>线程正在做一个满足一个GROUP BY</td>
+</tr>
+<tr>
+<td>Sorting for order</td>
+<td>线程正在做一个满足一个ORDER BY</td>
+</tr>
+<tr>
+<td>Sorting index</td>
+<td>线程是排序索引页，以便在MyISAM表优化操作期间更有效地访问。</td>
+</tr>
+<tr>
+<td>Sorting result</td>
+<td>对于一个SELECT语句, 这类似于Creating sort index, 但是对于非临时表</td>
+</tr>
+<tr>
+<td>statistics</td>
+<td>服务器正在计算统计信息以开发查询执行计划. 如果一个线程长时间处于这种状态, 服务器可能是磁盘绑定的, 执行其他工作</td>
+</tr>
+<tr>
+<td>update</td>
+<td>线程正在准备开始更新表</td>
+</tr>
+<tr>
+<td>Updating</td>
+<td>线程正在搜索要更新的行并正在更新它们</td>
+</tr>
+<tr>
+<td>updating main table</td>
+<td>服务器正在执行多表更新的第一部分, 它仅更新第一个表, 并保存用于更新其他(引用)表的列和偏移量</td>
+</tr>
+<tr>
+<td>updating reference tables</td>
+<td>服务器正在执行多表更新的第二部分, 并从其他表更新匹配的行</td>
+</tr>
+<tr>
+<td>User lock</td>
+<td>线程将要求或正在等待通过GET_LOCK()呼叫请求的咨询锁定. 因为 SHOW PROFILE, 这个状态意味着线程正在请求锁定(不等待它)</td>
+</tr>
+<tr>
+<td>User sleep</td>
+<td>线程调用了一个 SLEEP()调用</td>
+</tr>
+</tbody>
+</table>
+<p><strong>故障诊断状态(State)值</strong></p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>logging slow query</td>
+<td>线程正在向慢查询日志写入语句</td>
+</tr>
+<tr>
+<td>altering table</td>
+<td>服务器正在执行就地ALTER TABLE</td>
+</tr>
+<tr>
+<td>Receiving from client</td>
+<td>服务器正在从客户端读取数据包</td>
+</tr>
+<tr>
+<td>Copying to tmp table</td>
+<td>服务器正在复制磁盘到内存的临时表, 是直接在磁盘创建的临时表而并非从内存转到磁盘的临时表</td>
+</tr>
+<tr>
+<td>Copying to tmp table on disk</td>
+<td>对于线程将临时表从内存中更改为基于磁盘的格式存储以节省内存后, 又把临时表从磁盘复制到内存时的状态</td>
+</tr>
+<tr>
+<td>Creating tmp table</td>
+<td>线程正在内存或磁盘上创建临时表. 如果表在内存中创建, 但后来转换为磁盘表, 则该操作中的状态将为Copying to tmp table on disk</td>
+</tr>
+<tr>
+<td>Sending data</td>
+<td>线程正在读取和处理SELECT语句的行, 并将数据发送到客户端. 由于在此状态期间发生的操作往往执行大量的磁盘访问(读取), 所以在给定查询的整个生命周期内通常是最长的运行状态</td>
+</tr>
+<tr>
+<td>Sending to client</td>
+<td>服务器正在向客户端写入数据包</td>
+</tr>
+<tr>
+<td>Waiting for commit lock</td>
+<td>FLUSH TABLES WITH READ LOCK正在等待提交锁。</td>
+</tr>
+<tr>
+<td>Waiting for global read lock</td>
+<td>FLUSH TABLES WITH READ LOCK正在等待全局读锁定或read_only正在设置全局系统变量</td>
+</tr>
+<tr>
+<td>Waiting for tables</td>
+<td>线程得到一个通知, 表格的底层结构已经改变, 需要重新打开表以获得新的结构. 但是, 要重新打开表格, 必须等到所有其他线程都关闭该表. <br/>如果另一个线程已使用FLUSH TABLES或下面的语句之一: FLUSH TABLES tbl_name, ALTER TABLE, RENAME TABLE, REPAIR TABLE, ANALYZE TABLE, 或OPTIMIZE TABLE都会发生通知</td>
+</tr>
+<tr>
+<td>Waiting for table flush</td>
+<td>线程正在执行FLUSH TABLES并正在等待所有线程关闭它们的表, 或者线程得到一个通知, 表中的底层结构已经改变, 并且需要重新打开表以获得新的结构.<br/> 但是, 要重新打开表, 必须等到所有其他线程都关闭该表. <br/>如果另一个线程已使用FLUSH TABLES或下面的语句之一: FLUSH TABLES tbl_name, ALTER TABLE, RENAME TABLE, REPAIR TABLE, ANALYZE TABLE, 或OPTIMIZE TABLE都会发出这个通知</td>
+</tr>
+<tr>
+<td>Waiting for lock_type lock</td>
+<td>服务器正在等待THR_LOCK从元数据锁定子系统获取锁或锁, 其中lock_type指示锁的类型. THR_LOCK状态表示: Waiting for table level lock; 这些状态表示等待元数据锁定</td>
+</tr>
+<tr>
+<td>Writing to net</td>
+<td>服务器正在将数据包写入网络, 如果一个线程长时间在执行并且一直处于Writing to net状态, 那么一直在发送数据包到网络, 可以试着调整max_allowed_packet大小. 另外, 这可能会导致其他线程大量阻塞</td>
+</tr>
+<tr>
+<td>Waiting on cond</td>
+<td>线程等待条件成为true的一般状态, 没有特定的状态信息可用</td>
+</tr>
+<tr>
+<td>System lock</td>
+<td>线程已经调用mysql_lock_tables(), 且线程状态从未更新. 这是一个非常普遍的状态, 可能由于许多原因而发生. <br/>例如, 线程将请求或正在等待表的内部或外部系统锁. 当InnoDB在执行锁表时等待表级锁时, 可能会发生这种情况. <br/>如果此状态是由于请求外部锁而导致的, 并且不使用正在访问相同表的多个mysqld服务器MyISAM, 则可以使用该–skip-external-locking选项禁用外部系统锁. <br/>但是, 默认情况下禁用外部锁定, 因此这个选项很有可能不起作用. 因为SHOW PROFILE, 这个状态意味着线程正在请求锁定(不等待它). 对于系统表, 使用Locking system tables状态</td>
+</tr>
+</tbody>
+</table>
+<p><strong>查询缓存状态(State)值(MYSQL8.0已经没有缓存了)</strong></p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>checking privileges on cached query</td>
+<td>服务器正在检查用户是否具有访问缓存查询结果的权限</td>
+</tr>
+<tr>
+<td>checking query cache for query</td>
+<td>服务器正在检查当前查询是否存在于查询缓存中</td>
+</tr>
+<tr>
+<td>invalidating query cache entries</td>
+<td>查询缓存条目被标记为无效, 因为底层表已更改</td>
+</tr>
+<tr>
+<td>sending cached result to client</td>
+<td>服务器正在从查询缓存中获取查询的结果, 并将其发送给客户端</td>
+</tr>
+<tr>
+<td>storing result in query cache</td>
+<td>服务器将查询结果存储在查询缓存中</td>
+</tr>
+<tr>
+<td>Waiting for query cache lock</td>
+<td>当会话正在等待采取查询缓存锁定时, 会发生此状态. 这种情况可能需要执行一些查询缓存操作, 如使查询缓存无效的INSERT或DELETE语句, 以及RESET QUERY CACHE等等</td>
+</tr>
+</tbody>
+</table>
+<p><strong>事件调度器线程状态(State)值</strong></p>
+<blockquote>
+<p>这些状态适用于事件调度程序线程, 创建用于执行调度事件的线程或终止调度程序的线程</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clearing</td>
+<td>调度程序线程或正在执行事件的线程正在终止，即将结束</td>
+</tr>
+<tr>
+<td>Initialized</td>
+<td>调度程序线程或将执行事件的线程已初始化</td>
+</tr>
+<tr>
+<td>Waiting for next activation</td>
+<td>调度程序具有非空事件队列, 但下一次激活是将来</td>
+</tr>
+<tr>
+<td>Waiting for scheduler to stop</td>
+<td>线程发出SET GLOBAL event_scheduler=OFF并正在等待调度程序停止</td>
+</tr>
+<tr>
+<td>Waiting on empty queue</td>
+<td>调度程序的事件队列是空的, 它正在休眠</td>
+</tr>
+</tbody>
+</table>
+<h3 id="%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E7%9B%B8%E5%85%B3state%E5%80%BC">主从复制相关State值</h3>
+<p>MySQL的主从复制的基本原理是从库连接到主库, 主库生成一个主库DUMP线程, 该DUMP线程的主要任务是一直挖掘binlog日志, 然后发送到从库的IO线程, IO线程接收到日志流后, 写入relay log, 另一个线程SQL线程,会读取该relay log内容, 然后对sql语句进行重放.</p>
+<p><strong>主库线程状态(State)值</strong></p>
+<blockquote>
+<p>以下列表显示了主从复制中主服务器的Binlog Dump线程的State列中可能看到的最常见状态, 如果Binlog Dump线程在主服务器上看不到, 这意味着复制没有运行, 也就是说, 目前没有连接任何Slave主机</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sending binlog event to slave</td>
+<td>二进制日志由各种事件组成, 一个事件通常为一个更新加一些其它信息. 线程已经从二进制日志读取了一个事件并且正将它发送到从服务器</td>
+</tr>
+<tr>
+<td>Finished reading one binlog; switching to next binlog</td>
+<td>线程已经读完二进制日志文件并且正打开下一个要发送到从服务器的日志文件</td>
+</tr>
+<tr>
+<td>Has sent all binlog to slave; waiting for binlog to be updated</td>
+<td>线程已经从二进制日志读取所有主要的更新并已经发送到了从服务器. 线程现在正空闲, 等待由主服务器上新的更新导致的出现在二进制日志中的新事件</td>
+</tr>
+<tr>
+<td>Waiting to finalize termination</td>
+<td>线程停止时发生的一个很简单的状态</td>
+</tr>
+</tbody>
+</table>
+<p><strong>从库I/O线程状态(State)值</strong></p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Connecting to master</td>
+<td>线程正试图连接主服务器</td>
+</tr>
+<tr>
+<td>Checking master version</td>
+<td>建立同主服务器之间的连接后立即临时出现的状态</td>
+</tr>
+<tr>
+<td>Registering slave on master</td>
+<td>建立同主服务器之间的连接后立即临时出现的状态</td>
+</tr>
+<tr>
+<td>Requesting binlog dump</td>
+<td>建立同主服务器之间的连接后立即临时出现的状态. 线程向主服务器发送一条请求, 索取从请求的二进制日志文件名和位置开始的二进制日志的内容</td>
+</tr>
+<tr>
+<td>Waiting to reconnect after a failed binlog dump request</td>
+<td>如果二进制日志转储请求失败(由于没有连接), 线程进入睡眠状态, 然后定期尝试重新连接, 可以使用–master-connect-retry选项指定重试之间的间隔</td>
+</tr>
+<tr>
+<td>Reconnecting after a failed binlog dump request</td>
+<td>线程正尝试重新连接主服务器</td>
+</tr>
+<tr>
+<td>Waiting for master to send event</td>
+<td>线程已经连接上主服务器, 正等待二进制日志事件到达. 如果主服务器正空闲, 会持续较长的时间. 如果等待持续slave_read_timeout秒, 则发生超时. 此时, 线程认为连接被中断并企图重新连接</td>
+</tr>
+<tr>
+<td>Queueing master event to the relay log</td>
+<td>线程已经读取一个事件, 正将它复制到中继日志供SQL线程来处理</td>
+</tr>
+<tr>
+<td>Waiting to reconnect after a failed master event read</td>
+<td>读取时(由于没有连接)出现错误, 线程企图重新连接前将睡眠master-connect-retry秒</td>
+</tr>
+<tr>
+<td>Reconnecting after a failed master event read</td>
+<td>线程正尝试重新连接主服务器, 当连接重新建立后, 状态变为Waiting for master to send event</td>
+</tr>
+<tr>
+<td>Waiting for the slave SQL thread to free enough relay log space</td>
+<td>正使用一个非零relay_log_space_limit值, 中继日志已经增长到其组合大小超过该值. I/O线程正等待直到SQL线程处理中继日志内容并删除部分中继日志文件来释放足够的空间</td>
+</tr>
+<tr>
+<td>Waiting for slave mutex on exit</td>
+<td>线程停止时发生的一个很简单的状态</td>
+</tr>
+</tbody>
+</table>
+<p><strong>从库SQL线程状态(State)值</strong></p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reading event from the relay log</td>
+<td>线程已经从中继日志读取一个事件，可以对事件进行处理了</td>
+</tr>
+<tr>
+<td>Has read all relay log; waiting for the slave I/O thread to update it</td>
+<td>线程已经处理了中继日志文件中的所有事件, 现在正等待I/O线程将新事件写入中继日志</td>
+</tr>
+<tr>
+<td>Waiting for slave mutex on exit</td>
+<td>线程停止时发生的一个很简单的状态</td>
+</tr>
+</tbody>
+</table>
+<p><strong>从库连接线程状态(State)值</strong></p>
+<blockquote>
+<p>这些线程状态发生在复制从库上, 但与连接线程相关联, 而不与I/O或SQL线程相关联</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Changing master</td>
+<td>线程正在处理CHANGE MASTER TO语句</td>
+</tr>
+<tr>
+<td>Killing slave</td>
+<td>线程正在处理STOP SLAVE语句</td>
+</tr>
+<tr>
+<td>Opening master dump table</td>
+<td>此状态发生在Creating table from master dump之后</td>
+</tr>
+<tr>
+<td>Reading master dump table data</td>
+<td>此状态发生在Opening master dump table之后</td>
+</tr>
+<tr>
+<td>Rebuilding the index on master dump table</td>
+<td>此状态发生在Reading master dump table data之后</td>
+</tr>
+</tbody>
+</table>
+<h3 id="%E5%A6%82%E4%BD%95kill%E6%8E%89%E4%B8%80%E4%B8%AA%E7%BA%BF%E7%A8%8B">如何kill掉一个线程</h3>
+<pre class="hljs"><code><div><span class="hljs-keyword">KILL</span> <span class="hljs-keyword">id</span>;
+</div></code></pre>
+<h2 id="3-%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92explain">3. 执行计划Explain</h2>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">explain</span> <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> city;
++<span class="hljs-comment">----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+</span>
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++<span class="hljs-comment">----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+</span>
+|  1 | SIMPLE      | city  | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | NULL  |
++<span class="hljs-comment">----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+</span>
+</div></code></pre>
+<ul>
+<li>select type : 表示select类型, 常见取值如下:
+<ul>
+<li>simple : 简单表, 不使用表连接和子查询的查询</li>
+<li>primary : 主查询, 即外层查询</li>
+<li>union : union关键字后面的查询</li>
+<li>subquery : 子查询中的第一个select</li>
+</ul>
+</li>
+<li>table : 查询的表</li>
+<li>partitions : 查询的分区</li>
+<li>type : 访问类型: 性能由差到好排列如下:
+<ul>
+<li>all : 全表扫描, mysql遍历全表找到匹配行</li>
+<li>index : 全索引扫描, mysql遍历该表的全部索引找到匹配行</li>
+<li>range : 局部索引扫描, 常见于&lt;, &lt;=, &gt;, &gt;=, between等查询.</li>
+<li>ref : 使用非唯一索引或者前缀索引扫描, 返回匹配某个单独值的记录. ref还常出现于join中.</li>
+<li>eq_ref : 使用唯一索引扫描, 出现在多表连接使用primary key或者unique index作为关联条件的查询中.</li>
+<li>const/system : 单表中使用主键索引或者唯一索引只匹配一行的查询.</li>
+<li>null : 不需要访问表和索引就能得出结果的查询.</li>
+</ul>
+</li>
+<li>possible_key : 查询中可能使用的索引</li>
+<li>key : 实际使用的索引</li>
+<li>key_len : 使用到索引字段的长度</li>
+<li>rows : 扫描的行数</li>
+<li>filtered : 预估一个符合条件的行数占表中总行数的百分比.</li>
+<li>Extra : 执行情况的额外说明. 也很重要:
+<ul>
+<li>using index condition : 索引下推(ICP, index condition pushdown)</li>
+<li>using index : 覆盖索引, 不需要回表</li>
+<li>using where : 使用where过滤了一部分条件(不一定回表)</li>
+<li>using temporary : 使用了临时表. 经常发生在存在Group By和Order by子句, 但是两个子句中使用的列不同的情况</li>
+<li>Using filesort : 文件排序. 当查询中存在order by子句, 并且无法通过索引完成排序, 只能全表扫描, 然后存储排好序的键, 然后根据键检索出行.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>type类型还有一些:
+ref_or_null: 和ref相似, 区别在于条件中包含对null的查询.
+index_merge: 索引合并优化
+unique_subquery : in的后面是一个查询主键字段的子查询
+index_subquery : in后面是查询非唯一索引字段的子查询</p>
+</blockquote>
+<h2 id="4-show-profile">4. SHOW profile</h2>
+<p>show profiles 和show profile用来分析每条sql的执行过程. 该功能默认是关闭的, 可以通过set语句来在session级临时开启.</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">select</span> @@have_profiling;
++<span class="hljs-comment">------------------+</span>
+| @@have_profiling |
++<span class="hljs-comment">------------------+</span>
+| YES              |
++<span class="hljs-comment">------------------+</span>
+1 row in <span class="hljs-keyword">set</span>, <span class="hljs-number">1</span> <span class="hljs-keyword">warning</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> @@profiling;
++<span class="hljs-comment">-------------+</span>
+| @@profiling |
++<span class="hljs-comment">-------------+</span>
+|           0 |
++<span class="hljs-comment">-------------+</span>
+1 row in <span class="hljs-keyword">set</span>, <span class="hljs-number">1</span> <span class="hljs-keyword">warning</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">set</span> @@profiling = <span class="hljs-number">1</span>;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">warnings</span>;
++<span class="hljs-comment">---------+------+----------------------------------------------------------------------+</span>
+| Level   | Code | Message                                                              |
++<span class="hljs-comment">---------+------+----------------------------------------------------------------------+</span>
+| Warning | 1287 | '@@profiling' is deprecated and will be removed in a future release. |
++<span class="hljs-comment">---------+------+----------------------------------------------------------------------+</span>
+<span class="hljs-number">1</span> <span class="hljs-keyword">row</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> customers;
++<span class="hljs-comment">---------+----------------+---------------------+-----------+------------+----------+--------------+--------------+---------------------+</span>
+| cust_id | cust_name      | cust_address        | cust_city | cust_state | cust_zip | cust_country | cust_contact | cust_email          |
++<span class="hljs-comment">---------+----------------+---------------------+-----------+------------+----------+--------------+--------------+---------------------+</span>
+|   10001 | Coyote Inc.    | 200 Maple Lane      | Detroit   | MI         | 44444    | USA          | Y Lee        | ylee@coyote.com     |
+|   10002 | Mouse House    | 333 Fromage Lane    | Columbus  | OH         | 43333    | USA          | Jerry Mouse  | NULL                |
+|   10003 | Wascals        | 1 Sunny Place       | Muncie    | IN         | 42222    | USA          | Jim Jones    | rabbit@wascally.com |
+|   10004 | Yosemite Place | 829 Riverside Drive | Phoenix   | AZ         | 88888    | USA          | Y Sam        | sam@yosemite.com    |
+|   10005 | E Fudd         | 4545 53rd Street    | Chicago   | IL         | 54545    | USA          | E Fudd       | NULL                |
+|   10006 | frog           | aaa                 | bbb       | ON         | NULL     | NULL         | NULL         | NULL                |
++<span class="hljs-comment">---------+----------------+---------------------+-----------+------------+----------+--------------+--------------+---------------------+</span>
+6 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">profiles</span>;
++<span class="hljs-comment">----------+------------+-------------------------+</span>
+| Query_ID | Duration   | Query                   |
++<span class="hljs-comment">----------+------------+-------------------------+</span>
+|        1 | 0.00005625 | <span class="hljs-keyword">show</span> <span class="hljs-keyword">warnings</span>           |
+|        <span class="hljs-number">2</span> | <span class="hljs-number">0.00021825</span> | <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> customers |
++<span class="hljs-comment">----------+------------+-------------------------+</span>
+<span class="hljs-number">2</span> <span class="hljs-keyword">rows</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">set</span>, <span class="hljs-number">1</span> <span class="hljs-keyword">warning</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">show</span> profile <span class="hljs-keyword">for</span> <span class="hljs-keyword">query</span> <span class="hljs-number">2</span>;
++<span class="hljs-comment">----------------------+----------+</span>
+| Status               | Duration |
++<span class="hljs-comment">----------------------+----------+</span>
+| starting             | 0.000044 |
+| checking permissions | 0.000007 |
+| Opening tables       | 0.000014 |
+| init                 | 0.000019 |
+| System <span class="hljs-keyword">lock</span>          | <span class="hljs-number">0.000007</span> |
+| optimizing           | <span class="hljs-number">0.000003</span> |
+| <span class="hljs-keyword">statistics</span>           | <span class="hljs-number">0.000009</span> |
+| preparing            | <span class="hljs-number">0.000009</span> |
+| executing            | <span class="hljs-number">0.000002</span> |
+| Sending <span class="hljs-keyword">data</span>         | <span class="hljs-number">0.000070</span> |
+| <span class="hljs-keyword">end</span>                  | <span class="hljs-number">0.000004</span> |
+| <span class="hljs-keyword">query</span> <span class="hljs-keyword">end</span>            | <span class="hljs-number">0.000006</span> |
+| closing <span class="hljs-keyword">tables</span>       | <span class="hljs-number">0.000006</span> |
+| freeing items        | <span class="hljs-number">0.000010</span> |
+| cleaning up          | <span class="hljs-number">0.000009</span> |
++<span class="hljs-comment">----------------------+----------+</span>
+<span class="hljs-number">15</span> <span class="hljs-keyword">rows</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">set</span>, <span class="hljs-number">1</span> <span class="hljs-keyword">warning</span> (<span class="hljs-number">0.00</span> sec)
+
+</div></code></pre>
+<blockquote>
+<p>have_profiling表明当前mysql是否支持profile.</p>
+</blockquote>
+<blockquote>
+<p>上面查询出的status在show processlist中有详细列出.</p>
+</blockquote>
+<blockquote>
+<p>Duration表示执行时间</p>
+</blockquote>
+<p>show profile for query query_id命令还有很多东西, 但是上面警告都提示这个命令已过时, 咱也不懂, 咱也不敢用. 就这么样吧.</p>
+<h2 id="5-%E5%88%86%E6%9E%90trace">5. 分析TRACE</h2>
+<p>MySQL5.6开始, 可以使用trace跟踪sql. 首先打开trace, 设置格式为json, 设置trace最大能够使用的内存大小, 避免解析过程中因为默认内存过小而不能完整显示.</p>
+<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">select</span> @@optimizer_trace, @@end_markers_in_json;
++<span class="hljs-comment">--------------------------+-----------------------+</span>
+| @@optimizer_trace        | @@end_markers_in_json |
++<span class="hljs-comment">--------------------------+-----------------------+</span>
+| enabled=off,one_line=off |                     0 |
++<span class="hljs-comment">--------------------------+-----------------------+</span>
+1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">set</span> optimizer_trace = <span class="hljs-string">"enabled=on"</span>, end_markers_in_json = <span class="hljs-keyword">on</span>;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> @@optimizer_trace, @@end_markers_in_json;
++<span class="hljs-comment">-------------------------+-----------------------+</span>
+| @@optimizer_trace       | @@end_markers_in_json |
++<span class="hljs-comment">-------------------------+-----------------------+</span>
+| enabled=on,one_line=off |                     1 |
++<span class="hljs-comment">-------------------------+-----------------------+</span>
+1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> customers;
++<span class="hljs-comment">---------+----------------+---------------------+-----------+------------+----------+--------------+--------------+---------------------+</span>
+| cust_id | cust_name      | cust_address        | cust_city | cust_state | cust_zip | cust_country | cust_contact | cust_email          |
++<span class="hljs-comment">---------+----------------+---------------------+-----------+------------+----------+--------------+--------------+---------------------+</span>
+|   10001 | Coyote Inc.    | 200 Maple Lane      | Detroit   | MI         | 44444    | USA          | Y Lee        | ylee@coyote.com     |
+|   10002 | Mouse House    | 333 Fromage Lane    | Columbus  | OH         | 43333    | USA          | Jerry Mouse  | NULL                |
+|   10003 | Wascals        | 1 Sunny Place       | Muncie    | IN         | 42222    | USA          | Jim Jones    | rabbit@wascally.com |
+|   10004 | Yosemite Place | 829 Riverside Drive | Phoenix   | AZ         | 88888    | USA          | Y Sam        | sam@yosemite.com    |
+|   10005 | E Fudd         | 4545 53rd Street    | Chicago   | IL         | 54545    | USA          | E Fudd       | NULL                |
+|   10006 | frog           | aaa                 | bbb       | ON         | NULL     | NULL         | NULL         | NULL                |
++<span class="hljs-comment">---------+----------------+---------------------+-----------+------------+----------+--------------+--------------+---------------------+</span>
+6 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+mysql&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> information_schema.optimizer_trace\G;
+*************************** 1. row ***************************
+                            QUERY: <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> customers
+                            <span class="hljs-keyword">TRACE</span>: {
+  <span class="hljs-string">"steps"</span>: [
+    {
+      <span class="hljs-string">"join_preparation"</span>: {
+        <span class="hljs-string">"select#"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"steps"</span>: [
+          {
+            <span class="hljs-string">"expanded_query"</span>: <span class="hljs-string">"/* select#1 */ select `customers`.`cust_id` AS `cust_id`,`customers`.`cust_name` AS `cust_name`,`customers`.`cust_address` AS `cust_address`,`customers`.`cust_city` AS `cust_city`,`customers`.`cust_state` AS `cust_state`,`customers`.`cust_zip` AS `cust_zip`,`customers`.`cust_country` AS `cust_country`,`customers`.`cust_contact` AS `cust_contact`,`customers`.`cust_email` AS `cust_email` from `customers`"</span>
+          }
+        ] <span class="hljs-comment">/* steps */</span>
+      } <span class="hljs-comment">/* join_preparation */</span>
+    },
+    {
+      <span class="hljs-string">"join_optimization"</span>: {
+        <span class="hljs-string">"select#"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"steps"</span>: [
+          {
+            <span class="hljs-string">"table_dependencies"</span>: [
+              {
+                <span class="hljs-string">"table"</span>: <span class="hljs-string">"`customers`"</span>,
+                <span class="hljs-string">"row_may_be_null"</span>: <span class="hljs-literal">false</span>,
+                <span class="hljs-string">"map_bit"</span>: <span class="hljs-number">0</span>,
+                <span class="hljs-string">"depends_on_map_bits"</span>: [
+                ] <span class="hljs-comment">/* depends_on_map_bits */</span>
+              }
+            ] <span class="hljs-comment">/* table_dependencies */</span>
+          },
+          {
+            <span class="hljs-string">"rows_estimation"</span>: [
+              {
+                <span class="hljs-string">"table"</span>: <span class="hljs-string">"`customers`"</span>,
+                <span class="hljs-string">"table_scan"</span>: {
+                  <span class="hljs-string">"rows"</span>: <span class="hljs-number">7</span>,
+                  <span class="hljs-string">"cost"</span>: <span class="hljs-number">1</span>
+                } <span class="hljs-comment">/* table_scan */</span>
+              }
+            ] <span class="hljs-comment">/* rows_estimation */</span>
+          },
+          {
+            <span class="hljs-string">"considered_execution_plans"</span>: [
+              {
+                <span class="hljs-string">"plan_prefix"</span>: [
+                ] <span class="hljs-comment">/* plan_prefix */</span>,
+                <span class="hljs-string">"table"</span>: <span class="hljs-string">"`customers`"</span>,
+                <span class="hljs-string">"best_access_path"</span>: {
+                  <span class="hljs-string">"considered_access_paths"</span>: [
+                    {
+                      <span class="hljs-string">"rows_to_scan"</span>: <span class="hljs-number">7</span>,
+                      <span class="hljs-string">"access_type"</span>: <span class="hljs-string">"scan"</span>,
+                      <span class="hljs-string">"resulting_rows"</span>: <span class="hljs-number">7</span>,
+                      <span class="hljs-string">"cost"</span>: <span class="hljs-number">2.4</span>,
+                      <span class="hljs-string">"chosen"</span>: <span class="hljs-literal">true</span>
+                    }
+                  ] <span class="hljs-comment">/* considered_access_paths */</span>
+                } <span class="hljs-comment">/* best_access_path */</span>,
+                <span class="hljs-string">"condition_filtering_pct"</span>: <span class="hljs-number">100</span>,
+                <span class="hljs-string">"rows_for_plan"</span>: <span class="hljs-number">7</span>,
+                <span class="hljs-string">"cost_for_plan"</span>: <span class="hljs-number">2.4</span>,
+                <span class="hljs-string">"chosen"</span>: <span class="hljs-literal">true</span>
+              }
+            ] <span class="hljs-comment">/* considered_execution_plans */</span>
+          },
+          {
+            <span class="hljs-string">"attaching_conditions_to_tables"</span>: {
+              <span class="hljs-string">"original_condition"</span>: <span class="hljs-literal">null</span>,
+              <span class="hljs-string">"attached_conditions_computation"</span>: [
+              ] <span class="hljs-comment">/* attached_conditions_computation */</span>,
+              <span class="hljs-string">"attached_conditions_summary"</span>: [
+                {
+                  <span class="hljs-string">"table"</span>: <span class="hljs-string">"`customers`"</span>,
+                  <span class="hljs-string">"attached"</span>: <span class="hljs-literal">null</span>
+                }
+              ] <span class="hljs-comment">/* attached_conditions_summary */</span>
+            } <span class="hljs-comment">/* attaching_conditions_to_tables */</span>
+          },
+          {
+            <span class="hljs-string">"refine_plan"</span>: [
+              {
+                <span class="hljs-string">"table"</span>: <span class="hljs-string">"`customers`"</span>
+              }
+            ] <span class="hljs-comment">/* refine_plan */</span>
+          }
+        ] <span class="hljs-comment">/* steps */</span>
+      } <span class="hljs-comment">/* join_optimization */</span>
+    },
+    {
+      <span class="hljs-string">"join_execution"</span>: {
+        <span class="hljs-string">"select#"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"steps"</span>: [
+        ] <span class="hljs-comment">/* steps */</span>
+      } <span class="hljs-comment">/* join_execution */</span>
+    }
+  ] <span class="hljs-comment">/* steps */</span>
+}
+MISSING_BYTES_BEYOND_MAX_MEM_SIZE: <span class="hljs-number">0</span>
+          INSUFFICIENT_PRIVILEGES: <span class="hljs-number">0</span>
+<span class="hljs-number">1</span> <span class="hljs-keyword">row</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+
+<span class="hljs-keyword">ERROR</span>:
+<span class="hljs-keyword">No</span> <span class="hljs-keyword">query</span> specified
+</div></code></pre>
+
+</body>
+</html>

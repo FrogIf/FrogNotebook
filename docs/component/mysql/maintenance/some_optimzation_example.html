@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>some_optimzation_example.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%B8%B8%E7%94%A8sql%E4%BC%98%E5%8C%96">常用SQL优化</h1>
+<h2 id="%E7%9B%AE%E5%BD%95">目录</h2>
+<ol>
+<li>大批量插入数据</li>
+<li>优化insert语句</li>
+<li>优化order by语句</li>
+<li>优化group by语句</li>
+<li>优化嵌套查询</li>
+<li>优化or条件</li>
+<li>优化分页查询</li>
+<li>使用SQL提示</li>
+</ol>
+<h2 id="%E5%A4%A7%E6%89%B9%E9%87%8F%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE">大批量插入数据</h2>
+<p>对于MyISAM表:</p>
+<p>导入之前关闭非唯一索引更新, 导入之后开启非唯一索引更新.</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> tbl_name <span class="hljs-keyword">DISABLE</span> <span class="hljs-keyword">KEYS</span>;
+LOADING DATA ...;
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> tbl_name <span class="hljs-keyword">ENABLE</span> <span class="hljs-keyword">KEYS</span>;
+</div></code></pre>
+<p>对于InnoDB表:</p>
+<ol>
+<li>因为Innodb表是按照主键顺序保存的, 导入数据按照顺序排序后导入较快.</li>
+<li>在导入之前关闭唯一校验, 导入之后重新打开唯一校验.<pre class="hljs"><code><div><span class="hljs-keyword">SET</span> UNIQUE_CHECKS = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">SET</span> UNIQUE_CHECKS = <span class="hljs-number">1</span>;
+</div></code></pre>
+</li>
+<li>导入之前关闭自动提交, 导入之后重新打开自动提交.<pre class="hljs"><code><div><span class="hljs-keyword">SET</span> AUTOCOMMIT = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">SET</span> AUTOCOMMIT = <span class="hljs-number">1</span>;
+</div></code></pre>
+</li>
+</ol>
+<h2 id="%E4%BC%98%E5%8C%96insert%E8%AF%AD%E5%8F%A5">优化INSERT语句</h2>
+<ul>
+<li>同时插入很多行时, 尽量使用一条insert语句直接插入多行.</li>
+<li>使用insert delayed, 该语句使insert立即执行, 数据直接放在内存中, 然后就返回插入成功. 如果没有delayed, insert语句会等待其他用户对表的读写完成之后再插入.</li>
+<li>将索引与数据文件放在不同的磁盘上.</li>
+<li>对于MyISAM表, 增加bulk_insert_buffer_size的值, 提高速度</li>
+<li>当从文本中装载一个表时, 使用load data infile比insert快很多.</li>
+</ul>
+<h2 id="order-by%E4%BC%98%E5%8C%96">order by优化</h2>
+<p>排序有两种方式:</p>
+<ol>
+<li>using index : 表中的索引都是有序的, 如果order by的字段是索引字段, 就不需要排序, 直接按照索引顺序返回就可以了.</li>
+<li>using filesort : SERVER对存储引擎返回的数据进行排序. filesort是通过相应的算法, 将获取到的数据在sort_buffer_size系统变量设置的内存中进行排序. 如果内存装不下, 将会使用磁盘进行数据分块, 在对各块数据进行排序之后合并. sort_buffer_size设置的排序区是每个线程独占的, 所以同一时刻. 可以有多个sort buffer.</li>
+</ol>
+<p><strong>避免filesort</strong></p>
+<p>尽量减少额外的排序, 通过索引直接返回有序数据.</p>
+<p><strong>对filesort优化</strong></p>
+<p>有些情况下filesort无法避免, 这时就要优化他.</p>
+<p>filesort排序有两种排序算法:</p>
+<ol>
+<li>两次扫描排序: 根据条件取出排序字段和行指针, 之后再sort buffer中排序, 如果sort buffer不够用, 在临时表中存储排序结果. 完成排序之后, 根据行指针返回排序结果.
+第一次获取排序字段和行指针, 第二次根据行指针获取记录. 尤其第二次会导致大量IO操作, 优点是排序时使用的内存空间小.</li>
+<li>一次扫描排序: 直接返回所有符合条件的数据, 然后再sort buffer中根据指定字段进行排序. 内存开销大, 效率高.</li>
+</ol>
+<p>mysql根据系统变量max_length_for_sort_data设定切换两种排序的阈值, 通过Query语句返回的字段大小来判断使用哪种算法.max_length_for_sort_data大, 就会更容易采用第二种算法.</p>
+<p>但是max_length_for_sort_data设置过大, 会造成CPU使用率低磁盘IO高, 并有可能导致mysql使用内存过大, 导致系统SWAP严重.</p>
+<p>所以, 也需要注意不要使用select *, 减少返回数据的大小.</p>
+<h2 id="group-by%E4%BC%98%E5%8C%96">group by优化</h2>
+<p>mysql在执行group by时会隐含对group by后的所有字段进行排序, 如果想避免这种排序, 可以指定order by null, 来禁止排序.</p>
+<h2 id="%E4%BC%98%E5%8C%96%E5%B5%8C%E5%A5%97%E6%9F%A5%E8%AF%A2">优化嵌套查询</h2>
+<p>使用join来替代子查询. 之所以这样更快, 是因为join不需要在内存中创建临时表来完成这个逻辑上需要两步的查询工作.</p>
+<h2 id="%E4%BC%98%E5%8C%96or%E6%9D%A1%E4%BB%B6">优化or条件</h2>
+<p>方法就是在or两侧都建立索引.</p>
+<p>这样, 会对or两侧的字段各自使用索引进行查询, 最后在union到一起.</p>
+<p>需要注意的是, 对复合索引如果分布在or两侧是不会走索引的(因为其中一侧不满足最左前缀原则)</p>
+<h2 id="%E4%BC%98%E5%8C%96%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2">优化分页查询</h2>
+<p><strong>思路一</strong></p>
+<p>在索引上完成排序分页的操作, 然后根据主键回表查询所需要的列.</p>
+<p>例如:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> film_id, description <span class="hljs-keyword">from</span> film <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> title <span class="hljs-keyword">limit</span> <span class="hljs-number">50</span>, <span class="hljs-number">5</span>;
+</div></code></pre>
+<p>会排序, 全表扫描找到第50个记录开始的5条记录</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> a.film_id, a.decription <span class="hljs-keyword">from</span> film a <span class="hljs-keyword">inner</span> <span class="hljs-keyword">join</span> (<span class="hljs-keyword">select</span> film_id <span class="hljs-keyword">from</span> film <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> title <span class="hljs-keyword">limit</span> <span class="hljs-number">50</span>, <span class="hljs-number">5</span>) b <span class="hljs-keyword">on</span> a.film_id = b.film_id;
+</div></code></pre>
+<p>这样会对title索引进行全部扫描, 然后再回表取出满足条件的数据.</p>
+<p><strong>思路二</strong></p>
+<p>将limit查询转化为位置查询.</p>
+<p>假设一个表里有1 0000 0000条数据, 现在要取limit 99999995, 5:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> col1 <span class="hljs-keyword">from</span> tableA <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> p_key <span class="hljs-keyword">limit</span> <span class="hljs-number">99999995</span>, <span class="hljs-number">5</span>;
+</div></code></pre>
+<p>这样效率极低, 但是, 加入这次查询可以依赖上次查询结果, 那么效率将会很高.</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> col1 <span class="hljs-keyword">from</span> tableA <span class="hljs-keyword">where</span> p_key &gt; 上次查询最大主键值 <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> p_key <span class="hljs-keyword">limit</span> <span class="hljs-number">5</span>;
+</div></code></pre>
+<p>因为这样, 会根据值直接定位到分页的起始位置.</p>
+<h2 id="%E4%BD%BF%E7%94%A8sql%E6%8F%90%E7%A4%BA">使用SQL提示</h2>
+<p>SQL hint是优化的一个重要手段, 就是通过在SQL语句中加入一些人为指定的提示来达到优化.</p>
+<p><strong>sql_buffer_results</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> sql_buffer_results * <span class="hljs-keyword">from</span> ...;
+</div></code></pre>
+<p>sql_buffer_results强制mysql生成一个临时的结果集. 只要结果集生成, 所有相关表上的锁均会被释放. 在遇到表锁或者需要很长时间才能将数据返回给客户端时, 会有所帮助, 因为可以及时释放锁.</p>
+<p><strong>use index</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> <span class="hljs-keyword">count</span>(*) <span class="hljs-keyword">from</span> rental <span class="hljs-keyword">use</span> <span class="hljs-keyword">index</span>(idx_rental_date);
+</div></code></pre>
+<p>建议mysql使用指定的索引列表中的索引进行查询, 而不再考虑其他索引.</p>
+<p><strong>ignore index</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> <span class="hljs-keyword">count</span>(*) <span class="hljs-keyword">from</span> rental <span class="hljs-keyword">ignore</span> <span class="hljs-keyword">index</span>(idx_rental_date);
+</div></code></pre>
+<p>建议mysql不要使用指定索引列表中的索引进行查询.</p>
+<p><strong>force index</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> <span class="hljs-keyword">count</span>(*) <span class="hljs-keyword">from</span> rental <span class="hljs-keyword">force</span> <span class="hljs-keyword">index</span>(idx_rental_date);
+</div></code></pre>
+<p>强制mysql使用指定的索引进行查询, 即使mysql评估出使用该索引查询效率可能很低.</p>
+
+</body>
+</html>
