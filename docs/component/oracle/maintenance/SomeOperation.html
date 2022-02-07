@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SomeOperation.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="oracle%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C">Oracle数据相关操作</h1>
+<h2 id="11g%E5%BF%98%E8%AE%B0sys%E5%AF%86%E7%A0%81%E6%80%8E%E4%B9%88%E5%8A%9E">11g忘记sys密码怎么办</h2>
+<p>在服务器本地登录，不用打密码:
+sqlplus / as sysdba
+然后修改密码:
+alter user 用户名 identified by 密码;</p>
+<h2 id="%E8%A7%A3%E9%94%81%E7%94%A8%E6%88%B7">解锁用户</h2>
+<p>alter user 用户名 account unlock;</p>
+<h2 id="oracle%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD">Oracle数据备份</h2>
+<h3 id="%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA">数据导出</h3>
+<pre class="hljs"><code><div>exp username/password@sid file=<span class="hljs-built_in">path</span>
+exp video_linkage/video_linkage@orcl file=d:\data.dmp
+</div></code></pre>
+<h3 id="%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5">数据导入</h3>
+<pre class="hljs"><code><div>imp username/password@sid file=<span class="hljs-built_in">path</span>
+举例:
+imp video_linkage/video_linkage@orcl file=d:\data.dmp
+</div></code></pre>
+<h3 id="%E8%BE%85%E5%8A%A9%E5%91%BD%E4%BB%A4">辅助命令</h3>
+<ul>
+<li>ignore=n/y 忽略错误, imp时的参数</li>
+<li>rows=n/y 控制是否只导入/导出结构, 而不导出数据</li>
+<li>full=n/y 全库导出</li>
+</ul>
+<p>举例:</p>
+<pre class="hljs"><code><div>imp video_linkage/video_linkage@<span class="hljs-number">10</span>.<span class="hljs-number">122</span>.<span class="hljs-number">70</span>.<span class="hljs-number">77</span>:<span class="hljs-number">7521</span>/orcl file=d:\data.dmp ignore=y rows=y
+</div></code></pre>
+<h3 id="oracle%E7%A9%BA%E8%A1%A8%E5%AF%BC%E5%87%BA">oracle空表导出</h3>
+<p>ORACLE 11G中有个新特性，当表无数据时，不分配segment，以节省空间。</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> table_name <span class="hljs-keyword">from</span> user_tables <span class="hljs-keyword">where</span> NUM_ROWS=<span class="hljs-number">0</span>;    <span class="hljs-comment"># 查询获取空表</span>
+<span class="hljs-keyword">select</span> <span class="hljs-string">'alter table '</span>||table_name||<span class="hljs-string">' allocate extent;'</span> <span class="hljs-keyword">from</span> user_tables <span class="hljs-keyword">where</span> num_rows=<span class="hljs-number">0</span>;   <span class="hljs-comment"># 生成segment创建语句</span>
+
+例如查询出的结果:
+<span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> ACT_EVT_LOG <span class="hljs-keyword">allocate</span> <span class="hljs-keyword">extent</span>;
+<span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> ACT_HI_ATTACHMENT <span class="hljs-keyword">allocate</span> <span class="hljs-keyword">extent</span>;
+则再执行这两条语句.
+然后再执行exp就可以了.
+</div></code></pre>
+<p>比较简单的方法是这么写:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">DECLARE</span> sqlStr <span class="hljs-built_in">VARCHAR2</span> ( <span class="hljs-number">100</span> );
+<span class="hljs-keyword">BEGIN</span>
+<span class="hljs-keyword">FOR</span> op <span class="hljs-keyword">IN</span> (<span class="hljs-keyword">select</span> table_name <span class="hljs-keyword">from</span> user_tables <span class="hljs-keyword">where</span> num_rows=<span class="hljs-number">0</span>) <span class="hljs-keyword">LOOP</span>
+    sqlStr := <span class="hljs-string">'alter table '</span>||op.table_name||<span class="hljs-string">' allocate extent'</span>;
+    <span class="hljs-keyword">execute</span> <span class="hljs-keyword">immediate</span> sqlStr;
+<span class="hljs-keyword">END</span> <span class="hljs-keyword">LOOP</span>;
+<span class="hljs-keyword">END</span>;
+</div></code></pre>
+<h2 id="%E6%9D%83%E9%99%90%E6%8E%88%E4%BA%88">权限授予</h2>
+<p>具体需要哪些权限需要看用户的实际需要。</p>
+<p>系统权限分类：</p>
+<ul>
+<li>DBA: 拥有全部特权，是系统最高权限，只有DBA才可以创建数据库结构。</li>
+<li>RESOURCE:拥有Resource权限的用户只可以创建实体，不可以创建数据库结构。</li>
+<li>CONNECT:拥有Connect权限的用户只可以登录Oracle，不可以创建实体，不可以创建数据库结构。</li>
+</ul>
+<blockquote>
+<p>对于普通用户：授予connect, resource权限。
+对于DBA管理用户：授予connect，resource, dba权限。</p>
+</blockquote>
+<p>系统权限授权命令：
+系统权限只能由DBA用户授出：sys, system(最开始只能是这两个用户)
+授权命令：</p>
+<pre class="hljs"><code><div>SQL&gt; <span class="hljs-keyword">grant</span> <span class="hljs-keyword">connect</span>, <span class="hljs-keyword">resource</span>, dba <span class="hljs-keyword">to</span> 用户名<span class="hljs-number">1</span> [,用户名<span class="hljs-number">2</span>]...;
+</div></code></pre>
+<blockquote>
+<p>注:普通用户通过授权可以具有与system相同的用户权限，但永远不能达到与sys用户相同的权限，system用户的权限也可以被回收。</p>
+</blockquote>
+<h2 id="oracle%E5%8D%B8%E8%BD%BD">Oracle卸载</h2>
+<p>1.关闭所有的oracle相关的服务(凡是以Oracle开头的都关掉就行)</p>
+<p>2.在安装目录下，找到 deinstall.bat 文件并执行。(一路回车就行, 卸载失败也没关系, 另外&quot;指定在此 Oracle 主目录中配置的数据库名的列表 [ORCL]:&quot;可能需要卡上一段时间, 不要着急.)如：
+D:\app\u01\product\12.1.0\dbhome_1\deinstall \ deinstall.bat</p>
+<p>3.window+R 输入regedit打开注册表管理器
+--&gt; 删除HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\ 下所有以Oracle开头的服务名称
+--&gt; 删除HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE目录(该目录下注册着Oracle数据库的软件安装信息)
+--&gt; 删除HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application下oracle开头的所有项目(oracle事件日志)</p>
+<ol start="4">
+<li>
+<p>删除环境变量path中关于oracle的内容(同时删除该path对应的文件夹)</p>
+</li>
+<li>
+<p>重新启动操作系统</p>
+</li>
+<li>
+<p>重启操作系统后各种Oracle相关的进程都不会加载了。这时删除Oracle_Home下的所有数据。（Oracle_Home指Oracle程序的安装目录）</p>
+</li>
+</ol>
+<p>7.删除C:\Program Files下oracle目录。        （该目录视Oracle安装所在路径而定）</p>
+<p>8.删除开始菜单下oracle项，如：      C:\Documents and Settings\All Users\「开始」菜单\程序\Oracle - Ora12c, wind10下的目录为；C:\ProgramData\Microsoft\Windows\Start Menu\Programs
+不同的安装这个目录稍有不同。 （总而言之就是将菜单下的有关Oracle目录删除）</p>
+<h2 id="oracle%E6%89%93%E8%A1%A5%E4%B8%81">Oracle打补丁</h2>
+<ol>
+<li>下载当前版本可用的Opatch工具安装补丁</li>
+<li>拷贝以下补丁文件到对应服务器，并解压</li>
+<li>将oracle_home下的opatch目录备份，并将新的Opatch文件复制到原来的opatch目录中，替换原有文件（实现OPATCH工具升级）</li>
+<li>关闭数据库:shutdown immediate</li>
+<li>并停止所有oracle服务</li>
+<li>进入opatch目录，执行 : opatch apply 补丁所在文件夹\</li>
+<li>补丁成功后，启动数据库相关服务</li>
+<li>执行SQL语句进行更新补丁标识: SQL&gt; @$ORACLE_HOME/rdbms/admin/catbundle.sql psu apply</li>
+</ol>
+<p>检查Oracle补丁:
+进入ORACLE_BASE/oracle/product/11.2.0/dbhome_1/Opatch目录.
+执行:OPatch lsinventory</p>
+<h2 id="oracle%E5%AF%BC%E5%85%A5%E5%AF%BC%E5%87%BA%E6%8C%87%E5%AE%9A%E8%A1%A8">Oracle导入导出指定表</h2>
+<p>从源数据库导出：
+exp user1/pwd@server1 file=c:\temp\exp.dmp tables=(table1, table2)
+导入到目标数据库：
+imp user2/pwd@server2 file=c:\temp\exp.dmp tables=(table1, table2)</p>
+<p>备注: imp时如果该表有数据, 会增量添加进去</p>
+
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PL_SQL.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="plsql%E8%AF%AD%E8%A8%80">PL/SQL语言</h1>
+<hr>
+<h2 id="hello-world">hello world!</h2>
+<pre class="hljs"><code><div>begin
+  dbms_output.put_line('HelloWorld!');
+end;
+</div></code></pre>
+<p>PL/SQL(Procedure Language/SQL)是oracle对SQL语言的过程化扩展, 指在sql命令语言中增加了过程处理语句(如分支, 循环等), 使SQL语言具有过程处理能力. 把SQL语言的数据操作能力与过程语言的数据处理能力结合起来, 使得PLSQL面向过程但是比过程语言简单, 高效, 灵活实用.</p>
+<h2 id="plsql%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84">PL/SQL的基本结构</h2>
+<pre class="hljs"><code><div>declare
+	说明部分(变量, 游标, 例外的声明)
+begin
+	语句...
+exception
+	例外处理语句...
+end;
+</div></code></pre>
+<h2 id="%E5%8F%98%E9%87%8F">变量</h2>
+<p>该语言变量分为三种类型: 说明型变量, 引用型变量, 记录型变量</p>
+<h3 id="%E8%AF%B4%E6%98%8E%E5%9E%8B%E5%8F%98%E9%87%8F">说明型变量</h3>
+<pre class="hljs"><code><div>declare
+  n number := 10;
+  str varchar(20);
+  is_true boolean := false;
+begin
+  dbms_output.put_line(n);
+end;
+</div></code></pre>
+<p>说明型变量的结构: 变量名 + 数据类型 + 数据长度 最后以分号结束.</p>
+<p>这种语言中, 使用&quot;:=&quot;表示赋值(相当于java中的&quot;=&quot;), 使用&quot;=&quot;表示等值判断(相当于java中的&quot;==&quot;)</p>
+<h3 id="%E5%BC%95%E7%94%A8%E5%9E%8B%E5%8F%98%E9%87%8F">引用型变量</h3>
+<pre class="hljs"><code><div>declare
+  ename emp.ename%type := 'frog';
+begin
+  dbms_output.put_line(ename);
+end;
+</div></code></pre>
+<p>引用型变量, 即ename的类型与emp表中ename的类型一样.</p>
+<h3 id="%E8%AE%B0%E5%BD%95%E5%9E%8B%E5%8F%98%E9%87%8F">记录型变量</h3>
+<pre class="hljs"><code><div>declare
+  emp_row emp%rowtype;
+begin
+  select * into emp_row from emp where emp.empno = 7369;
+  dbms_output.put_line(emp_row.ename || '工资为:' || emp_row.sal);
+end;
+</div></code></pre>
+<p>记录型变量, emp_row变量相当于一个'记录'的容器, 这里是emp的记录的容器.</p>
+<pre class="hljs"><code><div>into是用来将表中的一个或者一条数据赋值给变量的关键字
+如下所示:
+declare
+  str1 varchar(12);
+  str2 emp.ename%type;
+  re1 emp%rowtype;
+begin
+  select ename into str1 from emp where emp.empno = 7369;
+  select ename into str2 from emp where emp.empno = 7369;
+  select * into re1 from emp where emp.empno = 7369;
+  dbms_output.put_line(str1);
+  dbms_output.put_line(str2);
+  dbms_output.put_line(re1.ename);
+end;
+</div></code></pre>
+<h2 id="%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6">流程控制</h2>
+<h3 id="%E5%88%86%E6%94%AF%E7%BB%93%E6%9E%84">分支结构</h3>
+<ol>
+<li>单一判断</li>
+</ol>
+<pre class="hljs"><code><div>if 条件 then
+	语句...;
+end if;
+</div></code></pre>
+<ol start="2">
+<li>两个分支</li>
+</ol>
+<pre class="hljs"><code><div>if 条件 then
+	语句...;
+else
+	语句...;
+end if;
+</div></code></pre>
+<ol start="3">
+<li>多个分支</li>
+</ol>
+<pre class="hljs"><code><div>if 条件 then
+	语句...;
+elsif 条件 then
+	语句...;
+else
+	语句...;
+end if;
+</div></code></pre>
+<p>例程:</p>
+<pre class="hljs"><code><div>declare
+    n number(3);
+begin
+    n := &amp;请输入成绩;		----相当于java中的sc.read();
+    if n &lt; 60 then
+        dbms_output.put_line('不及格');
+    elsif n &lt; 80 then
+        dbms_output.put_line('及格');
+    elsif n &lt; 90 then
+        dbms_output.put_line('优秀');
+    elsif n &lt; 100 then
+        dbms_output.put_line('unbelievable!');
+    else
+        dbms_output.put_line('XXXXXXX');
+    end if;
+end;
+</div></code></pre>
+<h3 id="%E5%BE%AA%E7%8E%AF%E7%BB%93%E6%9E%84">循环结构</h3>
+<p>该语言的循环分为三种:</p>
+<ol>
+<li>死循环</li>
+<li>while循环</li>
+<li>for循环</li>
+</ol>
+<h4 id="%E6%AD%BB%E5%BE%AA%E7%8E%AF">死循环</h4>
+<pre class="hljs"><code><div>loop
+	语句...;
+end loop;
+</div></code></pre>
+<p>例程:</p>
+<pre class="hljs"><code><div>declare
+    n number(3) := 1;
+begin
+    loop
+        dbms_output.put_line(n);
+        n := n + 1;
+    end loop;
+end;
+</div></code></pre>
+<h4 id="while%E5%BE%AA%E7%8E%AF">while循环</h4>
+<pre class="hljs"><code><div>while 条件 loop
+	语句...;
+loop end;
+</div></code></pre>
+<p>例程:</p>
+<pre class="hljs"><code><div>declare
+    n number(3) := 1;
+begin
+    while n &lt;= 100 loop
+        dbms_output.put_line(n);
+        n := n + 1;
+    end loop;
+end;
+</div></code></pre>
+<h4 id="for%E5%BE%AA%E7%8E%AF">for循环</h4>
+<pre class="hljs"><code><div>for 变量 in 条件 loop
+	语句...;
+end loop;
+</div></code></pre>
+<p>例程:</p>
+<pre class="hljs"><code><div>declare
+    n number(3) := 1;
+begin
+    for n in 1..100 loop
+        dbms_output.put_line(n);
+    end loop;
+end;
+简化版:
+begin
+    for n in 1..100 loop
+        dbms_output.put_line(n);
+    end loop;
+end;
+</div></code></pre>
+<h4 id="%E8%B7%B3%E5%87%BA%E5%BE%AA%E7%8E%AF">跳出循环</h4>
+<p>使用exit关键字可以跳出循环:</p>
+<pre class="hljs"><code><div>declare
+    n number(3) := 1;
+begin
+    loop
+        if n = 101 then
+            exit;
+        end if;
+        dbms_output.put_line(n);
+        n := n + 1;
+    end loop;
+end;
+</div></code></pre>
+<p>可以简化为:</p>
+<pre class="hljs"><code><div>declare
+    n number(3) := 1;
+begin
+    loop
+        exit when n &gt; 100;
+        dbms_output.put_line(n);
+        n := n + 1;
+    end loop;
+end;
+</div></code></pre>
+<h2 id="%E6%B8%B8%E6%A0%87java%E4%B8%AD%E7%9A%84%E6%95%B0%E7%BB%84%E6%88%96%E9%9B%86%E5%90%88">游标(java中的数组或集合)</h2>
+<p>java程序中有集合的概念, 在pl/sql中使用游标来存储查询返回的多条数据.</p>
+<p>声明一个游标:
+cursor 游标名 [(参数名 数据类型, 参数名 数据类型)] is sql查询语句;</p>
+<p>例程:</p>
+<pre class="hljs"><code><div>declare
+    cursor free is select * from emp where deptno = 10;
+    rowInfo emp%rowtype;
+begin
+    open free; --打开游标
+    loop
+         fetch free into rowInfo;	取出游标中的一条记录, 并赋值给rowInfo
+         exit when free%notfound;	如果游标为空, 终止循环
+         dbms_output.put_line(rowInfo.ename || '--' || rowInfo.sal);
+    end loop;
+    close free; --关闭游标
+end;
+</div></code></pre>
+<p>遍历游标:</p>
+<pre class="hljs"><code><div>declare
+    cursor free is select * from emp where deptno = 10;
+    rowInfo emp%rowtype;
+begin
+    for rowInfo in free loop
+        dbms_output.put_line(rowInfo.ename || '--' || rowInfo.sal);
+    end loop;
+end;
+</div></code></pre>
+<blockquote>
+<p>不用open游标, 也不用close游标, 就像java使用增强for时不需要创建迭代器一样.</p>
+</blockquote>
+<p>上面的游标都不带参数, 根据上面的格式还有带参数的游标.</p>
+<pre class="hljs"><code><div>declare
+    cursor free(dno number) is select * from emp where deptno = dno;	--为游标添加形参, 注意形参不能写数据长度
+    row_info emp%rowtype;
+begin
+    open free(10);	--给游标传入实参
+    loop
+         fetch free into row_info;
+         exit when free%notfound;
+         dbms_output.put_line(row_info.ename || '--' || row_info.sal);
+    end loop;
+    close free;
+end;
+</div></code></pre>
+<h2 id="%E4%BE%8B%E5%A4%96%E5%BC%82%E5%B8%B8">例外(异常)</h2>
+<h3 id="%E7%B3%BB%E7%BB%9F%E4%BE%8B%E5%A4%96">系统例外</h3>
+<p>系统例外:</p>
+<ol>
+<li>no_date_found	没有找到数据</li>
+<li>too_many_rows	select...into语句匹配到多行</li>
+<li>zero_divide		除0异常</li>
+<li>value_error		算数或者转换错误</li>
+<li>timeout_on_resource	在等待资源时发生超时</li>
+<li>others		所有例外的总和(包括上面5种), 相当于java中的Exception</li>
+</ol>
+<pre class="hljs"><code><div>declare
+    n number(3) := 12;
+begin
+    n := n / 0;
+exception
+    when zero_divide then dbms_output.put_line('抛出除0异常');
+end;
+</div></code></pre>
+<h3 id="%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BE%8B%E5%A4%96">自定义例外</h3>
+<p>直接上代码:</p>
+<pre class="hljs"><code><div>declare
+    score number(3);
+    ex_score exception;
+begin
+    score := &amp;请输入成绩;
+    if score &gt; 100 then
+       raise ex_score;	----抛出异常
+    end if;
+    if score &lt; 60 then
+        dbms_output.put_line('不及格');
+    elsif score &lt; 80 then
+        dbms_output.put_line('及格');
+    elsif score &lt; 90 then
+        dbms_output.put_line('优秀');
+    else
+        dbms_output.put_line('unbelievable!');
+    end if;
+exception
+    when ex_score then dbms_output.put_line('成绩输入不正确!');
+end;
+</div></code></pre>
+<h2 id="%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B">存储过程</h2>
+<p>存储过程(Stored Procedure)是在大型数据库系统中, 一组为了完成特定功能的SQL语句集, 经编译后存储在数据库中, 用户通过指定存储过程的名字并给出参数(如果该存储过程带有参数)来执行它. 存储过程是数据库中的一个重要对象, 任何一个设计良好的数据库应用程序到应该用到存储过程.</p>
+<p>语法:</p>
+<pre class="hljs"><code><div>create [or replace] procedure 过程名[(参数名 in/out 数据类型)] as/is
+	变量声明
+begin
+	PLSQL子程序
+end;
+</div></code></pre>
+<p>例程</p>
+<pre class="hljs"><code><div>-----创建一个存储过程------
+create procedure process_sal(eno in number, sal_value out number) is
+begin
+       select sal * 12 + nvl(comm, 0) into sal_value from emp where empno = eno;
+end;
+</div></code></pre>
+<pre class="hljs"><code><div>------使用这个存储过程------------
+declare
+       sal number(10);
+       eno number(4) := 7369;
+begin
+       process_sal(eno, sal);
+       dbms_output.put_line(sal);
+end;
+</div></code></pre>
+<p>调用方法二:</p>
+<pre class="hljs"><code><div>call process_sal(7369, sal);
+这种方式begin和end都不用写, 但是sal怎么声明?
+所以只能调用无返回值的存储过程.
+不怎么用.
+</div></code></pre>
+<h2 id="%E5%AD%98%E5%82%A8%E5%87%BD%E6%95%B0">存储函数</h2>
+<p>和存储过程很像.
+语法:</p>
+<pre class="hljs"><code><div>create [or replace] procedure 过程名[(参数名 in/out 数据类型)] return 数据类型 as/is
+	变量声明
+begin
+	PLSQL子程序
+	return 结果变量;
+end;
+</div></code></pre>
+<pre class="hljs"><code><div>------创建存储过程--------
+create function get_year_sal(eno in number) return number is
+       sal_value number(10);
+begin
+       select sal * 12 + nvl(comm, 0) into sal_value from emp where empno = eno;
+       return sal_value;
+end;
+</div></code></pre>
+<pre class="hljs"><code><div>-----使用存储过程--------
+begin
+       dbms_output.put_line(get_year_sal(7369));
+end;
+</div></code></pre>
+
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Introduction.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D">基础介绍</h1>
+<hr>
+<h2 id="oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84">Oracle数据库体系结构</h2>
+<ul>
+<li>数据库</li>
+<li>实例: 一个oracle实例有一系列后台进程和内存结构组成, 一个数据库可以用n个实例.</li>
+<li>数据文件: 数据文件是数据库的物理存储单位, 数据库的数据快开始存储在表空间中的, 真正是在某一个或者多个数据文件中, 而一个表空间可以有一个或者多个数据文件组成, 一个数据文件只能属于一个表空间. 一旦数据文件被加到某个表空间后, 就不能删除这个文件, 如果要删除某个数据文件, 只能删除其所属的表空间才行.</li>
+<li>表空间:表空间是Oracle对象数据库上相关数据文件的逻辑映射, 一个数据库在逻辑上被划分为一道若干个表空间, 每一个表空间保存了在逻辑上相关联的一组结构.每个数据库至少有一个表空间(称之为system表空间), 每一个表空间有统一磁盘上的一个或者多个文件组成, 这些文件叫做数据文件. 一个数据文件只能属于一个表空间.</li>
+<li>用户:用户是在实例下建立的. 不同实例中可以建立相同的名字的用户. 表的数据是由用户放入某个表空间的, 而这个表空间会随机吧这些表数据放入到一个或者多个数据文件中.</li>
+</ul>
+<blockquote>
+<p>oracle的数据库不是普通的概念, oracle是有用户和表空间对数据进行管理和存放的. 但是表不是由表空间区查询的, 而是由用户去查询的. 因为不同用户可以在同一个表空间用相同名字的表. 这里区分就是用户了.</p>
+</blockquote>
+<p><img src="674B47863A4E4E5B91CEC2F41F0C3268" alt="001"></p>
+<h2 id="oracle%E5%86%85%E7%BD%AE%E7%94%A8%E6%88%B7">oracle内置用户</h2>
+<p>用户:scott	密码:tiger(默认)
+用户:hr		密码:hr(默认)</p>
+<pre class="hljs"><code><div>-------------解锁用户 ---------------
+alter user scott account unlock;
+------------修改密码--------------
+alter user scott identified by tiger;
+</div></code></pre>
+<p>scott用户内的表:
+----dept     部门 表
+---deptno  部门编号
+---dname   部门名称
+---loc     部门城市</p>
+<h2 id="%E6%9F%A5%E8%AF%A2">查询</h2>
+<h3 id="%E5%9F%BA%E6%9C%AC%E6%9F%A5%E8%AF%A2">基本查询</h3>
+<p>基本与mysql的sql语句相同, 下面说些不同的或者添加的:</p>
+<ul>
+<li>下面语句那条执行的更快?</li>
+</ul>
+<pre class="hljs"><code><div>select * from emp;
+select empno, ename, job from emp;
+</div></code></pre>
+<p>答: 基本差不多, oracle查询方式是先将符合条件的记录查出来, 在从中摘取想要显示的列返回.</p>
+<ul>
+<li>下面那条语句执行的更快?</li>
+</ul>
+<pre class="hljs"><code><div>select count(*) from emp;
+select count(1) from emp;
+select count(9999) from emp;
+select count(ename) from emp;
+</div></code></pre>
+<p>答: 前三个一样快, 最后一个稍微慢一点. oracle聚合查询过程是这样的, 首先看conut()中的参数是不是表中有的字段, 如果是, 就按这个字段进行聚合, 如果没有就按主键或者记录条数进行聚合.</p>
+<ul>
+<li>
+<p>模糊查询的转义
+select * from emp e where e.ename like '%a_%'  escape 'a';
+如上, 如果想要将下划线作为一个字符, 需要转义, 这就需要使用escape来进行, 'a'是一个随意的字符.</p>
+</li>
+<li>
+<p>在oracle中, 如果使用group by ，select 后只能出现 聚合函数 或者 group by 列:
+select count(<em>), deptno from emp group by deptno;	-- 正确
+select count(</em>), deptno, ename from emp group by deptno;	-- 错误</p>
+</li>
+<li>
+<p>一个常用的单行函数:
+nvl(arg1, arg2)	//表示如果arg1是null, 则用arg2的值替代</p>
+</li>
+</ul>
+<blockquote>
+<p>查看一个用户下所有的表: select table_name from user_tables;</p>
+</blockquote>
+<blockquote>
+<p>null不能进行大小等于比较</p>
+</blockquote>
+<ul>
+<li>字符串连接
+有两种连接方法:</li>
+</ul>
+<ol>
+<li>用单行函数concat(,) -- select concat('hello', 'world') from dual; --结果helloworld</li>
+<li>使用&quot;||&quot;符号 -- select 'hello'||'world'||'!' from dual; --结果HelloWorld!</li>
+</ol>
+<ul>
+<li>
+<p>排序中空值的问题
+排序时有可能遇到依据的字段有null的情况, 这时默认会对将null当作类似无穷大的值.
+这时可以通过加nulls first或者nulls last
+select * from emp order by comm desc nulls last;
+select * from emp order by comm desc nulls first;</p>
+</li>
+<li>
+<p>条件表达式
+case 带判断的值
+when 值 then 表达式
+when 值 then 表达式
+when 值 then 表达式
+else 表达式
+end</p>
+</li>
+</ul>
+<p>相当于java中的:
+swith(判断){
+case 值: 表达式;
+case 值: 表达式;
+default: 表达式
+}</p>
+<h3 id="%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0">常用函数</h3>
+<h4 id="%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0">单行函数</h4>
+<ul>
+<li>
+<p>字符函数</p>
+<ul>
+<li>concat(str1, str2)	连接字符串</li>
+<li>length(str)	计算字符串的长度</li>
+<li>replace(str, str1, str2)	将str中的str1替换为str2</li>
+<li>lower(str)	将str全部转换为小写</li>
+<li>upper(str)	将str全部转换为大写</li>
+</ul>
+</li>
+<li>
+<p>数值函数</p>
+<ul>
+<li>round(num, len)	将num保留len位小数四舍五入, len可选,不写相当于了len=0</li>
+<li>trunc(num, len)	将num按len截断, len可选, 同上</li>
+<li>mod(num1, num2)	取模</li>
+</ul>
+</li>
+<li>
+<p>日期函数</p>
+<ul>
+<li>months_between(date1, date2)	计算两个日期之间的月份间隔</li>
+<li>add_months(date1, mon)	计算mon个月后的日期</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>两个日期相减返回值为天数
+获取当前日期:sysdate</p>
+</blockquote>
+<ul>
+<li>
+<p>转换函数</p>
+<ul>
+<li>to_char()
+<ul>
+<li>对日期进行转换:to_char(date, 'format_model');</li>
+<li>对数字进行转换:to_char(number, 'format_model')</li>
+</ul>
+</li>
+<li>to_number(str, 'format_model')	将字符串转换为数字</li>
+<li>to_date(str, 'format_model')		将字符串转换为日期</li>
+</ul>
+</li>
+<li>
+<p>通用函数</p>
+<ul>
+<li>nvl(arg1, arg2)	空值处理</li>
+</ul>
+</li>
+</ul>
+<h3 id="%E5%A4%9A%E8%A1%8C%E5%87%BD%E6%95%B0">多行函数</h3>
+<p>就是聚合函数: avg() count() max() min() sum()</p>
+<h3 id="%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2">多表查询</h3>
+<ul>
+<li>内连接: 隐式, 显式</li>
+<li>外连接: 左外连接, 右外连接</li>
+</ul>
+<p>新概念 -- 全量表:
+在进行外连接时首先要明确全量表, 然后把全量表作为左外连接的左表 或者 右外连接的右表.
+全量表的特点: 全量表的中记录在生成的结果中不会丢失!(但是有可能会增加, 如果一个全量表中一条记录对应连接的另一侧的两条记录, 那么, 全量表中的一条记录会复制出一条, 这样两条记录分别对应另一个表两条记录)</p>
+<blockquote>
+<p>全量表选择错误会导致奇怪的结果
+大部分时候内连接与外连接使用哪个都可以, 但是如果全量表与另一个表连接时, 如果另一个表不存在满足条件的对应项, 那么内连接会丢失全量表中的这条记录, 而外连接不会.
+左外连接和有外连接没有区别, 只不过有时候, 在一条复杂的SQL语句上再连接其它表的时候, 有时候会区别选择.</p>
+</blockquote>
+<h3 id="%E5%AD%90%E6%9F%A5%E8%AF%A2">子查询</h3>
+<p>子查询的结果可以分为下面几种情况:</p>
+<ol>
+<li>一行一列 --&gt; 一个单值</li>
+<li>一行多列 --&gt; 一条记录, 可以取出其中一个单值</li>
+<li>多行一列 --&gt; 一般将查询结果作为一个表, 再进行查询, 有时候会作为in的条件或者一个集合</li>
+<li>多行多列 --&gt; 一般将查询结果作为一个表, 再进行查询, 有时候会作为一个集合</li>
+</ol>
+<p>一行多列的一个特殊操作:
+查询出和scott同部门并且同职位的员工:
+select * from emp e where ( e.deptno ,e.job ) = (select deptno,job from emp  where ename='SCOTT');</p>
+<h3 id="%E5%88%86%E9%A1%B5">分页</h3>
+<p>oracle不支持limit关键字, 所以需要使用伪列rownum来实现相同效果.rownum作用是自上而下生成表中数据的行号, 从1开始.
+关于rownum要注意两点:</p>
+<ol>
+<li>rownum是一个关键字</li>
+<li>rownum不支持大于比较, 支持小于比较和等于比较</li>
+</ol>
+<blockquote>
+<p>rownum从1开始</p>
+</blockquote>
+<p>下面通过rownum实现分页效果(查询员工表中的前三个):
+select * from emp where rownum &lt; 4;
+查询员工表中4-6员工:
+select * from (select emp.*, rownum n from emp) a where a.n &gt; 3 and a.n &lt; 7;
+为什么查询员工表中4-6行的员工不能这么写?
+select * from emp where rownum &lt; 7 and rownum &gt; 3;
+因为rownum不支持大于比较.</p>
+<blockquote>
+<p>oracle分页另一种方式:select * from (select row_number)</p>
+</blockquote>
+<p>举例:</p>
+<pre class="hljs"><code><div>查询员工表中工资最高的前三名:
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> emp <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> sal <span class="hljs-keyword">desc</span>) <span class="hljs-keyword">where</span> <span class="hljs-keyword">rownum</span> &lt; <span class="hljs-number">4</span>;
+查询员工表中工资4-6名的员工:
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> a.*, <span class="hljs-keyword">rownum</span> n <span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> emp <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> sal <span class="hljs-keyword">desc</span>) a) b <span class="hljs-keyword">where</span> b.n &gt; <span class="hljs-number">3</span> <span class="hljs-keyword">and</span> b.n &lt; <span class="hljs-number">7</span>;
+对于这个例子, 还有一种分页方式:
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> row_number() <span class="hljs-keyword">over</span> (<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> sal <span class="hljs-keyword">desc</span>) rm ,e.* <span class="hljs-keyword">from</span> emp e) t <span class="hljs-keyword">where</span> t.rm &lt; <span class="hljs-number">7</span> <span class="hljs-keyword">and</span> t.rm &gt; <span class="hljs-number">3</span>;
+</div></code></pre>
+<p>不同数据库的分页操作是不同的:
+mysql:limit
+oracle:rownum
+sqlServer:top</p>
+<blockquote>
+<p>oracle中成rownum为伪列, 同样的伪列还有rowid</p>
+</blockquote>
+<h3 id="%E5%85%B6%E5%AE%83">其它</h3>
+<ul>
+<li>行转列</li>
+</ul>
+<p>举例:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">select</span> <span class="hljs-keyword">sum</span>(a.z), 
+<span class="hljs-keyword">sum</span>(<span class="hljs-keyword">case</span> a.y <span class="hljs-keyword">when</span> <span class="hljs-string">'1980'</span> <span class="hljs-keyword">then</span> a.z <span class="hljs-keyword">end</span>) <span class="hljs-string">"1980"</span>, 
+<span class="hljs-keyword">sum</span>(<span class="hljs-keyword">case</span> a.y <span class="hljs-keyword">when</span> <span class="hljs-string">'1981'</span> <span class="hljs-keyword">then</span> a.z <span class="hljs-keyword">end</span>) <span class="hljs-string">"1981"</span>, 
+<span class="hljs-keyword">sum</span>(<span class="hljs-keyword">case</span> a.y <span class="hljs-keyword">when</span> <span class="hljs-string">'1982'</span> <span class="hljs-keyword">then</span> a.z <span class="hljs-keyword">end</span>) <span class="hljs-string">"1982"</span>,
+<span class="hljs-keyword">sum</span>(<span class="hljs-keyword">case</span> a.y <span class="hljs-keyword">when</span> <span class="hljs-string">'1987'</span> <span class="hljs-keyword">then</span> a.z <span class="hljs-keyword">end</span>) <span class="hljs-string">"1987"</span>
+<span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> <span class="hljs-keyword">count</span>(*) z, to_char(hiredate, <span class="hljs-string">'yyyy'</span>) y <span class="hljs-keyword">from</span> emp <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> to_char(hiredate, <span class="hljs-string">'yyyy'</span>)) a;
+</div></code></pre>
+<ul>
+<li>exists<br>
+用法一:判断exists后面的语句是否为真 --&gt; sql查询语句为空返回false, 有值返回true<br>
+select * from emp  where exists (select * from dept where deptno=1);<br>
+用法二:判断一张表中是否包含另一张表中外键的记录.<br>
+select d.* from dept d where exists (select e.* from emp e where d.deptno=e.deptno);<br>
+等价于: select * from dept d where d.deptno in (select distinct e.deptno from emp e);</li>
+</ul>
+<blockquote>
+<p>----左表大 （数据量多） 右表小 （数据量少） 的时候  in效率高
+----左表小 （数据量少） 右表大 （数据量多） 的时候  exists效率高</p>
+</blockquote>
+<h2 id="%E9%9B%86%E5%90%88%E8%BF%90%E7%AE%97">集合运算</h2>
+<p>并集:union和union all
+交集:intersect
+差集:minus</p>
+<p>以上将两次查询的结果作为集合进行运算.
+union与union all的区别, union all是直接将两个查询结果合并到一起, union是去重重复记录之后合并.</p>
+
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BackupAndRecovery.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="rman%E5%A4%87%E4%BB%BD">RMAN备份</h2>
+<h3 id="%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5">备份策略</h3>
+<ol>
+<li>每周日2点数据库全备</li>
+<li>每天4点备份归档</li>
+</ol>
+<blockquote>
+<p>以下仅为备份脚本, 没有定时任务脚本</p>
+</blockquote>
+<h3 id="%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">准备工作</h3>
+<p>查看数据库是否处于归档模式:</p>
+<pre class="hljs"><code><div>archive log list;
+</div></code></pre>
+<p>如果不是处于归档模式, 开启归档模式:</p>
+<pre class="hljs"><code><div>&gt; shutdown immediate    <span class="hljs-comment"># 关闭数据库</span>
+&gt; startup mount     <span class="hljs-comment"># 启动实例并挂载数据库</span>
+&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">archivelog</span>;    <span class="hljs-comment"># 更改数据库为归档模式</span>
+&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">open</span>;      <span class="hljs-comment"># 打开数据库</span>
+&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">system</span> <span class="hljs-keyword">archive</span> <span class="hljs-keyword">log</span> <span class="hljs-keyword">start</span>;   <span class="hljs-comment"># 启用自动归档</span>
+</div></code></pre>
+<blockquote>
+<p>注意需要设置归档日志大小, 并及时清理归档日志, 防止占满归档日志空间</p>
+</blockquote>
+<p>检查AUTOBACKUP相关配置:</p>
+<pre class="hljs"><code><div>RMAN&gt; show all;
+
+使用目标数据库控制文件替代恢复目录
+db_unique_name 为 ORCL 的数据库的 RMAN 配置参数为:
+CONFIGURE RETENTION POLICY TO REDUNDANCY 2;
+CONFIGURE BACKUP OPTIMIZATION OFF; # default
+CONFIGURE DEFAULT DEVICE TYPE TO DISK;
+CONFIGURE CONTROLFILE AUTOBACKUP OFF; # default
+CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '%F'; # default
+CONFIGURE DEVICE TYPE DISK PARALLELISM 6 BACKUP TYPE TO BACKUPSET;
+CONFIGURE DATAFILE BACKUP COPIES FOR DEVICE TYPE DISK TO 1; # default
+CONFIGURE ARCHIVELOG BACKUP COPIES FOR DEVICE TYPE DISK TO 1; # default
+CONFIGURE MAXSETSIZE TO UNLIMITED; # default
+CONFIGURE ENCRYPTION FOR DATABASE OFF; # default
+CONFIGURE ENCRYPTION ALGORITHM 'AES128'; # default
+CONFIGURE COMPRESSION ALGORITHM 'BASIC' AS OF RELEASE 'DEFAULT' OPTIMIZE FOR LOAD TRUE ; # default
+CONFIGURE ARCHIVELOG DELETION POLICY TO NONE; # default
+CONFIGURE SNAPSHOT CONTROLFILE NAME TO 'E:\APP\ADMINISTRATOR\PRODUCT\11.2.0\DBHOME_1\DATABASE\SNCFORCL.ORA'; # default
+</div></code></pre>
+<ol>
+<li>保证controlfile处于off, controlfile format处于默认状态(如果不处于这个状态, 执行下面的脚本时, 会将controlfile备份出的文件当做冗余删除)</li>
+<li>CHANNEL DEVICE TYPE DISK等也需保持默认或者不配置(否则, 执行脚本时会去配置的目录下检查冗余, 而不是在备份输出目录下检查)</li>
+</ol>
+<p>上面两条恢复默认执行的命令是(详见: <a href="./RMAN_Config.html">Oracle rman configure 常用配置</a>):</p>
+<pre class="hljs"><code><div>&gt; configure controlfile autobackup clear;
+&gt; configure controlfile autobackup format for device type disk clear;
+&gt; configure CHANNEL DEVICE TYPE DISK clear;
+</div></code></pre>
+<h3 id="%E5%85%A8%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC">全备份脚本</h3>
+<pre class="hljs"><code><div>run {
+	CONFIGURE RETENTION POLICY TO REDUNDANCY = 2;
+	CONFIGURE DEVICE TYPE DISK PARALLELISM 6;
+	CONFIGURE DEFAULT DEVICE TYPE TO DISK;
+	backup as compressed backupset database format 'E:\OracleBackup\FULLBAK_%d_%T_%s_%p.DBFILE'; 
+	backup current controlfile format 'E:\OracleBackup\%d.%s.%p.%T.CTL';
+	backup spfile format 'E:\OracleBackup\%d.%s.%p.%T.SPFILE';
+	crosscheck backup;
+	crosscheck copy;
+	sql &quot;alter system archive log current&quot;;
+	backup as COMPRESSED backupset archivelog all not backed up format 'E:\OracleBackup\%d.%s.%p.%T.ARC';
+	crosscheck archivelog all;
+	delete noprompt archivelog all completed before 'sysdate-3';
+	delete noprompt expired backup;
+	delete noprompt obsolete;
+}
+exit;
+</div></code></pre>
+<h3 id="%E5%BD%92%E6%A1%A3%E5%A4%87%E4%BB%BD%E8%84%9A%E6%9C%AC">归档备份脚本</h3>
+<pre class="hljs"><code><div>run {
+	CONFIGURE RETENTION POLICY TO REDUNDANCY = 2;
+	CONFIGURE DEVICE TYPE DISK PARALLELISM 6;
+	CONFIGURE DEFAULT DEVICE TYPE TO DISK;
+	backup current controlfile format 'E:\OracleBackup\%d.%s.%p.%T.CTL';
+	backup spfile format 'E:\OracleBackup\%d.%s.%p.%T.SPFILE';
+	crosscheck backup;
+	crosscheck copy;
+	sql &quot;alter system archive log current&quot;;
+	backup as COMPRESSED backupset archivelog all not backed up format 'E:\OracleBackup\%d.%s.%p.%T.ARC';
+	crosscheck archivelog all;
+	delete noprompt archivelog all completed before 'sysdate-3';
+	delete noprompt expired backup;
+	delete noprompt obsolete;
+}
+exit;
+</div></code></pre>
+<blockquote>
+<p>仅仅是把全库备份中的数据文件备份删掉</p>
+</blockquote>
+<h2 id="rman%E5%BC%82%E6%9C%BA%E6%81%A2%E5%A4%8D">RMAN异机恢复</h2>
+<p>这里模拟的场景是在另一台服务器上, 并且数据库安装目录与原安装目录不同, 但是数据库版本相同(11.2.0.4).</p>
+<h3 id="%E6%81%A2%E5%A4%8D%E6%AD%A5%E9%AA%A4">恢复步骤</h3>
+<p>将上面的备份文件复制到恢复服务器上.</p>
+<ol>
+<li>进入rman :</li>
+</ol>
+<pre class="hljs"><code><div>rman target /
+</div></code></pre>
+<ol start="2">
+<li>关闭目标数据库:</li>
+</ol>
+<pre class="hljs"><code><div>shutdown immediate
+</div></code></pre>
+<ol start="3">
+<li>创建原始参数文件</li>
+</ol>
+<p>任意路径均可, 下面会用到.</p>
+<pre class="hljs"><code><div>*.audit_file_dest='C:\app\Administrator\admin\orcl\adump'
+*.audit_trail='db'
+*.compatible='11.2.0.4.0'
+*.control_files='C:\app\Administrator\oradata\orcl\control01.ctl','C:\app\Administrator\oradata\orcl\control02.ctl'
+*.db_block_size=8192
+*.db_domain=''
+*.db_name='orcl'
+*.diagnostic_dest='C:\app\Administrator'
+*.dispatchers='(PROTOCOL=TCP) (SERVICE=orclXDB)'
+*.log_archive_dest_1='LOCATION=C:\app\arch'
+*.memory_target=1234173952
+*.open_cursors=300
+*.processes=150
+*.remote_login_passwordfile='EXCLUSIVE'
+*.undo_tablespace='UNDOTBS1'
+</div></code></pre>
+<blockquote>
+<p>注意与数据库安装路径相对应, 可以参照当前数据库的&quot;ORACLE_HOME\admin\orcl\pfile\init.ora.xxxx&quot;和备份的SPFILE进行编写</p>
+</blockquote>
+<ol start="4">
+<li>加载参数文件</li>
+</ol>
+<pre class="hljs"><code><div>startup nomount pfile=&quot;C:\initparam\pfile.ora&quot;
+</div></code></pre>
+<blockquote>
+<p>这个pfile路径就是上面的参数文件路径</p>
+</blockquote>
+<ol start="5">
+<li>加载控制文件</li>
+</ol>
+<pre class="hljs"><code><div>restore controlfile from &quot;C:\OracleBackup\ORCL.16.1.20181226.CTL&quot;;
+</div></code></pre>
+<ol start="6">
+<li>挂载数据库</li>
+</ol>
+<pre class="hljs"><code><div>alter database mount;
+</div></code></pre>
+<ol start="7">
+<li>将备份集信息重新导入到当前控制文件中</li>
+</ol>
+<pre class="hljs"><code><div>catalog start with &quot;C:\OracleBackup\&quot;;
+</div></code></pre>
+<p>这时可能会报错:</p>
+<pre class="hljs"><code><div>RMAN-12010: 自动通道分配初始化失败
+RMAN-06189: 当前 DBID 1010101010 与目标装载数据库 (3030303030) 不匹配
+</div></code></pre>
+<p>需要重新配置DBID</p>
+<p>7.1 设置DBID</p>
+<pre class="hljs"><code><div>shutdown immediate
+set dbid=3030303030
+exit
+</div></code></pre>
+<blockquote>
+<p>注意, exit是必须的, 需要重新进入rman</p>
+</blockquote>
+<p>7.2 重新执行之前步骤</p>
+<pre class="hljs"><code><div>&gt; startup nomount pfile=&quot;C:\initparam\pfile.ora&quot;
+&gt; alter database mount;
+&gt; catalog start with &quot;C:\OracleBackup\&quot;;
+</div></code></pre>
+<ol start="8">
+<li>检查备份</li>
+</ol>
+<pre class="hljs"><code><div>crosscheck backup;
+</div></code></pre>
+<ol start="9">
+<li>转储文件</li>
+</ol>
+<pre class="hljs"><code><div>restore database;
+</div></code></pre>
+<p>由于数据库安装路径不同, 会导致这里报错:</p>
+<pre class="hljs"><code><div>通道 ORA_DISK_1: ORA-19870: 还原备份片段 C:\ORACLEBACKUP\FULLBAK_ORCL_20181226_4_1.DBFILE 时出错
+ORA-19504: 无法创建文件&quot;E:\APP\ADMINISTRATOR\ORADATA\ORCL\UNDOTBS01.DBF&quot;
+ORA-27040: 文件创建错误, 无法创建文件
+OSD-04002: 无法打开文件
+O/S-Error: (OS 3) 系统找不到指定的路径。
+
+通道 ORA_DISK_2: ORA-19870: 还原备份片段 C:\ORACLEBACKUP\FULLBAK_ORCL_20181226_5_1.DBFILE 时出错
+ORA-19504: 无法创建文件&quot;E:\APP\ADMINISTRATOR\ORADATA\ORCL\EXAMPLE01.DBF&quot;
+ORA-27040: 文件创建错误, 无法创建文件
+OSD-04002: 无法打开文件
+O/S-Error: (OS 3) 系统找不到指定的路径。
+
+通道 ORA_DISK_3: ORA-19870: 还原备份片段 C:\ORACLEBACKUP\FULLBAK_ORCL_20181226_1_1.DBFILE 时出错
+ORA-19504: 无法创建文件&quot;E:\APP\ADMINISTRATOR\ORADATA\ORCL\SYSAUX01.DBF&quot;
+ORA-27040: 文件创建错误, 无法创建文件
+OSD-04002: 无法打开文件
+O/S-Error: (OS 3) 系统找不到指定的路径。
+
+通道 ORA_DISK_4: ORA-19870: 还原备份片段 C:\ORACLEBACKUP\FULLBAK_ORCL_20181226_3_1.DBFILE 时出错
+ORA-19504: 无法创建文件&quot;E:\APP\ADMINISTRATOR\ORADATA\ORCL\SYSTEM01.DBF&quot;
+ORA-27040: 文件创建错误, 无法创建文件
+OSD-04002: 无法打开文件
+O/S-Error: (OS 3) 系统找不到指定的路径。
+
+通道 ORA_DISK_5: ORA-19870: 还原备份片段 C:\ORACLEBACKUP\FULLBAK_ORCL_20181226_2_1.DBFILE 时出错
+ORA-19504: 无法创建文件&quot;E:\APP\ADMINISTRATOR\ORADATA\ORCL\USERS01.DBF&quot;
+ORA-27040: 文件创建错误, 无法创建文件
+OSD-04002: 无法打开文件
+O/S-Error: (OS 3) 系统找不到指定的路径。
+
+故障转移到上一个备份
+
+RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-03002: restore 命令 (在 12/26/2018 11:04:38 上) 失败
+RMAN-06026: 有些目标没有找到 - 终止还原
+RMAN-06023: 没有找到数据文件5的副本来还原
+RMAN-06023: 没有找到数据文件4的副本来还原
+RMAN-06023: 没有找到数据文件3的副本来还原
+RMAN-06023: 没有找到数据文件2的副本来还原
+RMAN-06023: 没有找到数据文件1的副本来还原
+</div></code></pre>
+<p>这时需要在restore之前制定新的位置(根据报错的路径编辑下面指令):</p>
+<pre class="hljs"><code><div> run{
+	allocate channel a1 type disk;
+　　allocate channel a2 type disk;
+　　set until sequence=4631 thread=1;
+	set newname for datafile 'E:\APP\ADMINISTRATOR\ORADATA\ORCL\UNDOTBS01.DBF' to 'C:\APP\ADMINISTRATOR\ORADATA\ORCL\UNDOTBS01.DBF';
+	set newname for datafile &quot;E:\APP\ADMINISTRATOR\ORADATA\ORCL\EXAMPLE01.DBF&quot; to &quot;C:\APP\ADMINISTRATOR\ORADATA\ORCL\EXAMPLE01.DBF&quot;;
+	set newname for datafile &quot;E:\APP\ADMINISTRATOR\ORADATA\ORCL\SYSTEM01.DBF&quot; to &quot;C:\APP\ADMINISTRATOR\ORADATA\ORCL\SYSTEM01.DBF&quot;;
+	set newname for datafile &quot;E:\APP\ADMINISTRATOR\ORADATA\ORCL\SYSAUX01.DBF&quot; to &quot;C:\APP\ADMINISTRATOR\ORADATA\ORCL\SYSAUX01.DBF&quot;;
+	set newname for datafile &quot;E:\APP\ADMINISTRATOR\ORADATA\ORCL\USERS01.DBF&quot; to &quot;C:\APP\ADMINISTRATOR\ORADATA\ORCL\USERS01.DBF&quot;;
+	restore database;
+	switch datafile all;
+　　release channel a1;
+	release channel a2;
+ }
+</div></code></pre>
+<ol start="10">
+<li>指定恢复时间点</li>
+</ol>
+<pre class="hljs"><code><div>&gt; sql &quot;alter session set nls_date_format=''yyyy-mm-dd hh24:mi:ss''&quot;;
+&gt; recover database until time '2018-12-26 11:00:00';
+</div></code></pre>
+<blockquote>
+<p>这里可能会报错, 属于正常现象, 不需要处理</p>
+</blockquote>
+<ol start="11">
+<li>启动数据库</li>
+</ol>
+<p>首先推出rman, 进入sqlplus</p>
+<pre class="hljs"><code><div>sqlplus / as sysdba
+</div></code></pre>
+<p>先只读打开确认数据是否符合要求</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">alter</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">open</span> <span class="hljs-keyword">read</span> <span class="hljs-keyword">only</span>; 
+</div></code></pre>
+<p>确认没问题后, 关闭数据库并重新打开:</p>
+<pre class="hljs"><code><div>&gt; shutdown immediate
+&gt; <span class="hljs-keyword">create</span> <span class="hljs-keyword">spfile</span> <span class="hljs-keyword">from</span> pfile=<span class="hljs-string">'C:\initparam\pfile.ora'</span>;
+&gt; startup mount
+&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">open</span> <span class="hljs-keyword">resetlogs</span>;
+</div></code></pre>
+<p>在最后打开数据库时可能会报错:</p>
+<pre class="hljs"><code><div>alter database open resetlogs
+*
+第 1 行出现错误:
+ORA-00344: 无法重新创建联机日志 'E:\APP\ADMINISTRATOR\ORADATA\ORCL\REDO01.LOG'
+ORA-27040: 文件创建错误, 无法创建文件
+OSD-04002: 无法打开文件
+O/S-Error: (OS 3) 系统找不到指定的路径。
+</div></code></pre>
+<p>依然是由于异机恢复安装路径不一致导致的.</p>
+<p>首先查看当前系统redo log路径:</p>
+<pre class="hljs"><code><div>&gt; <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> v$<span class="hljs-keyword">logfile</span>;
+</div></code></pre>
+<p>会发现很多路径都不正确, 需要修改:</p>
+<pre class="hljs"><code><div> <span class="hljs-keyword">alter</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">rename</span> <span class="hljs-keyword">file</span> <span class="hljs-string">'E:\APP\ADMINISTRATOR\ORADATA\ORCL\REDO01.LOG'</span> <span class="hljs-keyword">to</span> <span class="hljs-string">'C:\APP\ADMINISTRATOR\ORADATA\ORCL\REDO01.LOG'</span>;
+ <span class="hljs-keyword">alter</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">rename</span> <span class="hljs-keyword">file</span> <span class="hljs-string">'E:\APP\ADMINISTRATOR\ORADATA\ORCL\REDO02.LOG'</span> <span class="hljs-keyword">to</span> <span class="hljs-string">'C:\APP\ADMINISTRATOR\ORADATA\ORCL\REDO02.LOG'</span>;
+ <span class="hljs-keyword">alter</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">rename</span> <span class="hljs-keyword">file</span> <span class="hljs-string">'E:\APP\ADMINISTRATOR\ORADATA\ORCL\REDO03.LOG'</span> <span class="hljs-keyword">to</span> <span class="hljs-string">'C:\APP\ADMINISTRATOR\ORADATA\ORCL\REDO03.LOG'</span>;
+</div></code></pre>
+<p>再次执行打开数据库命令, 还可能出错:</p>
+<pre class="hljs"><code><div>SQL&gt; <span class="hljs-keyword">alter</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">open</span> <span class="hljs-keyword">resetlogs</span>;
+<span class="hljs-keyword">alter</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">open</span> <span class="hljs-keyword">resetlogs</span>
+*
+第 <span class="hljs-number">1</span> 行出现错误:
+ORA<span class="hljs-number">-00392</span>: 日志 <span class="hljs-number">1</span> (用于线程 <span class="hljs-number">1</span>) 正被清除, 不允许操作
+ORA<span class="hljs-number">-00312</span>: 联机日志 <span class="hljs-number">1</span> 线程 <span class="hljs-number">1</span>: <span class="hljs-string">'C:\APP\ADMINISTRATOR\ORADATA\ORCL\REDO01.LOG'</span>
+</div></code></pre>
+<p>查看日志文件状态:</p>
+<pre class="hljs"><code><div>SQL&gt; <span class="hljs-keyword">select</span> <span class="hljs-keyword">group</span><span class="hljs-comment">#,bytes/1024/1024||'M',status from v$log;</span>
+
+    <span class="hljs-keyword">GROUP</span><span class="hljs-comment"># BYTES/1024/1024||'M'                      STATUS</span>
+<span class="hljs-comment">---------- ----------------------------------------- ----------------</span>
+         <span class="hljs-number">1</span> <span class="hljs-number">50</span>M                                       CLEARING_CURRENT
+         <span class="hljs-number">3</span> <span class="hljs-number">50</span>M                                       CLEARING
+         <span class="hljs-number">2</span> <span class="hljs-number">50</span>M                                       CLEARING
+</div></code></pre>
+<p>修复:</p>
+<pre class="hljs"><code><div>SQL&gt; <span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">DATABASE</span> <span class="hljs-keyword">CLEAR</span> <span class="hljs-keyword">LOGFILE</span> <span class="hljs-keyword">GROUP</span> <span class="hljs-number">1</span>;
+
+数据库已更改。
+
+SQL&gt; <span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">DATABASE</span> <span class="hljs-keyword">CLEAR</span> <span class="hljs-keyword">LOGFILE</span> <span class="hljs-keyword">GROUP</span> <span class="hljs-number">2</span>;
+
+数据库已更改。
+
+SQL&gt; <span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">DATABASE</span> <span class="hljs-keyword">CLEAR</span> <span class="hljs-keyword">LOGFILE</span> <span class="hljs-keyword">GROUP</span> <span class="hljs-number">3</span>;
+
+数据库已更改。
+</div></code></pre>
+<p>再打开就可以了.</p>
+<blockquote>
+<p>网上的例子, alter之后依旧不能打开, 由于oracle版本不一致导致的. 里面给出的解决办法是退出重新进入sqlplus, 并执行startup upgrade;然后执行升级脚本:@$ORACLE_HOME/rdbms/admin/catupgrd.sql;即可.</p>
+</blockquote>
+<p>到此, 数据库异机恢复成功!</p>
+<h2 id="%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0">参考文章</h2>
+<ul>
+<li><a href="http://www.cnblogs.com/jyzhao/p/9200714.html">RMAN备份策略与异机恢复一例</a></li>
+<li><a href="https://www.cnblogs.com/wn1m/p/5704255.html">Oracle异机恢复</a></li>
+<li><a href="http://blog.itpub.net/205377/viewspace-1767221/">ORA-00344: unable to re-create online log</a></li>
+<li><a href="https://blog.csdn.net/leshami/article/details/50913867">ORA-00392 ORA-00312 日志正在清除故障</a></li>
+</ul>
+
+</body>
+</html>
