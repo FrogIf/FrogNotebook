@@ -14,8 +14,9 @@ $(function () {
         if(url != active_url){
             active_url = url;
             history.pushState('', '', baseUrl + active_url);
-            $(".article-content").load(getAbsolutePath(active_url));
-            scrollTo();
+            $(".article-content").load(getAbsolutePath(active_url), function(){
+                scrollTo(0, 0);
+            });
             if(window.sessionStorage){
                 window.sessionStorage.setItem("articleUrl", active_url);
             }
