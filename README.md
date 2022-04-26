@@ -34,3 +34,7 @@ a notebook. record something.
 ## Online
 
 线上访问地址: [online](https://frogif.github.io/FrogNotebook/)
+
+## Reference
+
+* [minima](https://github.com/jekyll/minima)
