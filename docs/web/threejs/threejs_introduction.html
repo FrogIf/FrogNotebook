@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>threejs_introduction.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="threejs%E5%85%A5%E9%97%A8">threejs入门</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>threejs是在网页端显示3D图形的库. 底层基于WebGL. threejs将WebGL进行了封装, 使得更易于使用. 对于threejs, 最好的教程就是官方文档了. threejs官方文档非常详细, 并且支持中文, 并且包含大量的例子, 基本可以满足所有需求.</p>
+<ul>
+<li><a href="https://threejs.org/docs/index.html">官方文档</a></li>
+<li><a href="https://threejs.org/examples/">官方Demo</a></li>
+</ul>
+<p>此外, threejs是基于MIT开源协议的, 在github上可以找到它的源码: <a href="https://github.com/mrdoob/three.js">源码地址</a></p>
+<p>我们可以将源码下载下来, 里面包好了丰富的内容, 包括所有demo的源码, editor的源码. 稳定版源码, 建议下载releases中的版本.</p>
+<p>源码下载之后, 我们直接就可以本地访问了, 这里我使用nginx作为代理的方式, nginx的主要配置如下:</p>
+<pre class="hljs"><code><div>        location /three/ {
+            alias D:/work/three.js-r139/;
+            autoindex on;
+        }
+</div></code></pre>
+<blockquote>
+<p>配置的监听端口是80端口</p>
+</blockquote>
+<p>这样, 就可以本地调试官方demo了.</p>
+<ul>
+<li>本地访问官方demo: http://localhost/three/examples/</li>
+<li>本地访问editor: http://localhost/three/editor/</li>
+</ul>
+<blockquote>
+<p>建议使用chrome浏览器, firefox会有控制台报错</p>
+</blockquote>
+<h2 id="%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B">快速开始</h2>
+<p>这里将threejs官方的例子复制过来了. 主要是备忘, 以后可以快速搭建一个简单的程序.</p>
+<pre class="hljs"><code><div><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>My first three.js app<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css">
+			<span class="hljs-selector-tag">body</span> { <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>; }
+		</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"module"</span>&gt;</span><span class="javascript">
+			<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> THREE <span class="hljs-keyword">from</span> <span class="hljs-string">'./threejs/three.module.js'</span>;
+
+            <span class="hljs-comment">// 创建一个场景</span>
+            <span class="hljs-keyword">const</span> scene = <span class="hljs-keyword">new</span> THREE.Scene();
+
+            <span class="hljs-comment">// 创建一个相机</span>
+            <span class="hljs-keyword">const</span> camera = <span class="hljs-keyword">new</span> THREE.PerspectiveCamera(<span class="hljs-number">75</span>, <span class="hljs-built_in">window</span>.innerWidth / <span class="hljs-built_in">window</span>.innerHeight, <span class="hljs-number">0.1</span>, <span class="hljs-number">1000</span>);
+            camera.position.z = <span class="hljs-number">5</span>;
+
+            <span class="hljs-comment">// 创建渲染器</span>
+            <span class="hljs-keyword">const</span> renderer = <span class="hljs-keyword">new</span> THREE.WebGLRenderer();
+            renderer.setSize(<span class="hljs-built_in">window</span>.innerWidth, <span class="hljs-built_in">window</span>.innerHeight);
+            <span class="hljs-built_in">document</span>.body.appendChild(renderer.domElement);
+
+            <span class="hljs-comment">// 创建网格</span>
+            <span class="hljs-keyword">const</span> geometry = <span class="hljs-keyword">new</span> THREE.BoxGeometry();
+            <span class="hljs-keyword">const</span> material = <span class="hljs-keyword">new</span> THREE.MeshBasicMaterial( { <span class="hljs-attr">color</span>: <span class="hljs-number">0x00ff00</span> } );
+            <span class="hljs-keyword">const</span> cube = <span class="hljs-keyword">new</span> THREE.Mesh( geometry, material );
+            scene.add( cube );  <span class="hljs-comment">// 将网格加入场景</span>
+
+            <span class="hljs-comment">// threejs会循环调用这个函数, 逐帧的展示相机看到的内容</span>
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">animate</span>(<span class="hljs-params"></span>) </span>{
+                requestAnimationFrame( animate );
+
+                cube.rotation.x += <span class="hljs-number">0.01</span>;
+				cube.rotation.y += <span class="hljs-number">0.01</span>;
+
+                renderer.render( scene, camera );
+            }
+            animate();
+		</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</div></code></pre>
+<p>接下来, 对其中的几个主要概念进行详细解释:</p>
+<ul>
+<li>Scene(场景): 用来放置物体, 灯光等内容的容器</li>
+<li>Camera(相机): 可以理解为眼睛, 用来看场景内容的. 相机有很多种:
+<ul>
+<li>PerspectiveCamera(透视相机): 看到的物体更符合人眼看到的效果, 近大远小; 其中包含视锥体这一重要概念;</li>
+<li>OrthographicCamera(正交相机): 不会受远近导致的近大远小的影响, 一般在CAD等系统中较为常见.</li>
+</ul>
+</li>
+<li>Renderer(渲染器): 用来渲染场景, 就是将一个相机和一个场景放到一起, 一帧一帧的展示相机看到的这个场景.</li>
+<li>Geometry(几何体): 可以理解为数学上的概念, 像长方体, 球体等等;</li>
+<li>Material(材质): 用于定义一个物体的材质, 包括颜色, 透明度等;</li>
+<li>Mesh(网格): 上面介绍的几何体是数学上的概念, 不具有实体, 所有几何体都包含一系列的点, 大部分时候, 这些点三个为一组, 组成三角面, 大量的三角面组合在一起就是Mesh(网格), 所以, 网格才是一个可以看得见的实体, 它将几何体和材质应用起来;</li>
+</ul>
+<blockquote>
+<p>视锥体中有包含摄像机视锥体垂直视野角度, 摄像机视锥体长宽比, 近端面, 远端面等概念, 初学可以不用理解这些概念, 详见wiki: <a href="https://en.wikipedia.org/wiki/Viewing_frustum">viewing frustum</a></p>
+</blockquote>
+<h2 id="%E8%BD%BD%E5%85%A53d%E6%A8%A1%E5%9E%8B">载入3D模型</h2>
+<p>threejs可以异步载入3d模型, 并且支持多种格式, 这里以比较通用的gltf格式为例, 简单介绍一下.</p>
+<p>首先, 基于上面的例程, 进行一些改造:</p>
+<ol>
+<li>模型尺寸自适应;</li>
+<li>轨道控制器;</li>
+<li>背景渐变;</li>
+<li>加载3d模型;</li>
+<li>适应窗体尺寸变化.</li>
+</ol>
+<p>代码如下:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>My first three.js app<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css">
+			<span class="hljs-selector-tag">body</span> { <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>; }
+		</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"background-image: linear-gradient(rgb(43, 43, 43), rgb(203, 202, 202));"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"importmap"</span>&gt;</span><span class="actionscript">
+			{
+				<span class="hljs-string">"imports"</span>: {
+					<span class="hljs-string">"three"</span>: <span class="hljs-string">"./threejs/three.module.js"</span>
+				}
+			}
+		</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"module"</span>&gt;</span><span class="javascript">
+			<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> THREE <span class="hljs-keyword">from</span> <span class="hljs-string">'./threejs/three.module.js'</span>;
+            <span class="hljs-keyword">import</span> { GLTFLoader } <span class="hljs-keyword">from</span> <span class="hljs-string">'./threejs/jsm/loaders/GLTFLoader.js'</span>;
+            <span class="hljs-keyword">import</span> { RoomEnvironment } <span class="hljs-keyword">from</span> <span class="hljs-string">'./threejs/jsm/environments/RoomEnvironment.js'</span>;
+            <span class="hljs-keyword">import</span> { OrbitControls } <span class="hljs-keyword">from</span> <span class="hljs-string">'./threejs/jsm/controls/OrbitControls.js'</span>;
+
+            <span class="hljs-keyword">const</span> frustumSize = <span class="hljs-number">1000</span>;
+            <span class="hljs-keyword">const</span> aspect = <span class="hljs-built_in">window</span>.innerWidth / <span class="hljs-built_in">window</span>.innerHeight;
+
+            <span class="hljs-keyword">const</span> scene = <span class="hljs-keyword">new</span> THREE.Scene();
+            <span class="hljs-comment">// const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);</span>
+            <span class="hljs-keyword">const</span> camera = <span class="hljs-keyword">new</span> THREE.OrthographicCamera(frustumSize * aspect / - <span class="hljs-number">2</span>, frustumSize * aspect / <span class="hljs-number">2</span>, 
+                frustumSize / <span class="hljs-number">2</span>, frustumSize / - <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2000</span>);
+            camera.position.z = <span class="hljs-number">5</span>;
+
+            <span class="hljs-keyword">const</span> renderer = <span class="hljs-keyword">new</span> THREE.WebGLRenderer({
+                <span class="hljs-attr">alpha</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 背景透明</span>
+                <span class="hljs-attr">antialias</span>: <span class="hljs-literal">true</span> <span class="hljs-comment">// 抗锯齿</span>
+            });
+            renderer.setSize(<span class="hljs-built_in">window</span>.innerWidth, <span class="hljs-built_in">window</span>.innerHeight);
+            <span class="hljs-built_in">document</span>.body.appendChild(renderer.domElement);
+
+            <span class="hljs-keyword">const</span> controls = <span class="hljs-keyword">new</span> OrbitControls(camera, renderer.domElement);
+
+            scene.environment = <span class="hljs-keyword">new</span> THREE.PMREMGenerator(renderer).fromScene(<span class="hljs-keyword">new</span> RoomEnvironment(), <span class="hljs-number">0.04</span>).texture;
+            scene.add(<span class="hljs-keyword">new</span> THREE.DirectionalLight( <span class="hljs-number">0xFEFEFE</span> ));
+
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">animate</span>(<span class="hljs-params"></span>) </span>{
+                requestAnimationFrame( animate );
+                renderer.render( scene, camera );
+            }
+            animate();
+
+            <span class="hljs-comment">// 加载模型</span>
+            <span class="hljs-keyword">const</span> loader = <span class="hljs-keyword">new</span> GLTFLoader();
+            loader.load(<span class="hljs-string">"./vvv.glb"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">gltf</span>)</span>{
+                scene.add(gltf.scene);
+                adaptModelSize(gltf.scene, camera);
+            },<span class="hljs-literal">undefined</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"> error </span>) </span>{
+                <span class="hljs-built_in">console</span>.log(error);
+            });
+
+            <span class="hljs-comment">// 模型尺寸自适应</span>
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">adaptModelSize</span>(<span class="hljs-params">model, camera</span>)</span>{
+                <span class="hljs-keyword">var</span> bBox = <span class="hljs-keyword">new</span> THREE.Box3().setFromObject(model);
+
+                <span class="hljs-keyword">let</span> v = <span class="hljs-keyword">new</span> THREE.Vector3();
+                bBox.getSize(v);
+
+                <span class="hljs-keyword">let</span> c = <span class="hljs-keyword">new</span> THREE.Vector3();
+                bBox.getCenter(c);
+                <span class="hljs-keyword">if</span>(camera.isOrthographicCamera){    <span class="hljs-comment">// 如果是正交相机</span>
+                    <span class="hljs-keyword">let</span> start = <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.5</span>).unproject(camera);
+                    <span class="hljs-keyword">let</span> end = <span class="hljs-keyword">new</span> THREE.Vector3(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0.5</span>).unproject(camera);
+                    <span class="hljs-keyword">let</span> len = start.sub(end).length();
+                    <span class="hljs-keyword">let</span> scale = len / <span class="hljs-built_in">Math</span>.sqrt(<span class="hljs-built_in">window</span>.innerHeight * <span class="hljs-built_in">window</span>.innerHeight + <span class="hljs-built_in">window</span>.innerWidth * <span class="hljs-built_in">window</span>.innerWidth);
+                    <span class="hljs-keyword">let</span> height = <span class="hljs-built_in">window</span>.innerHeight * scale;
+                    <span class="hljs-keyword">let</span> width = <span class="hljs-built_in">window</span>.innerWidth * scale;
+            
+                    <span class="hljs-keyword">let</span> maxSize = camera.near + c.length() + v.length();
+                    camera.position.set(c.x, c.y, camera.far / <span class="hljs-number">2</span> + maxSize);
+                    camera.lookAt(model.position);
+                    camera.zoom = <span class="hljs-built_in">Math</span>.min(height / v.y, width / v.x);
+                    camera.updateProjectionMatrix();
+                }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(camera.isPerspectiveCamera){ <span class="hljs-comment">// 如果是透视相机</span>
+                    <span class="hljs-keyword">var</span> dist = v.y / (<span class="hljs-built_in">Math</span>.tan(camera.fov * <span class="hljs-built_in">Math</span>.PI / <span class="hljs-number">360</span>) * <span class="hljs-number">2</span>);
+                    camera.position.set(model.position.x, model.position.y, v.z + dist * <span class="hljs-number">1.5</span>);
+                    camera.lookAt(c);
+                }
+            }
+
+            <span class="hljs-comment">// 响应窗体尺寸变化</span>
+            <span class="hljs-built_in">window</span>.onresize = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+                <span class="hljs-keyword">if</span>(camera.isOrthographicCamera){
+                    <span class="hljs-keyword">let</span> aspect = <span class="hljs-built_in">window</span>.innerWidth / <span class="hljs-built_in">window</span>.innerHeight;
+                    
+                    camera.left = - frustumSize * aspect / <span class="hljs-number">2</span>;
+                    camera.right = frustumSize * aspect / <span class="hljs-number">2</span>;
+                    camera.top = frustumSize / <span class="hljs-number">2</span>;
+                    camera.bottom = - frustumSize / <span class="hljs-number">2</span>;
+
+                    camera.updateProjectionMatrix();
+                    renderer.setSize( <span class="hljs-built_in">window</span>.innerWidth, <span class="hljs-built_in">window</span>.innerHeight );
+                }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(camera.isPerspectiveCamera){
+                    camera.aspect = <span class="hljs-built_in">window</span>.innerWidth / <span class="hljs-built_in">window</span>.innerHeight;
+                    camera.updateProjectionMatrix();
+                }
+                renderer.setSize(<span class="hljs-built_in">window</span>.innerWidth, <span class="hljs-built_in">window</span>.innerHeight);
+            };
+		</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</div></code></pre>
+<blockquote>
+<p>完整项目以及线上演示demo参见github: <a href="https://github.com/FrogIf/simple-threejs">simple-threejs</a></p>
+</blockquote>
+
+</body>
+</html>
