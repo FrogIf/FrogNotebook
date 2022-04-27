@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>fullgc_too_long.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E6%8E%92%E6%95%85-fullgc%E9%A2%91%E7%B9%81">排故-fullgc频繁</h1>
+<p>有时候, fullgc过于频繁, 会导致程序运行效率下降, stw次数过多, 累计的时长也会很长, 所以需要优化. 查阅网上资料, 一般给出的经验值是fullgc在一个月一次或者一周一次属于可以正常范围. 下面的例子, 展示了fullgc过于频繁以及如何优化.</p>
+<h2 id="%E6%96%B0%E7%94%9F%E4%BB%A3%E8%80%81%E5%B9%B4%E4%BB%A3%E5%88%86%E9%85%8D%E4%B8%8D%E5%90%88%E7%90%86">新生代老年代分配不合理</h2>
+<p>现象概述, 通过Grafana看到应用在频繁的进行fullgc. 这个是有真实线上案例的. 真实案例是这样的: 一个kafka消费者服务, 在队列中有大量message的时候, 开始快速的消费, 但是每条消息都很大, 这些消息最开始是byte数组, 然后会把消息转为string格式. 都是同一时间, 大量的string, byte数组和各类对象涌入内存, 而新生代装不下这些数据, 所以直接分配到了老年代, 老年代在积累了一定的数据后, 触发fullgc. 在这个场景下, 显然, 主要问题不是代码的问题了, 代码可能有优化空间, 但是主要还是需要调整内存配置, 来减少fullgc.</p>
+<p>测试用代码如下:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LinkBean</span> </span>{
+
+    <span class="hljs-keyword">private</span> LinkBean next;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setNext</span><span class="hljs-params">(LinkBean next)</span></span>{
+        <span class="hljs-keyword">this</span>.next = next;
+    }
+
+}
+
+<span class="hljs-meta">@RequestMapping</span>(<span class="hljs-string">"/longFullGC"</span>)
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">longFullGC</span><span class="hljs-params">()</span></span>{
+    LinkBean linkBean = <span class="hljs-keyword">new</span> LinkBean();
+    LinkBean cursor = linkBean;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">14000000</span>; i++){
+        LinkBean next = <span class="hljs-keyword">new</span> LinkBean();
+        cursor.setNext(next);
+        cursor = next;
+    }
+    logger.info(<span class="hljs-string">"link: {}, size: {}"</span>, linkBean, RamUsageEstimator.shallowSizeOf(linkBean));
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"beans"</span>;
+}
+</div></code></pre>
+<p>根据对象的内存布局可知, 在64位虚拟机上, 一个LinkBean类型对象, 对象头占用64位, 然后LinkBean类型, 存在一个LinkBean类型的字段, 按照直接应用的方式定位数据, 64位虚拟机上, 该字段占用64位, 实例数据64位, 而总共128位可以被8整除, 所以不需要对齐填充, 因此每一个LinkBean对象就是占用16字节内存, 所以这里我在循环中连续创建14000000个对象, 占用内存为14000000*16 = 214Mb</p>
+<p>程序JVM启动参数如下:</p>
+<pre class="hljs"><code><div>-Xms4g
+-Xmx4g
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=&quot;D:\work\oom\oom.hprof&quot;
+-XX:+UseConcMarkSweepGC
+-XX:NewRatio=4
+-XX:+PrintGCDetails
+-Xloggc:D:/gc.log
+</div></code></pre>
+<blockquote>
+<p>这里采用jdk1.8, 因为高版本jdk中, UseConcMarkSweepGC参数已过时.</p>
+</blockquote>
+<blockquote>
+<p>NewRatio是新生代与老年代的比例, 默认是4, 即新生代老年代内存比例为1:4.</p>
+</blockquote>
+<p>通过浏览器, 每各15秒访问一次这个接口, 运行一段时间之后, 看一下grafana的截图:</p>
+<p><img src="img/fullgc_grafana_heap.png" alt="image"></p>
+<p><img src="img/fullgc_grafana_gc.png" alt="image"></p>
+<p>从这两张图上, 可以看出首先老年代内存一直在上下波动, 说明有majorgc, 下面gc的图表, 也能看到major和minor gc的信息. collections中展示的是gc操作次数(ops - Operation per seconds).</p>
+<blockquote>
+<p>grafana中垃圾收集只看到了minor gc, 没有看到major gc, 但是, 实际上是有majorgc的, 从下面的分析可以看到</p>
+</blockquote>
+<p>接下来, 直接分析gc日志. 把采集到的gc日志上传到<a href="https://gceasy.io/">easygc</a>这个网站上. 接下来, 大致看下分析结果:</p>
+<p><img src="img/fullgc_easygc_pause.png" alt="image"></p>
+<p>图上红色是fullgc, 绿色是young gc, 可以看到fullgc和上面堆内存趋势节奏基本一致, 20分中内出现4次fullgc, 这已经很频繁了.</p>
+<p><img src="img/fullgc_easygc_stage.png" alt="image"></p>
+<p>这个图统计了各阶段的耗时分布情况.</p>
+<p><img src="img/fullgc_easygc_objstats.png" alt="image"></p>
+<p>从这个表格中, 可看出内存晋升速率为6.23mb/sec, 也就是说每秒钟, 有6.23mb的数据由新生代晋升至老年代.</p>
+<p><img src="img/fullgc_easygc_gccause.png" alt="image"></p>
+<p>这张图分析了触发gc的主要原因, 可以看出主要在于新生代内存分配失败, 导致了一部分对象直接晋升到了老年代, 而这些对象又是朝生夕死的对象, 如果能保留在新生代, 就可以被minorgc回收了, 所以, 这里我们调整新生代的内存大小, 使得新生代内存大一些, 从而不会出现分配失败的情况, 也就不会晋升到老年代.</p>
+<blockquote>
+<p>总结一下, 其特点是, 瞬间产生大量的朝生夕死的对象, 导致新生代分配失败, 直接晋升到了老年代.</p>
+</blockquote>
+<p>如下修改参数:</p>
+<pre class="hljs"><code><div>-Xms4g
+-Xmx4g
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=&quot;D:\work\oom\oom.hprof&quot;
+-XX:+UseConcMarkSweepGC
+-XX:NewRatio=1
+-XX:+PrintGCDetails
+-Xloggc:D:/gc.log
+-XX:MetaspaceSize=64m
+-XX:MaxMetaspaceSize=64m
+</div></code></pre>
+<blockquote>
+<p>注意, 这里新增了两个参数, MetaspaceSize, MaxMetaspaceSize, 用来控制元数据区的初始大小. 因为我发现, 应用每次启动的时候, 都会触发一次fullgc, 网上查到, 是因为默认元数据区初始大小是20M, 对于这个应用, 是不够用的, 而元数据区扩容会触发一次fullgc.</p>
+</blockquote>
+<p>其余条件不变, 效果如图:</p>
+<p><img src="img/fullgc_grafana_heap_fix.png" alt="image"></p>
+<p><img src="img/fullgc_grafana_gc_fix.png" alt="image"></p>
+<p><img src="img/fullgc_easygc_pause_fix.png" alt="image"></p>
+<p><img src="img/fullgc_easygc_stage_fix.png" alt="image"></p>
+<p><img src="img/fullgc_easygc_objstats_fix.png" alt="image"></p>
+<p>晋升依旧存在, 但是晋升速率已经由原来的6.23mb/s降低为344kb/s, 按照这个速度的话, 每1.69个小时会触发一次fullgc, 如果在将整体内存增大一些, 使得新生代和老年代都再扩大一些, 效果会更好.</p>
+<blockquote>
+<p>上面的例子只是为了演示效果, 并说明新生代和老年代分配不合理, 导致晋升速度过快, 最终使得fullgc过于频繁的问题, 实际中, 也可以通过扩充整体的内存大小, 来解决.</p>
+</blockquote>
+<h2 id="%E5%A4%A7%E5%AF%B9%E8%B1%A1%E7%9B%B4%E6%8E%A5%E8%BF%9B%E5%85%A5%E8%80%81%E5%B9%B4%E4%BB%A3">大对象直接进入老年代</h2>
+<p>接下来, 在演示一种由于大对象导致的fullgc过于频繁的问题.</p>
+<p>测试代码如下:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">@RequestMapping</span>(<span class="hljs-string">"/longFullGCForBigObj"</span>)
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">longFullGCForBigObj</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">10</span>];
+    logger.info(<span class="hljs-string">"size : {}"</span>, buffer.length);
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"beans"</span>;
+}
+</div></code></pre>
+<p>启动参数:</p>
+<pre class="hljs"><code><div>-Xms4g
+-Xmx4g
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=&quot;D:\work\oom\oom.hprof&quot;
+-XX:+UseConcMarkSweepGC
+-XX:NewRatio=4
+-XX:+PrintGCDetails
+-Xloggc:D:/gc.log
+-javaagent:D:\work\Prometheus\jmx_prometheus_javaagent-0.16.1.jar=9071:config.yaml
+-XX:MetaspaceSize=64m
+-XX:MaxMetaspaceSize=64m
+-XX:PretenureSizeThreshold=3145728
+</div></code></pre>
+<blockquote>
+<p>注意-XX:PretenureSizeThreshold表示大对象的阈值, 超过这个阈值的对象, 将会直接进入到老年代. 这个参数只适用于Serial和ParNew两款收集器, 这里指定的垃圾收集策略UseConcMarkSweepGC包含了这个收集器.</p>
+</blockquote>
+<p>这个, 通过grafana观察现象有些意外, 我预想的是新生代内存不会有任何波动, 所有对象都是直接进入老年代. 但是, 实际上, 新生代依旧有垃圾回收发生.</p>
+<p><img src="img/fullgc_bigobj_heap.png" alt="image"></p>
+<p><img src="img/fullgc_bigobj_gc.png" alt="image"></p>
+<p>但是, 下面的动图, 确实能说明大对象直接进入了老年代, 没有经过新生代:</p>
+<p><img src="img/old_gen_trend.gif" alt="image"></p>
+<blockquote>
+<p>图上可以看出, 老年代内存一直以10的倍数递增中, 代码上看, 每次我们分配的byte数组就是10m</p>
+</blockquote>
+<p>暂时抛开新生代已经有内存变化这个问题. 对于大对象晋升这个问题, 实际中也会遇到, 如果使用的CMS+ParNew垃圾收集器, 就可以通过修改PretenureSizeThreshold参数来控制, 但是, 实际上改成G1垃圾收集器就好了, G1垃圾收集器有专门的大对象区(但是G1建议内存在8G以上)</p>
+<h2 id="%E6%84%8F%E5%A4%96%E7%8E%B0%E8%B1%A1%E7%9A%84%E8%A1%A5%E5%85%85%E8%AF%B4%E6%98%8E">意外现象的补充说明</h2>
+<p>对于上面新生代依旧存在内存变化, 应该是spring等框架内部创建的临时对象引起的. 这个可以做一个测试, 将上面创建数组的代码注释掉:</p>
+<pre class="hljs"><code><div>    <span class="hljs-meta">@RequestMapping</span>(<span class="hljs-string">"/longFullGCForBigObj"</span>)
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">longFullGCForBigObj</span><span class="hljs-params">()</span></span>{
+<span class="hljs-comment">//        byte[] buffer = new byte[1024 * 1024 * 10];</span>
+<span class="hljs-comment">//        logger.info("size : {}", buffer.length);</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"beans"</span>;
+    }
+</div></code></pre>
+<p>其余条件不变, 启动项目, 测试, 可以看到:</p>
+<p><img src="img/fullgc_bigobj_heap_xxx.png" alt="image"></p>
+<p><img src="img/fullgc_bigobj_gc_xxx.png" alt="image"></p>
+<p>完全一致.</p>
+
+</body>
+</html>
