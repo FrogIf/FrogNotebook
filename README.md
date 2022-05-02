@@ -6,8 +6,7 @@ a notebook. record something.
 
 ## 计划
 
-* jvm问题排查
-* skywalking
+* 算法-树状数组, 康托展开树状数组实现
 
 ## 本地部署
 
