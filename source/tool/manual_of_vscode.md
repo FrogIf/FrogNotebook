@@ -53,6 +53,11 @@ ctrl + P
 5. 可以开始多行编辑的具体行为了
 ```
 
+**使得左侧文件树操作不影响右侧**
+
+1. 设置-WorkBench-Open Mode改为"doubleClick";
+2. 设置-Features-Auto Reveal改为"false";
+
 ## Markdown Preview Enhanced插件介绍
 
 对于markdown, 一般的插件都支持将其导出为html, 但是如果想要导出的html中包含数学公式, 则需要使用这个插件:
