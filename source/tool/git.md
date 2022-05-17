@@ -124,3 +124,36 @@ IdentityFile ~/.ssh/gitee_id_rsa  #对应的密钥名称
 
 # 第二个...
 ```
+
+## submodule
+
+1. 创建一个submodule
+
+```
+git submodule add git@github.com:apache/skywalking-data-collect-protocol.git raw-data-viewer/skywalking-protocal
+```
+
+> 后面为指定路径, 也可以不指定, 这会直接生成在当前目录
+
+2. 初始化
+
+```
+git submodule init
+```
+
+3. 更新代码
+
+```
+git submodule update
+```
+
+**删除指定的submodule**
+
+1. 删除子目录```rm -rf 子模块目录```
+2. ```vi .gitmodules```修改, 删除指定的submodule记录
+3. ```vi .git/config```修改, 删除指定的submodule配置
+4. ```rm .git/module/xxxx```, 删除指定的目录
+5. 完成
+
+> 有时候需要再执行一下```git add .gitmodules```
+> 有时候需要再执行一下```git rm --cached 子模块名称```
