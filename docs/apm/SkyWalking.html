@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SkyWalking.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="skywalking">SkyWalking</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>分布式系统的应用程序性能监视工具，专为微服务、云原生架构和基于容器（Docker、K8s、Mesos）架构而设计。</p>
+<p>本文基于Skywalking8.5.0, 存储为ElasticSearch7.</p>
+<h2 id="%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B">快速开始</h2>
+<h4 id="backend%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2">BackEnd安装部署</h4>
+<ol>
+<li>安装部署ElasticSearch, 可以简单参考这里: <a href="https://frogif.github.io/FrogNotebook/operation_system/docker_manual.html">Docker使用</a></li>
+<li>下载安装包<a href="https://skywalking.apache.org/downloads/">here</a></li>
+<li>修改配置文件, 文件位置是<code>config/application.yml</code>, 主要修改存储类型即可, 默认是H2. 由于我是本地启动, es端口没有变化, 所以其余都不需要改变.</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-attr">storage:</span>
+  <span class="hljs-attr">selector:</span> <span class="hljs-string">elasticsearch7</span>
+  <span class="hljs-attr">elasticsearch7:</span>
+    <span class="hljs-attr">nameSpace:</span> <span class="hljs-string">${SW_NAMESPACE:""}</span>
+    <span class="hljs-attr">clusterNodes:</span> <span class="hljs-string">${SW_STORAGE_ES_CLUSTER_NODES:localhost:9200}</span>
+    <span class="hljs-attr">protocol:</span> <span class="hljs-string">${SW_STORAGE_ES_HTTP_PROTOCOL:"http"}</span>
+    <span class="hljs-attr">trustStorePath:</span> <span class="hljs-string">${SW_STORAGE_ES_SSL_JKS_PATH:""}</span>
+    <span class="hljs-attr">trustStorePass:</span> <span class="hljs-string">${SW_STORAGE_ES_SSL_JKS_PASS:""}</span>
+    <span class="hljs-attr">dayStep:</span> <span class="hljs-string">${SW_STORAGE_DAY_STEP:1}</span> <span class="hljs-comment"># Represent the number of days in the one minute/hour/day index.</span>
+    <span class="hljs-attr">indexShardsNumber:</span> <span class="hljs-string">${SW_STORAGE_ES_INDEX_SHARDS_NUMBER:1}</span> <span class="hljs-comment"># Shard number of new indexes</span>
+    <span class="hljs-attr">indexReplicasNumber:</span> <span class="hljs-string">${SW_STORAGE_ES_INDEX_REPLICAS_NUMBER:1}</span> <span class="hljs-comment"># Replicas number of new indexes</span>
+    <span class="hljs-comment"># Super data set has been defined in the codes, such as trace segments.The following 3 config would be improve es performance when storage super size data in es.</span>
+    <span class="hljs-attr">superDatasetDayStep:</span> <span class="hljs-string">${SW_SUPERDATASET_STORAGE_DAY_STEP:-1}</span> <span class="hljs-comment"># Represent the number of days in the super size dataset record index, the default value is the same as dayStep when the value is less than 0</span>
+    <span class="hljs-attr">superDatasetIndexShardsFactor:</span> <span class="hljs-string">${SW_STORAGE_ES_SUPER_DATASET_INDEX_SHARDS_FACTOR:5}</span> <span class="hljs-comment">#  This factor provides more shards for the super data set, shards number = indexShardsNumber * superDatasetIndexShardsFactor. Also, this factor effects Zipkin and Jaeger traces.</span>
+    <span class="hljs-attr">superDatasetIndexReplicasNumber:</span> <span class="hljs-string">${SW_STORAGE_ES_SUPER_DATASET_INDEX_REPLICAS_NUMBER:0}</span> <span class="hljs-comment"># Represent the replicas number in the super size dataset record index, the default value is 0.</span>
+    <span class="hljs-attr">user:</span> <span class="hljs-string">${SW_ES_USER:""}</span>
+    <span class="hljs-attr">password:</span> <span class="hljs-string">${SW_ES_PASSWORD:""}</span>
+    <span class="hljs-attr">secretsManagementFile:</span> <span class="hljs-string">${SW_ES_SECRETS_MANAGEMENT_FILE:""}</span> <span class="hljs-comment"># Secrets management file in the properties format includes the username, password, which are managed by 3rd party tool.</span>
+    <span class="hljs-attr">bulkActions:</span> <span class="hljs-string">${SW_STORAGE_ES_BULK_ACTIONS:1000}</span> <span class="hljs-comment"># Execute the async bulk record data every ${SW_STORAGE_ES_BULK_ACTIONS} requests</span>
+    <span class="hljs-attr">flushInterval:</span> <span class="hljs-string">${SW_STORAGE_ES_FLUSH_INTERVAL:10}</span> <span class="hljs-comment"># flush the bulk every 10 seconds whatever the number of requests</span>
+    <span class="hljs-attr">concurrentRequests:</span> <span class="hljs-string">${SW_STORAGE_ES_CONCURRENT_REQUESTS:2}</span> <span class="hljs-comment"># the number of concurrent requests</span>
+    <span class="hljs-attr">resultWindowMaxSize:</span> <span class="hljs-string">${SW_STORAGE_ES_QUERY_MAX_WINDOW_SIZE:10000}</span>
+    <span class="hljs-attr">metadataQueryMaxSize:</span> <span class="hljs-string">${SW_STORAGE_ES_QUERY_MAX_SIZE:5000}</span>
+    <span class="hljs-attr">segmentQueryMaxSize:</span> <span class="hljs-string">${SW_STORAGE_ES_QUERY_SEGMENT_SIZE:200}</span>
+    <span class="hljs-attr">profileTaskQueryMaxSize:</span> <span class="hljs-string">${SW_STORAGE_ES_QUERY_PROFILE_TASK_SIZE:200}</span>
+    <span class="hljs-attr">oapAnalyzer:</span> <span class="hljs-string">${SW_STORAGE_ES_OAP_ANALYZER:"{\"analyzer\":{\"oap_analyzer\":{\"type\":\"stop\"}}}"}</span> <span class="hljs-comment"># the oap analyzer.</span>
+    <span class="hljs-attr">oapLogAnalyzer:</span> <span class="hljs-string">${SW_STORAGE_ES_OAP_LOG_ANALYZER:"{\"analyzer\":{\"oap_log_analyzer\":{\"type\":\"standard\"}}}"}</span>
+</div></code></pre>
+<ol start="4">
+<li>执行启动命令, 在skywalking根目录执行:<code>./bin/oapService.sh</code></li>
+<li>启动之后, 可以看到es中已经有相关的索引了</li>
+</ol>
+<p><img src="img/sw_es_init.png" alt="image"></p>
+<h4 id="ui%E7%95%8C%E9%9D%A2%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2">UI界面安装部署</h4>
+<ol>
+<li>不需要现在安装包了, 都在上面的那个安装包里边.</li>
+<li>修改配置文件, 文件位置是<code>webapp/webapp.yml</code>, 这里我把端口号修改了一下:</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8094</span>
+
+<span class="hljs-attr">collector:</span>
+  <span class="hljs-attr">path:</span> <span class="hljs-string">/graphql</span>
+  <span class="hljs-attr">ribbon:</span>
+    <span class="hljs-attr">ReadTimeout:</span> <span class="hljs-number">10000</span>
+    <span class="hljs-comment"># Point to all backend's restHost:restPort, split by ,</span>
+    <span class="hljs-attr">listOfServers:</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:12800</span>
+</div></code></pre>
+<p>此外, 上面配置中的<code>collector.ribbon.listOfServers</code>配置的是BackEnd的地址和端口.</p>
+<ol start="3">
+<li>在安装根目录执行<code>./bin/webappService.sh</code>, 完成skywalking启动.</li>
+<li>浏览器访问<a href="http://localhost:8094/">http://localhost:8094/</a>, 可以看到skywalking的UI界面了.</li>
+</ol>
+<p><img src="img/sw_ui.png" alt="image"></p>
+<h4 id="%E9%83%A8%E7%BD%B2%E6%8E%A2%E9%92%88%E4%B8%8A%E4%BC%A0%E6%95%B0%E6%8D%AE">部署探针上传数据</h4>
+<ol>
+<li>首先, 需要一个测试应用, 我用的这个<a href="https://github.com/FrogIf/OpenTelemetryDemo">OpenTelemetryDemo</a></li>
+<li>下载Agent探针<a href="https://skywalking.apache.org/downloads/#Agents">Agent</a></li>
+<li>修改配置文件<code>skywalking-agent\config\agent.config</code>, 修改配置的方式有很多种, 因为接下来, 我要两个应用共用同一个探针, 这里就不修改配置了, 直接在启动命令中, 增加一些配置.</li>
+<li>应用启动参数配置, 截图如下:</li>
+</ol>
+<p><img src="img/sw_agent_config.png" alt="image"></p>
+<ol start="5">
+<li>启动应用. 浏览器访问<a href="http://localhost:9091/hello">http://localhost:9091/hello</a>.</li>
+<li>稍微等一会, 可以看到, 数据都上传上来了.</li>
+</ol>
+<p><img src="img/sw_data.png" alt="image"></p>
+<h2 id="%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5">基本概念</h2>
+<p>如图, 是trace数据的界面.</p>
+<p><img src="img/sw_conception.png" alt="image"></p>
+<p>我们可以看到几个关键要素:</p>
+<ul>
+<li>Service: 表示对请求提供相同行为的一组工作负载. 例如开发了一个应用, 采用集群部署, 那么这个应用集群就是一个Service.</li>
+<li>Instance: 上述的一组工作负载中的每一个工作负载称为一个实例. 就是集群中的单个节点.</li>
+<li>EndPoint: 对于特定服务所接收的请求路径. 例如, 我们请求多次hello接口, 就对应同一个EndPoint.</li>
+</ul>
+<p>如图, 是拓扑图界面:</p>
+<p><img src="img/sw_topo.png" alt="image"></p>
+<h2 id="%E5%8D%8F%E8%AE%AE">协议</h2>
+<p>接下来, 简单分析一下SkyWalking上传数据的协议. 看一下它是如何完成链路追踪的.</p>
+<p>skywalking协议文件在这里: <a href="https://github.com/apache/skywalking-data-collect-protocol">skywalking-data-collect-protocol</a></p>
+<p>我们只关注其中的trace协议, 即这个路径: <code>/language-agent/Tracing.proto</code></p>
+<p>首先, 从ElasticSearch中, 可以找到原始数据, <code>sw_segment*</code>中, 有这样的数据:</p>
+<p><img src="img/sw_es_data.png" alt="image"></p>
+<p>这里面<code>data_binary</code>字段里面就是原始数据, 只不过是protobuf格式, 并且又转了一次base64. 我们可以通过写程序, 给转成json.</p>
+<p>我写了个程序, 在这里: <a href="https://github.com/FrogIf/skywalking-demo/tree/main/raw-data-viewer">skywalking-demo</a></p>
+<p>接下来, 分析一下一条完整的trace.</p>
+<p>首先, 上面的安装探针的共有两个应用, 分别是: DemoAppA, DemoAppB, 请求A的hello接口后, A也会调用B应用, 而且是调用两次, 这个从上面的拓扑图中可以看出确实有调用关系. 从下面的图中, 也可以看到, 确实调用了两次.(线路颜色的变化)</p>
+<p><img src="img/sw_trace.png" alt="image"></p>
+<p>于是, 从es中获取到了三条数据(<code>data_binary</code>转json之后):</p>
+<ul>
+<li>客户端请求DemoAppA:</li>
+</ul>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.63.16527765610940001"</span>,
+  <span class="hljs-attr">"traceSegmentId"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.63.16527765610940000"</span>,
+  <span class="hljs-attr">"spans"</span>: [{
+    <span class="hljs-attr">"spanId"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"1652776561200"</span>,
+    <span class="hljs-attr">"endTime"</span>: <span class="hljs-string">"1652776561758"</span>,
+    <span class="hljs-attr">"operationName"</span>: <span class="hljs-string">"/hello"</span>,
+    <span class="hljs-attr">"peer"</span>: <span class="hljs-string">"localhost:9092"</span>,
+    <span class="hljs-attr">"spanType"</span>: <span class="hljs-string">"Exit"</span>,
+    <span class="hljs-attr">"spanLayer"</span>: <span class="hljs-string">"Http"</span>,
+    <span class="hljs-attr">"componentId"</span>: <span class="hljs-number">13</span>,
+    <span class="hljs-attr">"tags"</span>: [{
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"url"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"http://localhost:9092/hello"</span>
+    }, {
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.method"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"GET"</span>
+    }]
+  }, {
+    <span class="hljs-attr">"spanId"</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"1652776561759"</span>,
+    <span class="hljs-attr">"endTime"</span>: <span class="hljs-string">"1652776561832"</span>,
+    <span class="hljs-attr">"operationName"</span>: <span class="hljs-string">"/hi"</span>,
+    <span class="hljs-attr">"peer"</span>: <span class="hljs-string">"localhost:9092"</span>,
+    <span class="hljs-attr">"spanType"</span>: <span class="hljs-string">"Exit"</span>,
+    <span class="hljs-attr">"spanLayer"</span>: <span class="hljs-string">"Http"</span>,
+    <span class="hljs-attr">"componentId"</span>: <span class="hljs-number">13</span>,
+    <span class="hljs-attr">"tags"</span>: [{
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"url"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"http://localhost:9092/hi"</span>
+    }, {
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.method"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"GET"</span>
+    }]
+  }, {
+    <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-number">-1</span>,
+    <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"1652776561095"</span>,
+    <span class="hljs-attr">"endTime"</span>: <span class="hljs-string">"1652776561856"</span>,
+    <span class="hljs-attr">"operationName"</span>: <span class="hljs-string">"GET:/hello"</span>,
+    <span class="hljs-attr">"spanLayer"</span>: <span class="hljs-string">"Http"</span>,
+    <span class="hljs-attr">"componentId"</span>: <span class="hljs-number">14</span>,
+    <span class="hljs-attr">"tags"</span>: [{
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"url"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"http://localhost:9091/hello"</span>
+    }, {
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.method"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"GET"</span>
+    }]
+  }],
+  <span class="hljs-attr">"service"</span>: <span class="hljs-string">"DemoAppA"</span>,
+  <span class="hljs-attr">"serviceInstance"</span>: <span class="hljs-string">"bd322d1498074a3f859786839efdef4e@192.168.56.1"</span>
+}
+</div></code></pre>
+<ul>
+<li>第一次调用DemoAppB:</li>
+</ul>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.63.16527765610940001"</span>,
+  <span class="hljs-attr">"traceSegmentId"</span>: <span class="hljs-string">"2ce2eff1dff1413f84b9c296f7e401aa.65.16527765613500000"</span>,
+  <span class="hljs-attr">"spans"</span>: [{
+    <span class="hljs-attr">"spanId"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"1652776561451"</span>,
+    <span class="hljs-attr">"endTime"</span>: <span class="hljs-string">"1652776561451"</span>,
+    <span class="hljs-attr">"operationName"</span>: <span class="hljs-string">"HikariCP/Connection/getConnection"</span>,
+    <span class="hljs-attr">"spanType"</span>: <span class="hljs-string">"Local"</span>,
+    <span class="hljs-attr">"componentId"</span>: <span class="hljs-number">116</span>
+  }, {
+    <span class="hljs-attr">"spanId"</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"1652776561747"</span>,
+    <span class="hljs-attr">"endTime"</span>: <span class="hljs-string">"1652776561747"</span>,
+    <span class="hljs-attr">"operationName"</span>: <span class="hljs-string">"HikariCP/Connection/close"</span>,
+    <span class="hljs-attr">"spanType"</span>: <span class="hljs-string">"Local"</span>,
+    <span class="hljs-attr">"componentId"</span>: <span class="hljs-number">116</span>
+  }, {
+    <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-number">-1</span>,
+    <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"1652776561351"</span>,
+    <span class="hljs-attr">"endTime"</span>: <span class="hljs-string">"1652776561748"</span>,
+    <span class="hljs-attr">"refs"</span>: [{
+      <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.63.16527765610940001"</span>,
+      <span class="hljs-attr">"parentTraceSegmentId"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.63.16527765610940000"</span>,
+      <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">"parentService"</span>: <span class="hljs-string">"DemoAppA"</span>,
+      <span class="hljs-attr">"parentServiceInstance"</span>: <span class="hljs-string">"bd322d1498074a3f859786839efdef4e@192.168.56.1"</span>,
+      <span class="hljs-attr">"parentEndpoint"</span>: <span class="hljs-string">"GET:/hello"</span>,
+      <span class="hljs-attr">"networkAddressUsedAtPeer"</span>: <span class="hljs-string">"localhost:9092"</span>
+    }],
+    <span class="hljs-attr">"operationName"</span>: <span class="hljs-string">"GET:/hello"</span>,
+    <span class="hljs-attr">"spanLayer"</span>: <span class="hljs-string">"Http"</span>,
+    <span class="hljs-attr">"componentId"</span>: <span class="hljs-number">14</span>,
+    <span class="hljs-attr">"tags"</span>: [{
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"url"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"http://localhost:9092/hello"</span>
+    }, {
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.method"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"GET"</span>
+    }]
+  }],
+  <span class="hljs-attr">"service"</span>: <span class="hljs-string">"DemoAppB"</span>,
+  <span class="hljs-attr">"serviceInstance"</span>: <span class="hljs-string">"326d0a00cba24985962d9c78c8c9906b@192.168.56.1"</span>
+}
+</div></code></pre>
+<ul>
+<li>第二次调用DemoAppB:</li>
+</ul>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.63.16527765610940001"</span>,
+  <span class="hljs-attr">"traceSegmentId"</span>: <span class="hljs-string">"2ce2eff1dff1413f84b9c296f7e401aa.66.16527765617620000"</span>,
+  <span class="hljs-attr">"spans"</span>: [{
+    <span class="hljs-attr">"spanId"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"1652776561764"</span>,
+    <span class="hljs-attr">"endTime"</span>: <span class="hljs-string">"1652776561764"</span>,
+    <span class="hljs-attr">"operationName"</span>: <span class="hljs-string">"HikariCP/Connection/getConnection"</span>,
+    <span class="hljs-attr">"spanType"</span>: <span class="hljs-string">"Local"</span>,
+    <span class="hljs-attr">"componentId"</span>: <span class="hljs-number">116</span>
+  }, {
+    <span class="hljs-attr">"spanId"</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"1652776561831"</span>,
+    <span class="hljs-attr">"endTime"</span>: <span class="hljs-string">"1652776561831"</span>,
+    <span class="hljs-attr">"operationName"</span>: <span class="hljs-string">"HikariCP/Connection/close"</span>,
+    <span class="hljs-attr">"spanType"</span>: <span class="hljs-string">"Local"</span>,
+    <span class="hljs-attr">"componentId"</span>: <span class="hljs-number">116</span>
+  }, {
+    <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-number">-1</span>,
+    <span class="hljs-attr">"startTime"</span>: <span class="hljs-string">"1652776561762"</span>,
+    <span class="hljs-attr">"endTime"</span>: <span class="hljs-string">"1652776561832"</span>,
+    <span class="hljs-attr">"refs"</span>: [{
+      <span class="hljs-attr">"traceId"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.63.16527765610940001"</span>,
+      <span class="hljs-attr">"parentTraceSegmentId"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.63.16527765610940000"</span>,
+      <span class="hljs-attr">"parentSpanId"</span>: <span class="hljs-number">2</span>,
+      <span class="hljs-attr">"parentService"</span>: <span class="hljs-string">"DemoAppA"</span>,
+      <span class="hljs-attr">"parentServiceInstance"</span>: <span class="hljs-string">"bd322d1498074a3f859786839efdef4e@192.168.56.1"</span>,
+      <span class="hljs-attr">"parentEndpoint"</span>: <span class="hljs-string">"GET:/hello"</span>,
+      <span class="hljs-attr">"networkAddressUsedAtPeer"</span>: <span class="hljs-string">"localhost:9092"</span>
+    }],
+    <span class="hljs-attr">"operationName"</span>: <span class="hljs-string">"GET:/hi"</span>,
+    <span class="hljs-attr">"spanLayer"</span>: <span class="hljs-string">"Http"</span>,
+    <span class="hljs-attr">"componentId"</span>: <span class="hljs-number">14</span>,
+    <span class="hljs-attr">"tags"</span>: [{
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"url"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"http://localhost:9092/hi"</span>
+    }, {
+      <span class="hljs-attr">"key"</span>: <span class="hljs-string">"http.method"</span>,
+      <span class="hljs-attr">"value"</span>: <span class="hljs-string">"GET"</span>
+    }]
+  }],
+  <span class="hljs-attr">"service"</span>: <span class="hljs-string">"DemoAppB"</span>,
+  <span class="hljs-attr">"serviceInstance"</span>: <span class="hljs-string">"326d0a00cba24985962d9c78c8c9906b@192.168.56.1"</span>
+}
+</div></code></pre>
+<p>关于链路追踪的具体原理, 就不过多解释了, skywalking和OpenTelemetry等原理都是一样的, 可以看 <a href="https://frogif.github.io/FrogNotebook/apm/OpenTelemetry.html">这里</a>, 下面对主要字段做一个简要的介绍:</p>
+<ol>
+<li>traceId -- 链路追踪相关字段</li>
+<li>spanId -- 这个和OpenTelemetry有些不通过, OpenTelemetry中, spanId是全局的. 而这里, 是一个应用内部的. 跨应用调用之间, 不会通过spanId来进行关联.</li>
+<li>parentSpanId -- 如果是应用的入口, 这个值为-1, 如果parentSpanId为0, 这没有这个字段.</li>
+<li>traceSegmentId -- 这个才是用来维持多个应用(trace)之间调用关系的字段</li>
+<li>parentTraceSegmentId -- 同上</li>
+<li>operationName -- 就是EndPoint, 对于程序的入口, 可以直接在es里边印证这一点, 对于程序内部调用, 通过skywalking界面, 可以看到:</li>
+</ol>
+<p><img src="img/sw_trace_node_info.png" alt="image"></p>
+<ol start="7">
+<li>startTime, endTime -- 该级span的调用开始时间和结束时间</li>
+<li>refs -- 记录了调用该应用的上级应用的信息, 包括上级调用发起span的id, 上级服务名, parentSegmentId等.</li>
+</ol>
+<p>其余字段就不介绍了.</p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://skywalking.apache.org/zh/2020-04-19-skywalking-quick-start/">SkyWalking极简入门</a></li>
+<li><a href="https://github.com/SkyAPM/document-cn-translation-of-skywalking">SkyWalking中文文档</a></li>
+</ul>
+
+</body>
+</html>
