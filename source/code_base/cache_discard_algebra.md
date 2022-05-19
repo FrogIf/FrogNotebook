@@ -20,4 +20,4 @@ mysql的Innodb引擎, 提供了Buffer Pool. 存储引擎会在查询或者更新
 所以, innodb对LRU进行了改进, 按照5:3的比例, 将整个LRU链表分为young区和old区. young区在链表前部, 占5/8, old区在链表后部, 占3/8. 新加入的数据, 首先被放入old区域的头部. 之后每次访问时, 如果这个数据页在链表中存在的时间超过了1秒, 就移动到链表头部, 也就是young区的头部. 如果访问间隔不超过1秒, 就依旧保留在old区. 这样就解决了全表扫描导致热点数据被淘汰的问题, 全表扫描的数据会被加载到old区, 然后, 再次访问该数据页的时间一定会小于1秒, 所以保持在old区不动. 这样, young区中的热点数据就不受影响.
 
 
-> 还有很多应用, 例如redis, guava cache, coffine cache等.
+> 还有很多应用, 例如redis, guava cache, caffeine cache等.
