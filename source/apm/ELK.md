@@ -2,7 +2,7 @@
 
 ## 概述
 
-在分布式架构中, 日志分散, 一旦遇到问题, 需要翻看每一个日志, 去定位问题, 效率低, 操作复杂. 这时可以通过Elastic Stack全家桶中的支持, 来解决这个痛点, 具体如下:
+在集群架构中, 日志分散, 一旦遇到问题, 需要翻看每一个日志, 去定位问题, 效率低, 操作复杂. 这时可以通过Elastic Stack全家桶中的支持, 来解决这个痛点, 具体如下:
 
 1. 收集 -- LogStash
 2. 存储 -- ElasticSearch(也可以用Redis/kafka等)
@@ -19,8 +19,7 @@
 2. 解压
 3. 执行bin目录下的```nohup ./elasticsearch &```(这样会后台执行);
 4. 查看已安装插件```./elasticsearch-plugin list```;
-5. 安装集群管理插件``````
-6. 访问```http://localhost:9200/```, 成功.
+5. 访问```http://localhost:9200/```, 成功.
 
 但是, 这时的elasticsearch是没有密码的, 下面配置密码:
 
@@ -131,7 +130,7 @@ elasticsearch.username: "kibana_system"
 elasticsearch.password: "123456"
 ```
 4. 后台启动 ```nohup ./kibana &```
-5. 访问```http://localhost5601/```, 成功!
+5. 访问```http://localhost:5601/```, 成功!
 
 > 访问成功的页面输入账号密码: elastic/123456和上面配置中的是不一样的.
 
