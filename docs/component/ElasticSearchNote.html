@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ElasticSearchNote.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="elasticsearch%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0">ElasticSearch学习笔记</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>ElasticSearch是基于lucene的全文搜索引擎. 包括ElasticSearch在内, Elastic开发了一系列的软件包, 组成了Elastic Stack, 其中主要包括:</p>
+<ul>
+<li>数据抓取:
+<ul>
+<li>LogStash</li>
+<li>Beat</li>
+</ul>
+</li>
+<li>存储/计算:
+<ul>
+<li>ElasticSearch</li>
+</ul>
+</li>
+<li>可视化:
+<ul>
+<li>Kibana</li>
+</ul>
+</li>
+</ul>
+<p>ElasticSearch+LogStash+Kibana可以组成强大的日志管理系统, 感兴趣可以了解: <a href="https://frogif.github.io/FrogNotebook/apm/ELK.html">ELK</a></p>
+<p>es官方文档很强大, 地址在这里<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html</a></p>
+<p>文中会用到一些数据, 数据准备相关, 参见附录: <a href="#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">数据准备</a></p>
+<h2 id="%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5">基本概念</h2>
+<p>逻辑概念:</p>
+<ul>
+<li>文档(document): 可搜索的最小数据单元, 会被序列化为json格式(示例: <a href="#document%E7%A4%BA%E4%BE%8B">document示例</a>)
+<ul>
+<li>_index: 文档所属的索引名</li>
+<li>_id: 文档的唯一ID, 可以由ElasticSearch自动生成, 也可以手动指定</li>
+<li>_source: 文档的原始JSON数据</li>
+<li>_version: 文档的版本信息</li>
+<li>_score: 相关性打分</li>
+</ul>
+</li>
+<li>索引(index): 文档的容器, 是一类文档的集合
+<ul>
+<li>mapping: 定义文档字段的类型(示例: <a href="#mapping%E7%A4%BA%E4%BE%8B">mapping示例</a>)</li>
+<li>setting: 定义不同的数据分布, 即一个索引需要使用多少个分片, 多少个副本(示例: <a href="#setting%E7%A4%BA%E4%BE%8B">setting示例</a>)</li>
+</ul>
+</li>
+</ul>
+<p>物理概念:</p>
+<ul>
+<li>节点: 就是集群中的节点, 一个ElasticSearch实例. 一个集群中只存在一个master节点, 它负责维护集群的状态
+<ul>
+<li>Data节点: 负责保存数据, 可以水平扩展</li>
+<li>Coordinate节点: 负责接收rest client请求, 然后向其他节点分发, 最后汇集结果. 每个节点默认都是Coordinate节点</li>
+<li>冷热节点: 一般常用于日志存储(ELK), 老的数据存储在配置比较低的服务器上.</li>
+</ul>
+</li>
+<li>分片: 一个分片就是一个Lucene实例, 一个节点上可以有多个分片, 一个索引的多个分片可以分布在多个节点上
+<ul>
+<li>Primary Shard(主分片): 创建索引时指定, 后续不允许修改</li>
+<li>Replica Shard(副本分片): 主分片的数据拷贝, 可以动态调整, 可以承担一部分数据查询</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>分片数过多, 会影响搜索结果相关性的打分, 影响统计结果准确性; 单个节点上有过多分片, 导致资源浪费, 影响性能</p>
+</blockquote>
+<p>小结: 索引和文档是包含关系, 索引包含文档. 节点和分片没有关系, 是两个独立的概念, 节点是硬件单元, 分片是数据单元.</p>
+<h2 id="%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95">倒排索引</h2>
+<p>上面我们知道了数据在es中是如何进行存储的, 在使用es的时候, 数据是如何被查询出来的呢? 这里就用到了倒排索引的技术. 倒排索引是指词条到文档id的索引, 这种索引方式的索引方向与一般书的目录正好相反, 称之为倒排索引.</p>
+<p>倒排索引的核心组成:</p>
+<ul>
+<li>单词词典(Term Dictionary): 汇总所有文档的单词, 记录单词到倒排列表的关联关系. 单词词典一般比较大, 可以通过B+数或者哈希拉链法实现, 以满足高性能的插入和查询</li>
+<li>倒排列表(Posting List): 记录每个单词到文档集合的映射. 由倒排索引项组成, 一个单词映射到多个倒排索引项
+<ul>
+<li>倒排索引项, 包含以下信息:
+<ul>
+<li>文档id</li>
+<li>词频TF: Term Frequency, 该单词在文档中出现的次数, 检索词在文档中出现的总次数/该文档的总词数, 用于相关性评分</li>
+<li>位置: 单词在文档中分词的位置, 用于搜索多个单词组成的语句, 这时位置信息可以体现多个单词之间的相对关系</li>
+<li>偏移: 记录单词的开始/结束位置, 用于高亮显示</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>如果不进行特殊配置, ElasticSearch会对JSON文档中的每一个字段都建立倒排索引. 可以通过配置, 指定某些字段不做索引, 这样可以节省存储空间, 但是这时这个字段就不能被搜索了.</p>
+<p>一个倒排索引项是如何建立的呢, 这就需要分词器对原始文档进行分词, 然后在计算每个词的词频, 位置, 偏移信息了.</p>
+<p>倒排索引的不可变性:</p>
+<ol>
+<li>倒排索引采用的是Immutable Design, 一旦生成, 不可修改</li>
+<li>优点: 1. 不需要考虑并发写文件的问题; 2. 读入缓存的数据不存在脏数据的情况; 3. 缓存容易生成和维护/数据可以被压缩</li>
+<li>缺点: 对文档的一些变更需要reindex.</li>
+</ol>
+<h2 id="%E5%88%86%E8%AF%8D">分词</h2>
+<p>分词(Analysis)是文本分析, 就是把全文本转换为一系列单词(term/token). 分词通过分词器来实现.</p>
+<p>分词器由三部分组成:</p>
+<ul>
+<li>Character Filters: 对原始文本进行处理, 例如去除html标签</li>
+<li>Tokenizer: 按照指定的规则切分为单词</li>
+<li>Token Filters: 对切分得到的单词进行处理, 例如: 转小写, 删除停用词(stopwords), 增加同义词等</li>
+</ul>
+<p>ElasticSearch常见分析器:</p>
+<ol>
+<li>Standard Analyzer: 默认分词器, 按词切分, 小写处理</li>
+<li>Simple Analyzer: 按照非字母切分(非字母都会被删除), 小写处理</li>
+<li>Stop Analyzer: 在Simple Analyzer基础上, 增加停用词过滤(the, a, is)</li>
+<li>Whitespace Analyzer: 按照空格切分, 不转小写</li>
+<li>Keyword Analyzer: 不分词, 直接将输入当做term输出</li>
+<li>Pattern Analyzer: 正则表达式, 默认<code>\W+</code>(非字符分割), 小写处理</li>
+<li>Language: 提供了30多种常见语言的分词器</li>
+<li>Customer Analyzer: 自定义分词器</li>
+</ol>
+<p>常见的中文分析器:</p>
+<ol>
+<li>icu Analyzer: 插件安装<code>elasticsearch-plugin install analysis-icu</code></li>
+<li>IK</li>
+<li>THULAC</li>
+</ol>
+<p>我们可以通过es内置的character filters,tokenizer,token filters, 做一个简单的自定义分词器.</p>
+<p>内置的character filter:</p>
+<ul>
+<li>html_strip - 去除html标签</li>
+<li>mapping - 字符串替换</li>
+<li>pattern_replace - 正则匹配替换</li>
+</ul>
+<p>内置的tokenizer:</p>
+<ul>
+<li>whitespance - 以空格进行分词</li>
+<li>standard - 以字母的方式进行切分</li>
+<li>uax_url_email - 以url和email的特点进行分词</li>
+<li>pattern - 通过正则表达式分词</li>
+<li>keyword - 不做任何处理</li>
+<li>path_hierarchy - 将多级文件路径, 拆分成多个带有继承关系的term</li>
+</ul>
+<p>内置的token filter:</p>
+<ul>
+<li>lowercase - 转小写</li>
+<li>stop - 停用词</li>
+<li>synonym - 添加近义词</li>
+</ul>
+<blockquote>
+<p>可以在创建索引时, 自定义分词器, 不做详细介绍.</p>
+</blockquote>
+<h2 id="%E7%B4%A2%E5%BC%95%E5%AE%9A%E4%B9%89">索引定义</h2>
+<p>再来介绍一下es中如何定义索引, ElasticSearch索引的定义可分为多个维度, 分别是:</p>
+<ol>
+<li>setting: 定义不同的数据分布, 即一个索引需要使用多少个分片, 多少个副本</li>
+<li>mapping: 类似于数据库中schema的定义, 用来描述一个索引的字段名称,字段类型,倒排索引配置等</li>
+<li>template: 通过模板匹配, 设置索引的setting和mapping</li>
+</ol>
+<h4 id="mapping">mapping</h4>
+<p>mapping又分为mapping和dynamic mapping. dynamic mapping是指在写入文档时, 如果索引不存在, 会自动创建索引. ElasticSearch会根据文档信息, 自动推断出各个字段的类型.</p>
+<p>es中字段类型有如下:</p>
+<ul>
+<li>简单类型
+<ul>
+<li>text: 会被分词, 用于全文查找</li>
+<li>keyword: 用于精确值匹配, 不会被分词</li>
+<li>date</li>
+<li>integer/floating</li>
+<li>boolean</li>
+<li>IPv4/IPv6</li>
+</ul>
+</li>
+<li>复杂类型
+<ul>
+<li>对象类型/嵌套类型</li>
+</ul>
+</li>
+<li>特殊类型
+<ul>
+<li>geo_point &amp; geo_shape / percolator</li>
+</ul>
+</li>
+</ul>
+<pre class="hljs"><code><div>关于这些类型的一些建议:
+Text: 
+1. 用于全文本字段, 文本会被分词
+2. 默认不支持聚合分析及排序. 需要设置fielddata为true
+
+keyword:
+1. 用于id, 枚举及不需要分词的文本. 例如: 电话号码, email地址, 手机号, 邮政编码, 性别等
+2. 使用与filter(精确匹配), sorting和aggregations
+
+es默认情况下, 会为文本类型设置成text, 同时设置一个keyword子字段
+
+枚举类型设置为keyword, 即使是数字, 如果是枚举类型, 也应该设置成keyword, 这样可以得到更好的性能.
+
+如果不需要被搜索, 字段的index属性应该设置成false. 但是这时依旧支持aggregation.
+如果不需要排序和聚合分析, 字段的doc_values和fielddata应该设置成false.
+对于更新频繁,聚合查询频繁的keyword字段, 可以 将eager_global_ordinals设置成true, 使得可以很好的利用缓存.
+从节约磁盘方面考虑, 如果是指标型的数据存储, 可以把_source的enabled设置为false, 并把每个字段的store属性设置为true, 这样就不会保存原始数据了. 但是这时无法做reindex, 无法做update.
+
+避免一个文档中过多的字段:
+1. 不容易维护
+2. mapping信息保存在Cluster State中, 字段过多会对集群性能有影响
+</div></code></pre>
+<p>常用命令如下:</p>
+<ul>
+<li><code>GET &lt;index&gt;/_mapping</code>: 查看一个索引的mapping信息</li>
+</ul>
+<p>定义一个索引的mapping的示例:</p>
+<pre class="hljs"><code><div>PUT frog_index
+{
+  &quot;mappings&quot;:{
+    &quot;properties&quot;: {
+      &quot;age&quot;:{
+        &quot;type&quot;: &quot;integer&quot;
+      },
+      &quot;firstName&quot;:{
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;copy_to&quot;: &quot;fullName&quot; // firstName和lastName会结合放入fullName中, fullName不会出现在_source中
+      },
+      &quot;lastName&quot;:{
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;copy_to&quot;: &quot;fullName&quot;
+      },
+      &quot;mobile&quot;:{
+        &quot;type&quot;:&quot;text&quot;,
+        &quot;index&quot;: false  // 指定该字段不可以被索引, 也就不进行分词, 不存储倒排索引, 这样可以减少存储空间, 提升性能
+      },
+      &quot;nickname&quot;:{
+        &quot;type&quot;: &quot;keyword&quot;,  // keyword类型的字段不会分词, 而是将整个字段值作为一个term, 也就实现了精确值查询
+        &quot;null_value&quot;: &quot;不知道&quot;  // keyword字段可以配置null_value属性, 指示该值没有时, 填入的默认值, 这样可以方便搜索
+      }
+    }
+  }
+}
+</div></code></pre>
+<p>配置一个索引的dynamic mapping行为:</p>
+<pre class="hljs"><code><div>PUT frog_index/_mapping
+{
+  &quot;dynamic&quot;:&quot;false&quot;
+}
+</div></code></pre>
+<p>上面的dynamic字段可以控制一个索引是否允许dynamic mapping, 它有三个可选值.</p>
+<p>对于新增字段:</p>
+<ul>
+<li>true - 新增字段写入文档, mapping同时被更新</li>
+<li>false - mapping不会被更新, 新增的字段无法被查询, 但是新增的字段信息会出现在_source中</li>
+<li>strict - 新增字段直接导致整个文档写入失败</li>
+</ul>
+<p>对于已有字段, 一旦已经写入数据, 就不能修改字段定义. 如果希望修改字段类型, 必须通过reindex重建索引.</p>
+<p>es的mapping提供了一种&quot;多字段特性&quot;, 可以为任意字段增加子字段. 示例如下:</p>
+<pre class="hljs"><code><div>PUT frog_index2
+{
+  &quot;mappings&quot;:{
+    &quot;properties&quot;: {
+      &quot;name&quot;:{
+        &quot;type&quot;:&quot;text&quot;,
+        &quot;fields&quot;:{
+          &quot;name_k&quot;:{
+            &quot;type&quot;:&quot;keyword&quot;
+          }
+        }
+      }
+    } 
+  }
+}
+</div></code></pre>
+<p>这时, 我们查询时, 可以查询name字段, 也可以查询name.name_k字段.</p>
+<h4 id="setting">setting</h4>
+<p>常用命令:</p>
+<ul>
+<li><code>GET &lt;index&gt;/settings</code>: 查询指定索引的settings.</li>
+</ul>
+<p>定义一个索引的setting:</p>
+<pre class="hljs"><code><div>PUT fff_index
+{
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 1,
+    &quot;number_of_replicas&quot;: 1
+  }
+}
+</div></code></pre>
+<h4 id="template">template</h4>
+<p>ElasticSearch中有两种template, 分别是index template和dynamic template</p>
+<ul>
+<li>index template: 可以按照一定的规则, 自动的设定mapping和setting, 应用到匹配的新索引上. 常见应用场景是: 我们使用elk时, 每天会根据日期生成一个索引, 这时候, 每天生成的索引就是通过index template生成的.</li>
+<li>dynamic template: 应用到字段上的template, 会对匹配到的字段进行设定.</li>
+</ul>
+<p>模板只会对新创建的索引起作用, 不会修改已创建的索引. 可以创建多个索引模板, 这些设置会被合并在一起. 当多个模板之间存在冲突的设定时, 通过order来控制优先级.</p>
+<p>查询index template: <code>GET _template/&lt;template_name&gt;</code></p>
+<p>index template创建示例:</p>
+<pre class="hljs"><code><div>PUT _template/frog_template
+{
+  &quot;index_patterns&quot;: [&quot;frog_*&quot;],
+  &quot;order&quot;: 1,
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 1,
+    &quot;number_of_replicas&quot;: 2
+  },
+  &quot;mappings&quot;: {
+    &quot;date_detection&quot;: false,
+    &quot;numeric_detection&quot;: true
+  }
+}
+</div></code></pre>
+<p>这个template创建好之后, 所有以<code>frog_</code>开头的索引都会使用这个template.</p>
+<blockquote>
+<p>order越小, 越会被先执行. 后执行的配置会覆盖新执行的.</p>
+</blockquote>
+<p>对于dynamic template, 示例如下:</p>
+<pre class="hljs"><code><div>PUT frog_vvvv_index
+{
+  &quot;mappings&quot;:{
+    &quot;dynamic_templates&quot;:[
+      {
+        &quot;aaa_template&quot;:{
+          &quot;match_mapping_type&quot;:&quot;string&quot;,
+          &quot;match&quot;:&quot;is*&quot;,
+          &quot;mapping&quot;:{
+            &quot;type&quot;:&quot;boolean&quot;
+          }
+        }
+      }
+    ]
+  }
+}
+</div></code></pre>
+<p>这里设置了一个dynamic template, 使得所有字符串类型, 但是字段以is开头的, 另它的类型为boolean.</p>
+<h2 id="%E5%A2%9E%E5%88%A0%E6%94%B9">增删改</h2>
+<ul>
+<li>增
+<ul>
+<li><code>PUT &lt;index&gt;/_create/&lt;id&gt;</code>: 根据指定的id, 插入一个新的文档, 如果id已存在, 则报错</li>
+<li><code>POST &lt;index&gt;/_doc/&lt;id&gt;</code>: 根据指定的id, 插入一个新的文档, 如果id已存在, 则删除旧文档, 插入新文档, 文档版本加1</li>
+<li><code>POST &lt;index&gt;/_doc</code>: 插入一个文档, 让系统自动生成id</li>
+</ul>
+</li>
+<li>删
+<ul>
+<li><code>DELETE &lt;index&gt;/_doc/&lt;id&gt;</code>: 删除指定id的文档</li>
+</ul>
+</li>
+<li>改
+<ul>
+<li><code>POST &lt;index&gt;/_update/&lt;id&gt;</code>: 修改指定id的文档, 如果不会删除原始文档, 而是对原始文档进行增量修改, 版本加1</li>
+</ul>
+</li>
+</ul>
+<p>示例如下:</p>
+<pre class="hljs"><code><div>示例1, 新增文档, id指定为1:
+PUT frog/_create/1
+{
+  &quot;name&quot;: &quot;frog&quot;
+}
+
+示例2, 新增文档, id自动生成:
+POST frog/_doc
+{
+  &quot;name&quot;: &quot;frog2&quot;
+}
+
+示例3, 删除指定id的文档:
+DELETE frog/_doc/nzSF74AB-CY9KE2R-ICW
+
+示例4, 修改指定id的文档:
+POST frog/_update/1
+{
+  &quot;doc&quot;:{
+    &quot;name&quot;: &quot;frog3&quot;,
+    &quot;age&quot;: 99
+  }
+}
+</div></code></pre>
+<h2 id="%E6%89%B9%E9%87%8F%E6%93%8D%E4%BD%9C">批量操作</h2>
+<p>为了减少反复多次请求的网络开销, 大多数时候, 可以使用批量操作. 批量操作分为两种: 1. 批量增删改; 2. 批量查询;</p>
+<ul>
+<li><code>POST _bulk</code>: 批量增删改, 其中一个操作失败不会影响其他操作</li>
+<li><code>GET _mget</code>: 批量查询</li>
+<li><code>POST _msearch</code>: 批量查询</li>
+</ul>
+<pre class="hljs"><code><div>示例1:
+POST _bulk
+{ &quot;index&quot;: { &quot;_index&quot;:&quot;test&quot;,&quot;_id&quot;:&quot;1&quot; } }
+{ &quot;field1&quot;:&quot;value1&quot; }
+{ &quot;delete&quot;:{ &quot;_index&quot;:&quot;test&quot;, &quot;_id&quot;:&quot;2&quot;} }
+{ &quot;create&quot;:{ &quot;_index&quot;: &quot;test2&quot;, &quot;_id&quot;:&quot;3&quot; } }
+{ &quot;field1&quot;:&quot;value3&quot; }
+{ &quot;update&quot;:{ &quot;_id&quot;:&quot;1&quot;, &quot;_index&quot;:&quot;test&quot; } }
+{ &quot;doc&quot;:{ &quot;field2&quot;:&quot;value2&quot; } }
+
+示例2:
+GET _mget
+{
+  &quot;docs&quot;:[
+      {
+        &quot;_index&quot;:&quot;frog&quot;,
+        &quot;_id&quot;:1
+      },
+      {
+        &quot;_index&quot;: &quot;test&quot;,
+        &quot;_id&quot;:2
+      }
+    ]
+}
+
+示例3:
+POST _msearch
+{&quot;index&quot;:&quot;frog&quot;}
+{&quot;query&quot;:{&quot;match_all&quot;:{}}, &quot;size&quot;:1}
+{&quot;index&quot;:&quot;test2&quot;}
+{&quot;query&quot;:{&quot;match_all&quot;:{}}}
+</div></code></pre>
+<blockquote>
+<p>批量查询时, 也不要一次性发送过多的数据, 这样有可能适得其反</p>
+</blockquote>
+<h2 id="%E5%9F%BA%E6%9C%AC%E6%9F%A5%E8%AF%A2">基本查询</h2>
+<p>首先有一种简单的查询, 通过id查询: <code>GET &lt;index&gt;/_doc/&lt;id&gt;</code>; 然后, ElasticSearch提供了两种文本查询方式, 一种是URI Search, 一种是Request Body Search. URI Search就是在URL中使用查询参数进行查询, 功能比较局限, 这里不做介绍, 只介绍Request Body Search.</p>
+<p>Request Body Search的使用POST请求, 除了请求体以外, 其余格式是很固定的:</p>
+<ol>
+<li><code>POST &lt;index&gt;/_search</code></li>
+<li><code>POST &lt;index1&gt;,&lt;index2&gt;,.../_search</code></li>
+<li><code>POST &lt;index_pattern&gt;/_search</code></li>
+</ol>
+<p>首先, 给出一个典型的示例:</p>
+<pre class="hljs"><code><div>POST movies/_search
+{
+  &quot;_source&quot;:[&quot;title&quot;, &quot;year&quot;],
+  &quot;query&quot;:{
+    &quot;match_all&quot;: {}
+  },
+  &quot;from&quot;: 0,
+  &quot;size&quot;: 10,
+  &quot;sort&quot;:[
+    {&quot;year&quot;:&quot;desc&quot;}
+  ]
+}
+</div></code></pre>
+<p>接下来具体介绍一下通过指定的词句进行搜索.</p>
+<ul>
+<li>term: 对查询条件不做分词处理, 而是直接将条件去倒排索引中匹配(注意是去倒排索引中进行完整匹配, 而倒排索引中都是进行了分词的)
+<ul>
+<li>range query/exists query/prefix query/wildcard query都属于term查询</li>
+</ul>
+</li>
+<li>match: 词匹配, 匹配一个或多个单词, 默认多个单词之间or关系
+<ul>
+<li>需要注意的是, 如果使用match去匹配keyword类型的字段, 后台会自动转为term query.</li>
+</ul>
+</li>
+<li>match_phase: 词组匹配, 匹配整个词组</li>
+<li>query_string: 逻辑匹配, 匹配的内容不是简单的词或者词组, 而是存在与或非逻辑的语句, query_string完全可以替换match查询</li>
+<li>simple_query_string: query_string的简化版</li>
+</ul>
+<p>一个查询的标准模板是这样的:</p>
+<pre class="hljs"><code><div>{
+  &quot;query&quot;:{
+    &quot;bool&quot;:{
+      &quot;must&quot;:[
+        // 贡献算分
+      ],
+      &quot;should&quot;:[
+        // 贡献算分, 如果只有should没有must, 则这里的条件必须有一个满足, 如果存在must, 这里的条件可以都不满足
+      ],
+      &quot;filter&quot;:[
+        // 一系列的查询条件, 这里的条件不贡献算分
+      ],
+      &quot;must_not&quot;:[
+        // 取反的一些条件, 这里的条件不贡献算分
+      ]
+    }
+  }
+}
+</div></code></pre>
+<p>示例如下:</p>
+<pre class="hljs"><code><div>示例1, 单一匹配:
+POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;match&quot;: {
+      &quot;title&quot;:{
+        &quot;query&quot;:&quot;War&quot;
+      }
+    }
+  }
+}
+
+示例2, 通过分词器分词后, 变为两个单词war,room, 然后进行匹配, 这时两个单词匹配之间是or关系
+POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;match&quot;: {
+      &quot;title&quot;:{
+        &quot;query&quot;:&quot;War Room&quot;
+      }
+    }
+  }
+}
+
+示例3, 同上, 但是显示指定为and关系
+POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;match&quot;: {
+      &quot;title&quot;:{
+        &quot;query&quot;:&quot;War Room&quot;,
+        &quot;operator&quot;:&quot;AND&quot;
+      }
+    }
+  }
+}
+
+示例4, 词组匹配, 只查询存在&quot;one love&quot;这个词组的文档
+POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;match_phrase&quot;: {
+      &quot;title&quot;: {
+        &quot;query&quot;:&quot;one love&quot;
+      }
+    }
+  }
+}
+
+示例5, 词组匹配, 通过配置slot, 允许&quot;one love&quot;这个词组的两个单词之间可以存在一个其他单词
+POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;match_phrase&quot;: {
+      &quot;title&quot;: {
+        &quot;query&quot;:&quot;one love&quot;,
+        &quot;slop&quot;:1
+      }
+    }
+  }
+}
+
+示例6, query_string, 这里查询的是&quot;必须有war, 并且room和love至少有一个存在&quot;
+POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;query_string&quot;: {
+      &quot;default_field&quot;: &quot;title&quot;,
+      &quot;query&quot;: &quot;war AND (room OR love)&quot;
+    }
+  }
+}
+
+示例7, term查询:
+POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;term&quot;:{
+      &quot;title&quot;:&quot;war&quot;
+    }
+  }
+}
+
+示例8, 范围查询, 这里使用filter, 不会进行算分操作, 使得查询速度更快:
+POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;bool&quot;:{
+      &quot;filter&quot;:{
+        &quot;range&quot;:{
+          &quot;year&quot;:{ &quot;gte&quot;: 2000, &quot;lte&quot;: 2010 }
+        }
+      }
+    }
+  }
+}
+
+示例9, 多种查询复合:
+POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;bool&quot;:{
+      &quot;should&quot;:{
+        &quot;exists&quot;:{ &quot;field&quot;:&quot;vvv&quot; }
+      },
+      &quot;filter&quot;:{
+        &quot;range&quot;:{
+          &quot;year&quot;:{ &quot;gte&quot;: 2000, &quot;lte&quot;: 2010 }
+        }
+      }
+    }
+  }
+}
+</div></code></pre>
+<blockquote>
+<p>must和should是需要计算算分的, filter和must_not不需要算分, 这样会加速查询.</p>
+</blockquote>
+<p>此外, 上面的查询是支持嵌套的, 例如这样:</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"query"</span>:{
+    <span class="hljs-attr">"bool"</span>:{
+      <span class="hljs-attr">"should"</span>:{
+        <span class="hljs-attr">"bool"</span>:{
+          <span class="hljs-attr">"must"</span>:[
+            { <span class="hljs-attr">"match"</span>:{ <span class="hljs-attr">"title"</span>:{ <span class="hljs-attr">"query"</span>:<span class="hljs-string">"war"</span> } } },
+            { <span class="hljs-attr">"match"</span>:{ <span class="hljs-attr">"title"</span>:{ <span class="hljs-attr">"query"</span>:<span class="hljs-string">"room"</span> } } }
+          ]
+        }
+      },
+      <span class="hljs-attr">"filter"</span>:{
+        <span class="hljs-attr">"range"</span>:{ <span class="hljs-attr">"year"</span>:{ <span class="hljs-attr">"gte"</span>: <span class="hljs-number">2000</span>, <span class="hljs-attr">"lte"</span>: <span class="hljs-number">2010</span> } }
+      }
+    }
+  }
+}
+</div></code></pre>
+<p>再介绍一下termsquery:</p>
+<pre class="hljs"><code><div>POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;terms&quot;:{
+      &quot;title&quot;:[ &quot;war&quot;,&quot;love&quot; ]
+    }
+  }
+}
+</div></code></pre>
+<h2 id="%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2">聚合查询</h2>
+<p>聚合(aggregation)查询, 就是在查询时进行统计计算. 聚合查询分为四种:</p>
+<ol>
+<li>Bucket Aggregation: 类似于sql中的group by</li>
+<li>Metric Aggregation: 数学运算, 类似于sql中的count,sum,max...</li>
+<li>Pipeline Aggregation: 对聚合结果再聚合</li>
+<li>Matrix Aggregation</li>
+</ol>
+<p>下面这个示例包含Bucket Aggregation,Metric Aggregation,PipelineAggregation</p>
+<pre class="hljs"><code><div>示例, 先对员工按照职位进行分组, 然后求最大值/最小值/平均值, 最后再单独列出平均值最小的职位
+POST employees/_search
+{
+  &quot;size&quot;: 0,
+  &quot;aggs&quot;: {
+    &quot;jobs&quot;:{
+      &quot;terms&quot;:{ // bucket aggr
+        &quot;field&quot;:&quot;job.keyword&quot;
+      },
+      &quot;aggs&quot;:{
+        &quot;max_salary&quot;: { // metric aggr
+          &quot;max&quot;: {
+            &quot;field&quot;: &quot;salary&quot;
+          }
+        },
+        &quot;min_salary&quot;: {
+          &quot;min&quot;: {
+            &quot;field&quot;: &quot;salary&quot;
+          }
+        },
+        &quot;avg_salary&quot;: {
+          &quot;avg&quot;: {
+            &quot;field&quot;: &quot;salary&quot;
+          }
+        }
+      }
+    },
+    &quot;min_salary_by_job&quot;:{ // pipeline aggr
+      &quot;min_bucket&quot;: {
+        &quot;buckets_path&quot;: &quot;jobs&gt;avg_salary&quot;
+      }
+    }
+  }
+}
+</div></code></pre>
+<blockquote>
+<p>terms不能对text字段进行聚合分析, 需要对这个text字段开启fielddata</p>
+</blockquote>
+<h2 id="%E7%9B%B8%E5%85%B3%E6%80%A7%E7%AE%97%E5%88%86">相关性算分</h2>
+<p>相关性算分描述了一个文档和查询语句匹配的程度. es会对每个匹配的查询条件的结果进行算分_score. 打分的本质是排序, 把最符合用户需求的文档排在前面. es5之前, 默认的相关性算分采用TF-IDF, 现在采用BM 25.</p>
+<p>TF-IDF算法采用的是TF和IDF两个指标, 计算得到相关性算分:</p>
+<ul>
+<li>TF -- Term Frequency, 上面介绍倒排索引项的时候, 已经介绍过了. 该单词在文档中出现的次数, 检索词在文档中出现的总次数/该文档的总词数</li>
+<li>IDF - Inverse Document Frequency, 逆文档频率. log(全部文档数/检索词出现过的文档总数)</li>
+</ul>
+<p>而, 一般的TF-IDF算法就是: TF(词1)*IDF(词1) + TF(词2)*IDF(词2) + ...</p>
+<p>在Lucene中的TF-IDF在上面的基础上又做了调整, 对于每一个查询的关键词: <code>TF(词x) * IDF(词x) * boost(词x) * norm(词x)</code>, 这里面boost是在查询时指定的, 用于进行权重提升, 从而改变算分, norm的作用是文档越短, 相关性越高.</p>
+<p>对于BM25算法对于经典TF-IDF算法进行了优化, 使得TF无限增加时, 算分趋于一个稳定的数值.</p>
+<p>上面, 我们知道, must和should会贡献相关度算分, filter和must_not不会贡献相关度算分, 这里演示一下权重提升boost:</p>
+<pre class="hljs"><code><div>POST movies/_search
+{
+  &quot;query&quot;:{
+    &quot;bool&quot;:{
+      &quot;must&quot;:[
+        {
+          &quot;match&quot;: {
+            &quot;title&quot;: {
+              &quot;query&quot;: &quot;war&quot;,
+              &quot;boost&quot;: 1.0
+            }
+          }
+        },
+        {
+          &quot;match&quot;: {
+            &quot;title&quot;: {
+              &quot;query&quot;: &quot;room&quot;,
+              &quot;boost&quot;: 2.0
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+</div></code></pre>
+<h2 id="%E9%9B%86%E7%BE%A4%E5%88%86%E5%B8%83%E5%BC%8F%E6%A8%A1%E5%9E%8B">集群分布式模型</h2>
+<ul>
+<li>分布式特性
+<ol>
+<li>优点: 存储支持水平扩容, 支持PB级数据; 提高系统可用性, 部分节点停止不影响整个集群</li>
+<li>不同的集群通过名字来区分, 默认&quot;elasticsearch&quot;, 通过配置文件修改或者命令行<code>-E cluster.name=xxx</code>进行设定</li>
+</ol>
+</li>
+<li>节点
+<ol>
+<li>每一个节点是一个ElasticSearch实例, 本质是一个java进程;</li>
+<li>每一个节点都可以配置名字, 通过配置文件或者启动时指定<code>-E node.name=xxxx</code></li>
+<li>每个节点启动后, 会分配一个uid, 保存在data目录下</li>
+</ol>
+</li>
+<li>Coordinating Node
+<ol>
+<li>处理请求的节点称为Coordinate Node</li>
+<li>所有节点默认都是Coordinate Node, 可以通过设置, 将<code>node.master,node.data,node.ingest</code>等都配置成false,使得一个节点成为纯粹的Coordinate Node, 它自身不会有存储数据等行为</li>
+</ol>
+</li>
+<li>Data Node
+<ol>
+<li>可以保存数据的节点, 叫做data node</li>
+<li>节点默认都是data node节点, 可以通过<code>node.data: false</code>禁止</li>
+<li>职责是保存分片数据, 在数据库扩展上起到重要作用(由Master Node决定如何把分片分发到数据节点)</li>
+<li>通过增加节点数, 可以解决数据水平扩展和数据单点问题</li>
+</ol>
+</li>
+<li>Master Node
+<ol>
+<li>处理创建/删除索引等请求; 决定分片被分配到哪个节点; 负责索引的创建和删除;</li>
+<li>维护更新Cluster State</li>
+<li>Master Node十分重要, 部署上需要考虑解决单点问题</li>
+<li>为一个集群设置多个Master Node/每个节点只承担MasterNode中的单一角色</li>
+</ol>
+</li>
+<li>Master Eligible Nodes
+<ol>
+<li>一个集群可以配置多个Master Eligible节点. 在必要的时候, 这些节点可以参与选主, 成为master节点</li>
+<li>每个节点启动后, 默认就是Master Eligible, 可以通过设置<code>node.master: false</code>禁止</li>
+<li>集群中第一个Master Eligible节点启动时, 会将自己选举为Master节点</li>
+</ol>
+</li>
+<li>集群状态
+<ol>
+<li>维护了集群中的必要信息: 所有节点信息; 所有索引及mapping/setting信息; 分片路由信息.</li>
+<li>每个节点都保存了一份集群状态信息;</li>
+<li>只有Master Node节点才能修改集群状态信息, 并同步给其他节点</li>
+</ol>
+</li>
+<li>master线下后集群选主
+<ol>
+<li>互相Ping对方, Node id低的会成为被选举节点</li>
+<li>新的master节点选举成功之后, 会通过存活节点的副本数据, 补齐下线的master节点中所丢失的分片</li>
+</ol>
+</li>
+<li>脑裂问题
+<ol>
+<li>假如有三个节点A,B,C, 由于网络问题, A和B,C之间无法连接; 所以B,C自行选举, 将B推举为Master节点; 而A节点以为自己就是一个集群, 自己把自己推举为Master节点, 这时, 集群中就存在了两个Master节点</li>
+<li>解决方案, 限定选举条件. 设置一个quorum(quorum = master节点数/2 + 1)值, 只有master eligible节点数大于quorum, 才进行选举. 从7.0开始, 不需要自己配置, es自动完成.</li>
+</ol>
+</li>
+</ul>
+<h2 id="%E5%88%86%E7%89%87">分片</h2>
+<ul>
+<li>分片
+<ol>
+<li>分片是ES中的最小工作单元/Lucene中的一个Index</li>
+</ol>
+</li>
+<li>Primary Shard(主分片)
+<ol>
+<li>通过主分片, 将数据分布到所有节点上, 实现存储的水平扩展</li>
+<li>主分片在索引创建时指定, 后续不能修改, 如果非要修改, 需要reindex</li>
+<li>主分片数设置过大, 会导致单个分片的容量很小, 单个节点上的分片个数过多, 影响性能</li>
+</ol>
+</li>
+<li>Replica Shard(副本分片)
+<ol>
+<li>用于提高数据的可用性, 一旦主分片丢失, 副本分片可以提升为主分片</li>
+<li>副本分片数量可以动态调整</li>
+<li>副本分片和主分片不可以都分布在同一个节点上</li>
+<li>一定程度上, 副本分片可以提高读取的吞吐量(副本分片是可以查询的,见<a href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%9F%A5%E8%AF%A2">分布式查询</a>)</li>
+<li>副本分片设置过多, 会降低集群整体的写入性能</li>
+</ol>
+</li>
+<li>文档在分片上的存储
+<ol>
+<li>文档到分片的路由: <code>shard = hash(_routing) % number_of_primary_shards</code>(这也是主分片数不能修改的原因)</li>
+<li><code>_routing</code>默认是文档id, 可以自己指定</li>
+</ol>
+</li>
+</ul>
+<h2 id="es%E6%96%87%E6%A1%A3%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B">ES文档写入流程</h2>
+<ul>
+<li>Lucene Index
+<ol>
+<li>在Lucene中, 单个倒排索引文件被称为Segment. Segment是自包含的, 不可变更</li>
+<li>多个Segment汇总在一起, 就是Lucene的Index, 也就是es中的Shard</li>
+<li>写入文档时, 会生成新的Segment</li>
+<li>查询文档时, 同时查询所有Segment, 并对结果汇总. Lucene中有Commit Point文件, 用于记录所有Segment的信息</li>
+<li>文档删除时, 不会立即进行物理删除, 而是将删除的文档信息, 保存在.del文件中, 在每次搜索时, 对删除的文档进行过滤.</li>
+</ol>
+</li>
+<li>Index Buffer
+<ol>
+<li>Index Buffer是内存中的一块区域;</li>
+<li>es写入文档时, 会将文档先写入Index Buffer;</li>
+<li>Index Buffer中的数据是搜索不到的.</li>
+<li>Index Buffer的大小默认是java堆的10%.</li>
+</ol>
+</li>
+<li>Refresh
+<ol>
+<li>Index Buffer中的数据会定期写入Segment中, 这个过程称为Refresh.</li>
+<li>refresh频率默认为1s, 可以通过<code>index.refresh_interval</code>配置.</li>
+<li>Refresh后的数据可以被搜索到.</li>
+<li>Index Buffer被占满时, 也会触发Refresh.</li>
+<li>通过refresh, 数据写入segment之后, 并没有落盘, 也就是说Segment是在内存中的.</li>
+</ol>
+</li>
+<li>Transaction Log
+<ol>
+<li>由于Refresh过程并没有落盘, 为防止这期间的数据丢失, 文档在写入Index Buffer的同时, 文档也会写入Transaction Log.</li>
+<li>Transaction Log默认落盘.</li>
+<li>系统重新启动后, 会从Transaction Log总同步数据.</li>
+</ol>
+</li>
+<li>Flush
+<ol>
+<li>真正的数据落盘操作, 分为几步: 1. 通过Refresh, 将Index Buffer写入内存的Segment; 2. 通过fsync, 将内存中的Segments写入磁盘; 3. 删除Transaction Log</li>
+<li>Flush默认30分钟执行一次</li>
+<li>Transaction Log写满时(512M)也会触发Flush操作</li>
+</ol>
+</li>
+<li>Merge
+<ol>
+<li>将多个Segment合并为一个;</li>
+<li>将.del文件中记录的删除的文档做物理删除.</li>
+<li>es会定期自动执行Merge操作.</li>
+</ol>
+</li>
+</ul>
+<h2 id="es%E6%96%87%E6%A1%A3%E6%9F%A5%E8%AF%A2%E6%B5%81%E7%A8%8B">ES文档查询流程</h2>
+<ul>
+<li>query阶段
+<ol>
+<li>节点收到用户发出搜索的请求, 以Coordinate的身份, 随机选取主副分片中的几个(使得这几个构成完整的索引数据), 发送查询请求</li>
+<li>被选中的分片执行查询, 进行排序</li>
+<li>每个分片都会返回From+Size个排序后的文档id和排序值给Coordinate(From之前的也要返回)</li>
+</ol>
+</li>
+<li>fetch阶段
+<ol>
+<li>将query阶段得到的排序的多个id列表整体排序, 选取from 到 from+size的文档</li>
+<li>以multi get请求的方式, 到相应分片,  获取详细的文档数据</li>
+</ol>
+</li>
+</ul>
+<p>以上过程称为Query-Then-Fetch, 这个流程存在以下问题:</p>
+<ol>
+<li>查询性能差: 每个分片上查询的文档数 = from + size; coordinate node需要处理的数据规模是: number_of_shard * (from + size); 如果时深度分页(from很大), 性能会很糟糕.</li>
+<li>每个分片是基于自己分片上的数据进行的相关性算分, 而不是全局的相关性算分, 所以打分会有偏离, 主分片越多, 算分越不准</li>
+</ol>
+<p>解决相关性算分问题的方法:</p>
+<ol>
+<li>数据量不大时, 主分片设置为1</li>
+<li>数据量较大时, 保证文档均匀分布在各个分片上, 结果出现的偏差就不会太离谱</li>
+<li>搜索时, 指定<code>_search?search_type=dfs_query_then_fetch</code>, 使得Coordinate可以把每个分片把各自的TF和IDF搜集, 然后进行整体的相关性算分.
+<ul>
+<li>这会耗费更多的CPU和内存, 性能很差, 一般不建议使用</li>
+</ul>
+</li>
+</ol>
+<p>解决分页查询性能差的问题:</p>
+<ol>
+<li>es为了防止深度分页导致性能开销太大, es本身限制了from+size&lt;10000. 这个配置可以修改(index.max_result_window)</li>
+<li>通过search after避免深度分页. 示例在下面.
+<ul>
+<li>缺点: 不支持指定页数(From); 只能向下翻.</li>
+</ul>
+</li>
+<li>通过scroll api进行遍历查询. 示例在下面.
+<ul>
+<li>在查询时, 建立一个快照, 每次查询时, 输入上一次的scroll id(类似于redis中的hscan)</li>
+<li>缺点: 有新数据无法被查到</li>
+</ul>
+</li>
+</ol>
+<p>SearchAfter示例:</p>
+<pre class="hljs"><code><div>初次查询:
+POST movies/_search
+{
+  &quot;size&quot;:10,
+  &quot;query&quot;:{
+    &quot;match_all&quot;: {}
+  },
+  &quot;sort&quot;:[
+    {&quot;year&quot;:&quot;desc&quot;},
+    {&quot;_id&quot;: &quot;asc&quot;}
+  ]
+}
+
+可以拿到最后一条记录的sort信息:
+{
+  ......
+        &quot;sort&quot; : [
+          2018,
+          &quot;184015&quot;
+        ]
+  ......
+}
+
+之后查询, 将上一次sort返回的结果, 放入到search_after中:
+POST movies/_search
+{
+  &quot;size&quot;:10,
+  &quot;query&quot;:{
+    &quot;match_all&quot;: {}
+  },
+  &quot;search_after&quot;:[2018, &quot;184015&quot;],
+  &quot;sort&quot;:[
+    {&quot;year&quot;:&quot;desc&quot;},
+    {&quot;_id&quot;: &quot;asc&quot;}
+  ]
+}
+</div></code></pre>
+<p>scroll api示例</p>
+<pre class="hljs"><code><div>初次查询
+POST movies/_search?scroll=5m
+{
+  &quot;size&quot;:10,
+  &quot;query&quot;:{
+    &quot;match_all&quot;: {}
+  }
+}
+
+返回scroll_id:
+{
+  &quot;_scroll_id&quot; : &quot;DXF1ZXJ5QW5kRmV0Y2gBAAAAAAAAhncWOHFZd1lEWGVURU9RWEhMMDJ0S3E1UQ==&quot;,
+  ... ...
+}
+
+使用scroll_id继续查询:
+POST _search/scroll
+{
+  &quot;scroll&quot;:&quot;1m&quot;,
+  &quot;scroll_id&quot;: &quot;DXF1ZXJ5QW5kRmV0Y2gBAAAAAAAAhncWOHFZd1lEWGVURU9RWEhMMDJ0S3E1UQ==&quot;
+}
+</div></code></pre>
+<h2 id="update-by-query%E5%92%8Creindex">update by query和reindex</h2>
+<p>对索引重建有两种方式:</p>
+<ul>
+<li>update by query:
+<ul>
+<li>在现有索引上重建</li>
+<li>只有在mapping字段增量修改的情况下才能使用</li>
+</ul>
+</li>
+<li>reindex
+<ul>
+<li>在其它索引上重建</li>
+<li>修改原有字段类型, 主分片变更等, 是不允许在原有index上进行修改的, 只能使用reindex</li>
+<li>reindex要求<code>_source</code>必须是enable</li>
+<li>必须先配置好目标mapping</li>
+<li>可以在<code>dest</code>下增加<code>op_type</code>防止对目标索引中已有文档产生覆盖</li>
+<li>跨集群的reindex需要修改elasticsearch.yml文件中的配置<code>reindex.remote.whitelist:&quot;host1,host2&quot;</code>, 并重启</li>
+</ul>
+</li>
+</ul>
+<p>示例如下:</p>
+<pre class="hljs"><code><div>update by query示例:
+POST frog_index/_update_by_query
+{}
+
+reindex示例, 先设定一个新的索引, 然后执行reindex:
+PUT /employees_fff/
+{
+  &quot;mappings&quot; : {
+      &quot;properties&quot; : {
+        &quot;age&quot; : {
+          &quot;type&quot; : &quot;integer&quot;
+        },
+        &quot;gender&quot; : {
+          &quot;type&quot; : &quot;keyword&quot;
+        },
+        &quot;job&quot; : {
+          &quot;type&quot; : &quot;text&quot;,
+          &quot;fields&quot; : {
+            &quot;keyword&quot; : {
+              &quot;type&quot; : &quot;keyword&quot;,
+              &quot;ignore_above&quot; : 50
+            }
+          }
+        },
+        &quot;name&quot; : {
+          &quot;type&quot; : &quot;keyword&quot;
+        },
+        &quot;salary&quot; : {
+          &quot;type&quot; : &quot;integer&quot;
+        }
+      }
+    }
+}
+
+POST _reindex
+{
+  &quot;source&quot;: {
+    &quot;index&quot;: &quot;employees&quot;
+  },
+  &quot;dest&quot;:{
+    &quot;index&quot;: &quot;employees_fff&quot;
+  }
+}
+</div></code></pre>
+<h2 id="%E5%85%B6%E4%BB%96%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86%E7%82%B9">其他一些知识点</h2>
+<p><strong>filedata与doc_values</strong></p>
+<p>ES默认是使用算分进行排序的, 我们通过制定排序的字段, 而不通过算分排序. 这时, 排序是针对字段的原始内容, 倒排索引无法发挥作用. 需要使用正排索引, 通过文档id和字段快速得到字段原始内容. ElasticSearch有两种正排索引的实现方式:</p>
+<ul>
+<li>filedata</li>
+<li>doc_values: 列式存储, 对text类型无效</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>\</th>
+<th>doc values</th>
+<th>filed data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何时创建</td>
+<td>索引时,和倒排索引以创建</td>
+<td>搜索时动态创建</td>
+</tr>
+<tr>
+<td>创建位置</td>
+<td>磁盘文件</td>
+<td>java堆</td>
+</tr>
+<tr>
+<td>优点</td>
+<td>避免大量内存占用</td>
+<td>索引速度快,不占用额外的磁盘空间</td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>降低文档写入时索引速度,占用额外的磁盘空间</td>
+<td>文档过多时, 动态开销大, 占用过多的java堆</td>
+</tr>
+</tbody>
+</table>
+<p>doc_values是默认开启的, 可以通过mapping设置来关闭, 如果需要重新打开, 则需要reindex. 关闭doc_values后, 可以增加新增文档时的索引速度, 减少磁盘空间. 但是关闭doc_values之后, 该字段就不可以用来排序了.</p>
+<p><strong>并发读写文档</strong></p>
+<p>ES中采用乐观锁的方式进行并发控制. 首先ES中的文档是不可变更的. 更新一个文档实际上是将原有文档删除, 同时增加一个新的文档, 并将文档的version加1. ES并发控制就是通过版本号来实现的乐观锁. 并发控制需要客户端配合使用, 而不是服务端自己就能完成的.</p>
+<ul>
+<li>内部版本控制: if_seq_no + if_primary_term</li>
+<li>外部版本控制: version + version_type=external</li>
+</ul>
+<p>示例如下:</p>
+<pre class="hljs"><code><div>内部版本控制:
+先查出一个文档:
+GET /movies/_doc/184015
+{
+  &quot;_index&quot; : &quot;movies&quot;,
+  &quot;_type&quot; : &quot;_doc&quot;,
+  &quot;_id&quot; : &quot;184015&quot;,
+  &quot;_version&quot; : 1,
+  &quot;_seq_no&quot; : 9687,
+  &quot;_primary_term&quot; : 1,
+  &quot;found&quot; : true,
+  &quot;_source&quot; : {
+    &quot;genre&quot; : [
+      &quot;Comedy&quot;
+    ],
+    &quot;year&quot; : 2018,
+    &quot;@version&quot; : &quot;1&quot;,
+    &quot;title&quot; : &quot;When We First Met&quot;,
+    &quot;id&quot; : &quot;184015&quot;
+  }
+}
+
+得到了_seq_no和_primary_term.
+执行更新:
+PUT /movies/_doc/184015?if_seq_no=9687&amp;if_primary_term=1
+{
+  &quot;title&quot;:&quot;When We First Met-fix&quot;
+}
+
+如果有多个线程并发的访问, 使用的相同的seq_no和primary_term, 只有一个会更新成功, 另一个会报错.
+
+外部版本控制示例, version来源于第三方存储, 例如数据库, 这时不需要先查询es, 而是直接更新:
+PUT /movies/_doc/184015?version=10&amp;version_type=external
+{
+    &quot;genre&quot; : [
+      &quot;Comedy&quot;
+    ],
+    &quot;year&quot; : 2018,
+    &quot;@version&quot; : &quot;1&quot;,
+    &quot;title&quot; : &quot;When We First Met&quot;,
+    &quot;id&quot; : &quot;184015&quot;
+}
+这时, 并发更新的另一个线程如果version小于等于这个version, 则会直接报错.
+</div></code></pre>
+<p><strong>Ingest Node</strong></p>
+<p>es5.0引入的新的节点类型, 默认配置下, 每个节点都是Ingest Node.</p>
+<ul>
+<li>具有预处理数据的能力, 可拦截Index和Bulk Api请求.</li>
+<li>对数据进行转化, 重新返回给Index或Bulk Api.</li>
+</ul>
+<p>具体预处理能力有:</p>
+<ul>
+<li>为某个字段设置默认值;</li>
+<li>重命名某个字段的字段名;</li>
+<li>字段值进行split操作;</li>
+<li>支持Painless脚本, 对数据进行更加复杂的加工</li>
+</ul>
+<h2 id="%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%87%E5%BF%98">常用命令备忘</h2>
+<ul>
+<li>列出索引列表:</li>
+</ul>
+<pre class="hljs"><code><div>curl -s -u username:password http://xxxxxxx/_cat/indices?v
+</div></code></pre>
+<ul>
+<li>删除指定索引</li>
+</ul>
+<pre class="hljs"><code><div>curl -s -u username:password -X DELETE http://xxxxxxxx/index_name
+</div></code></pre>
+<ul>
+<li>查看节点信息</li>
+</ul>
+<pre class="hljs"><code><div>curl -s -u usename:password http://xxxxxxxx/_cat/nodes
+</div></code></pre>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>极客时间-ElasticSearch核心技术与实战</li>
+</ul>
+<h2 id="%E9%99%84%E5%BD%95">附录</h2>
+<h5 id="document%E7%A4%BA%E4%BE%8B">document示例</h5>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"_index"</span>: <span class="hljs-string">"sw_segment-20220517"</span>,
+  <span class="hljs-attr">"_type"</span>: <span class="hljs-string">"_doc"</span>,
+  <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"2ce2eff1dff1413f84b9c296f7e401aa.66.16527767270910008"</span>,
+  <span class="hljs-attr">"_version"</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">"_score"</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">"_source"</span>: {
+    <span class="hljs-attr">"trace_id"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.68.16527767270880005"</span>,
+    <span class="hljs-attr">"endpoint_name"</span>: <span class="hljs-string">"GET:/hello"</span>,
+    <span class="hljs-attr">"latency"</span>: <span class="hljs-number">4</span>,
+    <span class="hljs-attr">"end_time"</span>: <span class="hljs-number">1652776727095</span>,
+    <span class="hljs-attr">"endpoint_id"</span>: <span class="hljs-string">"RGVtb0FwcEI=.1_R0VUOi9oZWxsbw=="</span>,
+    <span class="hljs-attr">"service_instance_id"</span>: <span class="hljs-string">"RGVtb0FwcEI=.1_MzI2ZDBhMDBjYmEyNDk4NTk2MmQ5Yzc4YzhjOTkwNmJAMTkyLjE2OC41Ni4x"</span>,
+    <span class="hljs-attr">"version"</span>: <span class="hljs-number">3</span>,
+    <span class="hljs-attr">"tags"</span>: [
+      <span class="hljs-string">"http.method=GET"</span>
+    ],
+    <span class="hljs-attr">"start_time"</span>: <span class="hljs-number">1652776727091</span>,
+    <span class="hljs-attr">"data_binary"</span>: <span class="hljs-string">"CjVkMDBmZmJiMTdiZTM0NWE0YjZlZTA3MjQ0ODllYzk1MC42OC4xNjUyNzc2NzI3MDg4MDAwNRI1MmNlMmVmZjFkZmYxNDEzZjg0YjljMjk2ZjdlNDAxYWEuNjYuMTY1Mjc3NjcyNzA5MTAwMDgaNwgBGLXkrYmNMCC15K2JjTAyIUhpa2FyaUNQL0Nvbm5lY3Rpb24vZ2V0Q29ubmVjdGlvbkACUHQaLwgCGLfkrYmNMCC35K2JjTAyGUhpa2FyaUNQL0Nvbm5lY3Rpb24vY2xvc2VAAlB0GqkCEP///////////wEYs+StiY0wILfkrYmNMCrFARI1ZDAwZmZiYjE3YmUzNDVhNGI2ZWUwNzI0NDg5ZWM5NTAuNjguMTY1Mjc3NjcyNzA4ODAwMDUaNWQwMGZmYmIxN2JlMzQ1YTRiNmVlMDcyNDQ4OWVjOTUwLjY4LjE2NTI3NzY3MjcwODgwMDA0IAEqCERlbW9BcHBBMi1iZDMyMmQxNDk4MDc0YTNmODU5Nzg2ODM5ZWZkZWY0ZUAxOTIuMTY4LjU2LjE6CkdFVDovaGVsbG9CDmxvY2FsaG9zdDo5MDkyMgpHRVQ6L2hlbGxvSANQDmIiCgN1cmwSG2h0dHA6Ly9sb2NhbGhvc3Q6OTA5Mi9oZWxsb2ISCgtodHRwLm1ldGhvZBIDR0VUIghEZW1vQXBwQiotMzI2ZDBhMDBjYmEyNDk4NTk2MmQ5Yzc4YzhjOTkwNmJAMTkyLjE2OC41Ni4x"</span>,
+    <span class="hljs-attr">"service_id"</span>: <span class="hljs-string">"RGVtb0FwcEI=.1"</span>,
+    <span class="hljs-attr">"statement"</span>: <span class="hljs-string">"GET:/hello - d00ffbb17be345a4b6ee0724489ec950.68.16527767270880005"</span>,
+    <span class="hljs-attr">"time_bucket"</span>: <span class="hljs-number">20220517163847</span>,
+    <span class="hljs-attr">"is_error"</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">"segment_id"</span>: <span class="hljs-string">"2ce2eff1dff1413f84b9c296f7e401aa.66.16527767270910008"</span>
+  }
+}
+</div></code></pre>
+<h5 id="mapping%E7%A4%BA%E4%BE%8B">mapping示例</h5>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"mapping"</span>: {
+    <span class="hljs-attr">"properties"</span>: {
+      <span class="hljs-attr">"data_binary"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"binary"</span>
+      },
+      <span class="hljs-attr">"end_time"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"long"</span>
+      },
+      <span class="hljs-attr">"endpoint_id"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
+      },
+      <span class="hljs-attr">"endpoint_name"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>,
+        <span class="hljs-attr">"copy_to"</span>: [
+          <span class="hljs-string">"endpoint_name_match"</span>
+        ]
+      },
+      <span class="hljs-attr">"endpoint_name_match"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"text"</span>,
+        <span class="hljs-attr">"analyzer"</span>: <span class="hljs-string">"oap_analyzer"</span>
+      },
+      <span class="hljs-attr">"is_error"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"integer"</span>
+      },
+      <span class="hljs-attr">"latency"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"integer"</span>
+      },
+      <span class="hljs-attr">"segment_id"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
+      },
+      <span class="hljs-attr">"service_id"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
+      },
+      <span class="hljs-attr">"service_instance_id"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
+      },
+      <span class="hljs-attr">"start_time"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"long"</span>
+      },
+      <span class="hljs-attr">"statement"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
+      },
+      <span class="hljs-attr">"tags"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
+      },
+      <span class="hljs-attr">"time_bucket"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"long"</span>
+      },
+      <span class="hljs-attr">"trace_id"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
+      },
+      <span class="hljs-attr">"version"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"integer"</span>,
+        <span class="hljs-attr">"index"</span>: <span class="hljs-literal">false</span>
+      }
+    }
+  }
+}
+</div></code></pre>
+<h5 id="setting%E7%A4%BA%E4%BE%8B">setting示例</h5>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"settings"</span>: {
+    <span class="hljs-attr">"index"</span>: {
+      <span class="hljs-attr">"refresh_interval"</span>: <span class="hljs-string">"10s"</span>,
+      <span class="hljs-attr">"number_of_shards"</span>: <span class="hljs-string">"5"</span>,
+      <span class="hljs-attr">"provided_name"</span>: <span class="hljs-string">"sw_segment-20220517"</span>,
+      <span class="hljs-attr">"creation_date"</span>: <span class="hljs-string">"1652773059350"</span>,
+      <span class="hljs-attr">"analysis"</span>: {
+        <span class="hljs-attr">"analyzer"</span>: {
+          <span class="hljs-attr">"oap_analyzer"</span>: {
+            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"stop"</span>
+          }
+        }
+      },
+      <span class="hljs-attr">"number_of_replicas"</span>: <span class="hljs-string">"0"</span>,
+      <span class="hljs-attr">"uuid"</span>: <span class="hljs-string">"9ZWSlvzATteNnObwnGhVfQ"</span>,
+      <span class="hljs-attr">"version"</span>: {
+        <span class="hljs-attr">"created"</span>: <span class="hljs-string">"7010099"</span>
+      }
+    }
+  },
+  <span class="hljs-attr">"defaults"</span>: {
+    <span class="hljs-attr">"index"</span>: {
+      <span class="hljs-attr">"max_inner_result_window"</span>: <span class="hljs-string">"100"</span>,
+      <span class="hljs-attr">"unassigned"</span>: {
+        <span class="hljs-attr">"node_left"</span>: {
+          <span class="hljs-attr">"delayed_timeout"</span>: <span class="hljs-string">"1m"</span>
+        }
+      },
+      <span class="hljs-attr">"max_terms_count"</span>: <span class="hljs-string">"65536"</span>,
+      <span class="hljs-attr">"lifecycle"</span>: {
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-attr">"rollover_alias"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-attr">"indexing_complete"</span>: <span class="hljs-string">"false"</span>
+      },
+      <span class="hljs-attr">"routing_partition_size"</span>: <span class="hljs-string">"1"</span>,
+      <span class="hljs-attr">"force_memory_term_dictionary"</span>: <span class="hljs-string">"false"</span>,
+      <span class="hljs-attr">"max_docvalue_fields_search"</span>: <span class="hljs-string">"100"</span>,
+      <span class="hljs-attr">"merge"</span>: {
+        <span class="hljs-attr">"scheduler"</span>: {
+          <span class="hljs-attr">"max_thread_count"</span>: <span class="hljs-string">"4"</span>,
+          <span class="hljs-attr">"auto_throttle"</span>: <span class="hljs-string">"true"</span>,
+          <span class="hljs-attr">"max_merge_count"</span>: <span class="hljs-string">"9"</span>
+        },
+        <span class="hljs-attr">"policy"</span>: {
+          <span class="hljs-attr">"reclaim_deletes_weight"</span>: <span class="hljs-string">"2.0"</span>,
+          <span class="hljs-attr">"floor_segment"</span>: <span class="hljs-string">"2mb"</span>,
+          <span class="hljs-attr">"max_merge_at_once_explicit"</span>: <span class="hljs-string">"30"</span>,
+          <span class="hljs-attr">"max_merge_at_once"</span>: <span class="hljs-string">"10"</span>,
+          <span class="hljs-attr">"max_merged_segment"</span>: <span class="hljs-string">"5gb"</span>,
+          <span class="hljs-attr">"expunge_deletes_allowed"</span>: <span class="hljs-string">"10.0"</span>,
+          <span class="hljs-attr">"segments_per_tier"</span>: <span class="hljs-string">"10.0"</span>,
+          <span class="hljs-attr">"deletes_pct_allowed"</span>: <span class="hljs-string">"33.0"</span>
+        }
+      },
+      <span class="hljs-attr">"max_refresh_listeners"</span>: <span class="hljs-string">"1000"</span>,
+      <span class="hljs-attr">"max_regex_length"</span>: <span class="hljs-string">"1000"</span>,
+      <span class="hljs-attr">"load_fixed_bitset_filters_eagerly"</span>: <span class="hljs-string">"true"</span>,
+      <span class="hljs-attr">"number_of_routing_shards"</span>: <span class="hljs-string">"1"</span>,
+      <span class="hljs-attr">"write"</span>: {
+        <span class="hljs-attr">"wait_for_active_shards"</span>: <span class="hljs-string">"1"</span>
+      },
+      <span class="hljs-attr">"mapping"</span>: {
+        <span class="hljs-attr">"coerce"</span>: <span class="hljs-string">"false"</span>,
+        <span class="hljs-attr">"nested_fields"</span>: {
+          <span class="hljs-attr">"limit"</span>: <span class="hljs-string">"50"</span>
+        },
+        <span class="hljs-attr">"nested_objects"</span>: {
+          <span class="hljs-attr">"limit"</span>: <span class="hljs-string">"10000"</span>
+        },
+        <span class="hljs-attr">"depth"</span>: {
+          <span class="hljs-attr">"limit"</span>: <span class="hljs-string">"20"</span>
+        },
+        <span class="hljs-attr">"ignore_malformed"</span>: <span class="hljs-string">"false"</span>,
+        <span class="hljs-attr">"total_fields"</span>: {
+          <span class="hljs-attr">"limit"</span>: <span class="hljs-string">"1000"</span>
+        }
+      },
+      <span class="hljs-attr">"source_only"</span>: <span class="hljs-string">"false"</span>,
+      <span class="hljs-attr">"soft_deletes"</span>: {
+        <span class="hljs-attr">"enabled"</span>: <span class="hljs-string">"false"</span>,
+        <span class="hljs-attr">"retention"</span>: {
+          <span class="hljs-attr">"operations"</span>: <span class="hljs-string">"0"</span>
+        },
+        <span class="hljs-attr">"retention_lease"</span>: {
+          <span class="hljs-attr">"period"</span>: <span class="hljs-string">"12h"</span>
+        }
+      },
+      <span class="hljs-attr">"max_script_fields"</span>: <span class="hljs-string">"32"</span>,
+      <span class="hljs-attr">"query"</span>: {
+        <span class="hljs-attr">"default_field"</span>: [
+          <span class="hljs-string">"*"</span>
+        ],
+        <span class="hljs-attr">"parse"</span>: {
+          <span class="hljs-attr">"allow_unmapped_fields"</span>: <span class="hljs-string">"true"</span>
+        }
+      },
+      <span class="hljs-attr">"format"</span>: <span class="hljs-string">"0"</span>,
+      <span class="hljs-attr">"frozen"</span>: <span class="hljs-string">"false"</span>,
+      <span class="hljs-attr">"sort"</span>: {
+        <span class="hljs-attr">"missing"</span>: [],
+        <span class="hljs-attr">"mode"</span>: [],
+        <span class="hljs-attr">"field"</span>: [],
+        <span class="hljs-attr">"order"</span>: []
+      },
+      <span class="hljs-attr">"priority"</span>: <span class="hljs-string">"1"</span>,
+      <span class="hljs-attr">"codec"</span>: <span class="hljs-string">"default"</span>,
+      <span class="hljs-attr">"max_rescore_window"</span>: <span class="hljs-string">"10000"</span>,
+      <span class="hljs-attr">"max_adjacency_matrix_filters"</span>: <span class="hljs-string">"100"</span>,
+      <span class="hljs-attr">"analyze"</span>: {
+        <span class="hljs-attr">"max_token_count"</span>: <span class="hljs-string">"10000"</span>
+      },
+      <span class="hljs-attr">"gc_deletes"</span>: <span class="hljs-string">"60s"</span>,
+      <span class="hljs-attr">"optimize_auto_generated_id"</span>: <span class="hljs-string">"true"</span>,
+      <span class="hljs-attr">"max_ngram_diff"</span>: <span class="hljs-string">"1"</span>,
+      <span class="hljs-attr">"translog"</span>: {
+        <span class="hljs-attr">"generation_threshold_size"</span>: <span class="hljs-string">"64mb"</span>,
+        <span class="hljs-attr">"flush_threshold_size"</span>: <span class="hljs-string">"512mb"</span>,
+        <span class="hljs-attr">"sync_interval"</span>: <span class="hljs-string">"5s"</span>,
+        <span class="hljs-attr">"retention"</span>: {
+          <span class="hljs-attr">"size"</span>: <span class="hljs-string">"512mb"</span>,
+          <span class="hljs-attr">"age"</span>: <span class="hljs-string">"12h"</span>
+        },
+        <span class="hljs-attr">"durability"</span>: <span class="hljs-string">"REQUEST"</span>
+      },
+      <span class="hljs-attr">"auto_expand_replicas"</span>: <span class="hljs-string">"false"</span>,
+      <span class="hljs-attr">"mapper"</span>: {
+        <span class="hljs-attr">"dynamic"</span>: <span class="hljs-string">"true"</span>
+      },
+      <span class="hljs-attr">"requests"</span>: {
+        <span class="hljs-attr">"cache"</span>: {
+          <span class="hljs-attr">"enable"</span>: <span class="hljs-string">"true"</span>
+        }
+      },
+      <span class="hljs-attr">"data_path"</span>: <span class="hljs-string">""</span>,
+      <span class="hljs-attr">"highlight"</span>: {
+        <span class="hljs-attr">"max_analyzed_offset"</span>: <span class="hljs-string">"1000000"</span>
+      },
+      <span class="hljs-attr">"routing"</span>: {
+        <span class="hljs-attr">"rebalance"</span>: {
+          <span class="hljs-attr">"enable"</span>: <span class="hljs-string">"all"</span>
+        },
+        <span class="hljs-attr">"allocation"</span>: {
+          <span class="hljs-attr">"enable"</span>: <span class="hljs-string">"all"</span>,
+          <span class="hljs-attr">"total_shards_per_node"</span>: <span class="hljs-string">"-1"</span>
+        }
+      },
+      <span class="hljs-attr">"search"</span>: {
+        <span class="hljs-attr">"slowlog"</span>: {
+          <span class="hljs-attr">"level"</span>: <span class="hljs-string">"TRACE"</span>,
+          <span class="hljs-attr">"threshold"</span>: {
+            <span class="hljs-attr">"fetch"</span>: {
+              <span class="hljs-attr">"warn"</span>: <span class="hljs-string">"-1"</span>,
+              <span class="hljs-attr">"trace"</span>: <span class="hljs-string">"-1"</span>,
+              <span class="hljs-attr">"debug"</span>: <span class="hljs-string">"-1"</span>,
+              <span class="hljs-attr">"info"</span>: <span class="hljs-string">"-1"</span>
+            },
+            <span class="hljs-attr">"query"</span>: {
+              <span class="hljs-attr">"warn"</span>: <span class="hljs-string">"-1"</span>,
+              <span class="hljs-attr">"trace"</span>: <span class="hljs-string">"-1"</span>,
+              <span class="hljs-attr">"debug"</span>: <span class="hljs-string">"-1"</span>,
+              <span class="hljs-attr">"info"</span>: <span class="hljs-string">"-1"</span>
+            }
+          }
+        },
+        <span class="hljs-attr">"idle"</span>: {
+          <span class="hljs-attr">"after"</span>: <span class="hljs-string">"30s"</span>
+        },
+        <span class="hljs-attr">"throttled"</span>: <span class="hljs-string">"false"</span>
+      },
+      <span class="hljs-attr">"fielddata"</span>: {
+        <span class="hljs-attr">"cache"</span>: <span class="hljs-string">"node"</span>
+      },
+      <span class="hljs-attr">"default_pipeline"</span>: <span class="hljs-string">"_none"</span>,
+      <span class="hljs-attr">"max_slices_per_scroll"</span>: <span class="hljs-string">"1024"</span>,
+      <span class="hljs-attr">"shard"</span>: {
+        <span class="hljs-attr">"check_on_startup"</span>: <span class="hljs-string">"false"</span>
+      },
+      <span class="hljs-attr">"xpack"</span>: {
+        <span class="hljs-attr">"watcher"</span>: {
+          <span class="hljs-attr">"template"</span>: {
+            <span class="hljs-attr">"version"</span>: <span class="hljs-string">""</span>
+          }
+        },
+        <span class="hljs-attr">"version"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-attr">"ccr"</span>: {
+          <span class="hljs-attr">"following_index"</span>: <span class="hljs-string">"false"</span>
+        }
+      },
+      <span class="hljs-attr">"percolator"</span>: {
+        <span class="hljs-attr">"map_unmapped_fields_as_text"</span>: <span class="hljs-string">"false"</span>
+      },
+      <span class="hljs-attr">"allocation"</span>: {
+        <span class="hljs-attr">"max_retries"</span>: <span class="hljs-string">"5"</span>
+      },
+      <span class="hljs-attr">"indexing"</span>: {
+        <span class="hljs-attr">"slowlog"</span>: {
+          <span class="hljs-attr">"reformat"</span>: <span class="hljs-string">"true"</span>,
+          <span class="hljs-attr">"threshold"</span>: {
+            <span class="hljs-attr">"index"</span>: {
+              <span class="hljs-attr">"warn"</span>: <span class="hljs-string">"-1"</span>,
+              <span class="hljs-attr">"trace"</span>: <span class="hljs-string">"-1"</span>,
+              <span class="hljs-attr">"debug"</span>: <span class="hljs-string">"-1"</span>,
+              <span class="hljs-attr">"info"</span>: <span class="hljs-string">"-1"</span>
+            }
+          },
+          <span class="hljs-attr">"source"</span>: <span class="hljs-string">"1000"</span>,
+          <span class="hljs-attr">"level"</span>: <span class="hljs-string">"TRACE"</span>
+        }
+      },
+      <span class="hljs-attr">"compound_format"</span>: <span class="hljs-string">"0.1"</span>,
+      <span class="hljs-attr">"blocks"</span>: {
+        <span class="hljs-attr">"metadata"</span>: <span class="hljs-string">"false"</span>,
+        <span class="hljs-attr">"read"</span>: <span class="hljs-string">"false"</span>,
+        <span class="hljs-attr">"read_only_allow_delete"</span>: <span class="hljs-string">"false"</span>,
+        <span class="hljs-attr">"read_only"</span>: <span class="hljs-string">"false"</span>,
+        <span class="hljs-attr">"write"</span>: <span class="hljs-string">"false"</span>
+      },
+      <span class="hljs-attr">"max_result_window"</span>: <span class="hljs-string">"10000"</span>,
+      <span class="hljs-attr">"store"</span>: {
+        <span class="hljs-attr">"stats_refresh_interval"</span>: <span class="hljs-string">"10s"</span>,
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-attr">"fs"</span>: {
+          <span class="hljs-attr">"fs_lock"</span>: <span class="hljs-string">"native"</span>
+        },
+        <span class="hljs-attr">"preload"</span>: []
+      },
+      <span class="hljs-attr">"queries"</span>: {
+        <span class="hljs-attr">"cache"</span>: {
+          <span class="hljs-attr">"enabled"</span>: <span class="hljs-string">"true"</span>
+        }
+      },
+      <span class="hljs-attr">"warmer"</span>: {
+        <span class="hljs-attr">"enabled"</span>: <span class="hljs-string">"true"</span>
+      },
+      <span class="hljs-attr">"max_shingle_diff"</span>: <span class="hljs-string">"3"</span>,
+      <span class="hljs-attr">"query_string"</span>: {
+        <span class="hljs-attr">"lenient"</span>: <span class="hljs-string">"false"</span>
+      }
+    }
+  }
+}
+</div></code></pre>
+<h5 id="%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">数据准备</h5>
+<p>windows下的演示:</p>
+<ol>
+<li>下载数据集 https://grouplens.org/datasets/movielens/</li>
+<li>下载logstash https://www.elastic.co/cn/downloads/logstash</li>
+<li>在logstash的bin目录下增加文件<code>logstash.conf</code>:</li>
+</ol>
+<pre class="hljs"><code><div>input {
+  file {
+    path =&gt; [&quot;D:/Download/ml-25m/movies.csv&quot;]
+    start_position =&gt; &quot;beginning&quot;
+    sincedb_path =&gt; &quot;D:/Download/ml-25m/www&quot;
+  }
+}
+filter {
+  csv {
+    separator =&gt; &quot;,&quot;
+    columns =&gt; [&quot;id&quot;,&quot;content&quot;,&quot;genre&quot;]
+  }
+
+  mutate {
+    split =&gt; { &quot;genre&quot; =&gt; &quot;|&quot; }
+    remove_field =&gt; [&quot;path&quot;, &quot;host&quot;,&quot;@timestamp&quot;,&quot;message&quot;]
+  }
+
+  mutate {
+
+    split =&gt; [&quot;content&quot;, &quot;(&quot;]
+    add_field =&gt; { &quot;title&quot; =&gt; &quot;%{[content][0]}&quot;}
+    add_field =&gt; { &quot;year&quot; =&gt; &quot;%{[content][1]}&quot;}
+  }
+
+  mutate {
+    convert =&gt; {
+      &quot;year&quot; =&gt; &quot;integer&quot;
+    }
+    strip =&gt; [&quot;title&quot;]
+    remove_field =&gt; [&quot;path&quot;, &quot;host&quot;,&quot;@timestamp&quot;,&quot;message&quot;,&quot;content&quot;]
+  }
+
+}
+output {
+   elasticsearch {
+     hosts =&gt; &quot;http://localhost:9200&quot;
+     index =&gt; &quot;movies&quot;
+     document_id =&gt; &quot;%{id}&quot;
+   }
+  stdout {}
+}
+</div></code></pre>
+<ol start="4">
+<li>执行命令</li>
+</ol>
+<pre class="hljs"><code><div>logstash.bat -f logstash.conf
+</div></code></pre>
+<ol start="5">
+<li>看到命令行输出从csv文件中读出的数据, 说明正在导入, 等待一会, 即可完成数据的导入.</li>
+</ol>
+
+</body>
+</html>
