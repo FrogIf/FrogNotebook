@@ -112,7 +112,7 @@ ElasticSearch常见分析器:
 
 内置的tokenizer:
 
-* whitespance - 以空格进行分词
+* whitespace - 以空格进行分词
 * standard - 以字母的方式进行切分
 * uax_url_email - 以url和email的特点进行分词
 * pattern - 通过正则表达式分词
@@ -143,7 +143,7 @@ es中字段类型有如下:
 
 * 简单类型
   * text: 会被分词, 用于全文查找
-  * keyword: 用于精确值匹配, 不会被分词
+  * keyword: 用于精确值匹配, 不会被分词, 整体作为一项保存到倒排索引中
   * date
   * integer/floating
   * boolean
@@ -161,7 +161,7 @@ Text:
 
 keyword:
 1. 用于id, 枚举及不需要分词的文本. 例如: 电话号码, email地址, 手机号, 邮政编码, 性别等
-2. 使用与filter(精确匹配), sorting和aggregations
+2. 适用于filter(精确匹配), sorting和aggregations
 
 es默认情况下, 会为文本类型设置成text, 同时设置一个keyword子字段
 
@@ -325,7 +325,7 @@ PUT frog_vvvv_index
 }
 ```
 
-这里设置了一个dynamic template, 使得所有字符串类型, 但是字段以is开头的, 另它的类型为boolean.
+这里设置了一个dynamic template, 匹配所有字符串类型, 但是字段以is开头的, 另它的类型为boolean.
 
 ## 增删改
 
