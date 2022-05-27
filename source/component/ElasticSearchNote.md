@@ -229,6 +229,25 @@ PUT frog_index/_mapping
 * false - mapping不会被更新, 新增的字段无法被查询, 但是新增的字段信息会出现在_source中
 * strict - 新增字段直接导致整个文档写入失败
 
+全局关闭dynamic mapping的设置:
+
+```
+PUT _cluster/settings
+{
+  "persistent":{
+    "action.auto_create_index": false
+  }
+}
+
+或者设置白名单:
+PUT _cluster/settings
+{
+  "persistent":{
+    "action.auto_create_index": "logstash-*,.kibana*"
+  }
+}
+```
+
 对于已有字段, 一旦已经写入数据, 就不能修改字段定义. 如果希望修改字段类型, 必须通过reindex重建索引.
 
 es的mapping提供了一种"多字段特性", 可以为任意字段增加子字段. 示例如下:
@@ -720,6 +739,22 @@ POST movies/_search
 }
 ```
 
+## filedata与doc_values
+
+ES默认是使用算分进行排序的, 我们通过制定排序的字段, 而不通过算分排序. 这时, 排序是针对字段的原始内容, 倒排索引无法发挥作用. 需要使用正排索引, 通过文档id和字段快速得到字段原始内容. ElasticSearch有两种正排索引的实现方式:
+
+* filedata
+* doc_values: 列式存储, 对text类型无效
+
+\ |doc values|filed data
+-|-|-
+何时创建|索引时,和倒排索引以创建|搜索时动态创建
+创建位置|磁盘文件|java堆
+优点|避免大量内存占用|索引速度快,不占用额外的磁盘空间
+缺点|降低文档写入时索引速度,占用额外的磁盘空间|文档过多时, 动态开销大, 占用过多的java堆
+
+doc_values是默认开启的, 可以通过mapping设置来关闭, 如果需要重新打开, 则需要reindex. 关闭doc_values后, 可以增加新增文档时的索引速度, 减少磁盘空间. 但是关闭doc_values之后, 该字段就不可以用来排序了.
+
 ##  集群分布式模型
 
 * 分布式特性
@@ -746,6 +781,15 @@ POST movies/_search
   1. 一个集群可以配置多个Master Eligible节点. 在必要的时候, 这些节点可以参与选主, 成为master节点
   2. 每个节点启动后, 默认就是Master Eligible, 可以通过设置```node.master: false```禁止
   3. 集群中第一个Master Eligible节点启动时, 会将自己选举为Master节点
+* Ingest Node
+  1. es5.0引入的新的节点类型, 默认配置下, 每个节点都是Ingest Node.
+  2. 具有预处理数据的能力, 可拦截Index和Bulk Api请求.
+  3. 对数据进行转化, 重新返回给Index或Bulk Api.
+  4. 具体预处理能力有:
+     * 为某个字段设置默认值;
+     * 重命名某个字段的字段名; 
+     * 字段值进行split操作;
+     * 支持Painless脚本, 对数据进行更加复杂的加工
 * 集群状态
   1. 维护了集群中的必要信息: 所有节点信息; 所有索引及mapping/setting信息; 分片路由信息.
   2. 每个节点都保存了一份集群状态信息;
@@ -756,6 +800,54 @@ POST movies/_search
 * 脑裂问题
   1. 假如有三个节点A,B,C, 由于网络问题, A和B,C之间无法连接; 所以B,C自行选举, 将B推举为Master节点; 而A节点以为自己就是一个集群, 自己把自己推举为Master节点, 这时, 集群中就存在了两个Master节点
   2. 解决方案, 限定选举条件. 设置一个quorum(quorum = master节点数/2 + 1)值, 只有master eligible节点数大于quorum, 才进行选举. 从7.0开始, 不需要自己配置, es自动完成.
+
+
+es节点是可以承担不同的角色的: Master Eligible / Data / Ingest / Coordinating, 默认情况下这几个角色都是开启的. 生产环境下, 进行角色分离会有好处.
+
+* master节点负责集群状态管理, 可以使用低配置的CPU,RAM和磁盘;
+* data节点负责数据存储和客户端请求, 可以使用高配置的CPU, RAM和磁盘;
+* ingest节点负责数据处理, 使用高配置的CPU, 中等配置的RAM, 低配置的磁盘.
+* 对于大的集群, 可以配置一些Coordinate Only节点(将node.master,node.ingest,node.data都设置成false), 扮演load balancers作用, 增加查询性能. 使用中高配CPU, 中高配RAM, 低配磁盘.
+
+**Hot&Warn节点**
+
+对较新的数据, 存在不断的文档写入, 可以放在Hot节点上; 对于较旧的数据, 索引不存在新的数据写入, 同时也不存在大量的数据查询, 可以放在Warn节点上.
+
+配置步骤:
+
+1. 标记节点: 
+   * 在```elasticsearch.yml```配置文件中增加:```node.attr.jiao_sha_dou_xing=hotxxx```或```node.attr.jiao_sha_dou_xing=yyywarm```
+2. 配置索引到Hot Node
+   * 创建索引时, setting增加```"index.routing.allocation.require.jiao_sha_dou_xing":"hotxxx"```, 要求索引数据必须存储到```jiao_sha_dou_xing=hotxxx```的节点.
+3. 配置索引到Warn Node
+   * 当一个索引上不再有频繁的读写后, 可以修改该setting```"index.routing.allocation.require.jiao_sha_dou_xing":"yyywarm"```指定到warm节点上去
+
+```
+通过这个命令, 可以查看节点的attribute的key/value对
+GET /_cat/nodeattrs?v
+```
+
+**Rack Awareness**
+
+es的多个节点可能分布在多个机架上, 当一个机架断电后, 可能会同时丢失几个节点. 如果一个索引相同的主分片和副本分片在同一个机架上, 就会导致数据丢失. 通过Rack Awareness机制, 可以尽可能的避免将同一个索引的主副分片同时分配在一个机架的节点上.
+
+和Hot&Warm节点配置类似, 也是通过attribute来实现的:
+
+1. 标记节点
+   * 叫啥名都行, 总之就是保证同一个机架上的属性值相同, 不同机架上的属性值不同, 通过这个属性值可以区分机架
+   * ```node.attr.jijia=jijia1```, ```node.attr.jijia=jijia2```
+2. 设置集群全局配置, 然后, 集群就会自动将相同的主副本分片分配到不同的机架上了:
+
+```
+PUT _cluster/settings
+{
+  "persistent":{
+    "cluster.routing.allocation.awareness.attributes":"jijia"
+  }
+}
+```
+
+> 通过增加```"cluster.routing.allocation.awareness.force.jijia.values":"jijia1,jijia2"```使得只有一个机架时, 无法分配
 
 ## 分片
 
@@ -774,6 +866,27 @@ POST movies/_search
 * 文档在分片上的存储
   1. 文档到分片的路由: ```shard = hash(_routing) % number_of_primary_shards```(这也是主分片数不能修改的原因)
   2. ```_routing```默认是文档id, 可以自己指定
+
+**分片的分配及管理**
+
+* 当分片数>节点数: 一旦集群中有新的节点加入, 分片就自动进行分配, 实现水平扩展, 分片重新分配过程中, 系统不会有downtime
+* 多分片的好处: 一个索引分布在不同的节点上, 多个节点可以并行执行
+* 分片数过多: 
+  * 由于每个分片都是Lucene索引, 会使用机器的资源. 过多的分片会导致额外的性能开销
+  * es基于query-then-fetch, 每次搜索, 都需要从每个分片获取数据, 然后汇总
+  * 分片的meta信息有master节点维护, 过多的分片会增加master节点的负担
+* 日志类应用, 单个分片不要超过50GB
+* 搜索类应用, 单个分片不要超过20GB
+* 控制分片存储大小的目的:
+  * 提高update性能
+  * merge时, 减少所需的资源
+  * 节点丢失后, 可以更迅速的恢复
+* 副本分片的好处
+  * 提高系统可用性
+  * 减缓主分片的查询压力, 但同时也会消耗内存资源
+* 副本分片对于性能影响:
+  * 降低数据索引速度, 有几份副本, 就会有几倍的CPU资源消耗
+  * 和主分片一样, 占用资源
 
 ## ES文档写入流程
 
@@ -904,6 +1017,60 @@ POST _search/scroll
 }
 ```
 
+## 并发读写文档
+
+ES中采用乐观锁的方式进行并发控制. 首先ES中的文档是不可变更的. 更新一个文档实际上是将原有文档删除, 同时增加一个新的文档, 并将文档的version加1. ES并发控制就是通过版本号来实现的乐观锁. 并发控制需要客户端配合使用, 而不是服务端自己就能完成的.
+
+* 内部版本控制: if_seq_no + if_primary_term
+* 外部版本控制: version + version_type=external
+
+示例如下:
+```
+内部版本控制:
+先查出一个文档:
+GET /movies/_doc/184015
+{
+  "_index" : "movies",
+  "_type" : "_doc",
+  "_id" : "184015",
+  "_version" : 1,
+  "_seq_no" : 9687,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "genre" : [
+      "Comedy"
+    ],
+    "year" : 2018,
+    "@version" : "1",
+    "title" : "When We First Met",
+    "id" : "184015"
+  }
+}
+
+得到了_seq_no和_primary_term.
+执行更新:
+PUT /movies/_doc/184015?if_seq_no=9687&if_primary_term=1
+{
+  "title":"When We First Met-fix"
+}
+
+如果有多个线程并发的访问, 使用的相同的seq_no和primary_term, 只有一个会更新成功, 另一个会报错.
+
+外部版本控制示例, version来源于第三方存储, 例如数据库, 这时不需要先查询es, 而是直接更新:
+PUT /movies/_doc/184015?version=10&version_type=external
+{
+    "genre" : [
+      "Comedy"
+    ],
+    "year" : 2018,
+    "@version" : "1",
+    "title" : "When We First Met",
+    "id" : "184015"
+}
+这时, 并发更新的另一个线程如果version小于等于这个version, 则会直接报错.
+```
+
 ## update by query和reindex
 
 对索引重建有两种方式:
@@ -967,94 +1134,106 @@ POST _reindex
 }
 ```
 
-## 其他一些知识点
+## ElasticSearch生产环境常用配置清单
 
-**filedata与doc_values**
+**JVM设置**
 
-ES默认是使用算分进行排序的, 我们通过制定排序的字段, 而不通过算分排序. 这时, 排序是针对字段的原始内容, 倒排索引无法发挥作用. 需要使用正排索引, 通过文档id和字段快速得到字段原始内容. ElasticSearch有两种正排索引的实现方式:
+* JVM相关参数配置: ```config/jvm.options```
+* 将Xms和Xmx设置成一样, 避免heap resize时引发停顿
+* Xmx设置不超过物理内存的50%, 单个节点, 最大内存不要超过32G
+* JVM使用Server模式
+* 关闭JVM Swapping
 
-* filedata
-* doc_values: 列式存储, 对text类型无效
 
-\ |doc values|filed data
--|-|-
-何时创建|索引时,和倒排索引以创建|搜索时动态创建
-创建位置|磁盘文件|java堆
-优点|避免大量内存占用|索引速度快,不占用额外的磁盘空间
-缺点|降低文档写入时索引速度,占用额外的磁盘空间|文档过多时, 动态开销大, 占用过多的java堆
+* 搜索类应用, 内存磁盘配比: 1 : 16
+* 日志类应用, 内存磁盘配比: 1 : 48 -- 1 : 96
 
-doc_values是默认开启的, 可以通过mapping设置来关闭, 如果需要重新打开, 则需要reindex. 关闭doc_values后, 可以增加新增文档时的索引速度, 减少磁盘空间. 但是关闭doc_values之后, 该字段就不可以用来排序了.
+## ElasticSearch集群监控及运维
 
-**并发读写文档**
-
-ES中采用乐观锁的方式进行并发控制. 首先ES中的文档是不可变更的. 更新一个文档实际上是将原有文档删除, 同时增加一个新的文档, 并将文档的version加1. ES并发控制就是通过版本号来实现的乐观锁. 并发控制需要客户端配合使用, 而不是服务端自己就能完成的.
-
-* 内部版本控制: if_seq_no + if_primary_term
-* 外部版本控制: version + version_type=external
-
-示例如下:
 ```
-内部版本控制:
-先查出一个文档:
-GET /movies/_doc/184015
+# 获取集群级别的信息
+GET _cluster/stats
+
+# 获取节点级别的信息
+GET _nodes/stats
+
+# 索引级别的信息
+GET frog_index/_stats
+
+# 获取所有tasks
+GET _tasks
+
+# 获取挂起的task
+GET _cluster/pending_tasks
+
+# 节点线程池信息
+GET _nodes/thread_pool
+
+# 节点线程池统计信息
+GET _nodes/stats/thread_pool
+
+# hot thread
+GET _nodes/hot_threads
+
+# 可以为索引设置慢查询日志阈值
+PUT frog_vvv_index/
 {
-  "_index" : "movies",
-  "_type" : "_doc",
-  "_id" : "184015",
-  "_version" : 1,
-  "_seq_no" : 9687,
-  "_primary_term" : 1,
-  "found" : true,
-  "_source" : {
-    "genre" : [
-      "Comedy"
-    ],
-    "year" : 2018,
-    "@version" : "1",
-    "title" : "When We First Met",
-    "id" : "184015"
+  "settings": {
+    "index.search.slowlog.threshold":{
+      "query.warn":"10s",
+      "query.info":"3s",
+      "query.debug":"2s",
+      "query.trace":"0s",
+      "fetch.warn":"1s",
+      "fetch.info":"600ms",
+      "fetch.debug":"400ms",
+      "fetch.trace":"0s"
+    }
   }
 }
 
-得到了_seq_no和_primary_term.
-执行更新:
-PUT /movies/_doc/184015?if_seq_no=9687&if_primary_term=1
-{
-  "title":"When We First Met-fix"
-}
+# 查看集群状态
+GET /_cluster/health
 
-如果有多个线程并发的访问, 使用的相同的seq_no和primary_term, 只有一个会更新成功, 另一个会报错.
+# 查看集群状态, 精确到索引级别
+GET /_cluster/health?level=indices
 
-外部版本控制示例, version来源于第三方存储, 例如数据库, 这时不需要先查询es, 而是直接更新:
-PUT /movies/_doc/184015?version=10&version_type=external
-{
-    "genre" : [
-      "Comedy"
-    ],
-    "year" : 2018,
-    "@version" : "1",
-    "title" : "When We First Met",
-    "id" : "184015"
-}
-这时, 并发更新的另一个线程如果version小于等于这个version, 则会直接报错.
+# 查看集群状态, 精确到分片级别
+GET /_cluster/health?level=shards
+
+# 查看索引分配问题
+GET /_cluster/allocation/explain
 ```
 
-**Ingest Node**
+## ElasticSearch性能优化
 
-es5.0引入的新的节点类型, 默认配置下, 每个节点都是Ingest Node.
+**写入性能优化**
 
-* 具有预处理数据的能力, 可拦截Index和Bulk Api请求.
-* 对数据进行转化, 重新返回给Index或Bulk Api.
+* 客户端
+  1. 使用bulk api, 批量写入; 不要太大, 单个bulk数据量建议5-15M, 请求超时需要足够长, 建议60s以上.
+  2. 观察是否有http 429状态码返回(服务器繁忙), 实现retry;
+* 服务端
+  1. 降低IO操作: 1. 使用es自动生成文档id(如果手动指定id, es会先执行get操作判断id是否存在); 2. 修改一些配置, 如: refresh interval.
+  2. 降低CPU和存储开销: 1. 减少不必要的分词; 2. 避免不必要的doc_values; 3. 文档的字段尽量保证相同的顺序, 可以提高文档压缩率.
+  3. 负载均衡, 设置合理的分片数
+  4. 调整bulk线程池和队列
+  5. 关闭无关的功能:
+     1. 只需要聚合, 不需要搜索, index设置为false
+     2. 不需要算分, norms设置成false
+     3. 关闭dynamic mapping, 防止自动生成的字段过多
+     4. 对于指标型数据, 某些情况下, 可以关闭_source, 减少大量的io和磁盘
+  6. 牺牲可靠性: 临时将副本分片设置为0, 写入完成后, 再调整回去
+  7. 牺牲搜索实时性: 增加Refresh Interval的时间, 以及调整```indices.memory.index_buffer_size```(默认10%)
+  8. 牺牲可靠性: 修改Translog配置. 可以将```index.translog.durability```设置为```async```, 避免每次请求都落盘; 同时```index.translog.sync_interval```设置为60s, 这样就会每分钟落盘一次; 同时可以将```index.translog.flust_threshold_size```适当调大(默认:512M), 超过该值, translog自动触发flush.
 
-具体预处理能力有:
+**读取性能优化**
 
-* 为某个字段设置默认值; 
-* 重命名某个字段的字段名; 
-* 字段值进行split操作;
-* 支持Painless脚本, 对数据进行更加复杂的加工
-
-
-
+1. 查询时尽量避免使用script
+2. 尽量使用filter, 而不是query, 避免不必要的算分
+3. 严禁使用*开头的通配符terms查询
+4. 聚合查询控制聚合的数量, 减少内存开销
+5. 避免over sharding, 防止分片过多导致不必要的性能开销
+6. 对于时序型索引, 及时的设置为readonly, 及时进行force merge, 减少segment数量
 
 ## 常用命令备忘
 
