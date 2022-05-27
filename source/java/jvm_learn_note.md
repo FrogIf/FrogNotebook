@@ -270,6 +270,139 @@ Epsilon|不收集垃圾|不收集垃圾|不收集垃圾|-
 3. 上面的并发重映射阶段一般会延迟到下一次垃圾清理的并发标记阶段
 4. ZGC使用染色指针, 所以它只适用于64位的操作系统.
 
+## 常用工具介绍
+
+常用的工具有:
+
+* jps: 虚拟机进程状况工具
+* jstat: 虚拟机统计信息监控工具
+* jmap: java内存映像工具
+* jstack: java堆栈跟踪工具
+* Eclipse Memory Analyzer Tool(MAT): 堆转储快照分析工具, 使用示例参考: [排故-内存溢出](https://frogif.github.io/FrogNotebook/java/troubleshooting/out_of_memory.html)
+* visualvm: 多合故障处理工具, 已从jdk中独立出去, github地址: [visualvm](https://github.com/oracle/visualvm)
+
+**jps**
+
+示例:
+
+```
+PS C:\Users\frogif> jps -l
+6868 D:\Software\FrogJson\FrogJson-0.1.exe
+18332 jdk.jcmd/sun.tools.jps.Jps
+```
+
+主要选项:
+* ```-l```: 输出主类全名, 如果是可执行jar, 输出jar包路径
+* ```-m```: 输出虚拟机进程启动时, 传递给主类main()函数的参数
+* ```-v```: 输出虚拟机进程启动时的jvm参数
+
+**jstat**
+
+示例:
+
+```
+PS C:\Users\frogif> jstat -gcutil 6868
+  S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT    CGC    CGCT     GCT
+  0.00 100.00  22.22   4.05  94.34  85.92      3    0.013     0    0.000     2    0.002    0.015
+PS C:\Users\frogif> jstat -gc 6868
+ S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT    CGC    CGCT     GCT
+ 0.0   2048.0  0.0   2048.0 73728.0  18432.0   176128.0    7132.8   29232.0 27576.8 4480.0 3849.1      3    0.013   0      0.000   2      0.002    0.015
+```
+
+> 以上是jdk11执行结果
+> S0 - survivor0(占比0%), S1 - survivor1(占比100%), E - Eden(占比22.22%), O - 老年代(占比4.05%), M - 元空间(占比94.34%), CCS - 压缩使用比例(85.92%), YGC - Young GC次数, YGCT - Young GC总耗时(0.013s), FGC - Full GC次数, FGCT - Full GC总耗时(0s), CGC - 并发GC次数, CGCT - 并发GC总耗时(0.002), GCT - 总垃圾收集时间(0.015s).
+> S0C - survivor0总大小, S0U - survivor0使用大小, 等等.
+
+主要选项:
+
+* ```-gc```: 监视java堆状况, 如上示例
+* ```-gcutil```: 监视java堆状况, 如上示例
+* ```-gccause```: 同```gcutil```, 只是多输出了上次gc原因
+* ```-class```: 监视类加载卸载数量, 总空间, 以及类装载所耗时间
+
+如果想定期刷新, 示例如下(每1000ms查询一次, 共查询5次):
+
+```
+PS C:\Users\frogif> jstat -gcutil 6868 1000 5
+  S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT    CGC    CGCT     GCT
+  0.00 100.00  25.00   4.05  94.34  85.92      3    0.013     0    0.000     2    0.002    0.015
+  0.00 100.00  25.00   4.05  94.34  85.92      3    0.013     0    0.000     2    0.002    0.015
+  0.00 100.00  25.00   4.05  94.34  85.92      3    0.013     0    0.000     2    0.002    0.015
+  0.00 100.00  25.00   4.05  94.34  85.92      3    0.013     0    0.000     2    0.002    0.015
+  0.00 100.00  25.00   4.05  94.34  85.92      3    0.013     0    0.000     2    0.002    0.015
+```
+
+**jmap**
+
+示例:
+
+```
+PS C:\Users\frogif> jmap -dump:live,format=b,file=D:/work/aaa.dump 6868
+Heap dump file created
+```
+
+> 这个示例指定了live, 则只dump存活对象; format=b是固定的; 如果已死对象也dump, 则: ```jmap -dump:format=b,file=D:/work/bbb.dump 6868```
+
+主要选项:
+
+* ```-dump```: 生成java堆转储快照
+* ```-histo```: 显示堆中对象统计信息, 包括类, 实例数量, 合计容量
+* ```-F```: 如果dump没有响应, 强制执行
+
+执行```-dump```时, 如果后面带有```live```, 会触发一次fullgc. 比如上面那次执行之后, 再执行一下```jstat -gccause```可以看到```Heap Dump Initiated```:
+
+```
+PS C:\Users\frogif> jstat -gccause 6868
+  S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT    CGC    CGCT     GCT    LGCC                 GCC
+  0.00   0.00   0.00  37.60  94.64  85.16      3    0.013     1    0.018     2    0.002    0.033 Heap Dump Initiated GC No GC
+```
+
+**jstack**
+
+示例:
+
+```
+jstack 6868 > stack.out
+```
+
+> 实际命令是```jstack 6868```, 后面的```> stack.out```是操作系统的命令, 表示将输出内容重定向到stack.out这个文件中. 如果不加, 就直接输出到控制台了.
+
+主要选项:
+
+* ```-F```: 当正常输出请求不被响应时, 强制输出
+* ```-l```: 除堆栈外, 显示关于锁的附加信息
+* ```-m```: 如果调用到本地方法的话, 可以显示C/C++的堆栈
+
+**visualvm**
+
+* 启动: ```.\visualvm.exe --jdkhome "C:\Program Files\Java\jdk-11.0.2"```
+
+分析一个dump文件:
+
+![img](img/visualvm_dump.png)
+
+分析运行中的程序的性能(对运行中的程序会产生影响, 生产环境慎用):
+
+![img](img/visualvm_memory.png)
+
+![img](img/visualvm_thread.png)
+
+可以安装一些插件(Tools - Plugins). 这里安装VisualGC试试:
+
+![img](img/visualvm_gc.png)
+
+对于虚拟机故障处理的一些心得:
+
+1. 对于fullgc过于频繁, 或者majorgc过于频繁的情况, 一般可以输出gc日志, 进行分析;
+2. 对于oom的情况, 就分析dump文件了
+3. 对于程序吞吐率过低的问题, 在排除gc过于频繁导致的原因之后, 可能原因是线程某处执行过慢, 可以使用jstack进行排查.
+4. 要是有APM工具就好了, 可以监控系统信息, trace信息等等, 如果是吞吐率低, 能快速定位.
+
+两个十分有用的工具网站:
+
+* [easy gc](https://gceasy.io/) - 用于分析gc日志的网站, 可以详细显示各中gc的信息, 晋升信息等等.
+* [fast thread](https://fastthread.io/) - 用于分析jstack输出的栈信息, 可以显示哪些线程处于block, 通过火焰图显示最耗时栈.
+
 ## jvm常用配置参数
 
 配置|解释
@@ -287,6 +420,7 @@ Epsilon|不收集垃圾|不收集垃圾|不收集垃圾|-
 -XX:MinMetaspaceFreeRatio=40| 元空间垃圾回收后, 控制最小的元空间剩余容量百分比, 默认40%, 可减少由于元空间不足导致的垃圾收集频率
 -XX:MaxDirectMemorySize=10m| 直接内存最大值, 默认和-Xmx保持一致
 -Xlog:[selectors]:[output]:[decorators]:[output-options]|输出jvm日志, 例如:```-Xlog:gc*:file=gc.log```
+-Xverify:none|禁用字节码验证
 
 ## Reference
 
