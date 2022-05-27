@@ -421,6 +421,7 @@ jstack 6868 > stack.out
 -XX:MaxDirectMemorySize=10m| 直接内存最大值, 默认和-Xmx保持一致
 -Xlog:[selectors]:[output]:[decorators]:[output-options]|输出jvm日志, 例如:```-Xlog:gc*:file=gc.log```
 -Xverify:none|禁用字节码验证
+-server|使用server模式, 64位jvm只支持server模式
 
 ## Reference
 
