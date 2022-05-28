@@ -809,9 +809,9 @@ es节点是可以承担不同的角色的: Master Eligible / Data / Ingest / Coo
 * ingest节点负责数据处理, 使用高配置的CPU, 中等配置的RAM, 低配置的磁盘.
 * 对于大的集群, 可以配置一些Coordinate Only节点(将node.master,node.ingest,node.data都设置成false), 扮演load balancers作用, 增加查询性能. 使用中高配CPU, 中高配RAM, 低配磁盘.
 
-**Hot&Warn节点**
+**Hot&Warm节点**
 
-对较新的数据, 存在不断的文档写入, 可以放在Hot节点上; 对于较旧的数据, 索引不存在新的数据写入, 同时也不存在大量的数据查询, 可以放在Warn节点上.
+对较新的数据, 存在不断的文档写入, 可以放在Hot节点上; 对于较旧的数据, 索引不存在新的数据写入, 同时也不存在大量的数据查询, 可以放在Warm节点上.
 
 配置步骤:
 
@@ -819,7 +819,7 @@ es节点是可以承担不同的角色的: Master Eligible / Data / Ingest / Coo
    * 在```elasticsearch.yml```配置文件中增加:```node.attr.jiao_sha_dou_xing=hotxxx```或```node.attr.jiao_sha_dou_xing=yyywarm```
 2. 配置索引到Hot Node
    * 创建索引时, setting增加```"index.routing.allocation.require.jiao_sha_dou_xing":"hotxxx"```, 要求索引数据必须存储到```jiao_sha_dou_xing=hotxxx```的节点.
-3. 配置索引到Warn Node
+3. 配置索引到Warm Node
    * 当一个索引上不再有频繁的读写后, 可以修改该setting```"index.routing.allocation.require.jiao_sha_dou_xing":"yyywarm"```指定到warm节点上去
 
 ```
@@ -1234,6 +1234,55 @@ GET /_cluster/allocation/explain
 4. 聚合查询控制聚合的数量, 减少内存开销
 5. 避免over sharding, 防止分片过多导致不必要的性能开销
 6. 对于时序型索引, 及时的设置为readonly, 及时进行force merge, 减少segment数量
+
+**Segment Merge性能优化**
+
+Merge操作是一个相对较重的操作, 需要优化, 以降低对系统的影响
+
+1. 降低分段产生的数量/频率: 将refresh_interval调整到分钟级别, 并调整indices.memory.index_buffer_size; 尽量避免文档的更新操作
+2. 降低最大分段大小, 避免较大的segment参与merge.
+   * index.merge.policy.segments_per_tier, 默认是10, 越小需要越多的合并操作;
+   * index.merge.policy.max_merged_segment, 默认是5GB, 超出此大小后, 就不进行merge操作.
+3. 当index不在有写入操作时, 手动执行force merge操作. 提升查询速度, 减少内存开销.
+4. segment合并之后越少越好, 最好是1个, 但是force merge会占用大量的网络/IO/CPU.
+
+## ES缓存
+
+ES缓存分为三类
+
+* Node Query Cache
+  * 每个节点存在一个, 节点上所有shard共享, 只缓存了filter查询的内容
+  * 采用LRU算法
+  * indices.queries.cache.size: "10%"(总堆内存的10%)
+  * segment合并时, 会失效
+* Shard Query Cache
+  * 缓存每个分片的查询结果, 只缓存Aggregations和Suggestions
+  * 采用LRU算法
+  * indices.request.cache.size: "1%"
+  * refresh时, 会失效
+* Fielddata Cache
+  * indices.fielddata.cache.size
+  * segment合并时, 会失效
+
+Circuit Breaker - es内部提供多种断路器, 避免不合理操作引发的OOM, 每个断路器可以指定内存使用限制
+
+```
+查询circuit breaker统计信息, tripped大于0说明有熔断
+GET /_nodes/stats/breaker
+```
+
+## Logstash
+
+ELT工具(数据经过抽取、清洗转换之后加载到数据仓库), 数据搜集处理引擎, 支持200+插件.
+
+概念:
+
+* Pipeline: 包含input - filter - output三个阶段的处理流程
+  * input: 数据采集
+  * filter: 数据解析
+  * output: 数据输出
+* Event: 数据在内部流转的具体表现形式. 数据在input阶段, 被转换为Event, 在output阶段被转换为目标格式数据
+
 
 ## 常用命令备忘
 
