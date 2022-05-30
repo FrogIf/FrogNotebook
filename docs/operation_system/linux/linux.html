@@ -366,388 +366,1051 @@ code {
     });
   </script>
 <h1 id="linux">linux</h1>
-<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<h2 id="%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86">基础知识</h2>
+<p>本文全文基于centos7.</p>
+<p><code>#</code>超级用户, <code>$</code>普通用户.</p>
 <p>常用目录:</p>
 <ul>
-<li>/    根目录</li>
-<li>/root    root用户的家目录</li>
-<li>/home/username    普通用户的家目录</li>
-<li>/etc    配置文件目录</li>
-<li>/bin    命令目录</li>
-<li>/sbin    管理命令目录</li>
-<li>/usr/bin, /usr/sbin    系统预装的其他命令</li>
+<li><code>/</code> - 根目录</li>
+<li><code>/root</code> - root用户的家目录</li>
+<li><code>/home/&lt;username&gt;</code> - 普通用户的家目录</li>
+<li><code>/etc</code> - 配置文件目录(类似windows的注册表/环境变量)</li>
+<li><code>/bin</code> - 命令目录</li>
+<li><code>/sbin</code> - 管理命令目录</li>
+<li><code>/usr/bin</code>, <code>/usr/sbin</code> - 系统预装的其他命令</li>
 </ul>
-<h2 id="%E5%B7%A5%E4%BD%9C%E4%B8%AD%E7%A7%AF%E7%B4%AF%E7%9A%84%E4%B8%80%E4%BA%9B%E5%91%BD%E4%BB%A4">工作中积累的一些命令</h2>
-<ul>
-<li>查看磁盘使用情况: <code>df -h</code></li>
-<li>汇总一个目录下各个文件/文件夹大小: <code>du -sh *</code></li>
-<li>查看端口监听: <code>lsof -i:端口号</code><pre class="hljs"><code><div>[root@localhost gitlab]# lsof -i:80
-COMMAND   PID       USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-nginx   10494       root    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
-nginx   10498 gitlab-www    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
-</div></code></pre>
-</li>
-</ul>
-<h2 id="%E5%B8%AE%E5%8A%A9">帮助</h2>
+<h4 id="%E5%B8%AE%E5%8A%A9">帮助</h4>
+<p>帮助命令有三个:</p>
 <ul>
 <li>man
 <ul>
-<li>manual的缩写</li>
-<li>demo: man ls</li>
-<li>man 7 man</li>
-<li>章节</li>
-<li>man -a <command></li>
+<li>基本使用方式: <code>man &lt;命令名称&gt;</code></li>
+<li>man命令会有9个章节, 每个章节是不同的场景. 可以通过<code>man 7 man</code>得到各个章节的详细解释</li>
+<li>通过<code>man &lt;章节编号&gt; &lt;命令&gt;</code>获取到详细帮助信息</li>
+<li>想要按顺序浏览全部章节, 可以通过<code>man -a &lt;命令名称&gt;</code>进行查看</li>
 </ul>
 </li>
 <li>help
 <ul>
-<li>help <command>   内部命令(shell解释器自带命令)</li>
-<li><command> --help     外部命令</li>
-<li>如何区分外部命令和内部命令: type <command></li>
+<li><code>help &lt;内部命令&gt;</code></li>
+<li><code>&lt;外部命令&gt; --help</code></li>
+<li>shell解释器自己的命令称为内部命令, 其余称为外部命令</li>
+<li>如何区分内部命令和外部命令: <code>type &lt;命令名称&gt;</code></li>
 </ul>
 </li>
 <li>info
 <ul>
-<li>更详细的命令描述, 是help的补充</li>
+<li><code>info &lt;命令名称&gt;</code>, 比<code>help</code>更详细, 是<code>help</code>的补充</li>
 </ul>
 </li>
 </ul>
 <h2 id="%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86">文件管理</h2>
-<p><strong>文件查看</strong></p>
+<p>概述:</p>
 <ul>
-<li>pwd
+<li>文件资源管理
 <ul>
-<li>显示当前目录名称</li>
+<li><code>pwd</code>: 显示当前目录</li>
+<li><code>cd</code>: 切换目录</li>
+<li><code>ls</code>: 查看当前目录下的文件</li>
+<li><code>mkdir</code>: 新建文件夹</li>
+<li><code>rm</code>: 删除文件或文件夹</li>
+<li><code>cp</code>: 复制文件或文件夹</li>
+<li><code>mv</code>: 移动文件/文件重命名</li>
 </ul>
 </li>
-<li>ls
+<li>文本读取
 <ul>
-<li>查看当前目录下的文件</li>
-<li>ls -l   长格式显示<pre class="hljs"><code><div>    root@DESKTOP-8U8SJ9D:/home# ls -l
-    total 4
-    drwxr-xr-x 5 frogif frogif 4096 Oct 13 09:18 frogif
-对应解释:
-    1[  2    ] 3 [  4 ] [ 5  ] [ 6] [      7   ] [  8  ]
+<li><code>cat</code>: 文本内容显示到终端</li>
+<li><code>head</code>: 查看文件开头(默认显示开头10行)</li>
+<li><code>tail</code>: 查看文件结尾</li>
+<li><code>wc</code>: 统计文件的内容信息</li>
+<li><code>more</code>: 分屏查看(按回车向下滚动)</li>
+</ul>
+</li>
+<li>打包与压缩
+<ul>
+<li><code>tar</code>: 打包和压缩</li>
+</ul>
+</li>
+</ul>
+<h4 id="ls">ls</h4>
+<ul>
+<li><code>ls</code>: 列出当前目录下的文件</li>
+<li><code>ls &lt;路径&gt;</code>: 列出指定路径下的文件</li>
+<li><code>ls &lt;路径1&gt; &lt;路径2&gt; &lt;路径3&gt;</code>: 列出多个指定路径下的文件</li>
+<li><code>ls -l</code>: 长格式显示, 示例如下:</li>
+</ul>
+<pre class="hljs"><code><div>[root@10 frogif]# ls -l
+总用量 4
+-rw-r--r--. 1 root   root   11 5月  28 20:39 aaa
+drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 公共
+drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 模板
+drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 视频
+drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 图片
+drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 文档
+drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 下载
+drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 音乐
+drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 桌面
+
+对目录文件的解释:
+
+* 第1列: ```-```: 普通文件; ```d``` - 目录; 后面的一串字符表示权限.
+* 第2列: 表示内部的文件个数, 显然对于文件, 它的文件个数就是1.
+* 第3列: 创建人
+* 第4列: 创建人所属用户组
+* 第5列: 当前文件大小
+* 第6列: 文件最后修改时间
+* 第7列: 文件名称
 </div></code></pre>
-1 - 文件类型;
-2 - 权限;
-3 - 内部包含文件个数;
-4 - 创建人;
-5 - 创建人所属用户组;
-6 - 文件大小;
-7 - 最后修改时间;
-8 - 文件名;</li>
-<li>ls -a  显示隐藏文件和隐藏文件夹</li>
-<li>ls -r  以逆向的方式排序(默认是'文件名'进行排序)
+<blockquote>
+<p>对于非目录文件, 基本上差不多, 只不过第二列表示的是链接数量</p>
+</blockquote>
 <ul>
-<li>ls -l -r</li>
-<li>ls -l -r -t   (-t指定以时间进行排序)</li>
+<li><code>ls -a</code>: 显示所有文件, 包括隐藏的</li>
+<li><code>ls -l -r</code>/<code>ls -lr</code>: 按照文件名, 逆向排序显示</li>
+<li><code>ls -l -r -t</code>/<code>ls -lrt</code>: 按照时间, 逆向排序显示</li>
+<li><code>ls -R</code>: 递归显示, 显示文件夹的子文件夹等</li>
+<li><code>ll</code>: <code>ls -l</code>的缩写</li>
+<li><code>ll -h</code>: 文件大小以更友好的方式显示</li>
 </ul>
-</li>
-<li>ls -R  递归显示</li>
-</ul>
-</li>
-<li>cd
+<h4 id="cd">cd</h4>
 <ul>
-<li>目录位置的切换</li>
-<li>cd -   回到之前操作的目录(可以实现两个目录之间的切换)</li>
-<li>cd ..  进入上一级目录</li>
+<li><code>cd &lt;路径&gt;</code>: 切换至指定目录</li>
+<li><code>cd -</code>: 回到之前操作的目录</li>
+<li><code>cd ..</code>: 切换至上级目录</li>
 </ul>
-</li>
+<h4 id="mkdir">mkdir</h4>
+<ul>
+<li><code>mkdir &lt;路径&gt;</code>: 创建指定的文件夹</li>
+<li><code>mkdir &lt;路径1&gt; &lt;路径2&gt; &lt;路径3&gt;</code>: 创建多个文件夹</li>
+<li><code>mkdir -p &lt;路径&gt;</code>: 创建多级目录</li>
+</ul>
+<h4 id="rm">rm</h4>
+<ul>
+<li><code>rm &lt;文件&gt;</code>: 删除文件或者空文件夹</li>
+<li><code>rm -r &lt;目录&gt;</code>: 递归删除多级目录</li>
+<li><code>rm -rf &lt;目录&gt;</code>: 递归删除多级目录, 并且没有任何提示</li>
+</ul>
+<h4 id="cp">cp</h4>
+<ul>
+<li><code>cp &lt;源文件&gt; &lt;目标文件(夹)&gt;</code>: 将源文件复制到目标文件(只能是文件)</li>
+<li><code>cp -r &lt;源文件夹&gt; &lt;目标文件夹&gt;</code>: 将源文件夹复制到目标文件夹</li>
+<li><code>cp -p &lt;其他操作&gt;</code>: 复制时保留原有文件信息(最后修改时间, 所属人/组)</li>
+</ul>
+<h4 id="mv">mv</h4>
+<ul>
+<li><code>mv &lt;源文件&gt; &lt;目标文件&gt;</code>: 移动并重命名</li>
+<li><code>mv -r &lt;文件夹&gt; &lt;目标文件夹&gt;</code>: 移动文件夹</li>
+</ul>
+<h4 id="head">head</h4>
+<ul>
+<li><code>head &lt;文件&gt;</code>: 查看文件开头10行</li>
+<li><code>head -3 &lt;文件&gt;</code>: 查看文件开头3行(这个数字可以随意指定)</li>
+</ul>
+<h4 id="tail">tail</h4>
+<ul>
+<li><code>tail &lt;文件&gt;</code>: 查看文件结尾10行</li>
+<li><code>tail -3 &lt;文件&gt;</code>: 查看文件结尾3行(这个数字可以随意指定)</li>
+<li><code>tail -f &lt;文件&gt;</code>: 查看文件结尾10行, 当文件不断变化时, 同步更新</li>
+</ul>
+<h4 id="wc">wc</h4>
+<ul>
+<li><code>wc -l &lt;文件&gt;</code>: 查看文件还有多少行</li>
+</ul>
+<h4 id="tar">tar</h4>
+<ul>
+<li><code>tar cf &lt;包含目录的目标文件&gt; &lt;源文件(夹)&gt;</code>: 打包文件夹(打包好的目标文件建议后缀<code>.tar</code>)</li>
+<li><code>tar czf &lt;包含目录的目标文件&gt; &lt;源文件(夹)&gt;</code>: 打包并使用gzip压缩(目标文件后缀建议:<code>.tar.gz</code>或<code>tgz</code>)</li>
+<li><code>tar cjf &lt;包含目录的目标文件&gt; &lt;源文件(夹)&gt;</code>: 打包并使用bzip2压缩(目标文件后缀建议<code>.tar.bz2</code>或<code>tbz2</code>), 这个压缩比例比gzip高</li>
+<li><code>tar xf &lt;包含目录的目标文件&gt; &lt;源文件(夹)&gt;</code>: 解包</li>
+<li><code>tar xzf &lt;包含目录的目标文件&gt; &lt;源文件(夹)&gt;</code>: 解压缩</li>
+<li><code>tar xjf &lt;包含目录的目标文件&gt; &lt;源文件(夹)&gt;</code>: 解压缩</li>
 </ul>
 <blockquote>
-<p>命令的基本结构: <command> [options] [args...]</p>
+<p>c - 打包; x - 解包; f - 指定操作类型为文件; z - 使用gzip; j - 使用bzip2;</p>
+</blockquote>
+<h2 id="%E6%96%87%E4%BB%B6%E7%BC%96%E8%BE%91--vi">文件编辑--vi</h2>
+<p>多模式编辑:</p>
+<ul>
+<li>正常模式(Normal-mode)</li>
+<li>插入模式(Insert-mode)</li>
+<li>命令模式(Command-mode)</li>
+<li>可视模式(Visual-mode)</li>
+</ul>
+<blockquote>
+<p>线上环境中, 查看巨大文件, 不要使用vim!</p>
 </blockquote>
 <blockquote>
-<p>清屏: clear 或 ctrl+L</p>
+<p>修改vim全局配置, 全局配置文件在<code>/etc/vimrc</code></p>
 </blockquote>
-<p><strong>目录创建及删除</strong></p>
+<h4 id="%E6%AD%A3%E5%B8%B8%E6%A8%A1%E5%BC%8F">正常模式</h4>
+<p>默认就是正常模式......</p>
 <ul>
-<li>mkdir
+<li>h - 向左移动; l - 向右移动; k - 向上移动; l - 向下移动;</li>
+<li>y命令-复制
 <ul>
-<li>创建目录(后接多个路径可以建立多个目录)</li>
-<li>mkdir -p <path> 创建多级目录</li>
+<li><code>yy</code>: 按行复制</li>
+<li><code>3yy</code>: 从当前向下3行, 都复制(这个3可以随意指定)</li>
+<li><code>y$</code>: 复制从光标当前位置到该行末尾</li>
 </ul>
 </li>
-<li>rmdir
+<li>p命令-粘贴</li>
+<li>d命令-剪切
 <ul>
-<li>删除目录, 注意, 只能删除空白目录</li>
+<li><code>dd</code>: 按行剪切</li>
+<li><code>d$</code>: 剪切从光标当前位置到该行末尾</li>
 </ul>
 </li>
-<li>rm
+<li>u命令-撤销</li>
+<li>ctrl + r - 重做</li>
+<li><code>x</code>: 删除光标所在位置的字符</li>
+<li><code>r</code>: 替换贯标所在位置的字符(按r之后, 输入新的字符)</li>
+<li><code>11G</code>: 光标移动到第11行(数字11可以随意指定)</li>
+<li><code>G</code>: 光标移动到文件最后一行</li>
+<li><code>g</code>: 光标移动到文件第一行</li>
+<li><code>^</code>: 光标移动到一行的开头</li>
+<li><code>$</code>: 光标移动到一行的结尾</li>
+</ul>
+<h4 id="%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F">插入模式</h4>
+<p>正常模式--&gt;按<code>i</code>进入插入模式......
+正常模式--&gt;按<code>o</code>进入插入模式, 并在光标当前行下面插入空行......</p>
+<h4 id="%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F">命令模式</h4>
+<p>正常模式--&gt;按<code>:</code>进入命令模式......</p>
 <ul>
-<li>删除文件</li>
-<li>rm -r   递归删除</li>
-<li>rm -r -f  没有询问的递归删除</li>
+<li><code>set nu</code>: 显示行号(只对当前会话生效)</li>
+<li><code>set nonu</code>: 取消行号显示(只对当前会话生效)</li>
+<li><code>set nohlsearch</code>: 取消搜索高亮显示</li>
+<li><code>w &lt;文件路径及文件名&gt;</code>: 保存文件到指定的路径(对于已有文件, 就是另存为)</li>
+<li><code>w</code>: 保存原有文件</li>
+<li><code>q</code>: 推出</li>
+<li><code>wq</code>: 保存并退出</li>
+<li><code>q!</code>: 不保存退出</li>
+<li><code>!&lt;系统命令&gt;</code>:  临时执行linux系统命令(中间没有空格)</li>
+<li><code>s/&lt;旧字符&gt;/&lt;新字符&gt;</code>: 替换(只针对光标所在行)</li>
+<li><code>%s/&lt;旧字符&gt;/&lt;新字符&gt;</code>: 全文替换(只替换一个)</li>
+<li><code>%s/&lt;旧字符&gt;/&lt;新字符&gt;/g</code>: 全文替换(替换所有)</li>
+<li><code>&lt;开始行号&gt;,&lt;结束行号&gt;s/&lt;旧字符&gt;/&lt;新字符&gt;</code>: 指定范围替换</li>
 </ul>
-</li>
-<li>cp
+<p>正常模式--&gt;按<code>/</code>进行查找</p>
 <ul>
-<li>文件复制</li>
-<li>cp [源文件路径] [目标目录]</li>
-<li>cp -r [源文件路径] [目标目录]  复制目录, 而不是文件</li>
-<li>cp -v ... 显示复制的详细过程信息</li>
-<li>cp -p ... 如果没有p, 复制之后, 文件的用户,权限,时间等都会变化, 加上-p会保证信息不回变化</li>
-<li>cp -a ... 等同于-dpR</li>
+<li><code>/&lt;需要查找的内容&gt;</code>: 查找指定的文本(按<code>n</code>匹配下一个, 按<code>N</code>匹配上一个)</li>
 </ul>
-</li>
-<li>mv
+<h4 id="%E5%8F%AF%E8%A7%86%E6%A8%A1%E5%BC%8F">可视模式</h4>
+<p>正常模式--&gt;按<code>v</code>进入字符可视模式......
+正常模式--&gt;按<code>V</code>进入行可视模式......
+正常模式--&gt;按<code>ctrl + v</code>进入块可视模式......</p>
+<h2 id="%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86">用户和权限管理</h2>
 <ul>
-<li>移动及重命名</li>
+<li><code>useradd</code>: 新建用户</li>
+<li><code>userdel</code>: 删除用户</li>
+<li><code>usermod</code>: 修改用户</li>
+<li><code>passwd</code>: 修改用户密码</li>
+<li><code>chage</code>: 修改用户的生命周期</li>
+<li><code>id &lt;用户名&gt;</code>: 查看用户基本信息</li>
+<li><code>groupadd</code>: 增加用户组</li>
+<li><code>groupdel</code>: 删除用户组</li>
+<li><code>su</code>: 切换用户</li>
+<li><code>sudo</code>: 以其他用户身份执行命令/以管理员身份运行</li>
+<li><code>visudo</code>: 配置sudo可执行范围</li>
+<li><code>chmod</code>: 修改文件/目录权限</li>
+<li><code>chown</code>: 更改属主/属组</li>
 </ul>
-</li>
+<h4 id="useradd">useradd</h4>
+<ul>
+<li><code>useradd &lt;用户名&gt;</code>: 添加指定名称的用户(如果用户已存在, 会提示)</li>
+<li><code>useradd -g &lt;用户组&gt; &lt;用户名&gt;</code>: 添加用户, 同时指定用户组</li>
 </ul>
+<p>useradd都执行了哪些操作?</p>
+<ol>
+<li>创建<code>/home/&lt;username&gt;</code>文件夹及里边的文件</li>
+<li><code>/etc/passwd</code>文件中增加了一行记录</li>
+<li><code>/etc/shadow</code>文件中增加了一行记录</li>
+</ol>
 <blockquote>
-<p>通配符: *, ?</p>
+<p>只有root用户才可以创建用户</p>
+</blockquote>
+<h4 id="userdel">userdel</h4>
+<ul>
+<li><code>userdel &lt;username&gt;</code>: 删除用户</li>
+<li><code>userdel -r &lt;username&gt;</code>: 删除用户以及该用户的家目录</li>
+</ul>
+<h4 id="usermod">usermod</h4>
+<ul>
+<li><code>usermod -d &lt;新的家目录&gt; &lt;username&gt;</code>: 修改用户的家目录位置</li>
+<li><code>usermod -g &lt;用户组&gt; &lt;username&gt;</code>: 修改用户的用户组</li>
+</ul>
+<h4 id="chage">chage</h4>
+<p>TODO后期详细讲解</p>
+<h4 id="su">su</h4>
+<ul>
+<li><code>su - &lt;username&gt;</code>: 切换至指定的用户, 同时把自己运行的环境变更为新用户的运行环境(会跳转值新用户的家目录)</li>
+<li><code>su &lt;username&gt;</code>: 切换至指定用户, 不完全切换, 切换之后, 仍停留在当前目录</li>
+</ul>
+<h4 id="visudo">visudo</h4>
+<ul>
+<li><code>visudo</code>: 打开sudo范围配置文件</li>
+</ul>
+<pre class="hljs"><code><div>授予某个用户某些权限:
+&lt;用户名&gt;  &lt;主机&gt;=&lt;执行的指令&gt;,&lt;执行的指令2&gt; &lt;是否需要密码(默认需要)&gt;
+
+授予某个用户组某些权限:
+%&lt;用户组&gt;  &lt;主机&gt;=&lt;执行的指令&gt;,&lt;执行的指令2&gt; &lt;是否需要密码(默认需要)&gt;
+
+示例:
+frogif localhost=shutdown -c
+</div></code></pre>
+<blockquote>
+<p>上面输入的密码是当前用户的密码,而不是目标用户的密码</p>
+</blockquote>
+<h4 id="%E7%94%A8%E6%88%B7%E5%92%8C%E7%94%A8%E6%88%B7%E7%BB%84%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">用户和用户组的配置文件</h4>
+<ul>
+<li><code>/etc/passwd</code>文件</li>
+</ul>
+<pre class="hljs"><code><div>uuu:x:1001:1003:这里是备注:/home/uuu:/bin/bash
+
+uuu - 用户名
+x - 表示是否需要密码验证, 如果删除x, 则不需要密码验证
+1001 - 用户的uid, 将这个值改为0, 这个用户就变成了root用户
+1003 - 用户的gid
+这里是备注 - 备注
+/home/uuu - 该用户的家目录
+/bin/bash - 该用户登录后使用的命令解释器(将这里改为/sbin/nologin, 则可以使这个用户不能登录)
+</div></code></pre>
+<ul>
+<li><code>/etc/shadow</code>文件 - 保存用户密码相关信息</li>
+</ul>
+<pre class="hljs"><code><div>uuu:$6$LiTy2.GP$CAkNdqlfx07fgUh8twKpC3aSpdJJMEcEOLCzPccj2K4OjyOSVQGqZ6.SZNyXQ5cr0rCCkLqUlvtDypRH.omtL0:19140:0:99999:7:::
+
+第一个 - 用户名
+第二个 - 用户加密后的密码
+</div></code></pre>
+<ul>
+<li><code>/etc/group</code>文件 - 用户组相关配置</li>
+</ul>
+<pre class="hljs"><code><div>mail:x:12:postfix
+
+mail - 用户组名称
+x - 是否需要密码
+12 - 组id
+postfix - 其他组设置, 这里postfix是用户名, 也就是说postfix用户属于它设置的组以外, 还属于mail这个组
+</div></code></pre>
+<h4 id="%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90">文件权限</h4>
+<p>一条文件的记录, 信息如下:</p>
+<pre class="hljs"><code><div>-rw-------. 1 frogxxx groupxx 1.6K 5月  29 00:35 anaconda-ks.cfg
+</div></code></pre>
+<p><code>-rw-------</code>描述了一个文件的权限信息. 其中第一位是文件类型(这里是普通文件), 从第二位开始, 每3位一组, 共3组, 代表三种不同的权限.</p>
+<ul>
+<li>第一组三个字符表示文件的所属用户(即frogxxx)对文件的权限;</li>
+<li>第二组三个字符表示文件的所属用户组(即groupxx)对文件的权限;</li>
+<li>第三组三个字符表示其它人对文件的权限.</li>
+</ul>
+<p>文件类型:</p>
+<ul>
+<li><code>-</code> - 普通文件</li>
+<li><code>d</code> - 目录文件</li>
+<li><code>b</code> - 块特殊文件(一个移动硬盘之类的)</li>
+<li><code>c</code> - 字符特殊文件(终端)</li>
+<li><code>l</code> - 符号链接(类似于windows快捷方式)</li>
+<li><code>f</code> - 命名管道</li>
+<li><code>s</code> - 套接字文件</li>
+</ul>
+<p>对于普通文件, 权限结构为: <code>rwx</code>, r - 读权限(4); w - 写权限(2); x - 执行权限(1).
+对于目录文件, x - 进入目录; rx - 显示目录内的文件名; wx - 修改目录内的文件名.</p>
+<blockquote>
+<p>root用户不受限制, 不管权限是如何指定的.</p>
+</blockquote>
+<ul>
+<li><code>chown &lt;username&gt; &lt;文件名&gt;</code>: 修改文件的属主</li>
+<li><code>chown :&lt;groupname&gt; &lt;文件名&gt;</code>: 修改文件的属组</li>
+<li><code>chmod u+x &lt;文件名&gt;</code>: 修改文件的权限
+<ul>
+<li>u - 属主权限; g - 属组权限; o - 其他权限; a - 前面三个所有</li>
+<li>
 <ul>
 <li>
 <ul>
-<li>匹配多个字符
-? - 匹配单个字符</li>
+<li>增加权限; - - 减少权限; = - 设置权限;</li>
 </ul>
 </li>
 </ul>
-</blockquote>
-<p><strong>文本查看</strong></p>
-<ul>
-<li>cat
-<ul>
-<li>文本的内容显示到终端</li>
+</li>
+<li>r/w/x</li>
 </ul>
 </li>
-<li>head
-<ul>
-<li>查看文件的开头(默认查看10行)</li>
-<li>head -5 [filename] 查看前5行</li>
-</ul>
-</li>
-<li>tail
-<ul>
-<li>查看文件的结尾(默认查看10行)</li>
-<li>tail -f [filename] 同步更新</li>
-</ul>
-</li>
-<li>wc
-<ul>
-<li>统计文件内容信息</li>
-<li>wc -l [filename] 查看文件有多少行</li>
-</ul>
-</li>
-<li>more
-<ul>
-<li>分行显示, 一次显示一部分内容</li>
-</ul>
-</li>
-<li>less
-<ul>
-<li>类似于more</li>
-</ul>
-</li>
-</ul>
-<p><strong>打包与压缩</strong></p>
-<ul>
-<li>tar
-<ul>
-<li>打包</li>
-<li>tar cf [filename] [source] 打包成文件
-<ul>
-<li>c 打包</li>
-<li>f 打包成文件</li>
-</ul>
-</li>
-<li>tar czf [filename] [source] 打包并使用gzip压缩
-<ul>
-<li>z 使用gzip压缩</li>
-</ul>
-</li>
-<li>tar cjf [filename] [source] 打包并使用bzip2压缩
-<ul>
-<li>j 使用bzip2压缩</li>
-</ul>
-</li>
-<li>tar xf [filename] 解包</li>
-<li>tar xf [filename] -C [targetPath] 解包到指定的文件夹</li>
-<li>tar xzf 解压缩gzip压缩过的文件</li>
-<li>tar xjf 解压缩bzip2压缩过的文件</li>
-</ul>
-</li>
-<li>gzip
-<ul>
-<li>压缩/解压缩</li>
-</ul>
-</li>
-<li>bzip2
-<ul>
-<li>压缩/解压缩, 压缩率相较于gzip更高, 速度慢一些</li>
-</ul>
-</li>
+<li><code>chmod 777 &lt;文件名&gt;</code>: 修改文件的权限(数字权限方式)</li>
 </ul>
 <blockquote>
-<p>一般, 文件.tar.gz, .tgz是gzip压缩的文件, .tar.bz2, tar.bzip2, .tbz2是bzip2压缩的文件. 压缩的时候, 也应该遵循这个规则进行命名</p>
+<p>如果属组和属主的权限有冲突, 那么以属主为准. 场景: user1属于group1, group1组内的用户对一个文件有写权限, 但是user1对文件没有写权限, 那么user1就没有写权限</p>
 </blockquote>
-<p><strong>文本编辑器Vim</strong></p>
-<p>特性: 多模式</p>
+<p>特殊权限</p>
 <ul>
-<li>正常模式(Normal-mode)
-<ul>
-<li>y -- 复制
-<ul>
-<li>yy -- 按行复制</li>
-<li>y$ -- 复制当前位置到光标结尾</li>
-<li>&lt;数字&gt;yy -- 复制多行</li>
+<li>SUID - 用于二进制可执行文件, 执行命令时取得文件属主权限(<code>rws</code>)(<code>chmod 4xxx</code>)</li>
+<li>SGID - 用于目录, 在该目录先创建新的文件和目录, 权限自动更改为该目录的属组(常用于文件共享)</li>
+<li>SBIT - 用于目录, 该目录下新建的文件和目录, 仅root和自己可以删除(<code>rwt</code>)(<code>chmod1xxx</code>)</li>
 </ul>
-</li>
-<li>p -- 粘贴</li>
-<li>d -- 剪切
+<h2 id="%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86">网络管理</h2>
+<p>具体分为以下:</p>
 <ul>
-<li>dd -- 按行剪切</li>
-<li>d$ -- 剪切当前位置到光标结尾</li>
+<li>网络状态查看</li>
+<li>网络配置</li>
+<li>路由命令</li>
+<li>网络故障排除</li>
+<li>网络服务管理</li>
+<li>常用网络配置文件</li>
 </ul>
-</li>
-<li>u -- 撤销</li>
-<li>ctrl + r -- 重做</li>
-<li>x -- 单个字符的删除</li>
-<li>r&lt;新字符&gt; -- 单个字符的替换</li>
-<li>G -- 移动到指定行
+<h4 id="%E7%BD%91%E7%BB%9C%E7%8A%B6%E6%80%81%E6%9F%A5%E7%9C%8B">网络状态查看</h4>
+<p>下面这些命令都属于net-tools工具包.</p>
 <ul>
-<li>&lt;数字&gt;G -- 移动到指定行</li>
-<li>g -- 移动到第一行</li>
-<li>G -- 移动到最后一行</li>
+<li><code>ifconfig</code>: 查看网络状态</li>
 </ul>
-</li>
-<li>^  定位到行首</li>
-<li>$  定位到行尾</li>
-</ul>
-</li>
-<li>插入模式(Insert-mode)
-<ul>
-<li>i -- 进入插入模式</li>
-<li>I -- 进入插入模式, 光标定位到行开头</li>
-<li>a -- 进入插入模式, 光标定位到原位置的下一位</li>
-<li>A -- 进入插入模式, 光标定位到行结尾</li>
-<li>o -- 进入插入模式, 光标所在行的下一行插入空行</li>
-<li>O -- 进入插入模式, 光标所在行的上一行插入空行</li>
-</ul>
-</li>
-<li>命令模式(Command-mode)
-<ul>
-<li>: -- 进入命令模式</li>
-<li>w <path>  -- 保存到指定位置</li>
-<li>q -- 退出编辑器
-<ul>
-<li>q!  -- 不保存退出</li>
-<li>wq  -- 保存并退出</li>
-</ul>
-</li>
-<li>!&lt;命令&gt; -- 执行linux命令</li>
-<li>/&lt;内容&gt; -- 查找(不需要先按:)
-<ul>
-<li>n -- 定位到下一个</li>
-<li>N -- 定位到上一个</li>
-</ul>
-</li>
-<li>s/&lt;旧的字符&gt;/&lt;新的字符&gt; -- 替换(针对光标所在行)</li>
-<li>%s/&lt;旧的字符&gt;/&lt;新的字符&gt; -- 替换(针对全文)
-<ul>
-<li>%s/&lt;旧&gt;/&lt;新&gt;/g -- 全部替换</li>
-<li>&lt;数字&gt;,&lt;数字&gt;s/&lt;旧&gt;/&lt;新&gt; -- 针对指定行范围进行替换</li>
-</ul>
-</li>
-<li>set -- 设置
-<ul>
-<li>set nu -- 显示行号</li>
-<li>set nonu -- 不显示行号</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>可视模式(Visual-mode)
-<ul>
-<li>v -- 进入字符可视模式</li>
-<li>V -- 进入行可视模式</li>
-<li>ctrl + v -- 进入块可视模式
-<ul>
-<li>I -- 插入</li>
-<li>d -- 删除</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>全局配置:
-修改/etc/vimrc文件, 在最后一行, 例如加入:
-set nu</p>
-</blockquote>
-<h2 id="%E7%94%A8%E6%88%B7%E5%8F%8A%E7%94%A8%E6%88%B7%E7%BB%84">用户及用户组</h2>
-<p><strong>用户管理</strong></p>
-<ul>
-<li>useradd -- 新建用户
-<ul>
-<li>该命令执行之后, 系统都做了哪些事情?
-<ul>
-<li>创建了 /home/<username>目录</li>
-<li>/etc/passwd文件中, 会记录该用户</li>
-<li>/etc/shadow文件中, 会记录该用户</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>userdel -- 删除用户
-<ul>
-<li>userdel <username> /home/<username>数据如果还有用, 则不要加-r</li>
-<li>userdel -r <username> 如果需要同时删除/home/<username> 需要加-r</li>
-</ul>
-</li>
-<li>passwd -- 修改用户密码
-<ul>
-<li>更改自己的密码, 直接passwd</li>
-<li>更改其他用户的密码, passwd <username></li>
-</ul>
-</li>
-<li>usermod -- 修改用户的属性
-<ul>
-<li>修改用户的home目录等, 详见man</li>
-</ul>
-</li>
-<li>chage -- 修改用户的属性
-<ul>
-<li>修改用户多久修改一次密码等时间相关</li>
-</ul>
-</li>
-<li>id &lt;用户名&gt; -- 判断该用户是否存在</li>
-</ul>
-<p><strong>组管理</strong></p>
-<ul>
-<li>groupadd -- 新建用户组
-<ul>
-<li>usermod -g <group> <username> 修改某个用户的用户组</li>
-<li>useradd -g <group> <username> 新增用户同时指定用户组</li>
-</ul>
-</li>
-<li>groupdel -- 删除用户组</li>
-</ul>
-<p><strong>其他</strong></p>
-<ul>
-<li>su -- 切换用户
-<ul>
-<li>su - <username> 加上'-', 切换用户同时, 把当前运行环境也切换(就是说, 切换到指定用户的home目录)</li>
-</ul>
-</li>
-<li>exit -- 退回root用户</li>
-<li>sudo -- 以其他用户身份执行命令
-<ul>
-<li>visudo -- 打开配置文件</li>
-</ul>
-<pre class="hljs"><code><div>&lt;用户&gt; &lt;主机&gt;=&lt;命令1&gt;,&lt;命令2&gt; [NOPASSWD:主机]
-%&lt;用户组&gt; ...同上
+<pre class="hljs"><code><div>[root@10 frogif]# ifconfig
+enp0s3: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255
+        inet6 fe80::a701:a03a:d08f:3b15  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 08:00:27:fa:ca:d0  txqueuelen 1000  (Ethernet)
+        RX packets 5687  bytes 448182 (437.6 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3095  bytes 558907 (545.8 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 84  bytes 7060 (6.8 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 84  bytes 7060 (6.8 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+virbr0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
+        inet 192.168.122.1  netmask 255.255.255.0  broadcast 192.168.122.255
+        ether 52:54:00:f3:4a:05  txqueuelen 1000  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 </div></code></pre>
-</li>
+<blockquote>
+<p>普通用户, 需要执行<code>/sbin/ifconfig</code>.
+inet网卡的ip地址
+ether网卡的mac地址
+lo是本地的环回, ip永远是127.0.0.1</p>
+</blockquote>
+<p>在centos7以前, 第一块网卡的名字, 又称&quot;网络接口&quot;, 一般叫<code>eth0</code>. centos7开始, 采用如下规则:</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eno1</td>
+<td>板载网卡</td>
+</tr>
+<tr>
+<td>ens33</td>
+<td>PCI-E网卡</td>
+</tr>
+<tr>
+<td>enp0s3</td>
+<td>无法获取物理信息的PCI-E网卡</td>
+</tr>
+<tr>
+<td>eth0</td>
+<td>以上都不匹配</td>
+</tr>
+</tbody>
+</table>
+<p>但是这个名字不太方便, 如果是多个系统的集群, 如果网卡名字不同, 则无法进行批量操作. 这时就需要接口命名修改:</p>
+<pre class="hljs"><code><div>1. 编辑/etc/default/grub文件, 增加biosdevname=0  net.ifnames=0
+示例: GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet biosdevname=0 net.ifnames=0&quot;
+2. 更新grub: grub2-mkconfig -o /boot/grub2/grub.cfg
+3. 重启
+4. 之后ifconfig就能看到eth0了
+5. 修改名称后, 在/etc/sysconfig/network-scripts中不会自动生成ifcfg-eth0配置文件, 需要自己手动新增
+</div></code></pre>
+<ul>
+<li><code>mii-tool eth0</code>: 查看网络连接状态</li>
+</ul>
+<pre class="hljs"><code><div>[root@10 ~]# mii-tool eth0
+eth0: no autonegotiation, 1000baseT-FD flow-control, link ok
+</div></code></pre>
+<ul>
+<li><code>route -n</code>: 查看网关</li>
+</ul>
+<pre class="hljs"><code><div>[root@10 ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.0.2.2        0.0.0.0         UG    100    0        0 eth0
+10.0.2.0        0.0.0.0         255.255.255.0   U     100    0        0 eth0
+192.168.122.0   0.0.0.0         255.255.255.0   U     0      0        0 virbr0
+</div></code></pre>
+<h4 id="%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE">网络配置</h4>
+<ul>
+<li><code>ifconfig eth0 &lt;新的ip地址&gt;</code>: 设置ip</li>
+<li><code>ifconfig eth0 &lt;新的ip地址&gt; netmask &lt;子网掩码&gt;</code>: 设置ip和子网掩码</li>
+<li><code>ifup &lt;网络接口&gt;</code>: 启用网络接口</li>
+<li><code>ifdown &lt;网络接口&gt;</code>: 禁用网络接口</li>
+</ul>
+<h4 id="%E8%B7%AF%E7%94%B1%E5%91%BD%E4%BB%A4">路由命令</h4>
+<ul>
+<li><code>route del default gw &lt;网关ip地址&gt;</code>: 删除默认网关</li>
+<li><code>route add default gw &lt;网关ip地址&gt;</code>: 添加默认网关</li>
+<li><code>route add -host &lt;目标ip&gt; gw &lt;网关ip地址&gt;</code>: 添加明细路由, 当访问&quot;目标ip&quot;时, 使用指定的网关ip</li>
+<li><code>route add -net &lt;目标网段&gt; netmask &lt;子网掩码&gt; gw &lt;网关ip地址&gt;</code>: 添加明细路由, 当访问指定网段时, 使用指定的网关ip</li>
 </ul>
 <blockquote>
-<p>which 查找某条命令的具体位置</p>
+<p>centos7之后, 又有了iproute2工具包, 里面的命令有<code>ip</code>, <code>ss</code>, 可以实现和上面类似的功能</p>
 </blockquote>
+<h4 id="%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E9%99%A4">网络故障排除</h4>
+<ul>
+<li>ping: 检测当前主机和目标主机是否畅通</li>
+<li><code>traceroute -w 1 www.baidu.com</code>: 检测当前主机和目标主机的网络状况, 追踪当前主机到目标主机, 都经过了哪些路由, <code>-w 1</code>表示如果1秒钟没有返回, 则跳过, 如果中间的路由不支持traceroute, 则结果中会显示<code>*</code></li>
+<li><code>mtr</code>: 检测当前主机和目标主机的网络状况, 直接执行, 显示的信息比traceroute更详细, 会显示与当前主机通信的所有其他主机信息</li>
+</ul>
+<pre class="hljs"><code><div>                                                      My traceroute  [v0.85]
+10.0.2.15 (::)                                                                                            Sun May 29 06:16:03 2022
+Keys:  Help   Display mode   Restart statistics   Order of fields   quit
+                                                                                          Packets               Pings
+ Host                                                                                   Loss%   Snt   Last   Avg  Best  Wrst StDev
+ 1. localhost                                                                            0.0%    20    0.1   0.1   0.1   0.2   0.0
+</div></code></pre>
+<ul>
+<li><code>nslookup &lt;目标主机&gt;</code>: 显示目标主机ip, 使用的dns等</li>
+<li><code>nslookup</code>: 进入操作命令行, 然后输入<code>server</code>查看dns</li>
+</ul>
+<pre class="hljs"><code><div>[root@10 ~]# nslookup www.baidu.com
+Server:         192.168.1.1
+Address:        192.168.1.1#53
+
+Non-authoritative answer:
+www.baidu.com   canonical name = www.a.shifen.com.
+Name:   www.a.shifen.com
+Address: 110.242.68.4
+Name:   www.a.shifen.com
+Address: 110.242.68.3
+[root@10 ~]# nslookup
+&gt; server
+Default server: 192.168.1.1
+Address: 192.168.1.1#53
+&gt; exit
+</div></code></pre>
+<ul>
+<li><code>telnet &lt;目标主机&gt; &lt;目标端口&gt;</code>: 检查端口连接状态</li>
+</ul>
+<p>可能没有这个命令, 这时需要手动安装: <code>yum install telnet -y</code></p>
+<pre class="hljs"><code><div>[root@10 ~]# telnet www.baidu.com 80
+Trying 110.242.68.3...
+Connected to www.baidu.com.
+Escape character is '^]'.
+</div></code></pre>
+<p>退出telnet --&gt; <code>ctrl + ]</code> --&gt; 输入<code>quit</code></p>
+<ul>
+<li><code>tcpdump -i any -n port 80</code>: 捕获数据包, <code>-i any</code>抓取所有网卡; <code>-n</code>所有域名都转ip显示; <code>-port 80</code>指定抓取的端口</li>
+<li><code>tcpdump -i any -n host 10.0.0.1</code>: 只捕获和10.0.0.1之间的数据包</li>
+<li><code>tcpdump -i any -n host 10.0.0.1 and port 80</code>: 只捕获和10.0.0.1的80端口之间的数据包</li>
+<li><code>tcpdump -i any -n host 10.0.0.1 and port 80 -w &lt;文件名&gt;</code>: 只捕获和10.0.0.1的80端口之间的数据包, 并保存到指定的文件中</li>
+<li><code>netstat -ntpl</code>: 列出当前主机监听相关信息. <code>-n</code>所有域名转ip显示; <code>-t</code>只列出tcp数据相关; <code>-p</code>显示端口所对应的进程信息; <code>-l</code>只显示监听.</li>
+</ul>
+<pre class="hljs"><code><div>[root@10 ~]# netstat -ntpl
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      654/rpcbind
+tcp        0      0 192.168.122.1:53        0.0.0.0:*               LISTEN      1297/dnsmasq
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1099/sshd
+tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      1098/cupsd
+tcp6       0      0 :::111                  :::*                    LISTEN      654/rpcbind
+tcp6       0      0 :::22                   :::*                    LISTEN      1099/sshd
+tcp6       0      0 ::1:631                 :::*                    LISTEN      1098/cupsd
+</div></code></pre>
+<p>上面Local Address列中, 0.0.0.0表示的是能对所有ip都可以处理. 127.0.0.1表示只处理来自本机的请求.</p>
+<ul>
+<li><code>ss -ntpl</code>: 和netstat差不多, 支持信息的展示形式有些区别</li>
+</ul>
+<h4 id="%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86">网络服务管理</h4>
+<p>网络配置文件:</p>
+<ul>
+<li><code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>: <code>ifcfg-xxx</code>后面的xxx不固定, 会随网卡名称变化</li>
+<li><code>/etc/hosts</code>: 主机名相关配置</li>
+</ul>
+<p>相关命令:</p>
+<ul>
+<li><code>service network status</code>: 查看网络状态</li>
+</ul>
+<pre class="hljs"><code><div>[root@10 network-scripts]# service network status
+已配置设备：
+lo eth0
+当前活跃设备：
+lo eth0 virbr0
+</div></code></pre>
+<ul>
+<li><code>service network restart</code>: 重启网络服务</li>
+<li><code>systemctl list-unit-files NetworkManager.service</code>: 查看某个服务systemctl是否支持</li>
+</ul>
+<p>查看ifcfg-eth0配置文件:</p>
+<pre class="hljs"><code><div>TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=eth0
+UUID=b257db0a-8634-4333-9513-5dd339f06b38
+DEVICE=eth0
+ONBOOT=yes
+</div></code></pre>
+<p>主要关注的配置: BOOTPROTO(静态ip还是动态ip), NAME, DEVICE, ONBOOT(开机启动)</p>
+<p>如果设置为静态ip:</p>
+<pre class="hljs"><code><div>TYPE=Ethernet
+UUID=b257db0a-8634-4333-9513-5dd339f06b38
+NAME=eth0
+DEVICE=eth0
+ONBOOT=yes
+BOOTPROTO=none
+IPADDR=10.0.2.15
+NETMASK=255.255.255.0
+GATEWAY=10.0.2.255
+DNS1=114.114.114.114
+</div></code></pre>
+<blockquote>
+<p>NetworkManager和network是两套网络管理服务, NetworkManager是centos7开始新增的.</p>
+</blockquote>
+<ul>
+<li><code>hostname</code>: 查看主机名</li>
+<li><code>hostname &lt;新主机名&gt;</code>: 修改为新主机名, 当前生效</li>
+<li><code>hostnamectl set-hostname &lt;新主机名&gt;</code>: 修改主机名, 永久生效</li>
+</ul>
+<blockquote>
+<p>永久修改主机名之后, 需要在<code>/etc/hosts</code>增加配置</p>
+</blockquote>
+<h2 id="%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8">软件包管理器</h2>
+<p>包管理器是方便软件安装,卸载,解决软件依赖关系的重要工具.</p>
+<ul>
+<li>CentOS, RedHat使用yum包管理器, 软件安装包格式为rpm</li>
+<li>Debian, Ubuntu使用apt包管理器, 软件安装包格式为deb</li>
+</ul>
+<p>rpm包格式:</p>
+<pre class="hljs"><code><div>vim-common-7.4.10-5.el7.x86_64.rpm
+
+解释:
+vim-common - 软件名称
+7.4.10-5 - 软件版本
+el7 - 系统版本
+x86_64 - 平台
+</div></code></pre>
+<p>rpm使用:</p>
+<ul>
+<li><code>rpm -qa</code>: 查询当前系统中安装的所有软件包</li>
+<li><code>rpm -qa | more</code>: 利用管道符, 实现分屏查看</li>
+<li><code>rpm -q &lt;软件包名称&gt;</code>: 查询某个单独的软件包是否安装</li>
+<li><code>rpm -i &lt;软件包文件&gt;</code>: 安装软件包</li>
+<li><code>rpm -e &lt;软件包名称&gt;</code>: 卸载软件包</li>
+</ul>
+<h4 id="yum%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8">yum包管理器</h4>
+<p>官方yum源: http://mirror.centos.org/centos/7/
+国内镜像: https://developer.aliyun.com/mirror/</p>
+<p>修改yum源位置为国内的:</p>
+<pre class="hljs"><code><div>1. 备份原镜像配置文件: mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+2. 下载阿里配置: wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+3. 更改yum系统缓存: yum makecache
+</div></code></pre>
+<ul>
+<li><code>yum install &lt;软件包名称&gt;</code>: 安装软件包</li>
+<li><code>yum remove &lt;软件包名称&gt;</code>: 卸载软件包</li>
+<li><code>yum list</code>: 查看已经安装的软件包</li>
+<li><code>yum update</code>: 更新软件包</li>
+</ul>
+<h4 id="%E6%BA%90%E4%BB%A3%E7%A0%81%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85">源代码编译安装</h4>
+<p>基本流程大致如下:</p>
+<ol>
+<li>下载源代码</li>
+<li>解压</li>
+<li>切换至源码根目录</li>
+<li>执行<code>./configure --prefix=&lt;安装路径&gt;</code>进行安装前配置, 并指定程序的安装目录(安装目录需要是该程序专属目录, 不是它的上级目录)</li>
+<li>执行<code>make</code>编译源码</li>
+<li>执行<code>make install</code>进行安装</li>
+<li>完成, 可以在上面指定的安装目录中找到</li>
+</ol>
+<blockquote>
+<p>中途可能出现各种缺少依赖, 需要逐个解决
+编译源码安装都需要依赖gcc, 一般系统不会内置, 需要手动安装<code>yum install gcc gcc-c++</code></p>
+</blockquote>
+<h2 id="grub">grub</h2>
+<p>grub是系统启动引导软件, centos6使用的是grub1, centos7使用的是grub2. grub配置文件位于<code>/boot/grub2/grub.cfg</code>, 但是不要手动修改这个文件.</p>
+<p>如果需要修改, 可以修改<code>/etc/default/grub</code>文件. 如果想修改更详细的引导配置可以修改<code>/etc/grub.d</code>文件夹中的配置文件.</p>
+<p>修改完成之后, 需要执行<code>grub2-mkconfig -o /boot/grub2/grub.cfg</code>来产生新的grub配置文件.</p>
+<p>grub基础配置配置 - <code>/etc/default/grub</code>:</p>
+<pre class="hljs"><code><div>GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR=&quot;$(sed 's, release .*$,,g' /etc/system-release)&quot;
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT=&quot;console&quot;
+GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet biosdevname=0 net.ifnames=0&quot;
+GRUB_DISABLE_RECOVERY=&quot;true&quot;
+</div></code></pre>
+<p>主要关注的有两项: GRUB_DEFAULT - 默认启动引导的内核; GRUB_CMDLINE_LINUX - 引导时, 对linux内核增加哪些参数</p>
+<ul>
+<li>GRUB_CMDLINE_LINUX:
+<ul>
+<li>rhgb: 图形模式</li>
+<li>quiet: 静默模式, 如果去掉, 可以看到系统启动时更详细的信息输出</li>
+</ul>
+</li>
+</ul>
+<h4 id="%E7%A4%BA%E4%BE%8B-%E6%8C%87%E5%AE%9A%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%97%B6%E9%BB%98%E8%AE%A4%E5%BC%95%E5%AF%BC%E7%9A%84%E5%86%85%E6%A0%B8">示例-指定系统启动时默认引导的内核</h4>
+<ul>
+<li><code>grub2-editenv list</code>: 显示系统当前引导的内核</li>
+<li><code>grep ^menu /boot/grub2/grub.cfg</code>: 列出所有可引导的内核</li>
+</ul>
+<pre class="hljs"><code><div>[root@frog-centos7 ~]# grep ^menu /boot/grub2/grub.cfg
+menuentry 'CentOS Linux (3.10.0-1160.el7.x86_64) 7 (Core)' --class centos --class gnu-linux --class gnu --class os --unrestricted $menuentry_id_option 'gnulinux-3.10.0-1160.el7.x86_64-advanced-c72e3b21-d1f1-4d4f-b440-a51c09e515be' {
+menuentry 'CentOS Linux (0-rescue-4b273917fe62da4292db2842cc87efc6) 7 (Core)' --class centos --class gnu-linux --class gnu --class os --unrestricted $menuentry_id_option 'gnulinux-0-rescue-4b273917fe62da4292db2842cc87efc6-advanced-c72e3b21-d1f1-4d4f-b440-a51c09e515be' {
+</div></code></pre>
+<ul>
+<li><code>grub2-set-default 0</code>: 设置默认引导第一个内核</li>
+</ul>
+<h2 id="%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86">进程管理</h2>
+<p>进程状态查看命令:</p>
+<ul>
+<li><code>ps</code>: 查看进程状态</li>
+<li><code>pstree</code>: 查看进程的树形结构</li>
+<li><code>top</code>: 查看进程详细信息</li>
+</ul>
+<h4 id="ps">ps</h4>
+<ul>
+<li><code>ps</code>: 显示当前终端下能看到的进程状态</li>
+<li><code>ps -e</code>: 显示全部进程, 一些关键的列: PID - 进程id</li>
+<li><code>ps -ef</code>: 显示全部进程, 在上一个基础上, 额外显示: UID - 表示进程的有效用户id; PPID - 父进程id; CMD - 命令完整路径</li>
+<li><code>ps -eLf</code>: 在上一个基础上, 会显示LWP - 线程数, 可以用来查看一个进程的线程数是否过多</li>
+</ul>
+<h4 id="top">top</h4>
+<ul>
+<li><code>top</code>: 查看进程详细信息, 不需要任何参数</li>
+</ul>
+<pre class="hljs"><code><div>top - 14:36:48 up  5:40,  1 user,  load average: 0.00, 0.01, 0.05
+Tasks: 154 total,   1 running, 153 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  1014760 total,    84316 free,   405236 used,   525208 buff/cache
+KiB Swap:   839676 total,   830708 free,     8968 used.   450648 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+    1 root      20   0  128284   4540   2644 S  0.0  0.4   0:02.48 systemd
+    2 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kthreadd
+</div></code></pre>
+<p>详细说明一下具体内容:</p>
+<ul>
+<li>第一行 - <code>up 5:40</code>: 表示系统已启动5小时40分钟</li>
+<li>第一行 - <code>1 user</code>: 表示当前系统有1个用户登录</li>
+<li>第一行 - <code>load average: 0.00, 0.01, 0.05</code>: 平均负载, 用于衡量系统的繁忙程度, 后面三个值, 分别是1分钟/5分钟/15分钟的指标. 对于单核如果值为1, 就表示系统满负载运行; 双核如果值为2, 就是满负载等等, 如果100核, 值为1, 那就很空闲.</li>
+<li>第二行 - <code>Tasks: 154 total</code>: 表示有154个进程在运行</li>
+<li>第三行: CPU使用情况: us - 用户进程使用占比; sy - 系统进程使用占比; id - 空闲状态; wa - io wait占比</li>
+<li>第四行: 内存使用情况: total - 总内存大小; free - 空闲内存大小; used - 使用内存大小; buff/cache - 用于读写的缓存的内存大小</li>
+<li>第五行: 交换分区(虚拟内存) : 当物理内存不足时, 会将一部分内存数据暂时输出到磁盘中进行保存, 称之为交换分区</li>
+<li>第六行: %CPU进程占用的CPU; %MEM进程占中的内存; TIME+进程已经运行时间; PR - 系统优先级; NI - nice值; S - 进程状态(S - interruptable sleep, D - Uninterruptable sleep, R - 运行状态; Z - 僵尸状态; T - Stop模式，进程要么处于被调试状态)</li>
+</ul>
+<blockquote>
+<p>什么是僵尸进程? 在Linux中，每个进程都有一个父进程，进程号叫PID（Process ID），父进程号叫PPID（Parent PID）。当进程死亡时，会关闭已经打开的文件，舍弃已经占用的内存，交换空间等公共资源，然后向父进程返回一个退出状态值，报告死讯。如果在报告的过程中出了问题，父进程不知道子进程死了，子进程便变成了僵尸。Linux中，可以通过杀死父进程的方式来让子进程消失。但是，僵尸进程并不占用任何资源，只是错误显示，如果父进程正在跑业务，千万不可以贸然杀死父进程。</p>
+</blockquote>
+<p>在top界面的命令操作:</p>
+<ul>
+<li><code>1</code> - 总CPU和逻辑CPU之间显示切换</li>
+<li><code>s</code> - 修改数据刷新频率, 默认每3秒更新一次</li>
+<li><code>e</code> - 进程显示指标单位切换</li>
+<li><code>E</code> - 上方整体系统指标单位切换</li>
+<li><code>P</code> - 按照CPU排序</li>
+<li><code>M</code> - 按照内存排序</li>
+</ul>
+<p>其他命令:</p>
+<ul>
+<li><code>top -p &lt;pid&gt;</code>: 查看指定进程的运行状态</li>
+</ul>
+<h4 id="%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6">进程控制</h4>
+<ul>
+<li><code>nice -n &lt;优先级&gt; &lt;程序启动命令&gt;</code>: 设置优先级, 范围从-20到19, 值越小优先级越高, 抢占资源就越多</li>
+<li><code>renice -n &lt;优先级&gt; &lt;进程pid&gt;</code>: 对于已经启动的程序, 重新设置优先级</li>
+<li><code>&lt;程序启动命令&gt; &amp;</code>: 使得程序后台运行</li>
+<li><code>jobs</code>: 查看后台运行的程序</li>
+</ul>
+<pre class="hljs"><code><div>[root@frog-centos7 ~]# jobs
+[1]+  运行中               ./a.sh &amp;
+</div></code></pre>
+<ul>
+<li><code>fg &lt;数字&gt;</code>: 使得后台程序调回前台运行, 数字就是jobs第一列的数字</li>
+<li><code>ctrl + z</code>: 将前台程序调入后台, 并暂停</li>
+<li><code>bg &lt;数字&gt;</code>: 通过jobs查看, 可以找到被<code>ctrl + z</code>调入后台暂停的程序, 然后通过这个命令重新运行</li>
+</ul>
+<h4 id="%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1">进程间通信</h4>
+<p>信号是进程间通信的方式之一. 典型用法是: 终端用户输入中断命令, 通过信号机制停止一个程勋的运行.</p>
+<ul>
+<li><code>kill -l</code>: 查看信号</li>
+<li><code>ctrl + c</code>: 就是2号信号, 通过<code>kill -l</code>看到</li>
+<li><code>kill -9 &lt;pid&gt;</code>: 发送9号信号, 使得其无条件结束</li>
+</ul>
+<h4 id="%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B">守护进程</h4>
+<ul>
+<li><code>nohup &lt;程序启动命令&gt;</code>: 使得程序运行时, hangup不会回应, 这样, 即使终端关掉, 也可以不影响程序的运行. 这个命令会将输出内容追加到nohup.out文件</li>
+<li><code>nohup &lt;程序启动命令&gt; &amp;</code>: 一般都这样使用, 使得: 1. 不回应hangup, 2. 后台运行.</li>
+</ul>
+<p>上面这个不属于守护进程. 守护进程(daemon)是一些开机自启的后台进程.</p>
+<p>下面介绍一个特殊的文件夹<code>/proc</code>, 这是一个在磁盘上不存在的文件夹, 是操作系统将内存信息以文件方式呈现出来:</p>
+<pre class="hljs"><code><div>[root@frog-centos7 19548]# ls /proc
+1     1428  1526  1585  17     19578  288  392  45   60   659  8          dma          kmsg          sched_debug    uptime
+10    1434  1529  1588  17729  19579  289  393  46   618  661  9          driver       kpagecount    schedstat      version
+1067  1440  1533  1591  18     2      291  394  483  620  662  95         execdomains  kpageflags    scsi           vmallocinfo
+1069  1450  1536  1594  18775  20     292  395  509  622  668  acpi       fb           loadavg       self           vmstat
+1070  1454  1545  1599  18781  21     30   396  522  624  690  asound     filesystems  locks         slabinfo       zoneinfo
+1072  1459  1554  16    19     22     31   397  577  625  691  buddyinfo  fs           mdstat        softirqs
+1079  1460  1558  1604  19130  23     316  398  578  646  694  bus        interrupts   meminfo       stat
+1085  1464  1565  1608  19283  24     32   399  579  647  695  cgroups    iomem        misc          swaps
+1086  1469  1569  1614  19336  2584   33   4    580  650  696  cmdline    ioports      modules       sys
+11    1473  1570  1620  19389  276    367  400  581  651  697  consoles   irq          mounts        sysrq-trigger
+13    1494  1572  1623  19438  282    368  401  582  653  7    cpuinfo    kallsyms     mtrr          sysvipc
+1307  15    1575  1627  19449  284    378  41   584  654  720  crypto     kcore        net           timer_list
+1309  1501  1577  1650  19454  285    379  43   586  657  724  devices    keys         pagetypeinfo  timer_stats
+14    1510  1579  1674  19548  286    391  44   6    658  760  diskstats  key-users    partitions    tty
+[root@frog-centos7 proc]# ls -l /proc/19548/cwd
+lrwxrwxrwx. 1 root root 0 5月  29 16:02 /proc/19548/cwd -&gt; /proc
+[root@frog-centos7 proc]# ls -l /proc/19548/fd
+总用量 0
+l-wx------. 1 root root 64 5月  29 16:02 0 -&gt; /dev/null
+l-wx------. 1 root root 64 5月  29 16:02 1 -&gt; /root/nohup.out
+l-wx------. 1 root root 64 5月  29 16:02 2 -&gt; /root/nohup.out
+lr-x------. 1 root root 64 5月  29 16:02 3 -&gt; /var/log/messages
+lr-x------. 1 root root 64 5月  29 16:02 4 -&gt; anon_inode:inotify
+</div></code></pre>
+<p>proc目录中, 每个文件夹对应一个进程, 可以进入到每个进程目录中进行查看. 其中<code>cwd</code>指示的是当前工作目录, 也就是程序工作过程中, 占用的目录. <code>fd</code>目录记录了输入输出信息. 0 - 标准输入; 1/2 - 标准输出.</p>
+<p>介绍screen命令: screen命令是在当前终端新开启一个&quot;界面&quot;, 用于防止在一系列操作过程中, 由于网络中断等, 导致hangup, 导致操作到一半结果工作丢失. 可能需要安装:<code> yum install screen</code>. 使用方式如下:</p>
+<ol>
+<li><code>screen</code>: 进入screen</li>
+<li>执行正常的一些工作</li>
+<li><code>ctrl + a d</code>: 临时退出screen</li>
+<li><code>screen -ls</code>: 查看当前存在的screen列表</li>
+<li><code>screen -r &lt;sessionId&gt;</code>: 通过上面列表中查询到的id, 重新进入指定的screen</li>
+<li><code>exit</code>: 离开screen</li>
+</ol>
+<h2 id="%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97">系统日志</h2>
+<p>所有系统日志都会输出到<code>/var/log</code>目录. 需要关注的有:</p>
+<ul>
+<li><code>messages</code>: 系统常规日志, 例如是否有些进程被系统主动杀掉</li>
+<li><code>dmesg</code>: 系统启动日志</li>
+<li><code>secure</code>: 系统安全日志</li>
+<li><code>cron</code>: 定时任务日志</li>
+</ul>
+<h2 id="%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7systemctl">服务管理工具systemctl</h2>
+<p>centos7提供的新的服务管理工具, 相较于centos7之前的service命令, 操作更方便. 常见操作如下:</p>
+<ul>
+<li><code>systemctl start|status|stop|restart|reload|enable|disable &lt;服务名称&gt;</code>
+<ul>
+<li>reload - 有些服务, 可以动态加载配置变更, 就可以使用这个</li>
+</ul>
+</li>
+<li><code>systemctl get-default</code>: 查看系统当前的运行级别</li>
+<li><code>systemctl set-default &lt;运行级别&gt;</code>: 指定运行级别(级别可选项参见下面, 例如multi-user.target)</li>
+</ul>
+<p>服务单元所在目录:  <code>/usr/lib/systemd/system</code>, 内部<code>*.service</code>就是服务, <code>*.target</code>表示服务的级别</p>
+<pre class="hljs"><code><div>[root@frog-centos7 system]# ls -l /usr/lib/systemd/system/runlevel*.target
+lrwxrwxrwx. 1 root root 15 5月  28 20:12 /usr/lib/systemd/system/runlevel0.target -&gt; poweroff.target
+lrwxrwxrwx. 1 root root 13 5月  28 20:12 /usr/lib/systemd/system/runlevel1.target -&gt; rescue.target
+lrwxrwxrwx. 1 root root 17 5月  28 20:12 /usr/lib/systemd/system/runlevel2.target -&gt; multi-user.target
+lrwxrwxrwx. 1 root root 17 5月  28 20:12 /usr/lib/systemd/system/runlevel3.target -&gt; multi-user.target
+lrwxrwxrwx. 1 root root 17 5月  28 20:12 /usr/lib/systemd/system/runlevel4.target -&gt; multi-user.target
+lrwxrwxrwx. 1 root root 16 5月  28 20:12 /usr/lib/systemd/system/runlevel5.target -&gt; graphical.target
+lrwxrwxrwx. 1 root root 13 5月  28 20:12 /usr/lib/systemd/system/runlevel6.target -&gt; reboot.target
+</div></code></pre>
+<p>服务启动配置文件介绍一下<code>vim /usr/lib/systemd/system/sshd.service</code>:</p>
+<pre class="hljs"><code><div>[Unit]
+Description=OpenSSH server daemon
+Documentation=man:sshd(8) man:sshd_config(5)
+After=network.target sshd-keygen.service
+Wants=sshd-keygen.service
+
+[Service]
+Type=notify
+EnvironmentFile=/etc/sysconfig/sshd
+ExecStart=/usr/sbin/sshd -D $OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
+</div></code></pre>
+<p>上面需要注意几项:</p>
+<ul>
+<li><code>After</code> - 服务启动后, 执行</li>
+<li><code>Requires</code> - 服务启动前, 启动</li>
+<li><code>ExecStart</code> - 实际程序位置</li>
+<li><code>WantedBy</code> - 服务期望在哪个级别启动</li>
+</ul>
+<h2 id="selinux">SELinux</h2>
+<p>SELinux是用来进行安全控制的, 包括访问权限等. SELinux开启会降低服务器的性能, 生产服务器一般会关闭这个功能.</p>
+<ul>
+<li><code>getenforce</code>: 查看SELinux状态, 或者在<code>vim /etc/selinux/config</code>中查看
+<ul>
+<li>存在三种状态: enforcing - 强制访问控制; permissive - 警告; disabled - 禁用</li>
+</ul>
+</li>
+<li><code>setenforce 0</code>: 临时修改SELinux</li>
+<li>修改<code>/etc/selinux/config</code>文件: 永久修改SELinux配置, 修改之后需要重启</li>
+<li><code>ps -Z</code>: 显示进程, 同时显示SELinux标签</li>
+<li><code>id -Z</code>: 显示当前用户的SELinux标签</li>
+<li><code>ls -Z</code>: 显示文件的SELinux标签</li>
+</ul>
+<blockquote>
+<p>只有标签完全匹配, 才具有权限</p>
+</blockquote>
+<h2 id="%E5%86%85%E5%AD%98%E5%92%8C%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86">内存和磁盘管理</h2>
+<h4 id="%E5%86%85%E5%AD%98%E6%9F%A5%E7%9C%8B">内存查看</h4>
+<ul>
+<li><code>free</code>: 查看内存</li>
+<li><code>free -m</code>: 查看内存, 以Mb为单位</li>
+<li><code>free -g</code>: 查看内存, 以Gb为单位</li>
+<li><code>free -h</code>: 查看内存, 带单位显示</li>
+</ul>
+<pre class="hljs"><code><div>[root@frog-centos7 system]# free -h
+              total        used        free      shared  buff/cache   available
+Mem:           990M        391M        140M        4.0M        459M        445M
+Swap:          819M         10M        809M
+</div></code></pre>
+<blockquote>
+<p>buff/cache - 缓存, 可以释放
+available - 如果buff/cache都释放掉, 那么还可以使用多少内存
+Swap - 交换分区, 内存不够用时, 系统会把一部分暂时不需要的内存转移到磁盘上, 称之为交换分区</p>
+</blockquote>
+<h4 id="%E7%A3%81%E7%9B%98%E6%9F%A5%E7%9C%8B">磁盘查看</h4>
+<ul>
+<li><code>fdisk -l</code>: 查看磁盘信息, 这个命令也可以用来进行分区编辑</li>
+</ul>
+<pre class="hljs"><code><div>[root@frog-centos7 system]# fdisk -l
+
+磁盘 /dev/sda：8589 MB, 8589934592 字节，16777216 个扇区
+Units = 扇区 of 1 * 512 = 512 bytes
+扇区大小(逻辑/物理)：512 字节 / 512 字节
+I/O 大小(最小/最佳)：512 字节 / 512 字节
+磁盘标签类型：dos
+磁盘标识符：0x000c737f
+
+   设备 Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048     2099199     1048576   83  Linux
+/dev/sda2         2099200    16777215     7339008   8e  Linux LVM
+
+磁盘 /dev/mapper/centos-root：6652 MB, 6652166144 字节，12992512 个扇区
+Units = 扇区 of 1 * 512 = 512 bytes
+扇区大小(逻辑/物理)：512 字节 / 512 字节
+I/O 大小(最小/最佳)：512 字节 / 512 字节
+
+
+磁盘 /dev/mapper/centos-swap：859 MB, 859832320 字节，1679360 个扇区
+Units = 扇区 of 1 * 512 = 512 bytes
+扇区大小(逻辑/物理)：512 字节 / 512 字节
+I/O 大小(最小/最佳)：512 字节 / 512 字节
+</div></code></pre>
+<p>解释一下里边的内容:</p>
+<p>sda, sdb, sdc, ... - 表示可插拔的磁盘</p>
+<p>设备列表中有sda1, sda2 ... 表示对磁盘的分区, 最多到sda15.</p>
+<p>对于其中一个分区, 又有start, end列, 代表的是扇区. system列代表分区类型. Boot列, 有<code>*</code>的表示内核所在的分区.</p>
+<ul>
+<li><code>df -h</code>: 查看其它的磁盘信息, 磁盘容量等, 磁盘挂在到哪一个目录</li>
+</ul>
+<pre class="hljs"><code><div>[root@frog-centos7 dev]# df -h
+文件系统                 容量  已用  可用 已用% 挂载点
+devtmpfs                 479M     0  479M    0% /dev
+tmpfs                    496M     0  496M    0% /dev/shm
+tmpfs                    496M  7.4M  489M    2% /run
+tmpfs                    496M     0  496M    0% /sys/fs/cgroup
+/dev/mapper/centos-root  6.2G  4.8G  1.5G   77% /
+/dev/sda1               1014M  172M  843M   17% /boot
+tmpfs                    100M   12K  100M    1% /run/user/42
+tmpfs                    100M     0  100M    0% /run/user/0
+</div></code></pre>
+<ul>
+<li><code>du &lt;文件/目录&gt;</code>: 查看文件实际占用的空间(ls -l也能看到大小, 但是那个不是实际占用的大小, 是存在&quot;空洞的&quot;)</li>
+</ul>
+<h4 id="%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F">文件系统</h4>
+<p>linux支持多种文件系统, 常见有:</p>
+<ul>
+<li>ext4</li>
+<li>xfs</li>
+<li>NTFS(需安装额外软件)</li>
+</ul>
+<p>对于ext4文件系统:</p>
+<ul>
+<li>超级块: 记录了整个文件系统中包含了多少个文件</li>
+<li>超级块副本</li>
+<li>i节点(inode): 记录每一个文件的文件名, 大小, 编号, 权限等等
+<ul>
+<li>文件名和剩余其他信息记录在不同的i节点, 文件名存储在它的父目录的i节点上</li>
+<li><code>ls -i</code>: 可以查看文件所属i节点编号</li>
+</ul>
+</li>
+<li>数据块(datablock): 记录实际数据, i节点链接着数据块.</li>
+</ul>
+<blockquote>
+<p>linux系统中, ext4和xfs文件系统中, 默认创建的一个数据块大小是4k, 也就是说, 如果一个文件中只有一个字符, 也会占用4k. 因此linux中, 如果存储很多小文件, 也会占用很多空间</p>
+</blockquote>
+<p>执行mv命令, 如果是在当前分区中进行的, i节点是不变的.</p>
+<p>vim修改文件时, 是先复制一个副本<code>.xxx.swp</code>, 然后在副本上进行操作, 最后保存时, 再进行覆盖.</p>
+<p>rm命令实际上做的工作是使得文件名和i节点的链接断开. 所以误删数据就是误将链接断开了, 数据还是存在的.</p>
+<p>文件链接:</p>
+<ul>
+<li><code>ln &lt;源文件名&gt; &lt;新文件名&gt;</code>: 硬链接, 建立一个新的文件名, 链接到源文件上, 就是两个文件名使用同一个i节点. 硬链接只能是在同一个分区</li>
+<li><code>ln -s &lt;源文件名&gt; &lt;新文件名&gt;</code>: 软连接(符号链接), 这时, 两者的i节点是不一样的. 软连接记录了目标文件的路径.</li>
+</ul>
+<p>文件访问控制列表, 用于精准控制每一个用户和用户组对某个文件的控制权限:</p>
+<ul>
+<li><code>getfacl &lt;文件名&gt;</code>: 查看访问控制列表</li>
+<li><code>setfacl -m u:&lt;用户名&gt;:&lt;权限符号rwx&gt; &lt;文件名&gt;</code>: 赋予权限, u表示给用户赋予, g表示给用户组赋予</li>
+<li><code>setfacl -x u:&lt;用户名&gt;:&lt;权限符号rwx&gt; &lt;文件名&gt;</code>: 收回权限</li>
+</ul>
+<blockquote>
+<p>设置文件访问控制列表后, ls -l显示的原有的访问权限标识后面会多一个&quot;+&quot;号</p>
+</blockquote>
+<ul>
+<li><code>mount</code>: 查看分区挂在情况</li>
+</ul>
+<h4 id="%E5%85%B6%E4%BB%96%E4%B8%80%E4%BA%9B%E5%86%85%E5%AE%B9">其他一些内容</h4>
+<ul>
+<li>分区挂载</li>
+<li>磁盘配额</li>
+<li>交换分区</li>
+<li>RAID
+<ul>
+<li>RAID 0 - 就是将数据进行分片</li>
+<li>RAID 1 - 就是主从备份</li>
+<li>RAID 5 - 至少三块磁盘, 其中一块存储校验, 两块存储数据. 数据可以通过校验值恢复, 校验值可以通过数据生成.</li>
+<li>RAID 10 - 至少4块磁盘, 就是先分片, 构成集群, 然后每个节点又做主从.</li>
+</ul>
+</li>
+<li>逻辑卷LVM
+<ul>
+<li>将多个物理磁盘(物理卷)拼接在一起, 在上层, 通过软件使得看起来就像一个分区, 这就是逻辑卷</li>
+</ul>
+</li>
+</ul>
+<h2 id="%E7%B3%BB%E7%BB%9F%E7%BB%BC%E5%90%88%E7%8A%B6%E6%80%81%E6%9F%A5%E8%AF%A2">系统综合状态查询</h2>
+<ul>
+<li><code> sar -u 1 10</code>: 查看cpu运行状态, 每1秒执行一次, 共执行10次</li>
+<li><code>sar -r 1 10</code>: 查看内存运行状态</li>
+<li><code>sar -b 1 5</code>: 查看磁盘io运行状态</li>
+<li><code>sar -d 1 5</code>: 查看每一块磁盘的io状态</li>
+<li><code>sar -q 1 5</code>: 查看进程的综合状态</li>
+</ul>
+<p>另一个工具iftop用于查看网络流量. 需要先安装<code>yum install epel-release</code>, 然后再安装<code>yum install iftop</code>.</p>
+<ul>
+<li><code>iftop -P</code>: 查看网络信息</li>
+</ul>
 <h2 id="ssh%E6%9C%8D%E5%8A%A1">ssh服务</h2>
+<blockquote>
+<p>呃, 这个是Ubuntu的...</p>
+</blockquote>
 <p>ssh 服务端安装和配置:</p>
 <ol>
 <li>更新源列表:</li>
@@ -795,10 +1458,19 @@ sudo service ssh status
 <p>指定端口号:</p>
 <pre class="hljs"><code><div>ssh -p 8080 aaa@127.0.0.1
 </div></code></pre>
-<h2 id="tip">tip</h2>
-<ul>
-<li>查看是否有系统主动杀掉进程的问题:</li>
-</ul>
+<h2 id="%E5%B7%A5%E4%BD%9C%E4%B8%AD%E7%9A%84%E7%A7%AF%E7%B4%AF">工作中的积累</h2>
+<h4 id="%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5">查看磁盘使用情况</h4>
+<p><code>df -h</code></p>
+<p><strong>汇总一个目录下各个文件/文件夹大小</strong></p>
+<p><code>du -sh *</code></p>
+<p><strong>查看端口监听</strong></p>
+<p><code>lsof -i:端口号</code></p>
+<pre class="hljs"><code><div>[root@localhost gitlab]# lsof -i:80
+COMMAND   PID       USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+nginx   10494       root    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
+nginx   10498 gitlab-www    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
+</div></code></pre>
+<p><strong>查看是否有系统主动杀掉进程的问题</strong></p>
 <pre class="hljs"><code><div>egrep -i -r 'killed process' /var/log
 </div></code></pre>
 <blockquote>
@@ -812,13 +1484,32 @@ sudo service ssh status
 <li>setsid命令</li>
 </ul>
 <p>让进程运行在新的会话里, 从而成为不属于此终端的子进程. 从而实现进程后台运行.</p>
-<h2 id="%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E9%85%8D%E7%BD%AE">环境变量配置</h2>
+<p><strong>环境变量配置</strong></p>
 <ol>
 <li>执行<code>export</code>查看当前所有环境变量;</li>
 <li>修改系统环境变量配置<code>vim /etc/profile</code>(需root权限);</li>
 <li>在文档末尾, 填写需要指定的环境变量, 例如:<code>export VAR_KEY=VAR_VALUE</code>;</li>
 <li>执行<code>source /etc/profile</code>使其立即生效.</li>
 </ol>
+<h2 id="%E5%85%B6%E4%BB%96%E5%91%BD%E4%BB%A4">其他命令</h2>
+<ul>
+<li><code>clear</code>: 清屏</li>
+<li><code>lscpu</code>: 查看cpu相关信息</li>
+<li><code>uname -r</code>: 查看当前内核版本</li>
+</ul>
+<p>统配符:</p>
+<ul>
+<li><code>*</code>: 通配任意长度的任意字符</li>
+<li><code>?</code>: 通配一个任意字符</li>
+</ul>
+<p>输出:</p>
+<ul>
+<li><code>echo &lt;内容&gt;</code>: 输出内容</li>
+</ul>
+<p>挂在磁盘:</p>
+<ul>
+<li><code>mount &lt;块文件&gt; &lt;目标路径&gt;</code>: 将指定的块文件(也就是镜像之类的)挂载到目标路径, 目标路径一般推荐使用<code>/mnt</code></li>
+</ul>
 
 </body>
 </html>
