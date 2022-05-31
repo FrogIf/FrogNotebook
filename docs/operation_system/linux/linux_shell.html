@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>linux_shell.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="shell">Shell</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<p>shell是linux的命令解释器. 用于解释用户对操作系统的操作. CentOS7默认使用的shell是bash.</p>
+<p>下面列出了一系列shell:</p>
+<pre class="hljs"><code><div>[root@frog-centos7 ~]# cat /etc/shells
+/bin/sh
+/bin/bash
+/usr/bin/sh
+/usr/bin/bash
+/bin/tcsh
+/bin/csh
+</div></code></pre>
+<h2 id="linux%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B">Linux启动过程</h2>
+<p>linux启动过程: BIOS -&gt; MBR -&gt; BootLoader(grub) -&gt; kernel -&gt; systemd -&gt; 系统初始化 -&gt; shell</p>
+<ol>
+<li>BIOS(Basic Input/Output System): BIOS引导, 基本输入输出系统, 存储在主板上</li>
+<li>MBR: 硬盘主引导记录
+<ul>
+<li>dump MBR文件: <code>dd if=/dev/sda of=mbr.bin bs=446 count=1</code></li>
+<li>使用16进制查看这个文件: <code>hexdump -C mbr.bin</code></li>
+</ul>
+</li>
+<li>grub: 启动和引导内核
+<ul>
+<li>grub文件所在目录: <code>/boot/grub2</code></li>
+<li><code>grub2-editenv list</code>查看默认内核</li>
+</ul>
+</li>
+<li>kernel: 内核启动</li>
+<li>systemd: 启动1号进程</li>
+<li>系统初始化</li>
+<li>执行shell脚本</li>
+</ol>
+<h2 id="shell%E8%84%9A%E6%9C%AC%E6%A0%BC%E5%BC%8F">shell脚本格式</h2>
+<ul>
+<li>UNIX哲学: 一条命令只做一件事</li>
+<li>为了组合命令和多次执行, 使用脚本文件来保存需要执行的命令</li>
+<li>赋予该文件执行权限(chmod u+rx filename)</li>
+</ul>
+<p>编写bash脚本时, 第一行一般需要声明使用的是哪一种shell</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#!/bin/bash</span>
+<span class="hljs-built_in">cd</span> /var/
+ls
+<span class="hljs-built_in">pwd</span>
+<span class="hljs-comment"># 这里是注释</span>
+du -sh
+du -sh *
+</div></code></pre>
+<h2 id="%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4%E7%9A%84%E6%96%B9%E5%BC%8F">执行命令的方式</h2>
+<ol>
+<li><code>bash ./filename.sh</code>
+<ul>
+<li>使用bash shell执行这个文件</li>
+<li>不需要赋予文件可执行权限</li>
+<li>在子进程中执行</li>
+</ul>
+</li>
+<li><code>./filename.sh</code>
+<ul>
+<li>使用脚本中声明的shell执行这个文件</li>
+<li>需要赋予可执行权限</li>
+<li>在子进程中执行</li>
+</ul>
+</li>
+<li><code>source ./filename.sh</code>或者<code>.filename.sh</code>
+<ul>
+<li>在当前进程中执行</li>
+<li>不需要赋予文件可执行权限</li>
+</ul>
+</li>
+</ol>
+<p>内建命令 - 不需要创建子进程; 对当前shell生效</p>
+<h2 id="%E7%AE%A1%E9%81%93">管道</h2>
+<p>管道主要用于进程间通信, 进程通信方式之一. 将两个应用程序连接在一起, 将第一个程序的输出作为第二个程序的输入. 如果有多个程序, 就是前一个的输出作为后一个的输入.</p>
+<p><code>cmd1 | cmd2</code></p>
+<h2 id="%E9%87%8D%E5%AE%9A%E5%90%91">重定向</h2>
+<p>重定向可以使程序将输出到标准输出的内容输出到文件里</p>
+<ul>
+<li>输入重定向: <code>&lt;</code>
+<ul>
+<li>场景: 使用文件代替键盘进行输入</li>
+<li>示例: <code>read var &lt; /path/to/a/file</code></li>
+</ul>
+</li>
+<li>输出重定向:
+<ul>
+<li><code>&gt;</code>: 把输出到终端上的内容输出到文件, 会清空原有文件</li>
+<li><code>&gt;&gt;</code>: 把输出到终端上的内容输出到文件, 追加写</li>
+<li><code>2&gt;</code>: 把错误输出</li>
+<li><code>&amp;&gt;</code>: 无论对错, 都输出</li>
+</ul>
+</li>
+</ul>
+<p>输出重定向示例:</p>
+<pre class="hljs"><code><div>[root@frog-centos7 ~]# wc -l &lt; anaconda-ks.cfg
+65
+</div></code></pre>
+<p>解释: <code>wc -l</code>可以统计用户使用键盘输入了多少行, 这里通过输入重定向, 统计了一个文件有多少行.</p>
+<pre class="hljs"><code><div>[root@frog-centos7 ~]# read var2 &lt; a.txt
+[root@frog-centos7 ~]# echo $var2
+123
+</div></code></pre>
+<p>解释: 将文件中的内容读入到一个变量中, 然后显示出来了.</p>
+<p>输出重定向示例:</p>
+<pre class="hljs"><code><div>echo $var2 &gt; b.txt
+</div></code></pre>
+<p>解释: 将本应输出到标准输出的内容输出到文件</p>
+<p>输入输出重定向结合使用:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#!/bin/bash
+</span>
+cat &gt; /root/a.sh &lt;&lt;EOF
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"hello bash"</span>
+EOF
+</div></code></pre>
+<p>解释: 将cat读取到的内容输出重定向到<code>/root/a.sh</code>中. <code>&lt;&lt;</code>是输入重定向, <code>&lt;&lt;EOF</code>表示执行输入重定向直到遇到EOF结束. 然后下面两行都是输入的内容, 会被cat读取到.</p>
+<h2 id="%E5%8F%98%E9%87%8F">变量</h2>
+<p>shell是弱类型语言.</p>
+<ul>
+<li>变量赋值:</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-comment"># 直接赋值</span>
+a=123
+<span class="hljs-comment"># 可以进行计算, 然后赋值, 尽量不要进行计算, 性能太低</span>
+<span class="hljs-built_in">let</span> a=10 + 123
+<span class="hljs-comment"># 可以把命令赋给变量</span>
+l=ls
+<span class="hljs-comment"># 把命令执行结果赋给变量, 使用$() 或者 ``</span>
+c=$(ls -l /etc)
+<span class="hljs-comment"># 变量值有空格等特殊字符, 可以包含在""或者''中</span>
+str1=<span class="hljs-string">"hello bash"</span>
+</div></code></pre>
+<blockquote>
+<p><code>=</code>等号左侧和右侧不允许出现空格</p>
+</blockquote>
+<ul>
+<li>变量引用:</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-comment"># ${变量名}</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">${str1}</span>123
+<span class="hljs-comment"># 当变量不与其他内容拼接时, 可以省略大括号</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$str1</span>
+</div></code></pre>
+<blockquote>
+<p>echo - 查看变量值</p>
+</blockquote>
+<ul>
+<li>变量的作用范围:</li>
+</ul>
+<p>默认情况下, 变量只能在自己的进程中使用. 如果想让子进程获得父进程的值, 可以使用<code>export</code>标记:</p>
+<pre class="hljs"><code><div>export demo_var1
+</div></code></pre>
+<ul>
+<li>删除变量: <code>unset demo_var1</code></li>
+</ul>
+<h4 id="%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">系统环境变量</h4>
+<p>环境变量: 每个shell打开都可以获得的变量.</p>
+<ul>
+<li><code>env</code>: 查看系统的所有环境变量</li>
+<li><code>echo $环境变量</code>: 查看指定的环境变量</li>
+</ul>
+<p>常用的环境变量:</p>
+<pre class="hljs"><code><div><span class="hljs-comment"># 当前用户名</span>
+[root@frog-centos7 ~]<span class="hljs-comment"># echo $USER</span>
+root
+<span class="hljs-comment"># uid</span>
+[root@frog-centos7 ~]<span class="hljs-comment"># echo $UID</span>
+0
+<span class="hljs-comment"># 查询命令搜索路径</span>
+[root@frog-centos7 ~]<span class="hljs-comment"># echo $PATH</span>
+/usr/<span class="hljs-built_in">local</span>/sbin:/usr/<span class="hljs-built_in">local</span>/bin:/usr/sbin:/usr/bin:/root/bin
+
+<span class="hljs-comment"># 当前提示终端, 可以修改, 显示的更友好, 这里就是[root@frog-centos7 ~]</span>
+[root@frog-centos7 ~]<span class="hljs-comment"># echo $PS1</span>
+[\u@\h \W]\$
+</div></code></pre>
+<p><code>$PATH</code>是命令搜索路径. 当执行某条命令时, 会到这些目录中搜索, 如果搜索到, 就会直接执行. 否则就会显示没有这个命令. 可以在当前进程中, 临时修改这个变量值. <code>PATH=$PATH:&lt;一个目录&gt;</code></p>
+<p>环境变量配置文件有多个:</p>
+<ul>
+<li><code>/etc/profile</code></li>
+<li><code>/etc/profile.d</code></li>
+<li><code>~/.bash_profile</code></li>
+<li><code>~/.bashrc</code></li>
+<li><code>/etc/bashrc</code></li>
+</ul>
+<blockquote>
+<p>上面etc下的, 是所有用户通用的配置; 位于用户家目录的配置, 是这个用户特有的配置.
+当<code>su - &lt;用户名&gt;</code>时, 上面的文件都会生效. 如果是<code>su &lt;用户名&gt;</code>则只有<code>~/.bashrc</code>和<code>/etc/bashrc</code>会生效, 因此, 这种切换方式是不完全的.
+修改这些配置之后, 不会立即生效, 需要执行退出重进, 或者执行<code>source &lt;文件名&gt;</code></p>
+</blockquote>
+<h4 id="%E9%A2%84%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F">预定义变量</h4>
+<ul>
+<li><code>$?</code>: 记录上一条命令是否正确执行, 0 - 正确执行, 非0 - 执行失败</li>
+<li><code>$$</code>: 记录当前进程pid</li>
+<li><code>$0</code>: 记录当前进程名称</li>
+</ul>
+<h4 id="%E4%BD%8D%E7%BD%AE%E5%8F%98%E9%87%8F">位置变量</h4>
+<pre class="hljs"><code><div><span class="hljs-meta">#!/bin/bash
+</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$1</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">${2-x}</span>
+</div></code></pre>
+<p>这个执行结果是:</p>
+<pre class="hljs"><code><div>[root@frog-centos7 ~]# ./6.sh -a
+-a
+x
+</div></code></pre>
+<p>第一个参数是<code>-a</code>, 第二个参数没有输入, 但脚本中我们指定了默认值.</p>
+<blockquote>
+<p>数字超过9后, 需要这样写: <code>echo ${10}</code></p>
+</blockquote>
+<h4 id="%E6%95%B0%E7%BB%84">数组</h4>
+<ul>
+<li>定义数组: <code>a=(1 2 3 4)</code></li>
+<li>显示所有元素: <code>echo ${a[@]}</code></li>
+<li>显示元素个数: <code>echo ${#a[@]}</code></li>
+<li>显示指定索引的元素: <code>echo ${a[1]}</code></li>
+</ul>
+<h2 id="%E7%AC%A6%E5%8F%B7">符号</h2>
+<h4 id="%E8%BD%AC%E4%B9%89%E5%92%8C%E5%BC%95%E7%94%A8">转义和引用</h4>
+<ul>
+<li>特殊字符 - 一个字符不仅有字面意义, 还有元意(meta-meaning)
+<ul>
+<li><code>#</code> 注释</li>
+<li><code>;</code> 分号</li>
+<li><code>\</code> 转义
+<ul>
+<li>转义: <code>\n</code>, <code>\r</code>, <code>\t</code>, <code>\$</code>, <code>\&quot;</code>, <code>\\</code></li>
+</ul>
+</li>
+<li><code>&quot;</code>, <code>'</code> 引号</li>
+</ul>
+</li>
+</ul>
+<pre class="hljs"><code><div>[root@frog-centos7 ~]# a=123
+[root@frog-centos7 ~]# echo &quot;$a&quot;
+123
+[root@frog-centos7 ~]# echo '$a'
+$a
+</div></code></pre>
+<blockquote>
+<p>注意上面执行结果, 双引号是不完全引用, 单引号是完全引用</p>
+</blockquote>
+<h4 id="%E8%BF%90%E7%AE%97%E7%AC%A6">运算符</h4>
+<ul>
+<li>赋值运算符: <code>=</code></li>
+<li>算数运算符:
+<ul>
+<li><code>+, -, *, /, **, %</code></li>
+<li><code>expr 4 + 5</code>(expr只支持整数, 符号和数字之间需要有空格)</li>
+<li><code>let 变量名=变量值</code></li>
+<li><code>((a=10))</code>, <code>((a++))</code>, <code>echo $((10+20))</code></li>
+</ul>
+</li>
+</ul>
+<pre class="hljs"><code><div>[root@frog-centos7 ~]# num1=`expr 4 + 5`
+[root@frog-centos7 ~]# echo $num1
+9
+[root@frog-centos7 ~]# ((a=4+5))
+[root@frog-centos7 ~]# echo $a
+9
+</div></code></pre>
+<h4 id="%E7%89%B9%E6%AE%8A%E7%AC%A6%E5%8F%B7%E5%A4%A7%E5%85%A8">特殊符号大全</h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>'</code></td>
+<td>引号, 完全引用</td>
+</tr>
+<tr>
+<td><code>&quot;</code></td>
+<td>不完全引用</td>
+</tr>
+<tr>
+<td>`</td>
+<td>执行命令</td>
+</tr>
+<tr>
+<td><code>()</code></td>
+<td>单独使用, 可以产生一个子shell(子shell复制, 父shell看不到); 数组初始化</td>
+</tr>
+<tr>
+<td><code>(())</code></td>
+<td>算数运算</td>
+</tr>
+<tr>
+<td><code>$()</code></td>
+<td>执行命令, 输出结果</td>
+</tr>
+<tr>
+<td><code>[]</code></td>
+<td>测试输出布尔值; 数组元素</td>
+</tr>
+<tr>
+<td><code>[[]]</code></td>
+<td>测试表达式</td>
+</tr>
+<tr>
+<td><code>&lt; &gt;</code></td>
+<td>重定向</td>
+</tr>
+<tr>
+<td><code>{ }</code></td>
+<td>输出范围<code>echo {0..9}</code>; 文件复制<code>cp -v /etc/passwd /etc/passwd.bak</code>替换为<code>cp -v /etc/passwd{,.bak}</code></td>
+</tr>
+<tr>
+<td><code>+-*/%</code></td>
+<td>算数运算符</td>
+</tr>
+<tr>
+<td><code>&gt; = &lt;</code></td>
+<td>大小比较(在<code>[[]] (())</code>中)</td>
+</tr>
+<tr>
+<td><code>&amp;&amp; || !</code></td>
+<td>布尔运算</td>
+</tr>
+<tr>
+<td><code>\</code></td>
+<td>转义字符</td>
+</tr>
+<tr>
+<td><code>#</code></td>
+<td>注释</td>
+</tr>
+<tr>
+<td><code>;</code></td>
+<td>命令分割符, case语句的分割符需要转义<code>;;</code></td>
+</tr>
+<tr>
+<td><code>:</code></td>
+<td>空指令</td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td>同<code>source</code></td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td>家目录</td>
+</tr>
+<tr>
+<td><code>,</code></td>
+<td>分割目录</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>通配符</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td>条件测试;通配符</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>取值符号</td>
+</tr>
+<tr>
+<td><code>|</code></td>
+<td>管道</td>
+</tr>
+<tr>
+<td><code>&amp;</code></td>
+<td>后台运行</td>
+</tr>
+<tr>
+<td><code> </code></td>
+<td>空格, 分割不同的命令</td>
+</tr>
+</tbody>
+</table>
+<h2 id="%E6%B5%8B%E8%AF%95%E5%92%8C%E5%88%A4%E6%96%AD">测试和判断</h2>
+<p>详细使用手册: <code>man test</code></p>
+<p>如果使用<code>&lt; &gt;</code>, 需要使用<code>[[]]</code></p>
+<ul>
+<li>if判断语句: if [ 测试条件成立 ] 或命令返回值是否为0 then 执行响应命令 fi 结束</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#!/bin/bash
+</span>
+<span class="hljs-keyword">if</span> [ 12 &gt; 3 ]
+<span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"right"</span>
+<span class="hljs-keyword">fi</span>
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-meta">#!/bin/bash
+</span>
+<span class="hljs-keyword">if</span> [ <span class="hljs-variable">$USER</span> = root ] ; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"root user"</span>
+<span class="hljs-keyword">else</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"other user"</span>
+<span class="hljs-keyword">fi</span>
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-meta">#!/bin/bash
+</span>
+<span class="hljs-keyword">if</span> [ <span class="hljs-variable">$USER</span> = root ]
+<span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"root"</span>
+<span class="hljs-keyword">elif</span> [ <span class="hljs-variable">$USER</span> = user1 ]
+<span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"user1"</span>
+<span class="hljs-keyword">else</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"other"</span>
+<span class="hljs-keyword">fi</span>
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-meta">#!/bin/bash
+</span>
+<span class="hljs-keyword">if</span> [ <span class="hljs-variable">$UID</span> = 0 ] ; <span class="hljs-keyword">then</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">" please run "</span>
+    <span class="hljs-keyword">if</span> [ -x /tmp/10.sh ] ;  <span class="hljs-keyword">then</span>
+          /tmp/10.sh
+    <span class="hljs-keyword">fi</span>
+<span class="hljs-keyword">else</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">" switch user root  "</span>
+<span class="hljs-keyword">fi</span>
+</div></code></pre>
+<h2 id="case%E5%88%86%E6%94%AF">case分支</h2>
+<pre class="hljs"><code><div><span class="hljs-meta">#!/bin/bash
+</span>
+<span class="hljs-keyword">case</span> <span class="hljs-string">"<span class="hljs-variable">$1</span>"</span> <span class="hljs-keyword">in</span>
+    <span class="hljs-string">"start"</span>|<span class="hljs-string">"START"</span>)
+        <span class="hljs-built_in">echo</span> <span class="hljs-variable">$0</span> start...
+    ;;
+    <span class="hljs-string">"stop"</span>|<span class="hljs-string">"STOP"</span>)
+        <span class="hljs-built_in">echo</span> <span class="hljs-variable">$0</span> stop...
+    ;;
+    <span class="hljs-string">"restart"</span>|<span class="hljs-string">"reload"</span>)
+        <span class="hljs-built_in">echo</span> <span class="hljs-variable">$0</span> restart...
+    ;;
+    *)
+        <span class="hljs-built_in">echo</span> <span class="hljs-string">"Usage: <span class="hljs-variable">$0</span> {start|stop|restart|reload}"</span>
+    ;;
+<span class="hljs-keyword">esac</span>
+</div></code></pre>
+<h2 id="for%E5%BE%AA%E7%8E%AF">for循环</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> {1..9}
+<span class="hljs-keyword">do</span>
+   <span class="hljs-built_in">echo</span> <span class="hljs-variable">$i</span>
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> `ls *.sh`
+<span class="hljs-keyword">do</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-variable">$filename</span>
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-keyword">for</span> sc_name <span class="hljs-keyword">in</span> /etc/profile.d/*.sh
+<span class="hljs-keyword">do</span>
+    <span class="hljs-keyword">if</span> [ -x <span class="hljs-variable">$sc_name</span> ] ; <span class="hljs-keyword">then</span>
+        . <span class="hljs-variable">$sc_name</span>
+    <span class="hljs-keyword">fi</span>
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<p>也支持常规编程中的for循环, 但是不建议使用, 因为shell不擅长做计算</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">for</span> (( i = 1 ; i &lt;= 10 ; i++))
+<span class="hljs-keyword">do</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-variable">$i</span>
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<h2 id="while%E5%BE%AA%E7%8E%AF%E5%92%8Cuntil%E5%BE%AA%E7%8E%AF">while循环和until循环</h2>
+<pre class="hljs"><code><div>a=1
+<span class="hljs-keyword">while</span> [ <span class="hljs-variable">$a</span> -lt 10 ]
+<span class="hljs-keyword">do</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-variable">$a</span>
+    ((a++))
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<pre class="hljs"><code><div>a=1
+until [ <span class="hljs-variable">$a</span> -gt 10 ]
+<span class="hljs-keyword">do</span>
+   <span class="hljs-built_in">echo</span> <span class="hljs-variable">$a</span>
+   (( a++ ))
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<h2 id="%E8%B7%B3%E8%BD%AC">跳转</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> {1..9}
+<span class="hljs-keyword">do</span>
+    <span class="hljs-keyword">if</span> [ <span class="hljs-variable">$num</span> -eq 5 ] ; <span class="hljs-keyword">then</span>
+        <span class="hljs-built_in">break</span>
+    <span class="hljs-keyword">fi</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-variable">$num</span>
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> {1..9}
+<span class="hljs-keyword">do</span>
+    <span class="hljs-keyword">if</span> [ <span class="hljs-variable">$num</span> -eq 5 ] ; <span class="hljs-keyword">then</span>
+        <span class="hljs-built_in">continue</span>
+    <span class="hljs-keyword">fi</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-variable">$num</span>
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<h2 id="%E4%BD%BF%E7%94%A8%E5%BE%AA%E7%8E%AF%E5%A4%84%E7%90%86%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0">使用循环处理命令行参数</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">for</span> pos <span class="hljs-keyword">in</span> $*
+<span class="hljs-keyword">do</span>
+    <span class="hljs-keyword">if</span> [ <span class="hljs-variable">$pos</span> = <span class="hljs-string">"help"</span> ]
+    <span class="hljs-keyword">then</span>
+        <span class="hljs-built_in">echo</span> <span class="hljs-variable">$pos</span> <span class="hljs-variable">$pos</span>
+    <span class="hljs-keyword">fi</span>
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<blockquote>
+<p><code>$*</code>表示所有输入参数的列表</p>
+</blockquote>
+<pre class="hljs"><code><div><span class="hljs-keyword">while</span> [ <span class="hljs-variable">$#</span> -ge 1 ]
+<span class="hljs-keyword">do</span>
+    <span class="hljs-keyword">if</span> [ <span class="hljs-string">"<span class="hljs-variable">$1</span>"</span> = <span class="hljs-string">"help"</span> ] ; <span class="hljs-keyword">then</span>
+        <span class="hljs-built_in">echo</span> <span class="hljs-variable">$1</span> <span class="hljs-variable">$1</span>
+    <span class="hljs-keyword">fi</span>
+    <span class="hljs-built_in">shift</span>
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<blockquote>
+<p><code>shift</code>可以将输入参数从队首开始出队</p>
+</blockquote>
+<h2 id="%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0">自定义函数</h2>
+<pre class="hljs"><code><div><span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">cdls</span></span>(){
+   <span class="hljs-built_in">cd</span> /var
+   ls
+}
+</div></code></pre>
+<blockquote>
+<p>function可以省略
+删除函数<code>unset &lt;函数名&gt;</code></p>
+</blockquote>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-title">cdls</span></span>(){
+   <span class="hljs-built_in">cd</span> <span class="hljs-variable">$1</span>
+   ls
+}
+</div></code></pre>
+<p>通过<code>local</code>声明变量的作用范围仅限于函数内:</p>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-title">checkpid</span></span>() {
+
+    <span class="hljs-built_in">local</span> i
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> $* ; <span class="hljs-keyword">do</span>
+        [ -d <span class="hljs-string">"/proc/<span class="hljs-variable">$i</span>"</span> ] &amp;&amp; <span class="hljs-built_in">return</span> 0
+    <span class="hljs-keyword">done</span>
+
+    <span class="hljs-built_in">return</span> 1
+}
+</div></code></pre>
+<p>系统函数库: <code>/etc/init.d/functions</code>, 可以通过<code>source /etc/init.d/functions</code>导入.</p>
+<h2 id="%E8%84%9A%E6%9C%AC%E6%8E%A7%E5%88%B6">脚本控制</h2>
+<ul>
+<li>脚本优先级控制
+<ul>
+<li>使用<code>nice</code>和<code>renice</code>调整脚本优先级</li>
+<li>避免出现不可控的死循环</li>
+</ul>
+</li>
+</ul>
+<p>fork炸弹:</p>
+<pre class="hljs"><code><div>func(){ func | func&amp; }
+</div></code></pre>
+<h2 id="%E4%BF%A1%E5%8F%B7">信号</h2>
+<ul>
+<li>kill默认会发送15号信号</li>
+<li>ctrl + c会发送2号信号给应用程序</li>
+<li>9号信号不可阻塞</li>
+</ul>
+<p>捕获2号和15号信号示例:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">trap</span> <span class="hljs-string">"echo sig 15"</span> 15
+<span class="hljs-built_in">trap</span> <span class="hljs-string">"echo sig 2"</span> 2
+
+<span class="hljs-built_in">echo</span> $$
+
+<span class="hljs-keyword">while</span> :
+<span class="hljs-keyword">do</span>
+   :
+<span class="hljs-keyword">done</span>
+</div></code></pre>
+<h2 id="%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1">计划任务</h2>
+<ul>
+<li>一次性计划任务at</li>
+<li>周期性计划任务</li>
+<li>计划任务加锁flock</li>
+</ul>
+<p>需要注意的问题:</p>
+<ul>
+<li>命令的搜索路径</li>
+<li>命令的标准输入</li>
+</ul>
+<h4 id="%E4%B8%80%E6%AC%A1%E6%80%A7%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1">一次性计划任务</h4>
+<pre class="hljs"><code><div>[root@frog-centos7 ~]# at 17:15
+at&gt; echo hello &gt; /tmp/hello.txt
+at&gt; &lt;EOT&gt;
+</div></code></pre>
+<ul>
+<li><code>atq</code>: 查询一次性计划任务列表</li>
+</ul>
+<h4 id="%E5%91%A8%E6%9C%9F%E6%80%A7%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1">周期性计划任务</h4>
+<p>用cron</p>
+<ul>
+<li><code>crontab -e</code>: 编辑计划任务</li>
+<li><code>crontab -l</code>: 查看计划任务</li>
+<li>配置格式: <code>分钟 小时 日期 月份 星期 执行的命令</code>, 注意周期性计划任务只能精确到分钟</li>
+</ul>
+<p>通过<code>crontab -e</code>创建计划任务:</p>
+<pre class="hljs"><code><div>* * * * * /usr/bin/date &gt;&gt; /tmp/date.txt
+</div></code></pre>
+<p>每分钟, 向<code>/tmp/date.txt</code>文件输出内容.</p>
+<p><code>tail -f /var/log/cron</code>可以查看cron编辑和任务执行日志.</p>
+<p>上面<code>crontab -e</code>创建的计划任务保存在目录<code>ls /var/spool/cron/</code>中, 每一个用户会有一个文件.</p>
+<h4 id="%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1%E5%8A%A0%E9%94%81">计划任务加锁</h4>
+<ul>
+<li>
+<p>如果计算机不能按照预期时间运行</p>
+<ul>
+<li>anacrontab 延时计划任务</li>
+<li>flock 锁文件</li>
+</ul>
+</li>
+<li>
+<p><code>flock -xn &quot;/tmp/f.lock&quot; -c &quot;/root/a.sh&quot;</code>: 执行任务时, 增加排它锁, 指定锁文件目录<code>/tmp/f.lock</code></p>
+</li>
+</ul>
+
+</body>
+</html>

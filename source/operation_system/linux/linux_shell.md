@@ -243,3 +243,370 @@ x
 * 显示所有元素: ```echo ${a[@]}```
 * 显示元素个数: ```echo ${#a[@]}```
 * 显示指定索引的元素: ```echo ${a[1]}```
+
+
+## 符号
+
+#### 转义和引用
+
+* 特殊字符 - 一个字符不仅有字面意义, 还有元意(meta-meaning)
+  * ```#``` 注释
+  * ```;``` 分号
+  * ```\``` 转义
+    * 转义: ```\n```, ```\r```, ```\t```, ```\$```, ```\"```, ```\\```
+  * ```"```, ```'``` 引号
+
+```
+[root@frog-centos7 ~]# a=123
+[root@frog-centos7 ~]# echo "$a"
+123
+[root@frog-centos7 ~]# echo '$a'
+$a
+```
+
+> 注意上面执行结果, 双引号是不完全引用, 单引号是完全引用
+
+#### 运算符
+
+* 赋值运算符: ```=```
+* 算数运算符: 
+  * ```+, -, *, /, **, %```
+  * ```expr 4 + 5```(expr只支持整数, 符号和数字之间需要有空格)
+  * ```let 变量名=变量值```
+  * ```((a=10))```, ```((a++))```, ```echo $((10+20))```
+
+```
+[root@frog-centos7 ~]# num1=`expr 4 + 5`
+[root@frog-centos7 ~]# echo $num1
+9
+[root@frog-centos7 ~]# ((a=4+5))
+[root@frog-centos7 ~]# echo $a
+9
+```
+
+#### 特殊符号大全
+
+符号|说明
+-|-
+ ```'```|引号, 完全引用
+ ```"```|不完全引用
+ `|执行命令
+ ```()```|单独使用, 可以产生一个子shell(子shell复制, 父shell看不到); 数组初始化
+ ```(())```|算数运算
+ ```$()```|执行命令, 输出结果
+ ```[]```|测试输出布尔值; 数组元素
+ ```[[]]```|测试表达式
+ ```< >```|重定向
+ ```{ }``` | 输出范围```echo {0..9}```; 文件复制```cp -v /etc/passwd /etc/passwd.bak```替换为```cp -v /etc/passwd{,.bak}```
+ ```+-*/%```| 算数运算符
+ ```> = <```| 大小比较(在```[[]] (())```中)
+ ```&& || !```| 布尔运算
+ ```\```|转义字符
+ ```#```|注释
+ ```;```|命令分割符, case语句的分割符需要转义```;;```
+ ```:```|空指令
+ ```.```|同```source```
+ ```~```|家目录
+ ```,```|分割目录
+ ```*```|通配符
+ ```?```|条件测试;通配符
+ ```$```|取值符号
+ ```|```|管道
+ ```&```|后台运行
+ ``` ```|空格, 分割不同的命令
+
+## 测试和判断
+
+详细使用手册: ```man test```
+
+如果使用```< >```, 需要使用```[[]]```
+
+* if判断语句: if [ 测试条件成立 ] 或命令返回值是否为0 then 执行响应命令 fi 结束
+
+```sh
+#!/bin/bash
+
+if [ 12 > 3 ]
+then
+    echo "right"
+fi
+```
+
+```sh
+#!/bin/bash
+
+if [ $USER = root ] ; then
+    echo "root user"
+else
+    echo "other user"
+fi
+```
+
+```sh
+#!/bin/bash
+
+if [ $USER = root ]
+then
+    echo "root"
+elif [ $USER = user1 ]
+then
+    echo "user1"
+else
+    echo "other"
+fi
+```
+
+```sh
+#!/bin/bash
+
+if [ $UID = 0 ] ; then
+    echo " please run "
+    if [ -x /tmp/10.sh ] ;  then
+          /tmp/10.sh
+    fi
+else
+    echo " switch user root  "
+fi
+```
+
+## case分支
+
+```sh
+#!/bin/bash
+
+case "$1" in
+    "start"|"START")
+        echo $0 start...
+    ;;
+    "stop"|"STOP")
+        echo $0 stop...
+    ;;
+    "restart"|"reload")
+        echo $0 restart...
+    ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|reload}"
+    ;;
+esac
+```
+
+## for循环
+
+```sh
+for i in {1..9}
+do
+   echo $i
+done
+```
+
+```sh
+for filename in `ls *.sh`
+do
+    echo $filename
+done
+```
+
+```sh
+for sc_name in /etc/profile.d/*.sh
+do
+    if [ -x $sc_name ] ; then
+        . $sc_name
+    fi
+done
+```
+
+也支持常规编程中的for循环, 但是不建议使用, 因为shell不擅长做计算
+
+```sh
+for (( i = 1 ; i <= 10 ; i++))
+do
+    echo $i
+done
+```
+
+## while循环和until循环
+
+```sh
+a=1
+while [ $a -lt 10 ]
+do
+    echo $a
+    ((a++))
+done
+```
+
+```sh
+a=1
+until [ $a -gt 10 ]
+do
+   echo $a
+   (( a++ ))
+done
+```
+
+## 跳转
+
+```sh
+for num in {1..9}
+do
+    if [ $num -eq 5 ] ; then
+        break
+    fi
+    echo $num
+done
+```
+
+```sh
+for num in {1..9}
+do
+    if [ $num -eq 5 ] ; then
+        continue
+    fi
+    echo $num
+done
+```
+
+## 使用循环处理命令行参数
+
+```sh
+for pos in $*
+do
+    if [ $pos = "help" ]
+    then
+        echo $pos $pos
+    fi
+done
+```
+
+> ```$*```表示所有输入参数的列表
+
+```sh
+while [ $# -ge 1 ]
+do
+    if [ "$1" = "help" ] ; then
+        echo $1 $1
+    fi
+    shift
+done
+```
+
+> ```shift```可以将输入参数从队首开始出队
+
+## 自定义函数
+
+```sh
+function cdls(){
+   cd /var
+   ls
+}
+```
+
+> function可以省略
+> 删除函数```unset <函数名>```
+
+```sh
+cdls(){
+   cd $1
+   ls
+}
+```
+
+通过```local```声明变量的作用范围仅限于函数内:
+
+```sh
+checkpid() {
+
+    local i
+
+    for i in $* ; do
+        [ -d "/proc/$i" ] && return 0
+    done
+
+    return 1
+}
+```
+
+
+系统函数库: ```/etc/init.d/functions```, 可以通过```source /etc/init.d/functions```导入.
+
+## 脚本控制
+
+* 脚本优先级控制
+  * 使用```nice```和```renice```调整脚本优先级
+  * 避免出现不可控的死循环
+
+fork炸弹:
+
+```
+func(){ func | func& }
+```
+
+
+## 信号
+
+* kill默认会发送15号信号
+* ctrl + c会发送2号信号给应用程序
+* 9号信号不可阻塞
+
+捕获2号和15号信号示例:
+
+```sh
+trap "echo sig 15" 15
+trap "echo sig 2" 2
+
+echo $$
+
+while :
+do
+   :
+done
+```
+
+## 计划任务
+
+* 一次性计划任务at
+* 周期性计划任务
+* 计划任务加锁flock
+
+需要注意的问题:
+
+* 命令的搜索路径
+* 命令的标准输入
+
+#### 一次性计划任务
+
+```
+[root@frog-centos7 ~]# at 17:15
+at> echo hello > /tmp/hello.txt
+at> <EOT>
+```
+
+* ```atq```: 查询一次性计划任务列表
+
+#### 周期性计划任务
+
+用cron
+
+* ```crontab -e```: 编辑计划任务
+* ```crontab -l```: 查看计划任务
+* 配置格式: ```分钟 小时 日期 月份 星期 执行的命令```, 注意周期性计划任务只能精确到分钟
+
+通过```crontab -e```创建计划任务:
+
+```
+* * * * * /usr/bin/date >> /tmp/date.txt
+```
+
+每分钟, 向```/tmp/date.txt```文件输出内容.
+
+```tail -f /var/log/cron```可以查看cron编辑和任务执行日志.
+
+上面```crontab -e```创建的计划任务保存在目录```ls /var/spool/cron/```中, 每一个用户会有一个文件.
+
+#### 计划任务加锁
+
+* 如果计算机不能按照预期时间运行
+  * anacrontab 延时计划任务
+  * flock 锁文件
+
+* ```flock -xn "/tmp/f.lock" -c "/root/a.sh"```: 执行任务时, 增加排它锁, 指定锁文件目录```/tmp/f.lock```
