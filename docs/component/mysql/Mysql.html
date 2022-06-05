@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mysql.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0">Mysql学习笔记</h1>
+<h2 id="%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84">基础架构</h2>
+<p><img src="img/basic_arth.png" alt="image"></p>
+<blockquote>
+<p>图片来源: 极客时间-Mysql实战45讲</p>
+</blockquote>
+<p>一下是Server层的几大模块:</p>
+<ul>
+<li>连接器: 连接器负责跟客户端建立连接、获取权限、维持和管理连接.
+<ul>
+<li>可以通过<code>show processlist</code>查看连接.</li>
+<li>空闲连接时间如果超过8小时(默认), 会自动断开. 可以通过<code>wait_timeout</code>进行设置.</li>
+<li>尽量使用长连接</li>
+<li>长连接可能导致内存占用过大, 因为mysql执行过程中, 使用的临时内存是存储在连接对象中的. 解决方案有二: 1. 定期断开长连接; 2. 5.7及以上版本, 可以通过执行mysql_reset_connection重新初始化连接资源.</li>
+</ul>
+</li>
+<li>查询缓存: 之前执行过的语句及其结果可能会以 key-value 对的形式，被直接缓存在内存中.
+<ul>
+<li>查询缓存的key是查询语句</li>
+<li>查询缓存的命中率很低</li>
+<li>一旦表中有更新操作, 相关缓存会立即失效</li>
+<li>mysql8.0以上版本移除了查询缓存</li>
+</ul>
+</li>
+<li>分析器: 词法分析, 语法分析</li>
+<li>优化器: 决定使用的索引, 确定整个sql的具体执行流程, 生成执行计划</li>
+<li>执行器: 按照执行计划, 开始与存储引擎层进行交互, 执行.</li>
+</ul>
+<blockquote>
+<p>个人理解: mysql中, 会将schema整体在内存中存储一份, 这样可供分析器, 优化器等全局使用</p>
+</blockquote>
+<h2 id="%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F">日志系统</h2>
+<ul>
+<li>redo log: Innodb存储引擎特有的日志系统, 通过WAL保证数据不丢失
+<ul>
+<li>WAL(Write-Ahead Logging)预写日志技术. 如果不使用WAL, 每次有新的数据变更, 就需要找到指定的记录, 然后执行更新操作, 这样是随机写的过程, 性能较差. 如果采用WAL, 则会先采用追加写的方式, 将数据变更保存至日志. 然后在合适的时机将数据批量同步到数据库中, 性能较好.</li>
+<li>redo log默认大小为4G, 可以视作是一个环形, 采用循环写的方式, 如果已经写满, 则将其中一部分数据清除(具体看后面)</li>
+<li>redo log存储的是物理日志, 记录了每个数据页修改了什么</li>
+<li>redo log的主要用途是为了加快写入性能, 保证crash-safe. 具体来讲, Innodb在数据写入时, 不会直接落盘, 而是写入内存中的Buffer Pool中, 再定期同步到磁盘中. redo log就是为了保证在内存中的数据尚未同步到磁盘期间, 出现异常也可以恢复.</li>
+</ul>
+</li>
+<li>binlog: 由执行器负责管理的日志系统, 各种不同的存储引擎共用, 用于归档
+<ul>
+<li>逻辑日志, 有两种记录格式: 1. statement - 记录sql; 2. row - 记录行内容(两条: 更新前/更新后)</li>
+<li>binlog是用来做数据备份和数据恢复的</li>
+</ul>
+</li>
+</ul>
+<p>由于存在两份日志, 分别属于不同的层面, 为了使得两份日志保持一致性, 需要采用两阶段提交:</p>
+<ol>
+<li>Innodb - 写入redolog, 标记状态为prepare</li>
+<li>执行器 - 写入binlog</li>
+<li>Innodb - 标记状态为commit</li>
+</ol>
+<p>数据恢复:</p>
+<ul>
+<li>数据恢复使用的是binlog, 而不是redolog. 首先, 数据库会有定期的全库备份, 先根据全库备份, 将数据恢复一部分. 然后, 在使用binlog, 将全库备份后又产生的数据恢复. 这个过程是手动进行的, 可以用于应对误删恢复等场景.</li>
+<li>crash-safe: redolog具备crash-safe能力. 假设突然断电, 当mysql重新启动后, innodb会根据redolog把Buffer Pool中没有落盘的数据恢复. 这个过程是系统自动完成的, 使得系统具备了自愈能力. 这种场景下就不能使用binlog了, 因为如果使用binlog, 还需要手动的完成应用全量备份, 应用binlog的过程.</li>
+</ul>
+<blockquote>
+<p>对于redolog: ElasticSearch中也有类似的角色, Segment不会立即落盘, 而是驻留在内存中, 于是为了保证数据不丢失, 有transactionLog做担保.</p>
+</blockquote>
+<h2 id="%E4%BA%8B%E5%8A%A1">事务</h2>
+<p>事务的隔离级别有:</p>
+<table>
+<thead>
+<tr>
+<th>事务隔离级别</th>
+<th>存在的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>读未提交</td>
+<td>脏读, 不可重复读, 幻读</td>
+</tr>
+<tr>
+<td>读已提交</td>
+<td>不可重复读, 幻读</td>
+</tr>
+<tr>
+<td>可重复读</td>
+<td>幻读</td>
+</tr>
+<tr>
+<td>串行化</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>脏读: 读到其它事务未提交的变更</li>
+<li>不可重复度: 读到其它事务已经提交的更改</li>
+<li>幻读: 读到其它事务提交的新记录</li>
+</ul>
+<p>mysql默认的隔离级别是可重复读, 可以通过transaction-isolation进行修改.</p>
+<p>mysql中通过多版本并发控制(MVCC, Multi-Version Concurrency Control)来实现事务隔离.</p>
+<p>这里涉及到一个新的日志: undo log</p>
+<p>MySQL中, 实际上每执行一条更新操作, 都会生成一条undo log. 记录上的最新值, 可以通过undo log找到前一个状态的值. 也就是说undo log中记录了数据的多个版本. undo log中如果一条回滚日志之前的所有日志都不再被视图持有的时候, 这些日志就可以删除了. 所以不要有长事务, 长事务会导致一些视图始终存在. 从而导致undo log无法删除.</p>
+<ul>
+<li>可重复读 - 事务启动时创建一致性视图, 整个事务过程中, 都用这个视图</li>
+<li>读已提交 - 在每个sql开始执行时创建, 每一条sql执行前都会重新计算出一个视图.</li>
+</ul>
+<blockquote>
+<p>读未提交不需要视图, 串行直接加锁</p>
+</blockquote>
+<p>事务MVCC一致性视图创建概述:</p>
+<ol>
+<li>每个事务会有一个transaction id, 这个值是严格递增;</li>
+<li>每条数据更新时, 都会有一个版本id -- tx_id, 这个tx_id等于生成它的事务的transaction id;</li>
+<li>数据的版本不会记录, 而是undo log中会记录从一个版本回退到前一个版本的具体细节; 在undo log中, 相当于存在一条数据的多个不同的版本;</li>
+<li>一个事务启动时, 会创建一个属于它的数组, 记录当前活跃的所有事务的transaction id, 这个数组是有序的, 其最小值记为低水位, 最大值记为高水位;</li>
+<li>从undo log获取到一条数据的多个tx_id.
+<ul>
+<li>如果tx_id小于低水位, 则该版本数据属于已提交的事务, 可见;</li>
+<li>如果tx_id大于高水位, 则该版本数据属于视图创建后的事务生成的, 不可见;</li>
+<li>如果tx_id在低水位和高水位之间, 则又分为两种情况: 1. tx_id在数组中, 该版本数据由未提交事务生成, 不可见; 2. tx_id不在数组中, 该版本数据由已提交事务生成, 可见;</li>
+</ul>
+</li>
+</ol>
+<h2 id="%E7%B4%A2%E5%BC%95">索引</h2>
+<p>这里只介绍Innodb引擎的索引. Innodb引擎使用B+树来存储数据.</p>
+<ul>
+<li>主键索引: 主键索引的叶子节点保存了整行的数据记录. 也被称为聚簇索引.</li>
+<li>非主键索引: 非主键索引的叶子节点保存了主键索引的id, 被称为二级索引.</li>
+</ul>
+<blockquote>
+<p>这种将数据直接存储在主键索引下的叶子节点中的方式称为&quot;索引组织表&quot;</p>
+</blockquote>
+<p>添加索引的sql:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> table_name <span class="hljs-keyword">add</span> <span class="hljs-keyword">index</span> index_name(col1(<span class="hljs-keyword">len</span>));
+</div></code></pre>
+<p>B+树存储的优点:</p>
+<ol>
+<li>B+树是多叉树, 可以有效降低树的高度.</li>
+<li>每个数据页存储多个树节点, 可以有效减少访问磁盘的次数.</li>
+<li>每个数据页的默认大小为16k.</li>
+</ol>
+<p>其他:</p>
+<ul>
+<li>主键索引优先使用自增主键, 这样, 插入数据的时候, 是在b+数最后进行追加, 性能好. 如果使用uuid等方式, 就会随机插入数据页中, 性能较差. 同时也可能导致插入时页分裂.</li>
+<li>当一个数据页存储不下数据时, 会触发页分裂. 当存在两个数据页的利用率较低时, 会触发页合并.</li>
+<li>通过二级索引查询时, 如果想获取到整条记录, 会先根据二级索引找到主键, 然后再根据主键索引查询到整条数据, 这个过程称为回表.</li>
+</ul>
+<p>回表会导致查询两棵索引树, 性能会有消耗, 如何避免回表:</p>
+<ul>
+<li>覆盖索引: 如果一个二级索引上记录的信息, 就是查询想要的全部信息, 那就不需要回表, 这称为覆盖索引.
+<ul>
+<li>最左匹配原则: 覆盖索引必须满足最左匹配原则, 否则就不会走索引</li>
+</ul>
+</li>
+<li>索引下推: 在5.6开始, 推出的一项优化措施. 如果查询条件是多个时, 通过二级索引查询到主键, 当需要回表时, 会向校验这个索引中的其他数据是否与查询条件匹配, 如果不匹配, 则该条记录不会回表. 这样就减少了回表的数据记录条数.</li>
+</ul>
+<h4 id="%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96">索引优化</h4>
+<ul>
+<li>选错索引
+<ul>
+<li>通过<code>analyze table 表名</code>命令, 更新索引统计信息, 避免一些统计信息不准确导致选错索引的问题</li>
+<li>通过<code>force index(索引名)</code>指示强行使用某个索引</li>
+<li>删掉某些不必要的索引, 从而避免选错索引</li>
+</ul>
+</li>
+<li>使用前缀索引
+<ul>
+<li>通过使用前缀索引可以减少空间使用, 增加每个数据页存储的索引个数</li>
+<li>前缀索引会导致无法使用覆盖索引</li>
+</ul>
+</li>
+</ul>
+<h2 id="%E9%94%81">锁</h2>
+<h4 id="%E5%85%A8%E5%B1%80%E9%94%81">全局锁</h4>
+<p>命令: <code>flush tables with read lock</code>, 执行该命令后, 其他线程的数据更新语句, 数据定义语句, 更新类的事务提交语句都会被阻塞.</p>
+<p>应用场景:</p>
+<ul>
+<li>全库逻辑备份: 全库逻辑备份过程中, 数据处于只读状态. 保证数据的逻辑时间点一致.</li>
+</ul>
+<p>全局锁是在Mysql的Server层执行的, 这样不管底层数据库执行引擎是什么, 都能使用这个工具. 但是, 全局锁导致整个数据库都处于只读状态, 大部分时候, 这显然是不可接受的. 对于Innodb引擎来说, 可以通过MVCC在事务中取得一个一致性视图, 保证数据的逻辑时间点一致.</p>
+<p>全局锁还有一个特点: 加锁的这个会话中, 如果客户端意外断开, 数据库会自动释放全局锁.</p>
+<h4 id="%E8%A1%A8%E7%BA%A7%E9%94%81">表级锁</h4>
+<p>表级别的锁分为两种:</p>
+<ol>
+<li>表锁</li>
+<li>元数据锁</li>
+</ol>
+<p>对于表锁:</p>
+<p>语法: <code>lock tables ... read/write</code></p>
+<ul>
+<li>表锁在会话意外中断时, 也可以主动释放锁.</li>
+<li>表锁不仅限制其他线程的读写, 也会限制自身线程. 如果一个线程获取到一张表的读锁, 那么只能对该表进行读操作, 不能对该表进行写操作.</li>
+</ul>
+<p>对于元数据锁(MDL, meta data lock):</p>
+<p>元数据锁不需要显示调用:</p>
+<ul>
+<li>当对一个表进行增删改查时, 自动加MDL读锁</li>
+<li>当对一个表结构进行变更时, 自动加MDL写锁</li>
+</ul>
+<blockquote>
+<p>读锁之间不互斥, 因此可以有多个线程对同一张表进行增删改查; 写锁是排它锁, 只允许一个线程执行</p>
+</blockquote>
+<p>MDL会遇到一种情况, 是: 获取写锁后, 由于有读锁存在, 导致自身阻塞, 而这时实际上已经获取到了写锁, 进而导致新的获取读锁的线程阻塞, 最终可能引发大量线程阻塞.</p>
+<h4 id="%E8%A1%8C%E9%94%81">行锁</h4>
+<p>两阶段锁协议: Innodb中行锁在需要的时候加上, 在事务结束时释放.</p>
+<p>当两个事务互相等待对方资源释放时, 就会出现死锁. mysql内置死锁处理措施有二:</p>
+<ol>
+<li>超时 - <code>innodb_lock_wait_timeout</code>, 默认50s</li>
+<li>死锁检测 - <code>innodb_deadlock_detect</code>, 默认on; 死锁检测在并发线程数较多时, 性能会较低.</li>
+</ol>
+<p>为避免死锁, 应该在一个事务中, 把最可能造成锁冲突, 最可能影响并发度的锁尽量往后放.</p>
+<h4 id="%E4%BA%8B%E5%8A%A1%E4%B8%8E%E9%94%81--%E5%BD%93%E5%89%8D%E8%AF%BB">事务与锁--当前读</h4>
+<p>当前读: 更新数据都是先读后写, 而这个读, 只能读当前的值.</p>
+<p>当前读的时候, 完全依赖锁, 而无视事务的隔离性了.</p>
+<p>只要加锁, 就会触发当前读, 下面这三条都会使用当前读.</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">update</span> t <span class="hljs-keyword">set</span> k = k + <span class="hljs-number">1</span> <span class="hljs-keyword">where</span> <span class="hljs-keyword">id</span> = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">select</span> k <span class="hljs-keyword">from</span> t <span class="hljs-keyword">where</span> <span class="hljs-keyword">id</span>=<span class="hljs-number">1</span> <span class="hljs-keyword">lock</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">share</span> <span class="hljs-keyword">mode</span>;
+<span class="hljs-keyword">select</span> k <span class="hljs-keyword">from</span> t <span class="hljs-keyword">where</span> <span class="hljs-keyword">id</span>=<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> <span class="hljs-keyword">update</span>;
+</div></code></pre>
+<h4 id="%E9%97%B4%E9%9A%99%E9%94%81%E4%B8%8Enext-key-lock">间隙锁与next-key lock</h4>
+<p>innodb在可重复读级别下, 为了防止当前读时出现幻读, 会使用间隙锁(gap lock). 间隙锁是指在已存在的数据行之间添加的锁. 间隙锁的作用是: 阻塞向这个间隙中插入一个记录这个操作.</p>
+<p>next-key lock是间隙锁和行锁的组合.</p>
+<p>间隙锁是开区间范围上的锁, next-key lock是前开后闭区间上的锁.</p>
+<p>间隙锁可能会导致锁住的范围过大, 降低了系统的并发度. 在经过评估可行的情况下, 可以选择调整为读已提交.</p>
+<p>为什么间隙锁只出现在可重复度级别? 因为可重复度需要保证从事务开始到事务结束都是一致性视图, 如果出现幻读, 就会导致一致性视图存在问题. 而如果级别是读已提交, 不需要事务开始到结束都是一致性视图, 是允许幻读出现的.</p>
+<blockquote>
+<p>可重复读级别下, select语句并不是一定会加间隙锁的. 而是select ... for update等需要当前读的情况下才需要间隙锁.</p>
+</blockquote>
+<p>加锁规则:</p>
+<ol>
+<li>基本单位是next-key lock</li>
+<li>查找过程中访问到的对象才会加锁</li>
+<li>索引上的等值查询, 给唯一索引加锁时, next-key lock退化为行锁</li>
+<li>索引上的等值查询, 向右遍历, 最后一个值不满足等值条件时, next-key lock退化为间隙锁</li>
+<li>唯一索引上的范围查询, 会访问到不满足条件的第一个值为止</li>
+</ol>
+<h2 id="innodb%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B">Innodb写入流程</h2>
+<p>以下这些概念都是Innodb的:</p>
+<ul>
+<li>Buffer Pool
+<ul>
+<li>用于存储运行期间, 加载到内存中的数据页</li>
+<li>在更新一条记录时, 如果数据页已经加载到Buffer Pool中, 则直接更新Buffer Pool中的数据页</li>
+<li>更新后的数据页如果没有同步到磁盘中, 则称为脏页</li>
+</ul>
+</li>
+<li>Change Buffer
+<ul>
+<li>Buffer Pool中的一块特殊区域, 不用来存储数据页, 而是用来存储数据变更动作(类似于redo log)</li>
+<li>在更新一条记录时, 如果数据页没有加载到Buffer Pool中, 则直接将这个变更动作存储到Change Buffer, 免去了从磁盘读取数据页的操作</li>
+<li>Change Buffer也会单独被持久化到磁盘上</li>
+<li>innodb_change_buffer_max_size, 用来控制change buffer在buffer pool中的占比</li>
+</ul>
+</li>
+<li>Merge
+<ul>
+<li>将Change Buffer中的变更记录应用到数据页的过程称为Merge</li>
+<li>一旦由于查询等操作, 导致数据页被加载到内存, 就会触发Merge操作</li>
+<li>系统会定期执行Merge操作</li>
+<li>数据库正常关闭时, 会执行merge操作</li>
+</ul>
+</li>
+<li>Redo log
+<ul>
+<li>redo log用来对Buffer Pool中的脏页和Change Buffer做crash-safe担保, 一旦发生异常, 导致脏页和ChangeBuffer丢失, 可以通过redo log恢复</li>
+</ul>
+</li>
+<li>Flush
+<ul>
+<li>将内存中的脏页同步至磁盘的过程称为Flush</li>
+<li>Flush触发时机:
+<ul>
+<li>当redo log写满了, 清除一部分redolog时
+<ul>
+<li>此时触发flush, 会使得系统不再接受更新操作, 所有更新都会阻塞</li>
+</ul>
+</li>
+<li>当Buffer Pool快满的时候, <code>innodb_max_dirty_pages_pct</code>控制脏页比例上限</li>
+<li>当mysql比较空闲时</li>
+<li>mysql正常关闭时</li>
+</ul>
+</li>
+<li>通过<code>innodb_io_capacity</code>参数, 告诉mysql当前磁盘的io读写能力, 使得其可以参照该能力去进行flush. 一般这个值可以设置成磁盘的IOPS</li>
+<li>flush过程中, 不需要redo log同步变更, redo log重放的过程值, 可以识别出来哪些数据页是刷过的.</li>
+<li>当刷新脏页时, 连续的多个脏页都会被flush. 对于机械硬盘, 这是有好处的, 但是对于固态硬盘, 这样就没有必要了, 可以通过<code>innodb_flush_neighbors</code>控制, 当该值为0时, 则只刷新自己</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>在读多写少的一些场景中, 由于数据页会频繁的被加载至内存中, 所以没有必要使用ChangeBuffer, 反而增加了ChangeBuffer维护成本
+在对唯一索引字段上的数据进行修改时, 不会使用到change buffer, 这是因为需要先将数据页加载到Buffer Pool用以验证唯一性约束是否满足.</p>
+</blockquote>
+<h2 id="%E6%8E%92%E5%BA%8F">排序</h2>
+<p>排序主体流程:</p>
+<ol>
+<li>将符合条件的记录加载至sort buffer, sort buffer是线程私有的, <code>sort_buffer_size</code>控制这块内存区域的大小;</li>
+<li>如果加载的记录占用空间超出sort buffer, 则需要转至文件中, 使用磁盘的临时辅助文件进行排序;</li>
+<li>如果使用磁盘进行辅助排序, 排序过程是将数据拆分成多个辅助文件, 每一次将一个辅助文件加载至内存进行排序; 最后再把排序后的文件多个文件整体归并.</li>
+</ol>
+<p>上面这个排序过程为: <strong>filesort</strong> 即使不需要转至磁盘, 也叫filesort.</p>
+<p>此外, 排序有分为两种:</p>
+<ol>
+<li>全字段排序 - 加载到sort buffer的是需要返回给客户端的全部字段;</li>
+<li>rowid排序 - 加载到sort buffer的数据只有主键id和参与排序的字段, 在排序完成之后, 需要回表将其他需要的字段补充完整.</li>
+</ol>
+<blockquote>
+<p>通过配置<code>max_length_for_sort_data</code>, 可以控制使用哪种排序方式, 如果单行数据尺寸超出这个值, 就被视为单行太大, 从而使用rowid.</p>
+</blockquote>
+<p>如果排序字段上存在索引, 则不需要上面的排序了, 因为这时的数据本身就是有序的.</p>
+<h2 id="%E5%85%B6%E4%BB%96">其他</h2>
+<ul>
+<li>数据库中删除一条记录, 只是将数据页中该记录的空间标记为可复用. 这样久而久之产生很多&quot;空洞&quot;;</li>
+<li>innodb引擎中, 处于MVCC考虑, <code>count(*)</code>会进行全表扫描;</li>
+<li>查询条件, 对索引字段做函数操作, 会破坏索引值的有序性, 因此优化器会放弃走索引树;</li>
+<li>mysql中, 如果字符串和数字进行比较, 会将字符串转为数字;</li>
+</ul>
+<h4 id="%E6%9F%A5%E8%AF%A2%E6%85%A2%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9C%BA%E6%99%AF">查询慢的一些场景</h4>
+<ul>
+<li>MDL导致, 通过<code>show processlist</code>查看线程状态;</li>
+<li>行锁导致, 一个查询使用的当前读, 遇到另一个线程持有行锁. 通过<code>select * from sys.innodb_lock_waits where locked_table = 'test.t'</code>找到持有锁的线程</li>
+<li>一致性读的情况下, 有可能一条数据的活跃版本太多, 导致通过undo log回溯的链条太长, 导致查询慢</li>
+</ul>
+<h4 id="%E8%A1%A8%E7%A9%BA%E9%97%B4">表空间</h4>
+<ul>
+<li>系统表空间: 用于存放系统信息, 对应磁盘文件<code>ibdata1</code></li>
+<li>数据表空间: 用于存放用户数据, 对应磁盘文件<code>表名.ibd</code></li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>极客时间-MySQL实战45讲</li>
+</ul>
+
+</body>
+</html>
