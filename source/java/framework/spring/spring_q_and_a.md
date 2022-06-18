@@ -297,7 +297,7 @@ Spring 提供了以下5种标准的事件:
 1. 客户端请求, 进入DispatchServlet, 访问dispatchServlet的doService方法
 2. DispatchServlet根据请求信息调用HandlerMapping, 解析请求对应的Handler
 3. 开始执行匹配的拦截器
-4. 根据解析到的handler, 交由HandlerAdapter处理
+4. 根据解析到的handler, 交由HandlerAdapter处理(HandlerAdapter内部会调用具体的Handler, 即Controller)
 5. 处理完成, 返回ModelAndView, Model是返回的数据对象, View是逻辑视图
 6. ViewResolver会根据逻辑View查找实际的View
 7. DispatcherServlet把返回的Model传给View(视图渲染)
