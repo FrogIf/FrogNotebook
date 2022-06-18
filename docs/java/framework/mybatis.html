@@ -479,18 +479,14 @@ mapper.xml文件即sql映射文件，文件中配置了操作数据库的sql语�
 <span class="hljs-tag">&lt;/<span class="hljs-name">mapper</span>&gt;</span>
 </div></code></pre>
 <h4 id="%E5%8D%A0%E4%BD%8D%E7%AC%A6">占位符</h4>
+<p>*<code> #{}</code>表示一个占位符号, 通过<code>#{}</code>可以实现preparedStatement向占位符中设置值, 自动进行java类型和jdbc类型转换。<code>#{}</code>可以有效防止sql注入, <code>#{}</code>可以接收简单类型值或pojo属性值。 如果parameterType传输单个简单类型值，<code>#{}</code>括号中可以是value或其它名称。</p>
 <ul>
-<li>#{}表示一个占位符号, 通过#{}可以实现preparedStatement向占位符中设置值, 自动进行java类型和jdbc类型转换。#{}可以有效防止sql注入, #{}可以接收简单类型值或pojo属性值。 如果parameterType传输单个简单类型值，#{}括号中可以是value或其它名称。</li>
-<li>${}表示拼接sql串，通过${}可以将parameterType 传入的内容拼接在sql中且不进行jdbc类型转换， ${}可以接收简单类型值或pojo属性值，如果parameterType传输单个简单类型值，${}括号中只能是value。</li>
+<li><code>${}</code>表示拼接sql串，通过<code>${}</code>可以将parameterType 传入的内容拼接在sql中且不进行jdbc类型转换， <code>${}</code>可以接收简单类型值或pojo属性值，如果parameterType传输单个简单类型值，<code>${}</code>括号中只能是value。</li>
 </ul>
 <h4 id="parametertype%E5%92%8Cresulttype">parameterType和resultType</h4>
 <ul>
-<li>
-<p>parameterType：指定输入参数类型，mybatis通过ognl从输入对象中获取参数值拼接在sql中。</p>
-</li>
-<li>
-<p>resultType：指定输出结果类型，mybatis将sql查询结果的一行记录数据映射为resultType指定类型的对象。如果有多条数据，则分别进行映射，并把对象放到容器List中</p>
-</li>
+<li>parameterType：指定输入参数类型，mybatis通过ognl从输入对象中获取参数值拼接在sql中。</li>
+<li>resultType：指定输出结果类型，mybatis将sql查询结果的一行记录数据映射为resultType指定类型的对象。如果有多条数据，则分别进行映射，并把对象放到容器List中</li>
 </ul>
 <h4 id="%E5%A2%9E%E5%88%A0%E6%94%B9%E6%A0%87%E7%AD%BE">增删改标签</h4>
 <p>insert, delete, update</p>

@@ -129,13 +129,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 #### 占位符
 
-* #{}表示一个占位符号, 通过#{}可以实现preparedStatement向占位符中设置值, 自动进行java类型和jdbc类型转换。#{}可以有效防止sql注入, #{}可以接收简单类型值或pojo属性值。 如果parameterType传输单个简单类型值，#{}括号中可以是value或其它名称。
-* ${}表示拼接sql串，通过${}可以将parameterType 传入的内容拼接在sql中且不进行jdbc类型转换， ${}可以接收简单类型值或pojo属性值，如果parameterType传输单个简单类型值，${}括号中只能是value。
+*``` #{}```表示一个占位符号, 通过```#{}```可以实现preparedStatement向占位符中设置值, 自动进行java类型和jdbc类型转换。```#{}```可以有效防止sql注入, ```#{}```可以接收简单类型值或pojo属性值。 如果parameterType传输单个简单类型值，```#{}```括号中可以是value或其它名称。
+* ```${}```表示拼接sql串，通过```${}```可以将parameterType 传入的内容拼接在sql中且不进行jdbc类型转换， ```${}```可以接收简单类型值或pojo属性值，如果parameterType传输单个简单类型值，```${}```括号中只能是value。
 
 #### parameterType和resultType
 
 * parameterType：指定输入参数类型，mybatis通过ognl从输入对象中获取参数值拼接在sql中。
-
 * resultType：指定输出结果类型，mybatis将sql查询结果的一行记录数据映射为resultType指定类型的对象。如果有多条数据，则分别进行映射，并把对象放到容器List中
 
 
