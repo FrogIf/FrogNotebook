@@ -450,6 +450,9 @@ git远程传输采用SSH加密传输, 首先确认是否存在C:\Users.ssh目录
 <p>也可以指定文件名.</p>
 <pre class="hljs"><code><div>    ssh-keygen -t rsa -C <span class="hljs-string">"邮箱地址"</span> -f 密钥文件名
 </div></code></pre>
+<p>这里一般指定为:</p>
+<pre class="hljs"><code><div>ssh-keygen -t rsa -C <span class="hljs-string">'公司邮箱地址'</span> -f ~/.ssh/私钥文件名
+</div></code></pre>
 </li>
 <li>
 <p>将公钥告诉接收方(远程仓库)
@@ -469,10 +472,10 @@ git远程传输采用SSH加密传输, 首先确认是否存在C:\Users.ssh目录
 </ol>
 <p>为兼容多个不同的项目, 分布在多个不同的远程仓库中的情况(github, gitee, gitlab...), 需要在密钥生成目录, 创建config文件, 手动指定映射关系:</p>
 <pre class="hljs"><code><div># 第一个
-Host gitee.com
+Host gitee.com  # 网址
 HostName gitee.com
 PreferredAuthentications publickey #写死定值
-IdentityFile ~/.ssh/gitee_id_rsa  #对应的密钥名称
+IdentityFile ~/.ssh/gitee_id_rsa  #对应的私钥文件名
 
 # 第二个...
 </div></code></pre>

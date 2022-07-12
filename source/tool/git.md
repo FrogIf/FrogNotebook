@@ -96,6 +96,10 @@ git本地仓库有三种不同的状态:
     ```sh
         ssh-keygen -t rsa -C "邮箱地址" -f 密钥文件名
     ```
+    这里一般指定为:
+    ```sh
+    ssh-keygen -t rsa -C '公司邮箱地址' -f ~/.ssh/私钥文件名
+    ```
 
 2. 将公钥告诉接收方(远程仓库)
     登录github或者码云等, 在账户设置里, 添加公钥, 将id_rsa.pub中的内容复制粘贴至key中.
@@ -117,10 +121,10 @@ git本地仓库有三种不同的状态:
 
 ```
 # 第一个
-Host gitee.com
+Host gitee.com  # 网址
 HostName gitee.com
 PreferredAuthentications publickey #写死定值
-IdentityFile ~/.ssh/gitee_id_rsa  #对应的密钥名称
+IdentityFile ~/.ssh/gitee_id_rsa  #对应的私钥文件名
 
 # 第二个...
 ```
