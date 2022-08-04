@@ -1,5 +1,9 @@
 # Windows使用
 
+## 配置
+
+1. VisualBox配置. File-References-General-Default Machine Folder默认是C盘的文件夹, 这个会占用大量磁盘空间, 修改改到别的磁盘.
+
 ## power shell 有些命令执行失败
 
 有些命令, 在cmd中可以执行, 在power shell中执行就报错了. 例如:
