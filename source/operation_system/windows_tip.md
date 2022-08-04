@@ -113,3 +113,17 @@ java.exe                     14760 Console                    1     54,708 K
 win + r 输入services.msc进入服务, 开启上述三个服务.
 
 win + r 输入control进入控制面板, 控制面板\网络和 Internet\网络和共享中心\高级共享设置 即可开启网络发现.
+
+## PowerShell环境变量
+
+查看环境变量:
+
+```
+$Env:JAVA_HOME
+```
+
+临时修改环境变量:
+
+```
+$Env:JAVA_HOME="C:\Program Files\Java\jdk1.8.0_291"
+```
