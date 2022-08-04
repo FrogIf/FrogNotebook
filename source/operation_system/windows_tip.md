@@ -127,3 +127,53 @@ $Env:JAVA_HOME
 ```
 $Env:JAVA_HOME="C:\Program Files\Java\jdk1.8.0_291"
 ```
+
+分行显示```PATH```环境变量:
+
+```
+PS C:\Users\frogif> (type env:PATH) -split ';'
+C:\Program Files\PowerShell\7
+C:\Windows\system32
+C:\Windows
+C:\Windows\System32\Wbem
+C:\Windows\System32\WindowsPowerShell\v1.0\
+C:\Windows\System32\OpenSSH\
+C:\Program Files\Intel\WiFi\bin\
+C:\Program Files\Common Files\Intel\WirelessCommon\
+C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common
+C:\Program Files\Java\jdk-11.0.13\bin
+C:\Program Files\Java\jdk-11.0.13\jre\bin
+D:\DevelopSoftware\apache-maven-3.3.3\bin
+C:\Users\frogif\.gradle\wrapper\dists\gradle-4.6-all\bcst21l2brirad8k2ben1letg\gradle-4.6\bin
+D:\Program Files\Python27
+D:\Program Files\Python27\Scripts\
+D:\Program Files\Python3\
+D:\Program Files\Python3\Scripts\
+C:\Program Files\Git\cmd
+C:\ProgramData\chocolatey\bin
+C:\Program Files (x86)\Prince\engine\bin
+C:\Program Files\nodejs\
+C:\Program Files\Docker\Docker\resources\bin
+C:\ProgramData\DockerDesktop\version-bin
+C:\Program Files\dotnet\
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\ffmpeg-3.3.4-64\bin
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\opencascade-7.6.0\win64\vc14\bin
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\tbb_2017.0.100\bin\intel64\vc14
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\freeimage-3.17.0-vc14-64\bin
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\openvr-1.14.15-64\bin\win64
+D:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\bin\Hostx64\x64
+D:\DevelopSoftware\Qt\5.15.2\msvc2019_64\bin
+D:\DevelopSoftware\jvm_lib
+%GRADLE_HOME%\bin
+D:\DevelopSoftware\Vagrant\bin
+C:\Program Files\PowerShell\7\
+C:\Users\frogif\AppData\Local\Programs\Python\Python37\Scripts\
+C:\Users\frogif\AppData\Local\Programs\Python\Python37\
+C:\Users\frogif\AppData\Local\Microsoft\WindowsApps
+C:\Users\frogif\AppData\Local\BypassRuntm
+C:\Users\frogif\AppData\Local\Microsoft\WindowsApps
+D:\DevelopSoftware\Microsoft VS Code\bin
+C:\Users\frogif\AppData\Roaming\npm
+C:\Users\frogif\.dotnet\tools
+C:\Users\frogif\AppData\Local\JetBrains\Toolbox\scripts
+```
