@@ -252,11 +252,6 @@ sysctl -p
     docker run -d --env ELASTICSEARCH_HOSTS=http://10.128.2.95:9200 --env ELASTICSEARCH_USERNAME=frog --env ELASTICSEARCH_PASSWORD=frog --name kb95 -p 5601:5601 docker.elastic.co/kibana/kibana:7.4.2
     ```
 
-**Zookeeper安装**
-
-
-
-
 **Grafana安装**
 
 直接执行:
@@ -269,10 +264,11 @@ docker run -d --name=grafana -p 3000:3000 grafana/grafana:8.0.6-ubuntu
 **Kafka安装**
 
 ```
-docker run -d --name kafka \
--p 9092:9092 \
--e KAFKA_BROKER_ID=0 \
--e KAFKA_ZOOKEEPER_CONNECT=10.0.0.101:2181 \
--e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://10.0.0.101:9092 \
--e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 wurstmeister/kafka
+docker run -d --name zookeeper -p 2181:2181 wurstmeister/zookeeper
 ```
+
+```
+docker run -d --name kafka -p 9093:9092 -e KAFKA_BROKER_ID=0 -e KAFKA_ZOOKEEPER_CONNECT=<主机ip>:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://<主机ip>:9092 -e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 wurstmeister/kafka
+```
+
+> 这里进行的端口映射是9093 --> 9092

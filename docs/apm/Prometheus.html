@@ -764,6 +764,26 @@ sparrow_response_duration_quantiles_sum{method=&quot;/randomResponse&quot;,appli
 <li>http server - 通过PromQL语言, 提供数据查询</li>
 </ul>
 <p><img src="img/prometheus_architecture.png" alt="image"></p>
+<h2 id="%E5%85%B6%E4%BB%96">其他</h2>
+<p>配置模板jmx_exporter时, 最简单的配置是:</p>
+<pre class="hljs"><code><div>hostPort: localhost:1234
+username:
+password:
+
+rules:
+ - pattern: &quot;.*&quot;
+</div></code></pre>
+<p>prometheus如果想针对某个target配置一些东西, 可以这样配置:</p>
+<pre class="hljs"><code><div>...
+
+  -job_name: 'xxx'
+   static_configs:
+    - targets: ['127.0.0.1:9080']
+      labels:
+         application: 'hahaha'
+
+...
+</div></code></pre>
 <h2 id="%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99">参考资料</h2>
 <ul>
 <li><a href="https://www.cnblogs.com/hujinzhong/p/14998683.html">Prometheus介绍</a></li>

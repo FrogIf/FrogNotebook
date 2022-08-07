@@ -438,6 +438,33 @@ Prometheus会每个一段时间, 向配置好的target中的地址发送请求, 
 ![image](img/prometheus_architecture.png)
 
 
+## 其他
+
+配置模板jmx_exporter时, 最简单的配置是:
+
+```
+hostPort: localhost:1234
+username:
+password:
+
+rules:
+ - pattern: ".*"
+```
+
+prometheus如果想针对某个target配置一些东西, 可以这样配置:
+
+```
+...
+
+  -job_name: 'xxx'
+   static_configs:
+    - targets: ['127.0.0.1:9080']
+      labels:
+         application: 'hahaha'
+
+...
+```
+
 ## 参考资料
 
 * [Prometheus介绍](https://www.cnblogs.com/hujinzhong/p/14998683.html)
