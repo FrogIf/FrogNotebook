@@ -244,7 +244,7 @@ sysctl -p
 ```
 
 
-**Kibana单独作为客户端安装**
+## Kibana单独作为客户端安装
 
 1. 下载Kibana镜像.
 2. 启动镜像.
@@ -252,7 +252,7 @@ sysctl -p
     docker run -d --env ELASTICSEARCH_HOSTS=http://10.128.2.95:9200 --env ELASTICSEARCH_USERNAME=frog --env ELASTICSEARCH_PASSWORD=frog --name kb95 -p 5601:5601 docker.elastic.co/kibana/kibana:7.4.2
     ```
 
-**Grafana安装**
+## Grafana安装
 
 直接执行:
 ```
@@ -260,15 +260,101 @@ docker run -d --name=grafana -p 3000:3000 grafana/grafana:8.0.6-ubuntu
 ```
 
 
+## Kafka&Zookeeper安装
 
-**Kafka安装**
+这里采用docker-compose进行安装. 并且kafka增加授权, zookeeper不加授权.
 
-```
-docker run -d --name zookeeper -p 2181:2181 wurstmeister/zookeeper
+首先准备授权文件```kafka_server_jaas.conf```:
+
+```conf
+KafkaServer {
+    org.apache.kafka.common.security.plain.PlainLoginModule required
+    username="admin"
+    password="123123"
+    user_admin="123123"
+    user_kafka="456456";
+};
+Client {
+    org.apache.kafka.common.security.plain.PlainLoginModule required
+    username="kafka"
+    password="456456";
+};
 ```
 
-```
-docker run -d --name kafka -p 9093:9092 -e KAFKA_BROKER_ID=0 -e KAFKA_ZOOKEEPER_CONNECT=<主机ip>:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://<主机ip>:9092 -e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 wurstmeister/kafka
+准备```docker-compose.yaml```文件:
+
+```yaml
+version: '2'
+services:
+    zookeeper:
+        image: wurstmeister/zookeeper
+        hostname: zookeeper
+        restart: always
+        ports:
+            - 2181:2181
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
+            ZOOKEEPER_SASL_ENABLED: "false"
+    kafka:
+        image: wurstmeister/kafka
+        hostname: broker
+        container_name: kafka
+        depends_on:
+            - zookeeper
+        ports:
+            - 9093:9093
+        environment:
+            KAFKA_LISTENERS: SASL_PLAINTEXT://0.0.0.0:9093
+            KAFKA_ADVERTISED_LISTENERS: SASL_PLAINTEXT://192.168.77.77:9093
+            KAFKA_ZOOKEEPER_CONNECT: '192.168.77.77:2181'
+            ZOOKEEPER_SASL_ENABLED: "false"
+            KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
+            KAFKA_INTER_BROKER_LISTENER_NAME: SASL_PLAINTEXT
+            KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+            KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+        volumes:
+            - /mnt/d/docker/kafka:/etc/kafka/secrets
 ```
 
-> 这里进行的端口映射是9093 --> 9092
+启动```docker-compose up -d```
+
+> 上面的示例中, 将这两个文件都放在了```D:/docker/kafka```目录下, 这个docker-compose只能在wsl内部执行, 不能在windows中执行.
+> 这里面使用kafka端口是9093
+
+## clickhouse
+
+1. 下载并启动容器: ```docker run -d --name ch-server --ulimit nofile=262144:262144 -p 8123:8123 -p 9000:9000 -p 9009:9009 yandex/clickhouse-server```
+
+接下来开始修改用户密码:
+
+2. 进入容器: ```docker exec -it clickhouse-server /bin/bash```
+3. 生成加密后的密码: ```PASSWORD=$(base64 < /dev/urandom | head -c8); echo "你的密码"; echo -n "你的密码" | sha256sum | tr -d '-'```
+4. 修改配置文件: ```vim /etc/clickhouse-server/users.xml```
+
+> 第四步可能需要提前安装vim, 1. ```apt-get update```; 2. ```apt-get install vim -y```;
+
+5. 将配置文件中```<password></password>```替换为上面生成的密文```<password_sha256_hex>密文</password_sha256_hex>```;
+6. 保存, 不需要重启, 即刻生效. 可以使用下面的命令测试一下: ```clickhouse-client -h 127.0.0.1 -d default -m -u default --password '明文密码'```
+7. 上面修改密码修改的是default用户的密码, 这里再新增一个用户. 依旧是: ```vim /etc/clickhouse-server/users.xml```
+8. 在```<users></users>```标签下新增一个用户配置, 例如:
+
+```xml
+<users>
+    <frog>    <!--用户登录名-->
+        <password>123123</password>    <!--用户登录密码, 如果是密文, 还和上面一样的操作-->
+        <networks>
+           <ip>::/0</ip>
+        </networks>   <!--允许登录的网络地址-->
+        <profile>default</profile>  <!--用户使用的profile配置-->
+        <quota>default</quota>      <!--用户能够使用的资源限额/熔断机制-->
+    </frog>
+<users>
+```
+9. 保存, 不需要重启, 直接生效. ```clickhouse-client -h 127.0.0.1 -d default -m -u frog --password '123123'```
+
+其他操作:
+
+* 新建数据库: ```CREATE DATABASE aaa;```

@@ -565,26 +565,110 @@ vm.max_map_count=262144
 并执行命令
 sysctl -p
 </div></code></pre>
-<p><strong>Kibana单独作为客户端安装</strong></p>
+<h2 id="kibana%E5%8D%95%E7%8B%AC%E4%BD%9C%E4%B8%BA%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%89%E8%A3%85">Kibana单独作为客户端安装</h2>
 <ol>
 <li>下载Kibana镜像.</li>
 <li>启动镜像.<pre class="hljs"><code><div>docker run -d --env ELASTICSEARCH_HOSTS=http://10.128.2.95:9200 --env ELASTICSEARCH_USERNAME=frog --env ELASTICSEARCH_PASSWORD=frog --name kb95 -p 5601:5601 docker.elastic.co/kibana/kibana:7.4.2
 </div></code></pre>
 </li>
 </ol>
-<p><strong>Zookeeper安装</strong></p>
-<p><strong>Grafana安装</strong></p>
+<h2 id="grafana%E5%AE%89%E8%A3%85">Grafana安装</h2>
 <p>直接执行:</p>
 <pre class="hljs"><code><div>docker run -d --name=grafana -p 3000:3000 grafana/grafana:8.0.6-ubuntu
 </div></code></pre>
-<p><strong>Kafka安装</strong></p>
-<pre class="hljs"><code><div>docker run -d --name kafka \
--p 9092:9092 \
--e KAFKA_BROKER_ID=0 \
--e KAFKA_ZOOKEEPER_CONNECT=10.0.0.101:2181 \
--e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://10.0.0.101:9092 \
--e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 wurstmeister/kafka
+<h2 id="kafkazookeeper%E5%AE%89%E8%A3%85">Kafka&amp;Zookeeper安装</h2>
+<p>这里采用docker-compose进行安装. 并且kafka增加授权, zookeeper不加授权.</p>
+<p>首先准备授权文件<code>kafka_server_jaas.conf</code>:</p>
+<pre class="hljs"><code><div>KafkaServer {
+    org.apache.kafka.common.security.plain.PlainLoginModule required
+    username=&quot;admin&quot;
+    password=&quot;123123&quot;
+    user_admin=&quot;123123&quot;
+    user_kafka=&quot;456456&quot;;
+};
+Client {
+    org.apache.kafka.common.security.plain.PlainLoginModule required
+    username=&quot;kafka&quot;
+    password=&quot;456456&quot;;
+};
 </div></code></pre>
+<p>准备<code>docker-compose.yaml</code>文件:</p>
+<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'2'</span>
+<span class="hljs-attr">services:</span>
+    <span class="hljs-attr">zookeeper:</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-string">wurstmeister/zookeeper</span>
+        <span class="hljs-attr">hostname:</span> <span class="hljs-string">zookeeper</span>
+        <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span>
+        <span class="hljs-attr">ports:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-number">2181</span><span class="hljs-string">:2181</span>
+        <span class="hljs-attr">environment:</span>
+            <span class="hljs-attr">ZOOKEEPER_CLIENT_PORT:</span> <span class="hljs-number">2181</span>
+            <span class="hljs-attr">ZOOKEEPER_TICK_TIME:</span> <span class="hljs-number">2000</span>
+            <span class="hljs-attr">ZOOKEEPER_SASL_ENABLED:</span> <span class="hljs-string">"false"</span>
+    <span class="hljs-attr">kafka:</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-string">wurstmeister/kafka</span>
+        <span class="hljs-attr">hostname:</span> <span class="hljs-string">broker</span>
+        <span class="hljs-attr">container_name:</span> <span class="hljs-string">kafka</span>
+        <span class="hljs-attr">depends_on:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">zookeeper</span>
+        <span class="hljs-attr">ports:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-number">9093</span><span class="hljs-string">:9093</span>
+        <span class="hljs-attr">environment:</span>
+            <span class="hljs-attr">KAFKA_LISTENERS:</span> <span class="hljs-string">SASL_PLAINTEXT://0.0.0.0:9093</span>
+            <span class="hljs-attr">KAFKA_ADVERTISED_LISTENERS:</span> <span class="hljs-string">SASL_PLAINTEXT://192.168.77.77:9093</span>
+            <span class="hljs-attr">KAFKA_ZOOKEEPER_CONNECT:</span> <span class="hljs-string">'192.168.77.77:2181'</span>
+            <span class="hljs-attr">ZOOKEEPER_SASL_ENABLED:</span> <span class="hljs-string">"false"</span>
+            <span class="hljs-attr">KAFKA_OPTS:</span> <span class="hljs-string">-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf</span>
+            <span class="hljs-attr">KAFKA_INTER_BROKER_LISTENER_NAME:</span> <span class="hljs-string">SASL_PLAINTEXT</span>
+            <span class="hljs-attr">KAFKA_SASL_ENABLED_MECHANISMS:</span> <span class="hljs-string">PLAIN</span>
+            <span class="hljs-attr">KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL:</span> <span class="hljs-string">PLAIN</span>
+            <span class="hljs-attr">KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR:</span> <span class="hljs-number">1</span>
+            <span class="hljs-attr">KAFKA_AUTO_CREATE_TOPICS_ENABLE:</span> <span class="hljs-string">"true"</span>
+        <span class="hljs-attr">volumes:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/kafka:/etc/kafka/secrets</span>
+</div></code></pre>
+<p>启动<code>docker-compose up -d</code></p>
+<blockquote>
+<p>上面的示例中, 将这两个文件都放在了<code>D:/docker/kafka</code>目录下, 这个docker-compose只能在wsl内部执行, 不能在windows中执行.
+这里面使用kafka端口是9093</p>
+</blockquote>
+<h2 id="clickhouse">clickhouse</h2>
+<ol>
+<li>下载并启动容器: <code>docker run -d --name ch-server --ulimit nofile=262144:262144 -p 8123:8123 -p 9000:9000 -p 9009:9009 yandex/clickhouse-server</code></li>
+</ol>
+<p>接下来开始修改用户密码:</p>
+<ol start="2">
+<li>进入容器: <code>docker exec -it clickhouse-server /bin/bash</code></li>
+<li>生成加密后的密码: <code>PASSWORD=$(base64 &lt; /dev/urandom | head -c8); echo &quot;你的密码&quot;; echo -n &quot;你的密码&quot; | sha256sum | tr -d '-'</code></li>
+<li>修改配置文件: <code>vim /etc/clickhouse-server/users.xml</code></li>
+</ol>
+<blockquote>
+<p>第四步可能需要提前安装vim, 1. <code>apt-get update</code>; 2. <code>apt-get install vim -y</code>;</p>
+</blockquote>
+<ol start="5">
+<li>将配置文件中<code>&lt;password&gt;&lt;/password&gt;</code>替换为上面生成的密文<code>&lt;password_sha256_hex&gt;密文&lt;/password_sha256_hex&gt;</code>;</li>
+<li>保存, 不需要重启, 即刻生效. 可以使用下面的命令测试一下: <code>clickhouse-client -h 127.0.0.1 -d default -m -u default --password '明文密码'</code></li>
+<li>上面修改密码修改的是default用户的密码, 这里再新增一个用户. 依旧是: <code>vim /etc/clickhouse-server/users.xml</code></li>
+<li>在<code>&lt;users&gt;&lt;/users&gt;</code>标签下新增一个用户配置, 例如:</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">users</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">frog</span>&gt;</span>    <span class="hljs-comment">&lt;!--用户登录名--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">password</span>&gt;</span>123123<span class="hljs-tag">&lt;/<span class="hljs-name">password</span>&gt;</span>    <span class="hljs-comment">&lt;!--用户登录密码, 如果是密文, 还和上面一样的操作--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">networks</span>&gt;</span>
+           <span class="hljs-tag">&lt;<span class="hljs-name">ip</span>&gt;</span>::/0<span class="hljs-tag">&lt;/<span class="hljs-name">ip</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">networks</span>&gt;</span>   <span class="hljs-comment">&lt;!--允许登录的网络地址--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>  <span class="hljs-comment">&lt;!--用户使用的profile配置--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">quota</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">quota</span>&gt;</span>      <span class="hljs-comment">&lt;!--用户能够使用的资源限额/熔断机制--&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">frog</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">users</span>&gt;</span>
+</div></code></pre>
+<ol start="9">
+<li>保存, 不需要重启, 直接生效. <code>clickhouse-client -h 127.0.0.1 -d default -m -u frog --password '123123'</code></li>
+</ol>
+<p>其他操作:</p>
+<ul>
+<li>新建数据库: <code>CREATE DATABASE aaa;</code></li>
+</ul>
 
 </body>
 </html>
