@@ -161,3 +161,7 @@ git submodule update
 
 > 有时候需要再执行一下```git add .gitmodules```
 > 有时候需要再执行一下```git rm --cached 子模块名称```
+
+## 其他
+
+* 更新远程分支列表: ```git remote update origin --prune```
