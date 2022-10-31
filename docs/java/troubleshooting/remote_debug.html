@@ -269,7 +269,12 @@ pre[data-line] .line-highlight[data-end]:after {
 <li>&#x542F;&#x52A8;&#x53C2;&#x6570;&#x4E2D;&#x6DFB;&#x52A0;: <code>-Xdebug -Xrunjdwp:transport=dt_socket,address=13345,server=y,suspend=n</code>, &#x4F8B;&#x5982;:</li>
 </ol>
 <pre data-role="codeBlock" data-info class="language-"><code>nohup java -Xdebug -Xrunjdwp:transport=dt_socket,address=13345,server=y,suspend=n -jar AppServerMock.jar --server.port=13341 &gt;/dev/null 2&gt;&amp;1 &amp;
-</code></pre><ol start="2">
+</code></pre><blockquote>
+<p>jdk1.4 --&gt; <code>-Xdebug -Xrunjdwp:transport=dt_socket,address=13345,server=y,suspend=n</code><br>
+jdk5 -- 8 --&gt; <code>-Xdebug -agentlib:jdwp:transport=dt_socket,address=13345,server=y,suspend=n</code><br>
+jdk9&#x4EE5;&#x4E0A; --&gt; <code>-Xdebug -agentlib:jdwp:transport=dt_socket,address=*:13345,server=y,suspend=n</code></p>
+</blockquote>
+<ol start="2">
 <li>&#x786E;&#x5B9A;linux&#x7CFB;&#x7EDF;&#x9632;&#x706B;&#x5899;&#x5DF2;&#x7ECF;&#x6253;&#x5BF9;&#x5E94;&#x7684;&#x7AEF;&#x53E3;(tcp)</li>
 </ol>
 <pre data-role="codeBlock" data-info class="language-"><code>firewall-cmd --list-all
@@ -280,6 +285,15 @@ pre[data-line] .line-highlight[data-end]:after {
 <ol start="4">
 <li>&#x542F;&#x52A8;, &#x8C03;&#x8BD5;, &#x5B8C;&#x6210;.</li>
 </ol>
+<h2 class="mume-header" id="tomcatidea">Tomcat&amp;IDEA</h2>
+
+<p>&#x548C;spring boot&#x51E0;&#x4E4E;&#x4E00;&#x6837;, &#x53EA;&#x662F;&#x628A;&#x8FD9;&#x4E9B;&#x914D;&#x7F6E;&#x52A0;&#x5728;startup.sh&#x7684;CATALINA_OPTS&#x4E2D;.</p>
+<h2 class="mume-header" id="%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">&#x6CE8;&#x610F;&#x4E8B;&#x9879;</h2>
+
+<ul>
+<li>&#x65E5;&#x5FD7;&#x4F9D;&#x65E7;&#x4F1A;&#x8F93;&#x51FA;&#x5728;&#x8FDC;&#x7A0B;&#x670D;&#x52A1;&#x5668;&#x4E0A;;</li>
+<li>&#x672C;&#x5730;&#x65AD;&#x70B9;, &#x4F1A;&#x5361;&#x4F4F;&#x6574;&#x4E2A;&#x8FDC;&#x7A0B;&#x670D;&#x52A1;&#x5668;;</li>
+</ul>
 
       </div>
       
