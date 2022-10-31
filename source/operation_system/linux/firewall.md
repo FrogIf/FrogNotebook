@@ -1,4 +1,23 @@
+---
+title: linux防火墙
+author: frogif
+date: 2022-10-31
+---
 # linux防火墙
+
+## CentOS7
+
+* 查看防火墙版本: ```firewall-cmd --version```
+* 查看防火墙状态: ```firewall-cmd --state```
+* 查看防火墙服务状态: ```systemctl status firewalld```
+* 查看防火墙全部信息: ```firewall-cmd --list-all```
+* 查看防火墙已开放端口: ```firewall-cmd --list-port```
+* 查看防火墙已开通服务: ```firewall-cmd --list-service```
+* 开放端口: ```firewall-cmd --add-port=8094/tcp --permanent```
+* 重载防火墙: ```firewall-cmd --reload```
+* 移除端口: ```firewall-cmd --remove-port=80/tcp --permanent```
+
+## CentOS6
 
 下面命令是针对centOS6的:
 

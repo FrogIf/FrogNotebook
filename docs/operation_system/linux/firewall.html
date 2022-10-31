@@ -366,6 +366,19 @@ code {
     });
   </script>
 <h1 id="linux%E9%98%B2%E7%81%AB%E5%A2%99">linux防火墙</h1>
+<h2 id="centos7">CentOS7</h2>
+<ul>
+<li>查看防火墙版本: <code>firewall-cmd --version</code></li>
+<li>查看防火墙状态: <code>firewall-cmd --state</code></li>
+<li>查看防火墙服务状态: <code>systemctl status firewalld</code></li>
+<li>查看防火墙全部信息: <code>firewall-cmd --list-all</code></li>
+<li>查看防火墙已开放端口: <code>firewall-cmd --list-port</code></li>
+<li>查看防火墙已开通服务: <code>firewall-cmd --list-service</code></li>
+<li>开放端口: <code>firewall-cmd --add-port=8094/tcp --permanent</code></li>
+<li>重载防火墙: <code>firewall-cmd --reload</code></li>
+<li>移除端口: <code>firewall-cmd --remove-port=80/tcp --permanent</code></li>
+</ul>
+<h2 id="centos6">CentOS6</h2>
 <p>下面命令是针对centOS6的:</p>
 <ol>
 <li>检查防火墙状态</li>
