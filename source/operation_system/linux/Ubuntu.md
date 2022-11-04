@@ -95,3 +95,71 @@ mysql启停命令:
 方式一：sudo/etc/init.d/mysql restart
 方式二：sudo service mysql restart
 ```
+
+## 配置静态ip
+
+> 基于ubuntu20.04版本
+
+1. 查看当前网卡信息, 可以看到是```enp0s3```:
+
+```bash
+stack@frog-VirtualBox:~$ ifconfig
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.2.66  netmask 255.255.255.0  broadcast 10.0.2.255
+        inet6 fe80::a00:27ff:fe66:8323  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:66:83:23  txqueuelen 1000  (Ethernet)
+        RX packets 130889  bytes 178169269 (178.1 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 39846  bytes 3713094 (3.7 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 214  bytes 18192 (18.1 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 214  bytes 18192 (18.1 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+2. 查看网关:
+
+```bash
+frog@frog-VirtualBox:~$ route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.0.2.2        0.0.0.0         UG    100    0        0 enp0s3
+10.0.2.0        0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
+169.254.0.0     0.0.0.0         255.255.0.0     U     1000   0        0 enp0s3
+```
+
+3. 修改配置文件, ```vim /etc/netplan/01-network-manager-all.yaml```:
+
+```yaml
+# Let NetworkManager manage all devices on this system
+network:
+  version: 2
+  renderer: NetworkManager
+```
+
+修改为:
+
+```yaml
+network:
+  version: 2
+  renderer: NetworkManager
+  ethernets:
+    enp0s3:  #配置的网卡名称
+      dhcp4: no    #dhcp4关闭
+      dhcp6: no    #dhcp6关闭
+      addresses: [10.0.2.66/24]   #设置本机IP及掩码
+      optional: true
+      gateway4: 10.0.2.2   #设置网关
+      nameservers:
+          addresses: [114.114.114.114]   #设置DNS
+```
+
+4. 执行```netplan apply```
+
+5. 重启, 查看```ifconfig```可以发现修改成功

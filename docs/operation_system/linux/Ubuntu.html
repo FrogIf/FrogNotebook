@@ -461,6 +461,72 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted 
 方式一：sudo/etc/init.d/mysql restart
 方式二：sudo service mysql restart
 </div></code></pre>
+<h2 id="%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81ip">配置静态ip</h2>
+<blockquote>
+<p>基于ubuntu20.04版本</p>
+</blockquote>
+<ol>
+<li>查看当前网卡信息, 可以看到是<code>enp0s3</code>:</li>
+</ol>
+<pre class="hljs"><code><div>stack@frog-VirtualBox:~$ ifconfig
+enp0s3: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 10.0.2.66  netmask 255.255.255.0  broadcast 10.0.2.255
+        inet6 fe80::a00:27ff:fe66:8323  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 08:00:27:66:83:23  txqueuelen 1000  (Ethernet)
+        RX packets 130889  bytes 178169269 (178.1 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 39846  bytes 3713094 (3.7 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 214  bytes 18192 (18.1 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 214  bytes 18192 (18.1 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</div></code></pre>
+<ol start="2">
+<li>查看网关:</li>
+</ol>
+<pre class="hljs"><code><div>frog@frog-VirtualBox:~$ route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.0.2.2        0.0.0.0         UG    100    0        0 enp0s3
+10.0.2.0        0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
+169.254.0.0     0.0.0.0         255.255.0.0     U     1000   0        0 enp0s3
+</div></code></pre>
+<ol start="3">
+<li>修改配置文件, <code>vim /etc/netplan/01-network-manager-all.yaml</code>:</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-comment"># Let NetworkManager manage all devices on this system</span>
+<span class="hljs-attr">network:</span>
+  <span class="hljs-attr">version:</span> <span class="hljs-number">2</span>
+  <span class="hljs-attr">renderer:</span> <span class="hljs-string">NetworkManager</span>
+</div></code></pre>
+<p>修改为:</p>
+<pre class="hljs"><code><div><span class="hljs-attr">network:</span>
+  <span class="hljs-attr">version:</span> <span class="hljs-number">2</span>
+  <span class="hljs-attr">renderer:</span> <span class="hljs-string">NetworkManager</span>
+  <span class="hljs-attr">ethernets:</span>
+    <span class="hljs-attr">enp0s3:</span>  <span class="hljs-comment">#配置的网卡名称</span>
+      <span class="hljs-attr">dhcp4:</span> <span class="hljs-literal">no</span>    <span class="hljs-comment">#dhcp4关闭</span>
+      <span class="hljs-attr">dhcp6:</span> <span class="hljs-literal">no</span>    <span class="hljs-comment">#dhcp6关闭</span>
+      <span class="hljs-attr">addresses:</span> <span class="hljs-string">[10.0.2.66/24]</span>   <span class="hljs-comment">#设置本机IP及掩码</span>
+      <span class="hljs-attr">optional:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-attr">gateway4:</span> <span class="hljs-number">10.0</span><span class="hljs-number">.2</span><span class="hljs-number">.2</span>   <span class="hljs-comment">#设置网关</span>
+      <span class="hljs-attr">nameservers:</span>
+          <span class="hljs-attr">addresses:</span> <span class="hljs-string">[114.114.114.114]</span>   <span class="hljs-comment">#设置DNS</span>
+</div></code></pre>
+<ol start="4">
+<li>
+<p>执行<code>netplan apply</code></p>
+</li>
+<li>
+<p>重启, 查看<code>ifconfig</code>可以发现修改成功</p>
+</li>
+</ol>
 
 </body>
 </html>
