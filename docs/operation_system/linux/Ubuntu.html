@@ -527,6 +527,17 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 <p>重启, 查看<code>ifconfig</code>可以发现修改成功</p>
 </li>
 </ol>
+<h2 id="%E4%BF%AE%E6%94%B9%E9%95%9C%E5%83%8F%E6%BA%90">修改镜像源</h2>
+<ol>
+<li>进入配置目录, <code>cd /etc/apt/</code></li>
+<li>备份原始镜像源, <code>cp -a sources.list sources.list.bk</code></li>
+<li>访问清华大学官方镜像站: https://mirrors.tuna.tsinghua.edu.cn/</li>
+<li>找到Ubuntu, 点击帮助按钮.</li>
+</ol>
+<p><img src="img/ubuntu_image_source.png" alt="image"></p>
+<ol start="5">
+<li>在帮助页面, 选择指定的Ubuntu版本, 复制, 替换即可.</li>
+</ol>
 
 </body>
 </html>

@@ -163,3 +163,14 @@ network:
 4. 执行```netplan apply```
 
 5. 重启, 查看```ifconfig```可以发现修改成功
+
+## 修改镜像源
+
+1. 进入配置目录, ```cd /etc/apt/```
+2. 备份原始镜像源, ```cp -a sources.list sources.list.bk```
+3. 访问清华大学官方镜像站: https://mirrors.tuna.tsinghua.edu.cn/
+4. 找到Ubuntu, 点击帮助按钮.
+
+![image](img/ubuntu_image_source.png)
+
+5. 在帮助页面, 选择指定的Ubuntu版本, 复制, 替换即可.
