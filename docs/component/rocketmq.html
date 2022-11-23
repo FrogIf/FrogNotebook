@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rocketmq.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="rocketmq">RocketMQ</h1>
+<h2 id="overview">Overview</h2>
+<p>RocketMQ是有阿里巴巴开发的, 作为一款纯java、分布式、队列模型的开源消息中间件，支持事务消息、顺序消息、批量消息、定时消息、消息回溯等。</p>
+<p><strong>特点</strong>:</p>
+<ol>
+<li>支持发布/订阅和点对点消息模型</li>
+<li>在一个队列中, 可靠的先进先出(FIFO)和严格的顺序传递</li>
+<li>支持拉(pull)和推(push)两种消息模式
+<ul>
+<li>pull - 消费者主动从MQ中去拉消息;</li>
+<li>push - MQ的消息主动推送给消费者;(Rocket的push底层依旧是pull, 由消费者进程中的一个后台进程使用长轮询持续进行pull, 一旦发现消息, 唤醒消费者线程去处理消息)</li>
+</ul>
+</li>
+<li>单一队列百万消息的堆积能力</li>
+<li>支持多种消息协议，如 JMS、MQTT 等</li>
+<li>分布式高可用的部署架构,满足至少一次消息传递语义</li>
+<li>提供 docker 镜像用于隔离测试和云集群部署</li>
+<li>提供配置、指标和监控等功能丰富的 Dashboard</li>
+</ol>
+<p><strong>核心组件</strong>:</p>
+<ul>
+<li><strong>NameServer</strong>: 服务注册中心, RocketMQ 需要先启动 NameServer 再启动 Rocket 中的 Broker.
+<ul>
+<li>用来保存 Broker 相关元信息并给 Producer 和 Consumer 查找Broker 信息</li>
+<li>NameServer被设计成几乎无状态的, 可以横向扩展, 节点之间相互之间无通信, 通过部署多台机器来标记自己是一个伪集群</li>
+<li>每个 Broker 在启动的时候会到 NameServer 注册</li>
+<li>Producer 在发送消息前会根据 Topic 到NameServer 获取到 Broker 的路由信息，进而和Broker取得连接</li>
+<li>Consumer 也会定时获取 Topic 的路由信息</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>所以从功能上看应该是和 ZooKeeper 差不多，据说 RocketMQ 的早期版本确实是使用的ZooKeeper ，后来改为了自己实现NameServer. Name Server和ZooKeeper的作用大致是相同的，从宏观上来看，Name Server做的东西很少，就是保存一些运行数据，Name Server之间不互连，这就需要broker端连接所有的Name Server，运行数据的改动要发送到每一个Name Server来保证运行数据的一致性（这个一致性确实有点弱），这样就变成了Name Server很轻量级，但是broker端就要做更多的东西了.</p>
+</blockquote>
+<ul>
+<li><strong>Broker</strong>: 消息存储中心，主要作用是接收来自 Producer 的消息并存储，Consumer 从这里取得消息。它还存储与消息相关的元数据，包括用户组、消费进度偏移量、队列信息等。Broker 有 Master 和 Slave 两种类型，Master 既可以写又可以读，Slave不可以写只可以读。
+<ul>
+<li>Broker部署相对复杂，Broker分为Master与Slave，一个Master可以对应多个Slave，但是一个Slave只能对应一个Master，Master与Slave的对应关系通过指定相同的Broker Name，不同的BrokerId来定义，BrokerId为0表Master，非0表示Slave。Master也可以部署多个。</li>
+</ul>
+</li>
+<li><strong>Producer</strong>: 消息发布者，负责生产并发送消息至 Topic
+<ul>
+<li>生产者向brokers发送由业务应用程序系统生成的消息。RocketMQ提供了发送：同步、异步和单向（one-way）的多种范例。</li>
+<li>同步发送: 消息发送方发出数据后会在收到接收方发回响应之后才发下一个数据包。一般用于重要通知消息，例如重要通知邮件、营销短信。</li>
+<li>异步发送: 发送方发出数据后，不等接收方发回响应，接着发送下个数据包，一般用于可能链路耗时较长而对响应时间敏感的业务场景，例如用户视频上传后通知启动转码服务。假如过一段时间检测到某个信息发送失败，可以选择重新发送。</li>
+<li>单向发送: 只负责发送消息而不等待服务器回应且没有回调函数触发，适用于某些耗时非常短但对可靠性要求并不高的场景，例如日志收集。</li>
+</ul>
+</li>
+<li><strong>Consumer</strong>: 消息订阅者，负责从 Topic 接收并消费消息, 消费者从brokers那里拉取信息并将其输入应用程序</li>
+</ul>
+<p><strong>Producer Group和Consumer Group</strong></p>
+<ul>
+<li>Producer Group: 一类 Producer 的集合，这类 Producer 通常发送一类消息并且发送逻辑一致，所以将这些 Producer 分组在一起。从部署结构上看生产者通过 Producer Group 的名字来标记自己是一个集群。</li>
+<li>Consumer Group: 一类 Consumer 的集合，这类 Consumer 通常消费同一类消息并且消费逻辑一致，所以将这些 Consumer 分组在一起。消费者组与生产者组类似，都是将相同角色的分组在一起并命名。</li>
+<li>Producer Group和Consumer Group之间没有任何关系</li>
+<li>同一条消息，只能被某一消费组其中的一台机器消费，但是可以同时被不同的消费组消费。(和Kafka类似)</li>
+</ul>
+<p><strong>架构图</strong></p>
+<p><img src="img/rocketmq_flow.png" alt="image"></p>
+<ol>
+<li>NameServer 先启动</li>
+<li>Broker 启动时向 NameServer 注册</li>
+<li>生产者在发送某个主题的消息之前先从 NamerServer 获取 Broker 服务器地址列表（有可能是集群），然后根据负载均衡算法从列表中选择一台Broker 进行消息发送</li>
+<li>NameServer 与每台 Broker 服务器保持长连接，并间隔 30S 检测 Broker 是否存活，如果检测到Broker 宕机（使用心跳机制, 如果检测超120S），则从路由注册表中将其移除</li>
+<li>消费者在订阅某个主题的消息之前从 NamerServer 获取 Broker 服务器地址列表（有可能是集群）, 但是消费者选择从 Broker 中 订阅消息，订阅规则由 Broker 配置决定</li>
+</ol>
+<p><strong>名词解释</strong></p>
+<ul>
+<li>消息(Message): 一条消息必须有一个主题（Topic），主题可以看做是你的信件要邮寄的地址。一条消息也可以拥有一个可选的标签（Tag）和额处的键值对，它们可以用于设置一个业务key并在Broker上查找此消息以便在开发期间查找问题。</li>
+<li>主题(Topic): 主题（Topic）可以看做消息的规类，它是消息的第一级类型。比如一个电商系统可以分为：交易消息、物流消息等，一条消息必须有一个Topic。Topic 与生产者和消费者的关系非常松散，一个 Topic可以有0个、1个、多个生产者向其发送消息，一个生产者也可以同时向不同的 Topic 发送消息。一个Topic 也可以被 0个、1个、多个消费者订阅。</li>
+<li>标签(Tag): 可以看作子主题，它是消息的第二级类型，用于为用户提供额外的灵活性。使用标签，同一业务模块不同目的的消息就可以用相同 Topic 而不同的 Tag 来标识。</li>
+<li>消息消费模式: 集群消费（Clustering）和广播消费（Broadcasting）</li>
+<li>消息顺序: 顺序消费（Orderly）和并行消费（Concurrently）</li>
+</ul>
+<h2 id="%E5%AE%9E%E8%B7%B5">实践</h2>
+<p><strong>代码示例</strong></p>
+<p>这里采用java:</p>
+<p>maven依赖:</p>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.rocketmq<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>rocketmq-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>4.5.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span>
+</div></code></pre>
+<p>生产者:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> org.apache.rocketmq.client.producer.DefaultMQProducer;
+<span class="hljs-keyword">import</span> org.apache.rocketmq.client.producer.SendResult;
+<span class="hljs-keyword">import</span> org.apache.rocketmq.common.message.Message;
+<span class="hljs-keyword">import</span> org.slf4j.Logger;
+<span class="hljs-keyword">import</span> org.slf4j.LoggerFactory;
+<span class="hljs-keyword">import</span> org.springframework.beans.factory.annotation.Value;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Component;
+
+<span class="hljs-keyword">import</span> javax.annotation.PostConstruct;
+<span class="hljs-keyword">import</span> javax.annotation.PreDestroy;
+<span class="hljs-keyword">import</span> java.nio.charset.StandardCharsets;
+<span class="hljs-keyword">import</span> java.util.Collections;
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoProducer</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(DemoProducer<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+
+    <span class="hljs-meta">@Value</span>(<span class="hljs-string">"${datasync.mq.producer.group:group1}"</span>)
+    <span class="hljs-keyword">private</span> String group;
+
+    <span class="hljs-meta">@Value</span>(<span class="hljs-string">"${datasync.mq.namesrv:127.0.0.1:9876}"</span>)
+    <span class="hljs-keyword">private</span> String nameSrvAddr;
+
+    <span class="hljs-meta">@Value</span>(<span class="hljs-string">"${datasync.mq.producer.topic:aaa}"</span>)
+    <span class="hljs-keyword">private</span> String topic;
+
+    <span class="hljs-meta">@Value</span>(<span class="hljs-string">"${datasync.mq.producer.tag:*}"</span>)
+    <span class="hljs-keyword">private</span> String tag;
+
+    <span class="hljs-keyword">private</span> DefaultMQProducer producer;
+
+    <span class="hljs-meta">@PostConstruct</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">try</span>{
+            producer = <span class="hljs-keyword">new</span> DefaultMQProducer(group);
+            producer.setNamesrvAddr(nameSrvAddr);
+            producer.start();
+        }<span class="hljs-keyword">catch</span> (Exception e){
+            logger.error(<span class="hljs-string">"producer init failed. msg : {}"</span>, e.getMessage(), e);
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">send</span><span class="hljs-params">(String messageKey, String message)</span></span>{
+        <span class="hljs-keyword">try</span>{
+            Message msg = <span class="hljs-keyword">new</span> Message(topic, message.getBytes(StandardCharsets.UTF_8));
+            msg.setKeys(Collections.singletonList(messageKey));
+            SendResult result = producer.send(msg, <span class="hljs-number">10000</span>);
+            logger.info(<span class="hljs-string">"send result : {}"</span>, result);
+        }<span class="hljs-keyword">catch</span> (Exception e){
+            logger.error(<span class="hljs-string">"send message failed, msg : {}"</span>, e.getMessage(), e);
+        }
+    }
+
+    <span class="hljs-meta">@PreDestroy</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">destroy</span><span class="hljs-params">()</span></span>{
+        producer.shutdown();
+    }
+}
+</div></code></pre>
+<p>消费者:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+<span class="hljs-keyword">import</span> org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
+<span class="hljs-keyword">import</span> org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+<span class="hljs-keyword">import</span> org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+<span class="hljs-keyword">import</span> org.apache.rocketmq.common.message.MessageExt;
+<span class="hljs-keyword">import</span> org.slf4j.Logger;
+<span class="hljs-keyword">import</span> org.slf4j.LoggerFactory;
+<span class="hljs-keyword">import</span> org.springframework.beans.factory.annotation.Value;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Component;
+
+<span class="hljs-keyword">import</span> javax.annotation.PostConstruct;
+<span class="hljs-keyword">import</span> javax.annotation.PreDestroy;
+<span class="hljs-keyword">import</span> java.util.List;
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DemoConsumer</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(DemoConsumer<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+
+    <span class="hljs-meta">@Value</span>(<span class="hljs-string">"${datasync.mq.consumer.group:default_consumer_group}"</span>)
+    <span class="hljs-keyword">private</span> String group;
+
+    <span class="hljs-meta">@Value</span>(<span class="hljs-string">"${datasync.mq.namesrv:127.0.0.1:9876}"</span>)
+    <span class="hljs-keyword">private</span> String nameSrvAddr;
+
+    <span class="hljs-meta">@Value</span>(<span class="hljs-string">"${datasync.mq.consumer.topic:aaa}"</span>)
+    <span class="hljs-keyword">private</span> String topic;
+
+    <span class="hljs-meta">@Value</span>(<span class="hljs-string">"${datasync.mq.consumer.tag:*}"</span>)
+    <span class="hljs-keyword">private</span> String tag;
+
+    <span class="hljs-keyword">private</span> DefaultMQPushConsumer consumer;
+
+    <span class="hljs-meta">@PostConstruct</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">try</span>{
+            consumer = <span class="hljs-keyword">new</span> DefaultMQPushConsumer(group);
+            consumer.subscribe(topic, tag);
+            consumer.registerMessageListener(<span class="hljs-keyword">new</span> MessageListenerConcurrently() {
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> ConsumeConcurrentlyStatus <span class="hljs-title">consumeMessage</span><span class="hljs-params">(List&lt;MessageExt&gt; list, ConsumeConcurrentlyContext consumeConcurrentlyContext)</span> </span>{
+                    <span class="hljs-keyword">for</span> (MessageExt messageExt : list) {
+                        logger.info(<span class="hljs-string">"receive msg : {}"</span>, <span class="hljs-keyword">new</span> String(messageExt.getBody()));
+                    }
+                    <span class="hljs-keyword">return</span> ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                }
+            });
+            consumer.start();
+        }<span class="hljs-keyword">catch</span> (Exception e){
+            logger.error(<span class="hljs-string">"consumer init failed. msg : {}"</span>, e.getMessage(), e);
+        }
+    }
+
+
+    <span class="hljs-meta">@PreDestroy</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">destroy</span><span class="hljs-params">()</span></span>{
+        consumer.shutdown();
+    }
+
+}
+</div></code></pre>
+<p><strong>场景</strong></p>
+<ul>
+<li>广播模式, 需要消费者端, 设置:</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-comment">//设置消费者的消费模式为广播模式：所有客户端接收的消息都是一样的</span>
+consumer.setMessageModel(MessageModel.BROADCASTING);
+</div></code></pre>
+<ul>
+<li>保证消息消费顺序: 消息生产者发送消息时, 同一组消息指定发送到一个消息队列; 消费端采用单个消费者, 单线程的去处理消息.</li>
+</ul>
+<h2 id="%E6%B6%88%E6%81%AF%E9%87%8D%E8%AF%95%E4%B8%8E%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97">消息重试与死信队列</h2>
+<p>当消息消费后未正常返回消费成功的信息将启动消息重试机制.</p>
+<ol>
+<li>顺序消息重试: 当消费者消费消息失败后，RocketMQ会自动进行消息重试（每次间隔时间为 1 秒）
+<ul>
+<li>注意：应用会出现消息消费被阻塞的情况，因此，要对顺序消息的消费情况进行监控，避免阻塞现象的发生</li>
+</ul>
+</li>
+<li>无序消息重试:
+<ul>
+<li>无序消息包括普通消息、定时消息、延时消息、事务消息</li>
+<li>无序消息重试仅适用于负载均衡（集群）模型下的消息消费，不适用于广播模式下的消息消费</li>
+<li>为保障无序消息的消费，MQ设定了合理的消息重试间隔时长</li>
+<li>无序消息未被消费，到达了重试总次数以后，这种消息会被重新标记叫做死信</li>
+</ul>
+</li>
+</ol>
+<p><strong>死信队列</strong></p>
+<p>当消息消费重试到达了指定次数（默认16次）后，MQ将无法被正常消费的消息称为死信消息（Dead-Letter Message）. 死信消息不会被直接抛弃，而是保存到了一个全新的队列中，该队列称为死信队列（Dead-Letter Queue）</p>
+<p>特点:</p>
+<ol>
+<li>归属某一个组（Gourp Id），而不归属Topic，也不归属消费者</li>
+<li>一个死信队列中可以包含同一个组下的多个Topic中的死信消息</li>
+<li>死信队列不会进行默认初始化，当第一个死信出现后，此队列首次初始化</li>
+<li>死信队列中的消息不会被再次重复消费</li>
+<li>死信队列中的消息有效期为3天，达到时限后将被清除</li>
+</ol>
+<p>在监控平台中，通过查找死信，获取死信的messageId，然后通过id对死信进行精准消费</p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://blog.csdn.net/qq_21040559/article/details/122703715">RocketMQ 介绍及基本概念</a></li>
+<li><a href="https://blog.csdn.net/zhangzengxiu/article/details/118980778">Java之RocketMQ详解</a></li>
+</ul>
+
+</body>
+</html>
