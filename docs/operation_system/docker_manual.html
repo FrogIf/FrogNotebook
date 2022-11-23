@@ -669,6 +669,150 @@ Client {
 <ul>
 <li>新建数据库: <code>CREATE DATABASE aaa;</code></li>
 </ul>
+<h2 id="rocketmq">RocketMQ</h2>
+<ul>
+<li>docker-compose.yaml:</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'3.5'</span>
+<span class="hljs-attr">services:</span>
+  <span class="hljs-attr">rmqnamesrv:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">foxiswho/rocketmq:server</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">rmqnamesrv</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">9876</span><span class="hljs-string">:9876</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/data/logs:/opt/logs</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/data/logs:/opt/store</span>
+    <span class="hljs-attr">networks:</span>
+        <span class="hljs-attr">rmq:</span>
+          <span class="hljs-attr">aliases:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">rmqnamesrv</span>
+ 
+  <span class="hljs-attr">rmqbroker:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">foxiswho/rocketmq:broker</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">rmqbroker</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">10909</span><span class="hljs-string">:10909</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">10911</span><span class="hljs-string">:10911</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/data/logs:/opt/logs</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/data/store:/opt/store</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/compose/broker.conf:/etc/rocketmq/broker.conf</span>
+    <span class="hljs-attr">environment:</span>
+        <span class="hljs-attr">NAMESRV_ADDR:</span> <span class="hljs-string">"rmqnamesrv:9876"</span>
+        <span class="hljs-attr">JAVA_OPTS:</span> <span class="hljs-string">" -Duser.home=/opt"</span>
+        <span class="hljs-attr">JAVA_OPT_EXT:</span> <span class="hljs-string">"-server -Xms128m -Xmx128m -Xmn128m"</span>
+    <span class="hljs-attr">command:</span> <span class="hljs-string">mqbroker</span> <span class="hljs-string">-c</span> <span class="hljs-string">/etc/rocketmq/broker.conf</span>
+    <span class="hljs-attr">depends_on:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">rmqnamesrv</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-attr">rmq:</span>
+        <span class="hljs-attr">aliases:</span>
+          <span class="hljs-bullet">-</span> <span class="hljs-string">rmqbroker</span>
+ 
+  <span class="hljs-attr">rmqconsole:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">styletang/rocketmq-console-ng</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">rmqconsole</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">18080</span><span class="hljs-string">:8080</span>
+    <span class="hljs-attr">environment:</span>
+        <span class="hljs-attr">JAVA_OPTS:</span> <span class="hljs-string">"-Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"</span>
+    <span class="hljs-attr">depends_on:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">rmqnamesrv</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-attr">rmq:</span>
+        <span class="hljs-attr">aliases:</span>
+          <span class="hljs-bullet">-</span> <span class="hljs-string">rmqconsole</span>
+ 
+<span class="hljs-attr">networks:</span>
+  <span class="hljs-attr">rmq:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">rmq</span>
+    <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
+</div></code></pre>
+<ul>
+<li>broker.conf:</li>
+</ul>
+<pre class="hljs"><code><div># 所属集群名字
+brokerClusterName=DefaultCluster
+ 
+# broker 名字，注意此处不同的配置文件填写的不一样，如果在 broker-a.properties 使用: broker-a,
+# 在 broker-b.properties 使用: broker-b
+brokerName=broker-a
+ 
+# 0 表示 Master，&gt; 0 表示 Slave
+brokerId=0
+ 
+# nameServer地址，分号分割
+# namesrvAddr=rocketmq-nameserver1:9876;rocketmq-nameserver2:9876
+ 
+# 启动IP,如果 docker 报 com.alibaba.rocketmq.remoting.exception.RemotingConnectException: connect to &lt;192.168.0.120:10909&gt; failed
+# 解决方式1 加上一句 producer.setVipChannelEnabled(false);，解决方式2 brokerIP1 设置宿主机IP，不要使用docker 内部IP
+brokerIP1=172.27.160.1
+ 
+# 在发送消息时，自动创建服务器不存在的topic，默认创建的队列数
+defaultTopicQueueNums=4
+ 
+# 是否允许 Broker 自动创建 Topic，建议线下开启，线上关闭 ！！！这里仔细看是 false，false，false
+autoCreateTopicEnable=true
+ 
+# 是否允许 Broker 自动创建订阅组，建议线下开启，线上关闭
+autoCreateSubscriptionGroup=true
+ 
+# Broker 对外服务的监听端口
+listenPort=10911
+ 
+# 删除文件时间点，默认凌晨4点
+deleteWhen=04
+ 
+# 文件保留时间，默认48小时
+fileReservedTime=120
+ 
+# commitLog 每个文件的大小默认1G
+mapedFileSizeCommitLog=1073741824
+ 
+# ConsumeQueue 每个文件默认存 30W 条，根据业务情况调整
+mapedFileSizeConsumeQueue=300000
+ 
+# destroyMapedFileIntervalForcibly=120000
+# redeleteHangedFileInterval=120000
+# 检测物理文件磁盘空间
+diskMaxUsedSpaceRatio=88
+# 存储路径
+# storePathRootDir=/home/ztztdata/rocketmq-all-4.1.0-incubating/store
+# commitLog 存储路径
+# storePathCommitLog=/home/ztztdata/rocketmq-all-4.1.0-incubating/store/commitlog
+# 消费队列存储
+# storePathConsumeQueue=/home/ztztdata/rocketmq-all-4.1.0-incubating/store/consumequeue
+# 消息索引存储路径
+# storePathIndex=/home/ztztdata/rocketmq-all-4.1.0-incubating/store/index
+# checkpoint 文件存储路径
+# storeCheckpoint=/home/ztztdata/rocketmq-all-4.1.0-incubating/store/checkpoint
+# abort 文件存储路径
+# abortFile=/home/ztztdata/rocketmq-all-4.1.0-incubating/store/abort
+# 限制的消息大小
+maxMessageSize=65536
+ 
+# flushCommitLogLeastPages=4
+# flushConsumeQueueLeastPages=2
+# flushCommitLogThoroughInterval=10000
+# flushConsumeQueueThoroughInterval=60000
+ 
+# Broker 的角色
+# - ASYNC_MASTER 异步复制Master
+# - SYNC_MASTER 同步双写Master
+# - SLAVE
+brokerRole=ASYNC_MASTER
+ 
+# 刷盘方式
+# - ASYNC_FLUSH 异步刷盘
+# - SYNC_FLUSH 同步刷盘
+flushDiskType=ASYNC_FLUSH
+ 
+# 发消息线程池数量
+# sendMessageThreadPoolNums=128
+# 拉消息线程池数量
+# pullMessageThreadPoolNums=128
+</div></code></pre>
 
 </body>
 </html>
