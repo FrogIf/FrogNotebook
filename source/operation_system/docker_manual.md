@@ -389,6 +389,7 @@ services:
       - /mnt/d/docker/rocketmq/data/logs:/opt/logs
       - /mnt/d/docker/rocketmq/data/store:/opt/store
       - /mnt/d/docker/rocketmq/compose/broker.conf:/etc/rocketmq/broker.conf
+      - /mnt/d/docker/rocketmq/compose/plain_acl.conf:/etc/rocketmq/plain_acl.conf
     environment:
         NAMESRV_ADDR: "rmqnamesrv:9876"
         JAVA_OPTS: " -Duser.home=/opt"
@@ -439,6 +440,7 @@ brokerId=0
  
 # 启动IP,如果 docker 报 com.alibaba.rocketmq.remoting.exception.RemotingConnectException: connect to <192.168.0.120:10909> failed
 # 解决方式1 加上一句 producer.setVipChannelEnabled(false);，解决方式2 brokerIP1 设置宿主机IP，不要使用docker 内部IP
+# 在WSL中, ifconfig获取ip, 然后填入这里
 brokerIP1=172.27.160.1
  
 # 在发送消息时，自动创建服务器不存在的topic，默认创建的队列数
@@ -504,4 +506,48 @@ flushDiskType=ASYNC_FLUSH
 # sendMessageThreadPoolNums=128
 # 拉消息线程池数量
 # pullMessageThreadPoolNums=128
+
+#此参数控制是否开启密码
+aclEnable=false
+```
+
+* plain_acl.conf(如果需要配置密码, 则需要这个文件, 否则不需要):
+
+```conf
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+accounts:
+- accessKey: RocketMQ
+  secretKey: 12345678
+  whiteRemoteAddress:
+  admin: false
+  defaultTopicPerm: DENY
+  defaultGroupPerm: SUB
+  topicPerms:
+  - topicA=DENY
+  - topicB=PUB|SUB
+  - topicC=SUB
+  groupPerms:
+  # the group should convert to retry topic
+  - groupA=DENY
+  - groupB=PUB|SUB
+  - groupC=SUB
+
+- accessKey: rocketmq2
+  secretKey: 12345678
+  # if it is admin, it could access all resources
+  admin: true
 ```
