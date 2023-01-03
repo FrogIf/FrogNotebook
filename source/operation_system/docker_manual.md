@@ -57,6 +57,8 @@ docker run --name redis -d -p 6379:6379 redis
 docker exec -it <containerId> redis-cli
 ```
 
+> 如果设置密码: docker run --name redis -d -p 6379:6379 redis --requirepass 123456
+
 ### mysql
 
 ```

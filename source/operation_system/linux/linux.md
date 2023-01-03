@@ -1123,6 +1123,15 @@ ssh bbb@127.0.0.1
 ssh -p 8080 aaa@127.0.0.1
 ```
 
+**ssh端口调整**
+
+有些情况下, 22端口是不能对外开放的, 这时需要调整端口.
+
+1. vim /etc/ssh/sshd_config
+2. 找到Port, 去掉注释, 修改为指定的端口号
+3. 重启```systemctl restart sshd```
+4. 查看是否修改成功```netstat -ntlp```
+
 ## 工作中的积累
 
 
@@ -1191,3 +1200,11 @@ vim /var/log/messages
 --------
 
 * ```date```: 显示当前系统时间
+
+* 磁盘读写测试:
+
+```
+dd if=/dev/zero of=test
+```
+
+> 向test文件中写入内容, 来源是/dev/zero, 结果中会输出读写性能

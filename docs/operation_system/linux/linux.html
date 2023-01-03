@@ -1458,6 +1458,14 @@ sudo service ssh status
 <p>指定端口号:</p>
 <pre class="hljs"><code><div>ssh -p 8080 aaa@127.0.0.1
 </div></code></pre>
+<p><strong>ssh端口调整</strong></p>
+<p>有些情况下, 22端口是不能对外开放的, 这时需要调整端口.</p>
+<ol>
+<li>vim /etc/ssh/sshd_config</li>
+<li>找到Port, 去掉注释, 修改为指定的端口号</li>
+<li>重启<code>systemctl restart sshd</code></li>
+<li>查看是否修改成功<code>netstat -ntlp</code></li>
+</ol>
 <h2 id="%E5%B7%A5%E4%BD%9C%E4%B8%AD%E7%9A%84%E7%A7%AF%E7%B4%AF">工作中的积累</h2>
 <h4 id="%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5">查看磁盘使用情况</h4>
 <p><code>df -h</code></p>
@@ -1512,8 +1520,18 @@ nginx   10498 gitlab-www    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
 </ul>
 <hr>
 <ul>
-<li><code>date</code>: 显示当前系统时间</li>
+<li>
+<p><code>date</code>: 显示当前系统时间</p>
+</li>
+<li>
+<p>磁盘读写测试:</p>
+</li>
 </ul>
+<pre class="hljs"><code><div>dd if=/dev/zero of=test
+</div></code></pre>
+<blockquote>
+<p>向test文件中写入内容, 来源是/dev/zero, 结果中会输出读写性能</p>
+</blockquote>
 
 </body>
 </html>

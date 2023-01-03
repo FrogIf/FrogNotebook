@@ -410,6 +410,9 @@ db.createUser({user:&quot;springbucks&quot;, pwd:&quot;springbucks&quot;, roles:
 docker run --name redis -d -p 6379:6379 redis
 docker exec -it &lt;containerId&gt; redis-cli
 </div></code></pre>
+<blockquote>
+<p>如果设置密码: docker run --name redis -d -p 6379:6379 redis --requirepass 123456</p>
+</blockquote>
 <h3 id="mysql">mysql</h3>
 <pre class="hljs"><code><div>docker pull mysql:5.7.17
 docker run --name mysql -d -p 3306:3306 -v /docker-data/mysql:/var/lib/mysql -e MYSQL_DATABASE=springbucks -e MYSQL_USER=springbucks -e MYSQL_PASSWORD=springbucks -e MYSQL_ROOT_PASSWORD=root_password mysql:5.7.17
