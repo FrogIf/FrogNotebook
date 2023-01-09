@@ -861,6 +861,18 @@ accounts:
   # if it is admin, it could access all resources
   admin: true
 </div></code></pre>
+<h2 id="centos7-docker%E5%AE%89%E8%A3%85">CentOS7 docker安装</h2>
+<ol>
+<li>更新yum包, 防止安装过程中出现问题<code>yum update</code>;</li>
+<li>安装依赖软件包, <code>yum install -y yum-utils device-mapper-persistent-data lvm2</code>;</li>
+<li>想yum中添加docker仓库: <code>yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo</code>;</li>
+<li>浏览当前发布的docker版本: <code>yum list docker-ce --showduplicates | sort -r</code>;</li>
+<li>选择一个版本进行安装: <code>yum install docker-ce-18.06.3.ce-3.el7</code>;</li>
+<li>启动docker: <code>systemctl start docker</code></li>
+<li>加入开机自启项: <code>systemctl enable docker</code></li>
+<li>验证是否安装成功: <code>docker version</code></li>
+</ol>
+<p>卸载: <code>yum remove docker docker-common docker-selinux docker-engine</code></p>
 
 </body>
 </html>
