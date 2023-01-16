@@ -1208,3 +1208,7 @@ dd if=/dev/zero of=test
 ```
 
 > 向test文件中写入内容, 来源是/dev/zero, 结果中会输出读写性能
+
+* ```scp```: 远程文件传输
+  * ```scp -P 端口 anaconda-ks.cfg root@101.43.160.39:/root```: 从本地复制到远程
+  * ```scp -P 端口 root@101.43.160.39:/root/anaconda-ks.cfg aaa.kkk```: 从远程复制到本地

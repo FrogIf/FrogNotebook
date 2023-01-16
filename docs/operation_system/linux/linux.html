@@ -1532,6 +1532,14 @@ nginx   10498 gitlab-www    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
 <blockquote>
 <p>向test文件中写入内容, 来源是/dev/zero, 结果中会输出读写性能</p>
 </blockquote>
+<ul>
+<li><code>scp</code>: 远程文件传输
+<ul>
+<li><code>scp -P 端口 anaconda-ks.cfg root@101.43.160.39:/root</code>: 从本地复制到远程</li>
+<li><code>scp -P 端口 root@101.43.160.39:/root/anaconda-ks.cfg aaa.kkk</code>: 从远程复制到本地</li>
+</ul>
+</li>
+</ul>
 
 </body>
 </html>
