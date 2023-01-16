@@ -269,3 +269,85 @@ CIDR, IP地址表示法是: IP地址 ::= {<网络前缀>， <主机号>} / 网�
 ![image](img/port_map_test.png)
 
 没有问题.
+
+## 最佳实践
+
+最好的效果是这样的:
+
+1. 可以访问外网;
+2. 不需要配置端口映射, 就可以实现宿主机和虚拟机之间的相互访问;
+3. 虚拟机之间可以相互访问.
+
+对于这个, 可以采用双网卡的方案, 一张网卡采用NAT/NAT Network, 实现访问外网, 另一张网卡采用Host-Only, 实现宿主机和虚拟机之间相互访问.
+
+关于NAT, 上面介绍了很多了. 这里不再赘述, NAT Network基本差不多. 这里先介绍一下Host-Only配置, 以及双网卡如何搭配使用.
+
+**Host-Only配置**
+
+如图, 是公共的host-only配置, 相当于新建了一个子网, 但是这个子网只有宿主机以及虚拟机直接可以访问, 对外部不可见.
+
+![image](img/host-only1.png)
+
+![image](img/host-only2.png)
+
+> 图中这个子网的网关地址是192.168.56.1, 不可修改
+
+最终, 我的虚拟机的网络配置如图:
+
+![image](img/network_config_demo.png)
+
+系统安装完成, 启动成功之后, 就可以对这两个网卡进行配置了.
+
+NAT网卡对应的配置如下, 只把ONBOOT值改成了yes:
+
+```
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp0s3
+UUID=1394cc23-f87d-4d05-b4a8-b74f2aba766c
+DEVICE=enp0s3
+ONBOOT=yes
+```
+
+Host-Only网卡配置如下:
+
+```
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=static
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp0s8
+UUID=b59b0637-7f07-4a23-9110-243f2843b4b1
+DEVICE=enp0s8
+ONBOOT=yes
+
+IPADDR=192.168.56.66
+NETMASK=255.255.255.0
+GATEWAY=192.168.56.1
+DEFROUTE=yes
+IPV4_ROUTE_METRIC=199
+```
+
+这里, 首先把ONBOOT改成了yes, BOOTPROTO指定为static, 从而使用静态ip, 同时新增了IPADDR, NETMASK, GATEWAY, DEFROUTE, IPV4_ROUTE_METRIC配置.
+
+这里需要解释一下DEFROUTE, IPV4_ROUTE_METRIC这两个配置. 访问外网需要走网关, 由于是双网卡, 所以会出现两个默认网关. 而我们访问外网应该使用NAT对应的网关, 而Host-Only的网关是不能访问外网的. 如图路由表:
+
+![image](img/route_gateway.png)
+
+解释一下前两行, 前两行的Destination都是0.0.0.0, 表示目标地址是所有ip. Flags都是UG, 这里U-可达/活动; G-经由网关; H-目标是一个主机, 后面Iface列标明了使用的网卡, Metric是优先级, 越低越会优先使用. 所以前两行, 就是去往任意目标ip, 都经过10.0.3.1或者192.168.56.1网关, 这里由于上面的配置, 使得Host-Only网卡的Metric较高, 所以最终网关会使用10.0.3.1.
