@@ -351,3 +351,9 @@ IPV4_ROUTE_METRIC=199
 ![image](img/route_gateway.png)
 
 解释一下前两行, 前两行的Destination都是0.0.0.0, 表示目标地址是所有ip. Flags都是UG, 这里U-可达/活动; G-经由网关; H-目标是一个主机, 后面Iface列标明了使用的网卡, Metric是优先级, 越低越会优先使用. 所以前两行, 就是去往任意目标ip, 都经过10.0.3.1或者192.168.56.1网关, 这里由于上面的配置, 使得Host-Only网卡的Metric较高, 所以最终网关会使用10.0.3.1.
+
+上面配置完成后, 重启网络服务, 就可以了.
+
+```
+systemctl restart network
+```
