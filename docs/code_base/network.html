@@ -366,7 +366,19 @@ code {
     });
   </script>
 <h1 id="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C">计算机网络</h1>
-<h2 id="%E6%B5%8F%E8%A7%88%E5%99%A8">浏览器</h2>
+<h2 id="1-%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82">1. 网络分层</h2>
+<ul>
+<li>OSI七层模型, OSI即Open System Interconnection, 开放系统互连.</li>
+<li>OSI七层模型在落地实现时, 会话层和表示层实现不了, 它即复杂有不实用, 所以OSI七层模型从来没有真正实现过. 实际中使用的都是TCP/IP模型</li>
+</ul>
+<p>如图所示:</p>
+<p><img src="img/network_layer.png" alt="image"></p>
+<p>这里以一次http请求为例, 简单介绍一下. 首先, 浏览器遵照HTTP协议生成http消息, 交给L4(传输层). http消息在传输层采用的是TCP协议, 会对数据进行一些处理, 加上TCP头, 并且会控制进行三次握手/四次挥手等. TCP消息交给L3(网络层). 网络层会加上IP头, 即源ip和目的ip等, 然后交给L2(数据链路层), 这里有ARP和MAC等的参与, 会对消息加上MAC头. 然后交给L1(物理层), 变成电磁波发送出去.</p>
+<h2 id="2-%E5%BA%94%E7%94%A8%E5%B1%82">2. 应用层</h2>
+<h3 id="21-http">2.1 HTTP</h3>
+<h3 id="22-dns">2.2 DNS</h3>
+<h3 id="23-telnet">2.3 TELNET</h3>
+<h3 id="24-%E6%B5%8F%E8%A7%88%E5%99%A8">2.4 浏览器</h3>
 <ul>
 <li>URL: Uniform Resource Locator(统一资源定位符)</li>
 <li>URI: Uniform Resource Identifier(统一资源标识符)</li>
@@ -374,11 +386,12 @@ code {
 <blockquote>
 <p>URL与URI的区别: URL是URI的子集. 只要可以唯一确定一个资源, 就是URI. 按照一定规则, 可以分析出一个资源的位置, 就是URL, 显然URL也可以唯一确定一个资源, 所以URL属于URI.</p>
 </blockquote>
-<h4 id="dns">DNS</h4>
-<h2 id="socket">Socket</h2>
-<h2 id="%E5%8D%8F%E8%AE%AE%E6%A0%88">协议栈</h2>
-<h4 id="tcp">TCP</h4>
-<h4 id="ip">IP</h4>
+<h3 id="25-socket">2.5 Socket</h3>
+<h2 id="3-%E4%BC%A0%E8%BE%93%E5%B1%82">3. 传输层</h2>
+<h3 id="31-tcp">3.1 TCP</h3>
+<h3 id="32-udp">3.2 UDP</h3>
+<h2 id="4-%E7%BD%91%E7%BB%9C%E5%B1%82">4. 网络层</h2>
+<h3 id="41-ip">4.1 IP</h3>
 <ul>
 <li>网络号: ip地址前面的部分, 用于定位一个子网</li>
 <li>主机号: ip地址后面的部分, 用于定位子网内的一个具体的主机地址</li>
@@ -399,13 +412,88 @@ code {
 <li>ip地址不能以127开头, 127.0.0.1 - 127.255.255.255用于回路测试</li>
 </ul>
 </li>
-<li>DHCP: 动态分配地址ip</li>
-<li>NAT:</li>
+<li>私有IP
+<ul>
+<li>允许组织内部自行进行分配的ip, 不同的局域网IP可以重复, 局域网内唯一</li>
+<li>10.0.0.0 - 10.255.255.255</li>
+<li>172.16.0.0 - 172.31.255.255</li>
+<li>192.168.0.0 - 192.168.255.255</li>
+</ul>
+</li>
+<li>公网IP
+<ul>
+<li>由组织统一分配, 需要购买</li>
+<li>每一个公网IP都是全球范围内唯一的</li>
+</ul>
+</li>
+<li>无类型域间路由(CIDR)
+<ul>
+<li>A,B,C,D,E类IP地址的子网掩码都是固定的, 这导致无法灵活控制主机数和网络数的规模, 从而导致存在一个网段内的IP冗余或者不足, 于是有了CIDR</li>
+<li>CIDR消除了传统A类, B类, C类地址以及子网划分的概念, 从而更加有效的分配IPv4地址空间</li>
+<li>CIDR形式是这样的: 192.168.1.0/26, 将IP地址一分为二, 前面26位是网络号, 后面6位是主机号</li>
+</ul>
+</li>
 </ul>
 <blockquote>
 <p>上述内容都是针对ipv4</p>
 </blockquote>
-<h2 id="%E6%80%BB%E8%A7%88">总览</h2>
+<blockquote>
+<p>IP是具有定位能力的, 通过网络号和主机号, 可以标记一个主机的位置, MAC不具有定位能力, 类似身份证号, 具有唯一性</p>
+</blockquote>
+<p><strong>IP查看与分配</strong></p>
+<ul>
+<li>windows下, 查看IP地址, 使用: <code>ipconfig</code></li>
+<li>linux下
+<ul>
+<li>查看IP地址, 使用: <code>ifconfig</code>或者<code>ip addr</code>/<code>ip a</code></li>
+<li>设置IP地址:
+<ul>
+<li>net-tools:
+<ul>
+<li><code>ifconfig eth1 10.0.0.1/24</code></li>
+<li><code>ifconfig eth1 up</code></li>
+</ul>
+</li>
+<li>iproute2:
+<ul>
+<li><code>ip addr add 10.0.0.1/24 dev eth1</code></li>
+<li><code>ip link set up eth1</code></li>
+</ul>
+</li>
+<li>IP不是随意配置的, 如果配置了不属于当前网段的IP, 会导致网络不通
+<ul>
+<li>如果同一网段之间的两个IP通信, 可以直接发送数据, 不经过网关</li>
+<li>如果不通网段之间的IP通信, 需要经过网关, 网关地址需要和当前主机的至少一个网卡属于同一网段</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DHCP(动态主机配置协议, Dynamic Host Configuration Protocol)
+<ul>
+<li>主机通过DHCP自动获取IP地址</li>
+<li>工作原理
+<ol>
+<li>DHCP Discover: 使用0.0.0.0作为源IP, 255.255.255.255作为目的IP, 传输层使用UDP协议, 发送广播包, (目的MAC: ff:ff:ff:ff:ff:ff);</li>
+<li>DHCP Offer: 这时DHCP Server接收到消息, 从剩余IP资源中分配一个, 依旧采用广播的形式, 将这个IP广播出去, 这时, 源IP是DHCP Server的IP, 目的MAC是发起DHCP的主机的IP, 这个消息中包含的信息有: IP地址, 子网掩码, 网关, IP地址租用期等;</li>
+<li>客户端主机接收到DHCP Offer消息, 这时, 如果网络中存在多个DHCP Server, 就会收到多个消息, 会选取其中一个, 然后发送确认消息, 发送确认消息时, 依旧使用0.0.0.0作为源IP, 255.255.255.255作为目的IP进行广播;</li>
+<li>DHCP Server收到确认消息后, 广播一个ACK应答, 至此完成DHCP.</li>
+</ol>
+</li>
+<li>DHCP续租和回收: 当租期过去50%后, 提供IP地址的DHCP Server会发送消息, 客户端接收到消息后, 会更新租期.</li>
+<li>DHCP Server还可以用来安装操作系统, 一般用于数据中心批量进行系统安装, 涉及PXE(预启动执行环境), 具体略</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="42-icmp">4.2 ICMP</h3>
+<p>ping, traceroute...</p>
+<h3 id="43-%E7%BD%91%E5%85%B3">4.3 网关</h3>
+<p>路由表, RIP, OSFP</p>
+<h3 id="44-arp">4.4. ARP</h3>
+<h2 id="5-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82">5. 数据链路层</h2>
+<h3 id="51-mac">5.1 MAC</h3>
+<h2 id="6-%E7%89%A9%E7%90%86%E5%B1%82">6. 物理层</h2>
 
 </body>
 </html>
