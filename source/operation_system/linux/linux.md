@@ -1212,3 +1212,5 @@ dd if=/dev/zero of=test
 * ```scp```: 远程文件传输
   * ```scp -P 端口 anaconda-ks.cfg root@101.43.160.39:/root```: 从本地复制到远程
   * ```scp -P 端口 root@101.43.160.39:/root/anaconda-ks.cfg aaa.kkk```: 从远程复制到本地
+
+* ```lsblk```: list block, 即列出所有可用块设备信息, 显示他们之间的依赖关系
