@@ -126,8 +126,52 @@
 
 上面我们知道了商集 $G/H$, 要是 $G/H$ 能是一个群就更好了, 为此有了下面的内容.
 
-* 令 $(G, \cdot)$ 是一个群, 且 $N \subset G$. 我们称 $N$ 是个正规子群, 记作 $N \lhd G$, 当且仅当:
+* 令 $(G, \cdot)$ 是一个群, 且 $N \subset G$. 我们称 $N$ 是个**正规子群**, 记作 $N \lhd G$, 当且仅当:
   1. $N$ 是个子群
   2. $\forall a \in G, aN = Na$
 
 > 注: 上面描述的$\forall a \in G, aN = Na$ 可能是 $\forall a \in G, n_1, n_2 \in N, n_1 \neq n_2, an_1 = n_2a$
+
+* 令 $(G, \cdot)$ 是一个群, 且 $N \lhd G, a, b \in G$, 则: $(aN) \cdot (bN) = (ab)N$
+* 令 $(G, \cdot)$ 是一个群, 且 $N \lhd G$, 则 $(G/N, \cdot)$ 构成一个群, 称为(G在N上的)**商群**, 其中的单位元是 $eN = N$, 每个陪集 $aN$ 的逆元是 $a^{-1}N$
+* 令 $(G, \cdot)$ 是一个群, 且 $N < G$, 则下列命题等价:
+  1. $N$ 是 $G$ 的正规子群, 即 $\forall a \in G, aN = Na$
+  2. $\forall a \in G, aNa^{-1} \subset N$
+  3. $\forall a \in G, \forall n \in N, ana^{-1} \in N$
+* 令 $(N_i)_{i \in I}$ 是一族 $G$ 的正规子群, 则它们的交集仍然是 $G$ 的正规子群, 即: $$\bigcap_{i \in I} N_i \lhd G$$
+* 令 $(G, \cdot)$ 是一个群, 则: $\{e\} \lhd G, G \lhd G$
+* 令 $(G, \cdot)$ 是一个阿贝尔群, 则: $H < G \Longleftrightarrow H \lhd G$
+* **群同构第一定理**: 令 $f: G \rightarrow G'$ 是一个群同态, 则 $ker(f) \lhd G$, 且 $G/ker(f)\simeq im(f)$.
+  * 若 $f$ 是一个满同态, 则 $G /ker(f) \simeq G'$
+  * 若 $f$ 是一个单同态, 则 $G / {e} \simeq G \simeq im(f)$
+  * 若 $G$ 是有限群, 则 $\frac{|G|}{|ker(f)|} = |im(f)|$
+* **群同构第二定理**: 令 $(G, \cdot)$ 是一个群, 且 $N \lhd G, H < G$. 则 $H \cap N \lhd H, N \lhd HN$, 且 $H / (H \cap N) \simeq HN/N$
+* **群同构第三定理**: 令 $(G, \cdot)$ 是一个群, 且 $N \lhd G, M \lhd G, M < N$. 则 $N/M \lhd G/M$, 且 $(G/M)/(N/M) \simeq G/N$
+
+### 1.5 群作用
+
+* 令 $S$ 是一个集合, 则 $S$ 上的**置换群**(或**对称群**), 记作 $(Perm(S), \circ)$, 由所有 $S$ 到自身的双射构成, 而这里的运算是映射的复合运算. $Perm(S) = \{f: S \leftrightarrow S \}$
+* 令 $(G, \cdot)$ 是一个群, 我们通过上面的方式定义: $\phi : (G, \cdot) \rightarrow (Perm(G), \circ)$, 则 $\phi$ 是一个群同态
+* 令 $(G, \cdot)$ 是一个群, $S$ 是一个集合, 而 $\phi : G \rightarrow Perm(S)$. 若 $\phi$ 是一个群同态, 则我们说 $\phi$ 是 $G$ 在(集合) $S$ 上的**群作用**
+* 令 $(G, \cdot)$ 是一个群, 我们对 $x \in G$, 定义 $\phi_x \in Perm(G)$, 对 $y \in G$, 定义为 $\phi_x(y) = xyx^{-1}$. 则 $\phi : G \rightarrow Perm(G)$, 对 $x \in G$, 定义 $\phi(x) = \phi_x$, 被称为 $G$ 的**共轭作用**.
+* 令 $(G, \cdot)$ 是一个群, 则 $G$ 的共轭作用是 $G$ 在自身的一个群作用
+* 令 $(G, \cdot)$ 是一个群, $x \in G$, 则 $\phi_x : G \rightarrow G$, 对 $y \in G$, 定义为: $\phi_x(y) = xyx^{-1}$ 是一个群 $G$ 的**自同构**(即到自身的同构)
+* 令 $(G, \cdot)$ 是一个群, 则一个 $G$ 的(有 $x \in G$ 引出的)**内自同构**, 指的是 $\phi_x : G \rightarrow G$, 对 $y \in G$, 定义为: $\phi_x(y) = xyx^{-1}$, 而其他所有 $G$ 上的自同构, 则称为 $G$ 上的外自同构
+* 令 $\phi : (G, \cdot) \rightarrow (Perm(S), \circ)$ 是一个 $G$ 在 $S$ 的群作用, 假如我们用 $x \cdot s$, 甚至 $xs$, 来代表 $\phi_x(s)$, 或 $\phi(x, s)$, (其中 $x \in G, s \in S$), 则我们等价地, 可以把群作用的性质, 记作:
+  1. $\forall s \in S, e \cdot s = s$
+  2. $\forall x, y \in G, x \cdot (y \cdot s) = (x \cdot y) \cdot s$
+  * 或者进一步地, 在不会引起歧义的情况下, 记作:
+    1. $\forall x \in S, es = s$
+    2. $\forall x, y \in G, x(ys) = (xy)s$
+* 令 $\phi : (G, \cdot) \rightarrow (Perm(S), \circ)$ 是一个 $G$ 在 $S$ 的群作用. 若 $s \in S$. 则我们定义 $s$ 的**轨道**, 记作 $Orb(s)$, 定义为: $Orb(s) = \{s' \in S: \exist x \in G, s' = xs\} = \{xs : x \in G\}$. 我们定义 $s$ 的**稳定化子**, 记作 $Stab(s)$, 定义为: $Stab(s) = \{x \in G: xs = s\}$
+* 令 $\phi : (G, \cdot) \rightarrow (Perm(S), \circ)$ 是一个 $G$ 在 $S$ 的群作用, 而 $s, s' \in S$, 则 $Orb(s)$ 与 $Orb(s')$ 要么相等, 要么无交. 因此, $S$ 可以写成轨道的无交并.
+* 令 $\phi : (G, \cdot) \rightarrow (Perm(S), \circ)$ 是一个 $G$ 在 $S$ 的群作用, 而 $s \in S$, 则 $s$ 的稳定化子是 $G$ 的子群, 即: $Stab(s) < G$
+* 令 $\phi : (G, \cdot) \rightarrow (Perm(S), \circ)$ 是一个 $G$ 在 $S$ 的群作用, 而 $s \in S, x, y \in G$, 则 $xs = ys$ 当且仅当 $x^{-1}y \in Stab(s)$
+* **轨道-稳定化子定理**: 令 $\phi : (G, \cdot) \rightarrow (Perm(S), \circ)$ 是一个 $G$ 在 $S$ 的群作用, $s \in S$, 则存在 $G / Stab(s)$ 到 $Orb(s)$ 的双射. 特别地, 若 $G$ 是有限群, 则: $|G| = |Stab(s)| \cdot |Orb(s)|$
+
+> 有时, 我们不知道一个有限群 $G$ 的大小, 但知道它作用在集合 $S$ 上, 那我们就可以利用轨道-稳定化子定理, 找到某个点 $s \in S$ 的轨道和稳定化子, 进而算出 $G$ 的阶.
+
+* 正 $n$ 边形到自身的对称变换所构成的群称为**正二面体群**, 记作: $D_{2n}$, 则有: $|D_{2n}| = 2n$
+
+### 1.6 群论与数论
+
