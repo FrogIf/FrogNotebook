@@ -101,7 +101,9 @@
 * 所有无限循环群是彼此同构的.
 * 令 $G = \langle x \rangle$ 是一个n阶循环群. 假设 $1 \leq m \leq n$, 则 $x^m$ 的阶为: $|x^m|=\frac{n}{gcd(n, m)}$
 * 令 $G = \langle x \rangle$ 是一个n阶循环群, 则 $x^m(1 \leq m \leq n)$ 是个生成元, 当且仅当 $gcd(m, n)=1$. 根据欧拉 $\phi$ 函数的定义, 这些生成元的个数正是 $\phi(n)$
-  * 欧拉 $\phi$ 函数是小于等于 $n$ 的正整数中与 $n$ 互质的数的数目
+
+> 欧拉 $\phi$ 函数是小于 $n$ 的正整数中与 $n$ 互质(最大公约数为1)的数的个数
+
 * 令 $H$ 是 $G$ 的子群, 则 $H$ 的阶, 记作 $|H|$, 定义为 $H$ 的集合大小. 若 $H$ 是无限群则记为 $|H|=\infty$
 * 若 $H$ 是 $G$ 的子群, 则 $H$ 的阶整除 $G$ 的阶, 即: $|H| | |G|$
 * 令 $G$ 是一个群, $H < G$ 是一个子群, $a \in G$. 则 $aH$ 是 $H$ 的一个**左陪集**(由 $a$ 引出), 定义为: $aH = \{ax: x \in H \}$
@@ -151,7 +153,6 @@
 ### 1.5 群作用
 
 * 令 $S$ 是一个集合, 则 $S$ 上的**置换群**(或**对称群**), 记作 $(Perm(S), \circ)$, 由所有 $S$ 到自身的双射构成, 而这里的运算是映射的复合运算. $Perm(S) = \{f: S \leftrightarrow S \}$
-* 令 $(G, \cdot)$ 是一个群, 我们通过上面的方式定义: $\phi : (G, \cdot) \rightarrow (Perm(G), \circ)$, 则 $\phi$ 是一个群同态
 * 令 $(G, \cdot)$ 是一个群, $S$ 是一个集合, 而 $\phi : G \rightarrow Perm(S)$. 若 $\phi$ 是一个群同态, 则我们说 $\phi$ 是 $G$ 在(集合) $S$ 上的**群作用**
 * 令 $(G, \cdot)$ 是一个群, 我们对 $x \in G$, 定义 $\phi_x \in Perm(G)$, 对 $y \in G$, 定义为 $\phi_x(y) = xyx^{-1}$. 则 $\phi : G \rightarrow Perm(G)$, 对 $x \in G$, 定义 $\phi(x) = \phi_x$, 被称为 $G$ 的**共轭作用**.
 * 令 $(G, \cdot)$ 是一个群, 则 $G$ 的共轭作用是 $G$ 在自身的一个群作用
@@ -175,3 +176,16 @@
 
 ### 1.6 群论与数论
 
+* 令 $n \in Z \setminus \{0\}$, 而 $m \in Z$, 我们说 $n$ 整除 $m$, 记作 $n|m$, 若: $m \in nZ = \{kn : k \in Z\}$
+* 若 $n \in Z$, 则 $nZ \lhd Z$
+* 令 $n \in N^*$, 而 $a, b \in Z$. 我们说 $a$ 同余 $b$ (模 $n$), 记作: $a \equiv b\ mod\ n$, 若: $a + nZ = b + nZ$ 或 $a - b \in nZ$
+* 令 $n \in N^*$, 则 $Z_n$ 定义为: $Z_n = Z / nZ$, $Z_n$ 中的每个元素被称为一个模 $n$ 的同余类, 这些同余类可以枚举: $Z_n = \{k + nZ: 0 \leq k \leq n - 1\}$
+* 令 $n \in N^*$, 则 $Z_n$ 是个 $n$ 阶循环群
+* $(Z_n, \cdot)$是个幺半群
+* 令 $n \in N^*$, 则 $Z_n^\times$, 定义为由 $(Z_n, \cdot)$ 中所有可逆元素构成的群, 即: $Z_n^\times = \{k + nZ : 0 \leq k \leq n - 1, \exist l \in Z, kl \equiv 1\ mod\ n\}$
+* **裴蜀定理**: 若 $a, b, c \in N^*$, 则 $ax + by = c$ 有整数解 $x, y$ 当且仅当 $gcd(a, b)|c$. 特别地, 对于任意 $a, b \in N^*$, 我们可以找到 $x, y \in Z$, 使得 $gcd(a, b) = ax + by$
+* 令 $n \in N^*$, 则 $Z_n^\times = \{k + nZ: 1 \leq k \leq n - 1, gcd(a, n) = 1\}$, 因此 $|Z_n^\times| = \phi(n)$. 特别地, 若 $p$ 是一个素数, 则 $Z_p^\times = \{1 + pZ, 2 + pZ, \cdots, (p - 1) + pZ\}$, 因此 $|Z_n^\times| = p - 1$
+* 令 $(G, \cdot)$ 是个有限群, 则对任意 $a \in G, a^{|G|} = e$
+* **费马小定理**: 令 $p$ 是一个素数, 而 $p \nmid a$, 则: $a^{p-1} \equiv a\ mod\ p$, 同时左乘 $a$, 也可以得到 $a^p \equiv a\ mod\ p$
+* **欧拉定理**: 令 $n \in N^*$, 而 $gcd(a, n) = 1$, 则 $a^{\phi(n)} \equiv 1\ mod\ n$
+* **威尔逊定理**: 若 $p$ 是一个奇素数(即除了2以外的素数), 则 $(p - 1)! \equiv -1\ mod\ p$, 其中 $!$ 表示阶乘
