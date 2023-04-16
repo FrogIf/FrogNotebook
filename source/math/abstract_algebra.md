@@ -189,3 +189,45 @@
 * **费马小定理**: 令 $p$ 是一个素数, 而 $p \nmid a$, 则: $a^{p-1} \equiv a\ mod\ p$, 同时左乘 $a$, 也可以得到 $a^p \equiv a\ mod\ p$
 * **欧拉定理**: 令 $n \in N^*$, 而 $gcd(a, n) = 1$, 则 $a^{\phi(n)} \equiv 1\ mod\ n$
 * **威尔逊定理**: 若 $p$ 是一个奇素数(即除了2以外的素数), 则 $(p - 1)! \equiv -1\ mod\ p$, 其中 $!$ 表示阶乘
+
+## 2. 环
+
+### 2.1 环
+
+> 环有两种不同的定义, 一种是有乘法单位元的, 一种是没有乘法单位元的, 这里使用的是有乘法单位元的定义.
+
+* $(R, +, \cdot)$ 是一个**环**, 当 $(R, +)$ 是阿贝尔群, $(R, \cdot)$ 是幺半群, 且乘法对加法有左右分配律. 即:
+  * $\forall a, b, c \in R, a(b + c) = ab + ac$
+  * $\forall a, b, c \in R, (a + b)c = ac + bc$
+
+> 一般情况下, 我们用 $+$ 表示环中的加法, 用 $\cdot$ 表示环中的乘法, 用0表示环的加法单位元, 用1表示环的乘法单位元
+
+* $(R, +, \cdot)$ 是环, 当乘法有交换律时, $(R, +, \cdot)$ 是一个**交换环**, 即 $\forall a, b \in R, ab = ba$
+* $(R, +, \cdot)$ 是环, $a, b, c \in R$, 则:
+  * $a0 = 0a = 0$ (加法单位元乘任何元素结果都是加法单位元)
+  * $a(-b) = (-a)b = -(ab)$
+  * $(-a)(-b) = ab$
+* $(R, +, \cdot)$ 是环, 则 $R = {0}$ 当且仅当 $0 = 1$
+* 令 $(R, +, \cdot)$ 是一个环, 则 $(R^{\times}, \cdot)$, 是由 $R$ 中所有乘法可逆元素构成的群. $R$ 中的乘法可逆元素又被称为 $R$ 中的**单位**
+* 令 $(R, +, \cdot)$ 是一个环, 我们称 $(R, +, \cdot)$ 是**除环**, 若: $R \setminus \{0\} = R^{\times}$, 也即, 所有非零元素都是单位.
+* 令 $(R, +, \cdot)$ 是一个环, 我们称 $(R, +, \cdot)$ 是一个**域**, 若它是一个交换的除环
+* $(R, +, \cdot)$ 是一个域, 当且仅当:
+  1. $(R, +)$ 是一个阿贝尔群
+  2. $(R \setminus \{0\}, +)$ 是一个阿贝尔群
+  3. 乘法对加法有分配率
+* 令 $(R, +, \cdot)$ 是一个环, 而 $S \subset R$, 我们说 $S$ 是 $R$ 的**子环**, 记作 $S < R$, 若:
+  1. $0, 1 \in S$
+  2. $\forall a, b \in S, a + b \in S$
+  3. $\forall a \in S, -a \in S$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $S \subset R$, 则 $S < R$ 当且仅当:
+  1. $1 \in S$
+  2. $\forall a, b \in S, a - b, ab \in S$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $A \subset R$, 则 $A$ 生成的子环, 记作 $\langle A \rangle$, 定义为所有包含了A的子环的交集, 即: $\langle A \rangle = \bigcap \{ S \subset R: S \supset A, S < R \}$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $A \subset R$, 则 $\langle A \rangle < R$
+* 令 $(R_i, +_i, \cdot_i)_{i \in I}$ 是一族环. 我们定义它们的直接, 为 $(\prod_{i\in I}R_i, +, \cdot)$. 对于 $(x_i)_{i\in I}, (y_i)_{i \in I} \in \prod_{i \in I} R_i$, 我们定义:
+  * $(x_i)_{i\in I} + (y_i)_{i\in I} = (x_i +_i y_i)_{i \in I}$
+  * $(x_i)_{i \in I} \cdot (y_i)_{i \in I} = (x_i \cdot_i y_i)_{i \in I}$
+* 令 $(R_i, +_i, \cdot_i)_{i \in I}$ 是一族环, 则它们的直积 $(\prod_{i\in I}R_i, +, \cdot)$ 还是一个环
+
+### 2.2 环同态
+
