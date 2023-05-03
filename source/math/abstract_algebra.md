@@ -231,3 +231,68 @@
 
 ### 2.2 环同态
 
+* 令 $f: (R, +, \cdot) \rightarrow (R', +', *)$ 是一个映射, 我们说 $f$ 是一个**环同态**, 若: 
+   1. $f(1) = 1'$
+   2. $f(a + b) = f(a) +' f(b)$
+   3. $f(ab) = f(a) * f(b)$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $I \subset R$.
+  * 我们定义, 称 $I$ 是 $R$ 的**左理想**, 若:
+     1. $(I, +) < (R, +)$
+     2. $\forall r \in R, \forall a \in I, ra \in I$ (*吸收率*)
+  * 类似地, 我们称 $I$ 是 $R$ 的**右理想**, 若:
+     1. $(I, +) < (R, +)$
+     2. $\forall a \in I, \forall r \in R, ar \in I$
+  * 如果 $I$ 既是左理想, 又是右理想, 我们称 $I$ 是 $R$ 的一个**理想**, 记作 $I \lhd R$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $I \lhd R$. 则 $I < R$ 当且仅当 $I = R$. (*一个理想如果是子环, 当且仅当它是整个环*)
+* 假设 $(R, +, \cdot)$ 是一个交换环, 则以下三个陈述等价:
+  * $I$ 是一个左理想
+  * $I$ 是一个右理想
+  * $I$ 是一个理想
+* 令 $n \in N^*$, 则 $nZ$ 是 $Z$ 的理想, 即: $nZ \lhd Z$
+* 令 $n \in N^*$, 我们定义映射 $f: (Z, +, \cdot) \rightarrow (Z_n, +, \cdot)$, 对于 $m \in Z$, 我们定义 $f(m) = m + nZ$, 则 $f$ 是一个环同态, 而 $ker(f) = nZ \lhd R$
+* 令 $f: (R, +, \cdot) \rightarrow (R', +, \cdot)$ 是一个**环同态**, 则 $f$ 的核是 $R$ 的理想, $f$ 的像是 $R'$ 的子环. 此即, 
+  * $ker(f) = \{a \in R: f(a) = 0'\} \lhd R$
+  * $im(f) = \{b \in R': \exist a \in R, b = f(a)\} = \{f(a) \in R': a \in R\} < R'$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $I \lhd R$. 我们定义 $R$ 对 $I$ 的商环, 定义为 $(R/I, +, \cdot)$, 其中 $R/I = \{a + I : a \in R\}$. 而加法和乘法分别对 $a + I, b + I \in R/I (a, b \in R)$, 定义为:
+  * $(a + I) + (b + I) = (a + b) + I$
+  * $(a + I)(b + I) = (ab) + I$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $I \lhd R$, 则上述的加法和乘法是良定义的, 且商环 $(R/I, +, \cdot)$ 是一个环.
+* 令 $f: (R, +, \cdot) \rightarrow (R', +, \cdot)$ 是一个映射, 我们称 $f$ 是一个**环同构**, 若 $f$ 既是双射, 又是环同态.
+* 令 $f: (R, +, \cdot) \rightarrow (R', +, \cdot)$ 是个环同构, 则 $f^{-1}$ 是个环同态, 进而也是环同构.
+* **环同构第一定理**: 令 $f: (R, +, \cdot) \rightarrow (R', +, \cdot)$ 是一个环同态, 则 $R$ 对 $ker(f)$ 构成一个商环, 同构于 $im(f)$. 此即: $R/ker(f) \simeq im(f)$
+* **环同构第二定理**: 令 $(R, +, \cdot)$ 是一个环, 而 $S < R, I \lhd R$. 则 $S + I < R, S \cap I \lhd S$, 且: $S/(S + I) \simeq (S + I)/I$
+* **环同构第三定理**: 令 $(R, +, \cdot)$ 是一个环, 而 $I, J \lhd R$, 且 $I \subset J$. 则 $J/I \lhd R/I$, 且: $(R/I)/(J/I)\simeq R/J$
+
+### 2.3 理想
+
+* 令 $(R, +, \cdot)$ 是一个环, 而 $A \subset R$. 则 $(A)$ 称为有 $A$ **生成的理想**, 定义为所有 $R$ 中包含 $A$ 的理想的交集, 即: $(A) = \bigcap \{I\subset R : I \supset A, I \lhd R \}$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $A \subset R$, 则 $(A) < R$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $a \in R$, 则我们定义 $(a) = (\{a\})$ 称为由a生成的**主理想**. 一般地, 若一个理想能被一个元素生成, 我们就成其为主理想.
+* 对于 $a_1, a_2, \cdots a_n \in R$, 我们定义 $(a_1, a_2, \cdots , a_n) = (\{a_1, \cdots , a_n\})$. 一般地, 若一个理想能被有限个元素生成, 我们称其为**有限生成的理想**
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $a \in R$, 则: $(a) = Ra = \{ra : r \in R\}$. 一般地, 若 $a_1, \cdots , a_n \in R$, 则: $(a_1, \cdots a_n) = Ra_1 + \cdots + Ra_n = \{ r_1a_1 + \cdots + r_na_n : r_a, \cdots, r_n \in R \}$
+* 理想的加法: 令 $(R, +, \cdot)$ 是一个环, 而 $I, J \lhd R$, 则 $I + J = \{a + b, a \in I, b \in J\}$
+* 理想的加法依旧是理想: 令 $(R, +, \cdot)$ 是一个环, 而 $I, J \lhd R$, 则 $I + J \lhd R$
+* 令 $(R, +, \cdot)$ 是一个环, 而 $I, J \lhd R$, 则 $I + J$ 是由 $I \cup J$ 生成的理想, 即: $I + J = (I \cup J)$
+* 交换环中理想的乘法: 令 $(R, +, \cdot)$ 是一个交换环, 而 $I, J \lhd R$, 则 $IJ = (\{ab: a \in I, b \in J\})$ (圆括号表示生成的理想)
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I, J \lhd R$, 则 $IJ = \{a_1b_1 + \cdots + a_nb_n : a_1, \cdots, a_n \in I, b_1, \cdots b_n \in J\}$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I, J, K \lhd R$, 则:
+  * $I + J = J + I$
+  * $I + (J + K) = (I + J) + K$
+  * $I(J + K) = IJ + IK$
+  * $I(JK) = (IJ)K$
+  * $I = RI = IR$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I, J \lhd R$, 则: $IJ \subset I \cap J \subset I + J$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I, J \lhd R$, 则: $(I \cap J)(I + J) \subset IJ$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I, J, K \lhd R$, 则: $I \cap (J + K) \supset I \cap J + I \cap K$, 特别地, 如果 $J \subset K$, 则: $I \cap (J + K) = I \cap J + I \cap K$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I, J \lhd R$. 我们称 $I, J$ **互素**, 若其和为整个环, 即 : $I + J = R$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I, J \lhd R$. 则 $I, J$ 互素, 当且仅当: $\exist a \in I, \exist b \in J, a + b = 1$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I, J \lhd R$. 而 $I, J$ 互素, 则: $IJ = I \cap J$
+* 令 $(R, +, \cdot)$ 和 $(R', +, \cdot)$ 是两个交换环, 令 $f: (R, +, \cdot) \rightarrow (R', +, \cdot)$ 是一个环同态, 而 $I' \lhd R'$, 则 $f^{-1}(I') \lhd R$
+
+### 2.4 素理想与极大理想
+
+### 2.5 环的局部化
+
+### 2.6 主理想整环与唯一分解环
+
+### 2.7 欧几里得整环
