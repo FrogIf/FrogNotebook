@@ -372,24 +372,141 @@ code {
 <li>OSI七层模型在落地实现时, 会话层和表示层实现不了, 它即复杂有不实用, 所以OSI七层模型从来没有真正实现过. 实际中使用的都是TCP/IP模型</li>
 </ul>
 <p>如图所示:</p>
-<p><img src="img/network_layer.png" alt="image"></p>
-<p>这里以一次http请求为例, 简单介绍一下. 首先, 浏览器遵照HTTP协议生成http消息, 交给L4(传输层). http消息在传输层采用的是TCP协议, 会对数据进行一些处理, 加上TCP头, 并且会控制进行三次握手/四次挥手等. TCP消息交给L3(网络层). 网络层会加上IP头, 即源ip和目的ip等, 然后交给L2(数据链路层), 这里有ARP和MAC等的参与, 会对消息加上MAC头. 然后交给L1(物理层), 变成电磁波发送出去.</p>
-<h2 id="2-%E5%BA%94%E7%94%A8%E5%B1%82">2. 应用层</h2>
-<h3 id="21-http">2.1 HTTP</h3>
-<h3 id="22-dns">2.2 DNS</h3>
-<h3 id="23-telnet">2.3 TELNET</h3>
-<h3 id="24-%E6%B5%8F%E8%A7%88%E5%99%A8">2.4 浏览器</h3>
-<ul>
-<li>URL: Uniform Resource Locator(统一资源定位符)</li>
-<li>URI: Uniform Resource Identifier(统一资源标识符)</li>
-</ul>
+<img src="img/network_net_five_layer.png" height="400" />
+<p>这里以一次http请求为例, 简单介绍一下:</p>
+<ol>
+<li>首先, 浏览器遵照HTTP协议生成http消息, 交给L4(传输层)</li>
+<li>http消息在传输层采用的是TCP协议, 会对数据进行一些处理, 加上TCP头, 并且会控制进行三次握手/四次挥手等;</li>
+<li>TCP消息交给L3(网络层). 网络层会加上IP头, 即源ip和目的ip等;</li>
+<li>然后交给L2(数据链路层), 这里有ARP和MAC等的参与, 会对消息加上MAC头;</li>
+<li>然后交给L1(物理层), 变成电磁波发送出去.</li>
+</ol>
 <blockquote>
-<p>URL与URI的区别: URL是URI的子集. 只要可以唯一确定一个资源, 就是URI. 按照一定规则, 可以分析出一个资源的位置, 就是URL, 显然URL也可以唯一确定一个资源, 所以URL属于URI.</p>
+<p>网络上的包都是完整的, 可以有下层没上层, 绝对不可能有上层没下层.</p>
 </blockquote>
-<h3 id="25-socket">2.5 Socket</h3>
-<h2 id="3-%E4%BC%A0%E8%BE%93%E5%B1%82">3. 传输层</h2>
-<h3 id="31-tcp">3.1 TCP</h3>
-<h3 id="32-udp">3.2 UDP</h3>
+<h2 id="2-%E7%89%A9%E7%90%86%E5%B1%82">2. 物理层</h2>
+<p>物理层不就是网线啥的硬件设备嘛, 有啥好说的呢? 有:</p>
+<ol>
+<li>1-3,2-6交叉接法: 水晶头的第 1、2 和第 3、6 脚，它们分别起着收、发信号的作用。将一端的 1 号和 3 号线、2 号和 6 号线互换一下位置，就能够在物理层实现一端发送的信号，另一端能收到;</li>
+<li>集线器(Hub): 可以将多台电脑连接起来, 集线器没有程序, 就是一个简单的将线连接起来, 它接收到的每一个字节都会广播到其他端口上去.</li>
+</ol>
+<h2 id="3-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82">3. 数据链路层</h2>
+<h3 id="31-mac">3.1 MAC</h3>
+<p>MAC全称Medium Access Control, 即媒体访问控制.</p>
+<p>MAC有以下需要注意的点:</p>
+<ol>
+<li>标记发送方和接收方: mac头上记录了目标MAC和源MAC</li>
+<li>多路访问(谁先发谁后发): 信道划分, 轮流协议, 随机接入协议;</li>
+<li>数据错误校验: 通过mac包最后的CRC(循环冗余检测)校验整个包在发送过程中是否出现错误.</li>
+</ol>
+<img src="img/network_mac_package.png" height="100" />
+<blockquote>
+<p>CRC, 循环冗余检测, 使用XOR异或算法, 检查在网络上传输数据是否出错.</p>
+</blockquote>
+<h3 id="32-arp">3.2 ARP</h3>
+<p>ARP协议是: 根据IP地址获取该设备的MAC地址. 当明确接收方的IP地址后, 通过广播的方式, 询问局域网中的其他设备, &quot;IP:xxx的MAC地址是多少?&quot;, 广播出去之后, 谁的IP是报文中的IP, 谁就回答. 此外并不是每次发送数据, 都需要先进行ARP请求, 机器会将ARP缓存在本地.</p>
+<p>ARP协议包示意图如下:</p>
+<img src="img/network_arp_package.png" height="150" />
+<blockquote>
+<p>发送请求时, 广播的目标mac是: ff:ff:ff:ff:ff:ff</p>
+</blockquote>
+<blockquote>
+<p>ARP到底属于网络层协议还是数据链路层是有争议的
+<img src="img/network_arp_protocol.png" height="150" /></p>
+</blockquote>
+<h3 id="33-%E4%BA%A4%E6%8D%A2%E6%9C%BA">3.3 交换机</h3>
+<p>一个局域网中, 如果有多台主机设备, 如果通过集线器进行数据转发会有问题. 每一个数据包都广播到其他线路上去, 让主机判断目的mac地址是不是自己的, 导致而不是自己的就丢弃, 这样资源浪费. 这时就需要一种设备, 这个设备可以通过mac地址确定应该转发到哪个线路的端口上去, 这个设备就是<strong>交换机</strong>.</p>
+<ol>
+<li><strong>交换机是一个二层设备</strong>.</li>
+<li>交换机最初并不知道目标mac在哪一个端口上, 依旧会将包转发到所有其他端口, 但是它知道数据包是从哪来的, 也就是知道源mac在哪个端口, 一点点它就记录了所有mac所在的端口, 这样就可以通过mac转发到指定的端口上去了, 而不需要转发到所有端口.</li>
+<li>交换机上的学习结果称为<strong>转发表</strong>, 转发表是有过期时间的.</li>
+</ol>
+<blockquote>
+<p>显然, 交换机是在一个局域网中使用的.</p>
+</blockquote>
+<blockquote>
+<p>传统交换机是二层交换机, 实际上也是有三层交换机的. 三层交换机是在二层交换机的基础上，增加了路由选择功能的网络设备, 可以跨vlan进行数据通信等. 在路由转发上, 速度要比路由器快.</p>
+</blockquote>
+<p>当一个局域网中存在多台交换机时, 就会出现环路问题, 从而导致环路风暴. 解决环路问题的方法叫STP(Spanning Tree Protocol), 利用最小生成树算法, 破坏环路, 化&quot;图&quot;为&quot;树&quot;.</p>
+<blockquote>
+<p>现在STP使用的很少了, 而是通过别的方式来解决环路风暴了.</p>
+</blockquote>
+<h3 id="34-vlan">3.4 VLAN</h3>
+<p>VLAN(Virtual Local Area Network), 虚拟局域网. 本来二层交换机只能构建单一的广播域, 但是使用了VLAN功能后, 可以将单一的物理网络进行逻辑分段, 分割成多个广播域. 不同的广播域之间是不存在直接的通信的.</p>
+<blockquote>
+<p>跨VLAN通信需要使用路由器</p>
+</blockquote>
+<p>支持VLAN需要对二层的MAC包进行调整, 添加tag:</p>
+<img src="img/network_vlan.png" height="150" />
+<p>拆分成多个广播域的好处:</p>
+<ol>
+<li>避免了广播包在整个网络中传播, 提升网络的性能;</li>
+<li>信息隔离, 保证信息安全, 防止信息泄露;</li>
+<li>等等...</li>
+</ol>
+<p>交换机的端口:</p>
+<ol>
+<li>Access:
+<ul>
+<li>收: 交换机接收到数据后, 先判断是否带VLAN tag;
+<ul>
+<li>有且与配置的PVID一致则接收;</li>
+<li>有, 但是与端口的PVID不同则丢弃;</li>
+<li>没有, 则打上该端口已配置的PVID(发送时不会剥离);</li>
+</ul>
+</li>
+<li>发:
+<ul>
+<li>收到的数据包的VLAN ID与端口的PVID相同, 则剥离VLAN ID, 变成普通数据包发送出去;</li>
+<li>收到的数据包的VLAN ID与端口的PVID不同, 丢弃;</li>
+<li>收到的数据包没有VLAN ID, 打上PVID, 发送出去;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Trunk: 允许不同VLAN tag的数据包通过, 一般用于交换机之间;
+<ul>
+<li>收:
+<ul>
+<li>VLAN TAG在trunk允许列表内的接收;</li>
+<li>没有VLAN TAG的, 接收, 打上PVID(发送时不会剥离);</li>
+<li>不在允许列表内的丢弃;</li>
+</ul>
+</li>
+<li>发:
+<ul>
+<li>VLAN TAG与PVID相同, 则剥离VLAN ID后发送;</li>
+<li>VLAN TAG与PVID不同, 但是在允许列表内, 则发送;</li>
+<li>否则丢弃;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Hybrid: Access和Trunk的混合.</li>
+</ol>
+<blockquote>
+<p>PVID是默认VLAN ID, 又叫native VLAN</p>
+</blockquote>
+<h3 id="35-%E5%B0%8F%E7%BB%93">3.5 小结</h3>
+<p>数据链路层数据传输大致流程:</p>
+<ol>
+<li>主机A创建数据包, 源MAC地址填自己sss, 目标MAC地址填接收端;
+<ol>
+<li>如果不知道接收端的MAC地址, 通过ARP协议获取目的MAC地址;</li>
+<li>具体流程是, 通过广播的方式, 发问: &quot;IP为xxx的主机, MAC地址是多少呀?&quot;</li>
+<li>这时, IP为xxx的主机收到消息, 就会回答&quot;MAC地址是yyy&quot;</li>
+</ol>
+</li>
+<li>主机A将填有源MAC和目标MAC的数据包从网口发送出去, 顺着网线, 就到达了交换机;</li>
+<li>假设数据包从交换机的a口进入, 这时交换机就记住了a口连着的主机mac地址是sss;</li>
+<li>交换机查看目标mac地址yyy, 然后查表, 发现yyy是b口连着的主机;</li>
+<li>于是交换机将数据包从b口发送出去;</li>
+<li>b口另一端的B主机接收到数据包, 拆包发现MAC地址yyy正是自己的MAC地址, 所以就接收了.</li>
+</ol>
+<blockquote>
+<p>上面的流程是一个局域网内的, 要是跨网络传输, 需要借助路由器, 这就属于网络层的内容了</p>
+</blockquote>
+<hr>
 <h2 id="4-%E7%BD%91%E7%BB%9C%E5%B1%82">4. 网络层</h2>
 <h3 id="41-ip">4.1 IP</h3>
 <ul>
@@ -397,8 +514,8 @@ code {
 <li>主机号: ip地址后面的部分, 用于定位子网内的一个具体的主机地址</li>
 <li>子网掩码: 用于区分网络号和主机号, 是一串与ip地址长度相同的数字, 其左边都是1, 右边都是0. 子网掩码为1的部分表示网络号, 为0的部分表示主机号.</li>
 </ul>
-<p>ip地址分类:</p>
-<p><img src="img/ip.png" alt="image"></p>
+<p><strong>传统ip地址分类</strong></p>
+<p><img src="img/network_ip.png" alt="image"></p>
 <ul>
 <li>A类, 最大网络数: 126(2^7-2), 单个网段最大主机数: 16777214</li>
 <li>B类, 最大网络数: 16384(2^14), 单个网段最大主机数: 65534</li>
@@ -426,21 +543,20 @@ code {
 <li>每一个公网IP都是全球范围内唯一的</li>
 </ul>
 </li>
-<li>无类型域间路由(CIDR)
+</ul>
+<p><strong>无类型域间路由(CIDR)</strong></p>
 <ul>
 <li>A,B,C,D,E类IP地址的子网掩码都是固定的, 这导致无法灵活控制主机数和网络数的规模, 从而导致存在一个网段内的IP冗余或者不足, 于是有了CIDR</li>
 <li>CIDR消除了传统A类, B类, C类地址以及子网划分的概念, 从而更加有效的分配IPv4地址空间</li>
 <li>CIDR形式是这样的: 192.168.1.0/26, 将IP地址一分为二, 前面26位是网络号, 后面6位是主机号</li>
+<li>CIDR已经成为现代网络中的标准，而传统的网络类别已经不再使用.</li>
 </ul>
-</li>
-</ul>
-<blockquote>
-<p>上述内容都是针对ipv4</p>
-</blockquote>
 <blockquote>
 <p>IP是具有定位能力的, 通过网络号和主机号, 可以标记一个主机的位置, MAC不具有定位能力, 类似身份证号, 具有唯一性</p>
 </blockquote>
-<p><strong>IP查看与分配</strong></p>
+<p>IP头:</p>
+<p><img src="img/" alt="image"></p>
+<h3 id="42-ip%E6%9F%A5%E7%9C%8B%E4%B8%8E%E5%88%86%E9%85%8D">4.2 IP查看与分配</h3>
 <ul>
 <li>windows下, 查看IP地址, 使用: <code>ipconfig</code></li>
 <li>linux下
@@ -487,10 +603,36 @@ code {
 </li>
 </ul>
 <h3 id="42-icmp">4.2 ICMP</h3>
-<p>ping, traceroute...</p>
+<p>ICMP 全称 Internet Control Message Protocol, 就是互联网控制报文协议. 用于在IP网络中传递控制消息.</p>
+<p>ICMP消息被用于许多不同的目的, 包括:</p>
+<ul>
+<li>错误报告: 当数据包在传输过程中丢失或损坏时, ICMP会向源主机发送错误报告, 以便源主机能够采取适当的措施</li>
+<li>联通性测试: ping命令就是利用ICMP协议向目标主机发送Echo请求消息，并等待目标主机返回Echo响应消息</li>
+<li>路由发现: 帮助主机找到到目标主机的最佳路由</li>
+</ul>
+<p>ICMP消息通常由网络设备（如路由器或防火墙）生成并发送，但也可以由主机或网络应用程序生成和发送。</p>
+<p><img src="img/ICMP.png" alt="image"></p>
+<p><strong>ping</strong></p>
+<p><strong>traceroute</strong></p>
 <h3 id="43-%E7%BD%91%E5%85%B3">4.3 网关</h3>
 <p>路由表, RIP, OSFP</p>
-<h3 id="44-arp">4.4. ARP</h3>
+<h2 id="2-%E5%BA%94%E7%94%A8%E5%B1%82">2. 应用层</h2>
+<h3 id="21-http">2.1 HTTP</h3>
+<h3 id="22-dns">2.2 DNS</h3>
+<h3 id="23-telnet">2.3 TELNET</h3>
+<h3 id="24-%E6%B5%8F%E8%A7%88%E5%99%A8">2.4 浏览器</h3>
+<ul>
+<li>URL: Uniform Resource Locator(统一资源定位符)</li>
+<li>URI: Uniform Resource Identifier(统一资源标识符)</li>
+</ul>
+<blockquote>
+<p>URL与URI的区别: URL是URI的子集. 只要可以唯一确定一个资源, 就是URI. 按照一定规则, 可以分析出一个资源的位置, 就是URL, 显然URL也可以唯一确定一个资源, 所以URL属于URI.</p>
+</blockquote>
+<h3 id="25-socket">2.5 Socket</h3>
+<h2 id="3-%E4%BC%A0%E8%BE%93%E5%B1%82">3. 传输层</h2>
+<h3 id="31-tcp">3.1 TCP</h3>
+<h3 id="32-udp">3.2 UDP</h3>
+<h2 id="4-%E7%BD%91%E7%BB%9C%E5%B1%82">4. 网络层</h2>
 <h2 id="5-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82">5. 数据链路层</h2>
 <h3 id="51-mac">5.1 MAC</h3>
 <h2 id="6-%E7%89%A9%E7%90%86%E5%B1%82">6. 物理层</h2>
