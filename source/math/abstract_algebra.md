@@ -28,7 +28,7 @@
     1. $f$ 是一个双射
     2. $\forall x, y \in S, f(x \cdot y) = f(x) * f(y)$
     3. $f(e) = e'$, 其中 $e$ 是 $S$ 的单位元, $e'$ 是T的单位元
-* 若 $f: (S, \cdot) \rightarrow (T, *)$ 是幺半群同构, 则 $f^{-1}: T \rightarrow S$ 是有一个幺半群同态, 则 $f^{-1}$ 是幺半群同构
+* 若 $f: (S, \cdot) \rightarrow (T, *)$ 是幺半群同构, 则 $f^{-1}: T \rightarrow S$ 是一个幺半群同态, 则 $f^{-1}$ 是幺半群同构
 
 
 > 同构是一个等价关系.
@@ -290,6 +290,35 @@
 * 令 $(R, +, \cdot)$ 和 $(R', +, \cdot)$ 是两个交换环, 令 $f: (R, +, \cdot) \rightarrow (R', +, \cdot)$ 是一个环同态, 而 $I' \lhd R'$, 则 $f^{-1}(I') \lhd R$
 
 ### 2.4 素理想与极大理想
+
+* 对于环 $(R, +, \cdot)$,  $a \neq 0, \exist b \neq 0$ 使得 $ab = 0$, 我们就称 $b$ 为一个**零因子**
+* 令 $(R, +, \cdot)$ 是一个环, 则我们称 $R$ 是一个**整环**, 若它是个非零交换环, 且没有零因子, 即:
+  1. $R \neq \{0\}$
+  2. $R$ 是一个交换环
+  3. $\forall a, b \in R, ab = 0 \Rightarrow a = 0 \ or \ b = 0$
+* 若 $p$ 是一个素数, $a, b \in Z$, 则 $p | ab \Leftrightarrow p|a \ or \ p|b$
+* 若 $p$ 是一个合数, 则存在 $a, b \in Z$, 使得: 1. $n|ab$; 2. $n \nmid a$; 3. $n \nmid b$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $\mathfrak{p} \lhd R$, 则我们称 $\mathfrak{p}$ 为**素理想**, 若
+  * $\forall a, b \in Z, ab \in \mathfrak{p} \Leftrightarrow a \in \mathfrak{p}\ or\ b \in \mathfrak{p}$
+  * $\mathfrak{p} \neq R$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $\mathfrak{p} \lhd R$. 则 $\mathfrak{p}$ 是一个素理想, 当且仅当商环 $R/\mathfrak{p}$ 是一个整环
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $\mathfrak{m} \lhd R$. 若比 $\mathfrak{m}$ 大的理想只能是 $R$ 本身, 我们称 $\mathfrak{m}$ 为**极大理想**.
+
+> 极大不是最大, 因为可能有多个同样大的.
+
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $\mathfrak{m} \lhd R$. 则 $\mathfrak{m}$ 是一个极大理想, 当且仅当商环 $R/\mathfrak{m}$ 是一个域
+* 令 $(R, +, \cdot)$ 是一个域, 则 $R$ 是一个整环
+* 令 $(R, +, \cdot)$ 是一个交换环, 则每个极大理想都是素理想
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I \lhd R$. 令 $a, b \in R$, 若它们的差在 $I$ 中, 即: $a - b \in I$ 或者等价地 $a + I = b + I$, 则我们称 $a, b$ 模 $I$ 同余, 记作: $a \equiv b\ mod\ I$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $I \lhd R$. 假设 $n \in N^*$, 令 $a, b, c, d \in R$, 假设: 1. $a \equiv b\ mod\ I$; 2. $c \equiv d\ mod\ I$, 则:
+  * $a + c \equiv b + d\ mod\ I$
+  * $ac \equiv bd\ mod\ I$
+  * $a^n \equiv b^n\ mod\ I$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $(I_i)_{1 \leq i \leq n}$ 是一族两两互素的理想, 即对任何 $i \neq j$ 都有 $I_i + I_j = R$. 则对任何 $a_1, \cdots , a_n \in R$, 我们可以找到 $x \in R$, 使: $x \equiv a_1\ mod\ I_1, \cdots, x \equiv a_n\ mod\ I_n$
+* 令 $(R, +, \cdot)$ 是一个交换环, 而 $(I_i)_{1 \leq i \leq n}$ 是一族两两互素的理想, 即对任何 $i \neq j$ 都有 $I_i + I_j = R$. 则:
+  * $\pi : R \rightarrow \prod \limits_{i=1}^n (R/I_i)$, $\pi (a) = (a + I_1, \cdots, a + I_n)$ 是个满同态.
+  * 特别地, $R/\bigcap \limits_{i=1}^n I_i \simeq \prod \limits_{i=1}^n (R/I_i)$
+  * 因此, 在以上条件下, $\pi$ 是个同构, 当且仅当: $\bigcap \limits_{i=1}^n I_i = \{0\}$
 
 ### 2.5 环的局部化
 
