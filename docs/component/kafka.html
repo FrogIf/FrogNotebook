@@ -780,6 +780,47 @@ props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
 <li>定义消息可见性，即用来标识分区下的哪些消息是可以被消费者消费的</li>
 <li>帮助Kafka完成副本同步</li>
 </ol>
+<h2 id="%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">常用命令</h2>
+<ul>
+<li>消费数据</li>
+</ul>
+<pre class="hljs"><code><div>bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --from-beginning --consumer.config aaa.properties
+</div></code></pre>
+<ul>
+<li>查看消费组的消费情况</li>
+</ul>
+<pre class="hljs"><code><div>bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test-group --describe --command-config aaa.properties
+</div></code></pre>
+<ul>
+<li>查看消费组列表</li>
+</ul>
+<pre class="hljs"><code><div>bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list --command-config aaa.properties
+</div></code></pre>
+<ul>
+<li>查看topic明细</li>
+</ul>
+<pre class="hljs"><code><div>bin/kafka-topics.sh --describe --bootstrap-server node1:9092,node2:9092,node3:9092 --topic topicName --command-config aaa.properties
+</div></code></pre>
+<p>查询结果示例如下:</p>
+<pre class="hljs"><code><div>  Topic:topicName PartitionCount:3 ReplicationFactor:2 Configs:
+      Topic: topicName Partition: 0 Leader: 0 Replicas: 0,1 Isr: 0,1
+      Topic: topicName Partition: 1 Leader: 1 Replicas: 1,2 Isr: 1,2
+      Topic: topicName Partition: 2 Leader: 2 Replicas: 2,0 Isr: 2,0
+</div></code></pre>
+<p>PartitionCount：partition 个数。
+ReplicationFactor：副本个数。
+Partition：partition 编号，从 0 开始递增。
+Leader：当前 partition 起作用的 breaker.id。
+Replicas: 当前副本数据所在的 breaker.id，是一个列表，排在最前面的其作用。
+Isr：当前 kakfa 集群中可用的 breaker.id 列表。</p>
+<ul>
+<li>一般上面的配置文件中这样配置:</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">bootstrap.servers</span>=<span class="hljs-string">localhost:9093</span>
+<span class="hljs-meta">group.id</span>=<span class="hljs-string">test-consumer-group</span>
+<span class="hljs-meta">security.protocol</span>=<span class="hljs-string">SASL_PLAINTEXT</span>
+<span class="hljs-meta">sasl.mechanism</span>=<span class="hljs-string">PLAIN</span>
+</div></code></pre>
 
 </body>
 </html>

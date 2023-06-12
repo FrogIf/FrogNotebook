@@ -366,3 +366,54 @@ kafka中的高水位是用来表征消息的位移的, 高水位以下的消息�
 1. 定义消息可见性，即用来标识分区下的哪些消息是可以被消费者消费的
 2. 帮助Kafka完成副本同步
 
+## 常用命令
+
+* 消费数据
+
+```
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --from-beginning --consumer.config aaa.properties
+```
+
+* 查看消费组的消费情况
+
+```
+bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test-group --describe --command-config aaa.properties
+```
+
+* 查看消费组列表
+
+```
+bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list --command-config aaa.properties
+```
+
+* 查看topic明细
+
+```
+bin/kafka-topics.sh --describe --bootstrap-server node1:9092,node2:9092,node3:9092 --topic topicName --command-config aaa.properties
+```
+
+查询结果示例如下:
+
+```
+  Topic:topicName PartitionCount:3 ReplicationFactor:2 Configs:
+      Topic: topicName Partition: 0 Leader: 0 Replicas: 0,1 Isr: 0,1
+      Topic: topicName Partition: 1 Leader: 1 Replicas: 1,2 Isr: 1,2
+      Topic: topicName Partition: 2 Leader: 2 Replicas: 2,0 Isr: 2,0
+```
+
+PartitionCount：partition 个数。
+ReplicationFactor：副本个数。
+Partition：partition 编号，从 0 开始递增。
+Leader：当前 partition 起作用的 breaker.id。
+Replicas: 当前副本数据所在的 breaker.id，是一个列表，排在最前面的其作用。
+Isr：当前 kakfa 集群中可用的 breaker.id 列表。
+
+
+* 一般上面的配置文件中这样配置:
+
+```properties
+bootstrap.servers=localhost:9093
+group.id=test-consumer-group
+security.protocol=SASL_PLAINTEXT
+sasl.mechanism=PLAIN
+```

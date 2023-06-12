@@ -317,6 +317,21 @@ BNL算法对系统的主要影响:
 * 系统表空间: 用于存放系统信息, 对应磁盘文件```ibdata1```
 * 数据表空间: 用于存放用户数据, 对应磁盘文件```表名.ibd```
 
+## 常用命令
+
+* 登录mysql
+
+```
+./mysql -h127.0.0.1 -P3306 -uaaa -p
+```
+
+```
+show databases;
+
+use xxdatabaseName;
+```
+
+
 ## Reference
 
 * 极客时间-MySQL实战45讲
