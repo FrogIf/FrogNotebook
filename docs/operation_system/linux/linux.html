@@ -529,6 +529,18 @@ drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 桌面
 <blockquote>
 <p>c - 打包; x - 解包; f - 指定操作类型为文件; z - 使用gzip; j - 使用bzip2;</p>
 </blockquote>
+<p>分卷压缩:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">#</span><span class="bash"> tar.gz文件</span>
+tar czf - xxx | split -b 1m - xxx.tar.gz_
+<span class="hljs-meta">
+#</span><span class="bash"> tar.bz2</span>
+tar cjf - xxx | split -b 1m - xxx.tar.bz2.
+</div></code></pre>
+<p>分卷压缩解压:</p>
+<pre class="hljs"><code><div>cat xxx.tar.gz.a* | tar zxv
+
+cat xxx.tar.bz2.a* | tar jxv
+</div></code></pre>
 <h2 id="%E6%96%87%E4%BB%B6%E7%BC%96%E8%BE%91--vi">文件编辑--vi</h2>
 <p>多模式编辑:</p>
 <ul>
@@ -1533,11 +1545,15 @@ nginx   10498 gitlab-www    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
 <p>向test文件中写入内容, 来源是/dev/zero, 结果中会输出读写性能</p>
 </blockquote>
 <ul>
-<li><code>scp</code>: 远程文件传输
+<li>
+<p><code>scp</code>: 远程文件传输</p>
 <ul>
 <li><code>scp -P 端口 anaconda-ks.cfg root@101.43.160.39:/root</code>: 从本地复制到远程</li>
 <li><code>scp -P 端口 root@101.43.160.39:/root/anaconda-ks.cfg aaa.kkk</code>: 从远程复制到本地</li>
 </ul>
+</li>
+<li>
+<p><code>lsblk</code>: list block, 即列出所有可用块设备信息, 显示他们之间的依赖关系</p>
 </li>
 </ul>
 

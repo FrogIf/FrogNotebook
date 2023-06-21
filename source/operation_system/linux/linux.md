@@ -154,6 +154,24 @@ drwxr-xr-x. 2 frogif frogif  6 5月  28 20:26 桌面
 
 > c - 打包; x - 解包; f - 指定操作类型为文件; z - 使用gzip; j - 使用bzip2;
 
+分卷压缩:
+
+```shell
+# tar.gz文件
+tar czf - xxx | split -b 1m - xxx.tar.gz_
+
+# tar.bz2
+tar cjf - xxx | split -b 1m - xxx.tar.bz2.
+```
+
+分卷压缩解压:
+
+```shell
+cat xxx.tar.gz.a* | tar zxv
+
+cat xxx.tar.bz2.a* | tar jxv
+```
+
 ## 文件编辑--vi
 
 多模式编辑:
