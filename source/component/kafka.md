@@ -302,6 +302,12 @@ try {
 > Coordinator所在的broker日志，如果经常发生rebalance，会有类似于"(Re)join group" 之类的日志
 
 
+* kafka0.10.1之前: 检查整个消费者死亡和检查消费则处理线程，使用的同一个线程，如果设置的max.poll.interval.ms大于session.timeout.ms，遇到一个处理时间过长的消息，会由于线程忙于处理消息，而无法发送心跳，导致kafka认为改消费则已完全死亡，进而进行Rebalance
+  * 推荐设置：heartbeat.inerval.ms < max.poll.interval.ms < session.timeout.ms
+* kafka0.10.1之后: session.timeout.ms 和 max.poll.interval.ms 解耦了，拆成了两个线程，不用再担心它们之间的依赖关系
+  * 推荐设置：heartbeat.interval.ms < session.timeout.ms
+
+> 上述参数都是consumer端参数, 一旦超时, consumer client会主动向coordinator发起LeaveGroup请求, 触发rebalance
 
 ## 其他
 

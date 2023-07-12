@@ -276,7 +276,7 @@ KafkaServer {
     user_admin="123123"
     user_kafka="456456";
 };
-Client {
+KafkaClient {
     org.apache.kafka.common.security.plain.PlainLoginModule required
     username="kafka"
     password="456456";

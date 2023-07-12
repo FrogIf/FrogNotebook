@@ -715,6 +715,21 @@ consumer.subscribe(Arrays.asList(<span class="hljs-string">"foo"</span>, <span c
 <blockquote>
 <p>Coordinator所在的broker日志，如果经常发生rebalance，会有类似于&quot;(Re)join group&quot; 之类的日志</p>
 </blockquote>
+<ul>
+<li>kafka0.10.1之前: 检查整个消费者死亡和检查消费则处理线程，使用的同一个线程，如果设置的max.poll.interval.ms大于session.timeout.ms，遇到一个处理时间过长的消息，会由于线程忙于处理消息，而无法发送心跳，导致kafka认为改消费则已完全死亡，进而进行Rebalance
+<ul>
+<li>推荐设置：heartbeat.inerval.ms &lt; max.poll.interval.ms &lt; session.timeout.ms</li>
+</ul>
+</li>
+<li>kafka0.10.1之后: session.timeout.ms 和 max.poll.interval.ms 解耦了，拆成了两个线程，不用再担心它们之间的依赖关系
+<ul>
+<li>推荐设置：heartbeat.interval.ms &lt; session.timeout.ms</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>上述参数都是consumer端参数, 一旦超时, consumer client会主动向coordinator发起LeaveGroup请求, 触发rebalance</p>
+</blockquote>
 <h2 id="%E5%85%B6%E4%BB%96">其他</h2>
 <h4 id="%E6%8B%A6%E6%88%AA%E5%99%A8">拦截器</h4>
 <ul>
