@@ -1181,6 +1181,56 @@ ForkJoinPool本质上也是一个生产者-消费者实现, 内部有多个任�
 
 ForkJoinPool任务队列采用的是双端队列, 工作线程正常获取任务和窃取任务分别从任务队列不同的端消费, 避免很多不必要的数据竞争.
 
+## 线程的终止
+
+java中有三种方式终止一个线程:
+
+1. 使用退出标志，使线程正常退出，也就是当 run() 方法完成后线程中止。这种方法需要在循环中检查标志位是否为 true，如果为 false，则跳出循环，结束线程。
+2. 使用 stop() 方法强行终止线程，但是不推荐使用这个方法，该方法已被弃用。这个方法会导致一些清理性的工作得不到完成，如文件，数据库等的关闭，以及数据不一致的问题。
+3. 使用 interrupt() 方法中断线程。这个方法会在当前线程中打一个停止的标记，并不是真的停止线程。因此需要在线程中判断是否被中断，并增加相应的中断处理代码。如果线程在 sleep() 或 wait() 等操作时被中断，会抛出 InterruptedException 异常。
+
+下面是一个interrupt使用的示例:
+
+```java
+Thread t = new Thread(() -> {
+    while(true){
+        if(Thread.interrupted()){ break; }
+        // do something
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+});
+t.start();
+
+// do something...
+t.interrupt();
+```
+
+在外部调用```t.interrupt()```, 如果线程内正好执行到```if(Thread.interrupted()){ break; }```, 则会识别到中断标记, 然后跳出死循环. 如果线程内刚好执行到sleep, 会触发InterruptedException, 然后被捕获, 这时中断标记已经重置为false了, 所以需要手动再次调用interrupt, 是的触发if语句, 执行break, 最终跳出死循环.
+
+**ExecutorService的shutdown, shutdownNow**
+
+* shutdown(): 停止接收新任务, 原来的任务继续执行
+* shutdownNow(): 停止接收新任务, 原来的任务停止执行(调用每个正在执行的任务的interrupt)
+
+executorService停止的最佳实践是:
+
+```
+executorService.shutdown();
+try {
+    if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+        executorService.shutdownNow();
+    } 
+} catch (InterruptedException e) {
+    executorService.shutdownNow();
+}
+```
+
+> ```awaitTermination```方法是当前线程阻塞, 等待线程池中的线程执行结束. 返回值true-所有线程执行结束, false - 没有全部结束(等待超时了).
+
 ## 其他知识
 
 ### 活跃性问题的演示

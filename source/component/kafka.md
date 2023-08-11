@@ -414,6 +414,11 @@ Leader：当前 partition 起作用的 breaker.id。
 Replicas: 当前副本数据所在的 breaker.id，是一个列表，排在最前面的其作用。
 Isr：当前 kakfa 集群中可用的 breaker.id 列表。
 
+* 查看topic列表
+
+```
+bin/kafka-topics.sh --bootstrap-server localhost:9092 --list --command-config aaa.properties
+```
 
 * 一般上面的配置文件中这样配置:
 
