@@ -452,7 +452,7 @@ code {
 </div></code></pre>
 <h2 id="35-%E5%8F%8C%E9%87%8D%E6%A0%A1%E9%AA%8C%E9%94%81">3.5 双重校验锁</h2>
 <pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DCLObject</span></span>{
-	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> DCLObject instance;
+	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">volatile</span> DCLObject instance;
 	
 	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">DCLObject</span><span class="hljs-params">()</span> </span>{}
 	
@@ -469,7 +469,8 @@ code {
 }
 </div></code></pre>
 <blockquote>
-<p>在JDK1.5之后，双重检查锁定才能够正常达到单例效果</p>
+<p>在JDK1.5之后，双重检查锁定才能够正常达到单例效果
+volatile需要注意一下</p>
 </blockquote>
 <h2 id="36-%E9%9D%99%E6%80%81%E5%86%85%E9%83%A8%E7%B1%BB">3.6 静态内部类</h2>
 <pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StaticInnerClassObject</span> </span>{

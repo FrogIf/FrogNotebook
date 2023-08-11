@@ -67,7 +67,7 @@ public class HungryObject{
 
 ```java
 public class DCLObject{
-	private static DCLObject instance;
+	private static volatile DCLObject instance;
 	
 	private DCLObject() {}
 	
@@ -85,6 +85,7 @@ public class DCLObject{
 ```
 
 > 在JDK1.5之后，双重检查锁定才能够正常达到单例效果
+> volatile需要注意一下
 
 ## 3.6 静态内部类
 
