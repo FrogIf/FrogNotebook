@@ -181,3 +181,24 @@ C:\Users\frogif\AppData\Roaming\npm
 C:\Users\frogif\.dotnet\tools
 C:\Users\frogif\AppData\Local\JetBrains\Toolbox\scripts
 ```
+
+
+## 端口原因, 服务起不来, 但是端口未使用
+
+具体报错:
+
+```
+An attempt was made to access a socket in a way forbidden by its access permissions.
+```
+
+可以这样做, 以管理员身份执行:
+
+```
+net stop winnat
+```
+
+再执行:
+
+```
+net start winnat
+```

@@ -366,6 +366,10 @@ code {
     });
   </script>
 <h1 id="windows%E4%BD%BF%E7%94%A8">Windows使用</h1>
+<h2 id="%E9%85%8D%E7%BD%AE">配置</h2>
+<ol>
+<li>VisualBox配置. File-References-General-Default Machine Folder默认是C盘的文件夹, 这个会占用大量磁盘空间, 修改改到别的磁盘.</li>
+</ol>
 <h2 id="power-shell-%E6%9C%89%E4%BA%9B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%A4%B1%E8%B4%A5">power shell 有些命令执行失败</h2>
 <p>有些命令, 在cmd中可以执行, 在power shell中执行就报错了. 例如:</p>
 <pre class="hljs"><code><div>PS C:\WINDOWS\system32&gt; ng --version
@@ -453,6 +457,70 @@ java.exe                     14760 Console                    1     54,708 K
 </ul>
 <p>win + r 输入services.msc进入服务, 开启上述三个服务.</p>
 <p>win + r 输入control进入控制面板, 控制面板\网络和 Internet\网络和共享中心\高级共享设置 即可开启网络发现.</p>
+<h2 id="powershell%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">PowerShell环境变量</h2>
+<p>查看环境变量:</p>
+<pre class="hljs"><code><div>$Env:JAVA_HOME
+</div></code></pre>
+<p>临时修改环境变量:</p>
+<pre class="hljs"><code><div>$Env:JAVA_HOME=&quot;C:\Program Files\Java\jdk1.8.0_291&quot;
+</div></code></pre>
+<p>分行显示<code>PATH</code>环境变量:</p>
+<pre class="hljs"><code><div>PS C:\Users\frogif&gt; (type env:PATH) -split ';'
+C:\Program Files\PowerShell\7
+C:\Windows\system32
+C:\Windows
+C:\Windows\System32\Wbem
+C:\Windows\System32\WindowsPowerShell\v1.0\
+C:\Windows\System32\OpenSSH\
+C:\Program Files\Intel\WiFi\bin\
+C:\Program Files\Common Files\Intel\WirelessCommon\
+C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common
+C:\Program Files\Java\jdk-11.0.13\bin
+C:\Program Files\Java\jdk-11.0.13\jre\bin
+D:\DevelopSoftware\apache-maven-3.3.3\bin
+C:\Users\frogif\.gradle\wrapper\dists\gradle-4.6-all\bcst21l2brirad8k2ben1letg\gradle-4.6\bin
+D:\Program Files\Python27
+D:\Program Files\Python27\Scripts\
+D:\Program Files\Python3\
+D:\Program Files\Python3\Scripts\
+C:\Program Files\Git\cmd
+C:\ProgramData\chocolatey\bin
+C:\Program Files (x86)\Prince\engine\bin
+C:\Program Files\nodejs\
+C:\Program Files\Docker\Docker\resources\bin
+C:\ProgramData\DockerDesktop\version-bin
+C:\Program Files\dotnet\
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\ffmpeg-3.3.4-64\bin
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\opencascade-7.6.0\win64\vc14\bin
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\tbb_2017.0.100\bin\intel64\vc14
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\freeimage-3.17.0-vc14-64\bin
+D:\Program Files\OpenCASCADE-7.6.0-vc14-64\openvr-1.14.15-64\bin\win64
+D:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\bin\Hostx64\x64
+D:\DevelopSoftware\Qt\5.15.2\msvc2019_64\bin
+D:\DevelopSoftware\jvm_lib
+%GRADLE_HOME%\bin
+D:\DevelopSoftware\Vagrant\bin
+C:\Program Files\PowerShell\7\
+C:\Users\frogif\AppData\Local\Programs\Python\Python37\Scripts\
+C:\Users\frogif\AppData\Local\Programs\Python\Python37\
+C:\Users\frogif\AppData\Local\Microsoft\WindowsApps
+C:\Users\frogif\AppData\Local\BypassRuntm
+C:\Users\frogif\AppData\Local\Microsoft\WindowsApps
+D:\DevelopSoftware\Microsoft VS Code\bin
+C:\Users\frogif\AppData\Roaming\npm
+C:\Users\frogif\.dotnet\tools
+C:\Users\frogif\AppData\Local\JetBrains\Toolbox\scripts
+</div></code></pre>
+<h2 id="%E7%AB%AF%E5%8F%A3%E5%8E%9F%E5%9B%A0-%E6%9C%8D%E5%8A%A1%E8%B5%B7%E4%B8%8D%E6%9D%A5-%E4%BD%86%E6%98%AF%E7%AB%AF%E5%8F%A3%E6%9C%AA%E4%BD%BF%E7%94%A8">端口原因, 服务起不来, 但是端口未使用</h2>
+<p>具体报错:</p>
+<pre class="hljs"><code><div>An attempt was made to access a socket in a way forbidden by its access permissions.
+</div></code></pre>
+<p>可以这样做, 以管理员身份执行:</p>
+<pre class="hljs"><code><div>net stop winnat
+</div></code></pre>
+<p>再执行:</p>
+<pre class="hljs"><code><div>net start winnat
+</div></code></pre>
 
 </body>
 </html>
