@@ -215,3 +215,5 @@ net start winnat
    * ```netsh interface portproxy add v4tov4 listenport=8443 listenaddress=192.168.77.77 connectport=8443 connectaddress=192.168.12.168 protocol=tcp```  新增转发规则
      * 从本地监听(192.168.77.77:8443)转发到远端地址(192.168.12.168:8443)
    * ```netsh interface portproxy delete v4tov4 listenport=8443 listenaddress=192.168.77.77``` 删除转发规则
+
+> 这里只支持tcp协议, 如果是udp, 推荐使用sokit(https://github.com/sinpolib/sokit)
