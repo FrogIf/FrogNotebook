@@ -521,6 +521,23 @@ C:\Users\frogif\AppData\Local\JetBrains\Toolbox\scripts
 <p>再执行:</p>
 <pre class="hljs"><code><div>net start winnat
 </div></code></pre>
+<h2 id="%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91">端口转发</h2>
+<p>利用windows的端口转发, 实现将一台windows电脑作为中转, 进行流量转发.</p>
+<p>前提: 防火墙必须关闭</p>
+<ol>
+<li>以管理员身份打开命令行</li>
+<li>输入<code>netsh</code>命令, 进入网络配置控制台, 有如下命令可以使用:
+<ul>
+<li><code>netsh interface portproxy show all</code>  查看已经设置的转发规则</li>
+<li><code>netsh interface portproxy add v4tov4 listenport=8443 listenaddress=192.168.77.77 connectport=8443 connectaddress=192.168.12.168 protocol=tcp</code>  新增转发规则
+<ul>
+<li>从本地监听(192.168.77.77:8443)转发到远端地址(192.168.12.168:8443)</li>
+</ul>
+</li>
+<li><code>netsh interface portproxy delete v4tov4 listenport=8443 listenaddress=192.168.77.77</code> 删除转发规则</li>
+</ul>
+</li>
+</ol>
 
 </body>
 </html>

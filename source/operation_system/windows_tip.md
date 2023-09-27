@@ -202,3 +202,16 @@ net stop winnat
 ```
 net start winnat
 ```
+
+## 端口转发
+
+利用windows的端口转发, 实现将一台windows电脑作为中转, 进行流量转发.
+
+前提: 防火墙必须关闭
+
+1. 以管理员身份打开命令行
+2. 输入```netsh```命令, 进入网络配置控制台, 有如下命令可以使用:
+   * ```netsh interface portproxy show all```  查看已经设置的转发规则
+   * ```netsh interface portproxy add v4tov4 listenport=8443 listenaddress=192.168.77.77 connectport=8443 connectaddress=192.168.12.168 protocol=tcp```  新增转发规则
+     * 从本地监听(192.168.77.77:8443)转发到远端地址(192.168.12.168:8443)
+   * ```netsh interface portproxy delete v4tov4 listenport=8443 listenaddress=192.168.77.77``` 删除转发规则
