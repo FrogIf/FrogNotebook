@@ -215,6 +215,7 @@ try{
     * consumer.commitSync() - 调用
 
 > 自动提交存在的问题: 如果是多个线程异步消费, 自动提交有可能造成消息丢失; 如果是同步消费, 自动提交是在poll调用时, 触发提交上一次的offset, 有时会导致重复消费
+> kafka默认是采用自动提交的方式
 
 自动提交的相关配置:
 
@@ -302,7 +303,7 @@ try {
 > Coordinator所在的broker日志，如果经常发生rebalance，会有类似于"(Re)join group" 之类的日志
 
 
-* kafka0.10.1之前: 检查整个消费者死亡和检查消费则处理线程，使用的同一个线程，如果设置的max.poll.interval.ms大于session.timeout.ms，遇到一个处理时间过长的消息，会由于线程忙于处理消息，而无法发送心跳，导致kafka认为改消费则已完全死亡，进而进行Rebalance
+* kafka0.10.1之前: 发送心跳包和消息处理逻辑，使用的同一个线程，如果设置的max.poll.interval.ms大于session.timeout.ms，遇到一个处理时间过长的消息，会由于线程忙于处理消息，而无法发送心跳，导致kafka认为该消费者已完全死亡，进而进行Rebalance
   * 推荐设置：heartbeat.inerval.ms < max.poll.interval.ms < session.timeout.ms
 * kafka0.10.1之后: session.timeout.ms 和 max.poll.interval.ms 解耦了，拆成了两个线程，不用再担心它们之间的依赖关系
   * 推荐设置：heartbeat.interval.ms < session.timeout.ms
