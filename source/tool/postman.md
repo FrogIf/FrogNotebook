@@ -13,6 +13,8 @@
 3. 安装旧版本
 4. 删除升级文件`C:\Users\XXX\AppData\Local\Postman`中的`update.exe`, 防止它自动更新
 
+> 旧版本安装后, 会自动启动, 要尽快关闭, 尽快删除Update.exe, 否则, 有可能它就触发自动更新了. (或者可以在断网状态下进行安装)
+
 ## 启动白屏
 
 环境变量中添加一个新的系统变量: `POSTMAN_DISABLE_GPU=true`
