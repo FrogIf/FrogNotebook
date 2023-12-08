@@ -160,6 +160,18 @@ PS C:\Users\frogif> wsl -l --all -v
   docker-desktop-data    Stopped         2
 ```
 
+## 压缩磁盘空间
+
+Windows的docker删除容器后 WSL2 磁盘空间不释放, 久而久之导致磁盘占用原来越多. 解决方案如下:
+
+1. 确保wsl2没有运行`wsl -l --all -v`;
+2. 如果有运行, 通过`wsl --terminate docker-desktop`, `wsl --terminate docker-desktop-data`停止;
+3. 启动`diskpart`
+4. 选择磁盘文件`select vdisk file="D:\ProgramData\data\ext4.vhdx"`
+5. 执行压缩命令`compact vdisk`(需要耐心等一会)
+6. 完成之后, 执行`detach vdisk`
+7. 退出diskpart, `exit`
+8. 发现磁盘空间已经释放了
 
 ## 其他命令
 
