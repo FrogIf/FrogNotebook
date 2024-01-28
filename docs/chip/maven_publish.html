@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>maven_publish.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E5%8F%91%E5%B8%83jar%E5%8C%85%E5%88%B0maven%E4%B8%AD%E5%A4%AE%E4%BB%93%E5%BA%93">发布jar包到maven中央仓库</h1>
+<ol>
+<li>注册账号: https://issues.sonatype.org/</li>
+<li>登录, 新建项目</li>
+</ol>
+<p><img src="img/jira_create_project.png" alt="img"></p>
+<blockquote>
+<ul>
+<li>Group Id: 这个很重要, 可能导致审批不通过的. 如果有域名, 就填域名, 否则可以填源码仓库地址等. 类似: io.github.frogif, 如果由于这里导致审核不通过, 要仔细读他的评论, 按照说的步骤做就可以了.</li>
+</ul>
+</blockquote>
+<ol start="3">
+<li>创建后的项目大概是这样:</li>
+</ol>
+<p><img src="img/jira_project.png" alt="img"></p>
+<ol start="4">
+<li>审批通过之后, 就可以登录仓库了: https://s01.oss.sonatype.org/ (不需要注册, 用上面的用户名密码就可以)</li>
+<li>下载安装Gpg4Win: https://www.gpg4win.org/
+<ul>
+<li>这个软件时用来进行数据加密传输的</li>
+</ul>
+</li>
+<li>使用Gpg4Win生成密钥</li>
+</ol>
+<p><img src="img/gpg4win.png" alt="img"></p>
+<p><img src="img/gpg4win_create.png" alt="img"></p>
+<p><img src="img/gpg4win_password.png" alt="img"></p>
+<ol start="7">
+<li>发布到服务器上</li>
+</ol>
+<p><img src="img/gpg4win_publish.png" alt="img"></p>
+<ol start="8">
+<li>配置maven的settings.xml</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-comment">&lt;!-- 省略 --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">servers</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">server</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>ossrh<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">username</span>&gt;</span>issues.sonatype.org账号<span class="hljs-tag">&lt;/<span class="hljs-name">username</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">password</span>&gt;</span>issues.sonatype.org密码<span class="hljs-tag">&lt;/<span class="hljs-name">password</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">server</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">servers</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- 省略 --&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">profiles</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>ossrh<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">activation</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">activeByDefault</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">activeByDefault</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">activation</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">properties</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">gpg.executable</span>&gt;</span>gpg<span class="hljs-tag">&lt;/<span class="hljs-name">gpg.executable</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">gpg.passphrase</span>&gt;</span>生成密钥时输入的密码<span class="hljs-tag">&lt;/<span class="hljs-name">gpg.passphrase</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">gpg.homedir</span>&gt;</span>C:\Users\xxxx\AppData\Roaming\gnupg<span class="hljs-tag">&lt;/<span class="hljs-name">gpg.homedir</span>&gt;</span>
+	  <span class="hljs-tag">&lt;/<span class="hljs-name">properties</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">profiles</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- 省略 --&gt;</span>
+</div></code></pre>
+<blockquote>
+<p>gpg.homedir参数可以从命令行获取: <img src="img/gpg_version.png" alt="img"></p>
+</blockquote>
+<ol start="9">
+<li>配置项目的pom文件, 样例如下</li>
+</ol>
+<pre class="hljs"><code><div><span class="hljs-meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">project</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">"http://maven.apache.org/POM/4.0.0"</span>
+         <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">modelVersion</span>&gt;</span>4.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">modelVersion</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.frogif<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>calculator-number<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>calculator-number<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">packaging</span>&gt;</span>jar<span class="hljs-tag">&lt;/<span class="hljs-name">packaging</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">description</span>&gt;</span>support general calculate for rational number and integer number, and precision lossless.<span class="hljs-tag">&lt;/<span class="hljs-name">description</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">properties</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">maven.compiler.source</span>&gt;</span>8<span class="hljs-tag">&lt;/<span class="hljs-name">maven.compiler.source</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">maven.compiler.target</span>&gt;</span>8<span class="hljs-tag">&lt;/<span class="hljs-name">maven.compiler.target</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="hljs-tag">&lt;/<span class="hljs-name">project.build.sourceEncoding</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">properties</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">licenses</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">license</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>MIT License<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">url</span>&gt;</span>https://www.opensource.org/licenses/mit-license.php<span class="hljs-tag">&lt;/<span class="hljs-name">url</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">distribution</span>&gt;</span>repo<span class="hljs-tag">&lt;/<span class="hljs-name">distribution</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">license</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">licenses</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">url</span>&gt;</span>https://github.com/FrogIf/Calculator<span class="hljs-tag">&lt;/<span class="hljs-name">url</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">developers</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">developer</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>frogif<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>frogif<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">email</span>&gt;</span>skyfrog@163.com<span class="hljs-tag">&lt;/<span class="hljs-name">email</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">roles</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">role</span>&gt;</span>Maintainer<span class="hljs-tag">&lt;/<span class="hljs-name">role</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">roles</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">timezone</span>&gt;</span>+8<span class="hljs-tag">&lt;/<span class="hljs-name">timezone</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">developer</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">developers</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">scm</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">connection</span>&gt;</span>https://github.com/FrogIf/Calculator.git<span class="hljs-tag">&lt;/<span class="hljs-name">connection</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">developerConnection</span>&gt;</span>scm:git:ssh://git@github.com:FrogIf/Calculator.git<span class="hljs-tag">&lt;/<span class="hljs-name">developerConnection</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">url</span>&gt;</span>https://github.com/FrogIf/Calculator/tree/master<span class="hljs-tag">&lt;/<span class="hljs-name">url</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">scm</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span>
+            <span class="hljs-comment">&lt;!-- 生成源码jar --&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>maven-source-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.2.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">executions</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">execution</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>attach-sources<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>jar-no-fork<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">execution</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">executions</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
+            <span class="hljs-comment">&lt;!-- 生成文档jar --&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>maven-javadoc-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.10.4<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">additionalJOptions</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">additionalJOption</span>&gt;</span>-Xdoclint:none<span class="hljs-tag">&lt;/<span class="hljs-name">additionalJOption</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">additionalJOptions</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">executions</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">execution</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>attach-javadocs<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>jar<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">execution</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">executions</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
+            <span class="hljs-comment">&lt;!-- gpg加密上传 --&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>maven-gpg-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">executions</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">execution</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>sign-artifacts<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">phase</span>&gt;</span>verify<span class="hljs-tag">&lt;/<span class="hljs-name">phase</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>sign<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">execution</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">executions</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">distributionManagement</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">snapshotRepository</span>&gt;</span>
+            <span class="hljs-comment">&lt;!-- id需要与maven的settings.xml中保持一致 --&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>ossrh<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">url</span>&gt;</span>https://s01.oss.sonatype.org/content/repositories/snapshots<span class="hljs-tag">&lt;/<span class="hljs-name">url</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">snapshotRepository</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">repository</span>&gt;</span>
+            <span class="hljs-comment">&lt;!-- id需要与maven的settings.xml中保持一致 --&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>ossrh<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">url</span>&gt;</span>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/<span class="hljs-tag">&lt;/<span class="hljs-name">url</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">repository</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">distributionManagement</span>&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">project</span>&gt;</span>
+</div></code></pre>
+<blockquote>
+<p>以上的步骤, 只需第一次推送这个项目的时候进行, 之后更新版本时, 都直接从下面开始(首先需要把Kleopatra软件打开)</p>
+</blockquote>
+<ol start="10">
+<li>打包上传</li>
+</ol>
+<pre class="hljs"><code><div>mvn clean compile package deploy
+</div></code></pre>
+<blockquote>
+<p>打包时可能遇到各种问题, 例如上面配置了文档的生成, 这个只能用java8才可以.
+另外, 构建前别忘记版本号的修改</p>
+</blockquote>
+<ol start="11">
+<li>maven命令执行完成会弹窗, 提示输入上面第6步生成密钥时输入的密码, 输入密码</li>
+<li>构建成功, 也就上传完成了</li>
+</ol>
+<p><img src="img/package_finish.png" alt="image"></p>
+<ol start="13">
+<li>
+<p>访问https://s01.oss.sonatype.org, 进行后续操作</p>
+</li>
+<li>
+<p>更改状态, 会有弹窗, 信息随意填写</p>
+</li>
+</ol>
+<p><img src="img/remote_repository_close.png" alt="image"></p>
+<blockquote>
+<p>如果列表里什么也没有, 可以点击刷新</p>
+</blockquote>
+<ol start="15">
+<li>检查是否有报错信息, 如果有, 需要处理</li>
+</ol>
+<p><img src="img/remote_repository_closed.png" alt="image"></p>
+<ol start="16">
+<li>如果没有报错, 点击release, 正式发布</li>
+</ol>
+<p><img src="img/remote_repository_releasebtn.png" alt="image"></p>
+<p><img src="img/remote_repository_release.png" alt="image"></p>
+<ol start="17">
+<li>以上, 就发布完成了, 可以去仓库里边搜一下了(可能会有延迟, 1-2小时左右)</li>
+</ol>
+<p><img src="img/remote_repository_artifact.png" alt="image"></p>
+
+</body>
+</html>

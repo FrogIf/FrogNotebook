@@ -5,7 +5,7 @@
 
 ![img](img/jira_create_project.png)
 
-> * Group Id: 这个很重要, 可能导致审批不通过的. 如果有域名, 就填域名, 否则可以填源码仓库地址等. 例如: io.github.frogif, 如果由于这里导致审核不通过, 要仔细读他的评论, 按照说的步骤做就可以了.
+> * Group Id: 这个很重要, 可能导致审批不通过的. 如果有域名, 就填域名, 否则可以填源码仓库地址等. 类似: io.github.frogif, 如果由于这里导致审核不通过, 要仔细读他的评论, 按照说的步骤做就可以了.
 
 3. 创建后的项目大概是这样:
 
@@ -178,12 +178,40 @@
 </project>
 ```
 
+> 以上的步骤, 只需第一次推送这个项目的时候进行, 之后更新版本时, 都直接从下面开始(首先需要把Kleopatra软件打开)
+
 10. 打包上传
 
 ```bash
 mvn clean compile package deploy
 ```
 
+> 打包时可能遇到各种问题, 例如上面配置了文档的生成, 这个只能用java8才可以.
+> 另外, 构建前别忘记版本号的修改
+
 11. maven命令执行完成会弹窗, 提示输入上面第6步生成密钥时输入的密码, 输入密码
 12. 构建成功, 也就上传完成了
+
+![image](img/package_finish.png)
+
 13. 访问https://s01.oss.sonatype.org, 进行后续操作
+
+14. 更改状态, 会有弹窗, 信息随意填写
+
+![image](img/remote_repository_close.png)
+
+> 如果列表里什么也没有, 可以点击刷新
+
+15. 检查是否有报错信息, 如果有, 需要处理
+
+![image](img/remote_repository_closed.png)
+
+16. 如果没有报错, 点击release, 正式发布
+
+![image](img/remote_repository_releasebtn.png)
+
+![image](img/remote_repository_release.png)
+
+17. 以上, 就发布完成了, 可以去仓库里边搜一下了(可能会有延迟, 1-2小时左右)
+
+![image](img/remote_repository_artifact.png)
