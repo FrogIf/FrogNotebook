@@ -421,6 +421,14 @@ Isr：当前 kakfa 集群中可用的 breaker.id 列表。
 bin/kafka-topics.sh --bootstrap-server localhost:9092 --list --command-config aaa.properties
 ```
 
+* 创建/删除topic
+
+```
+bin/kafka-topics.sh --create --topic topicname --replication-factor 1 --partitions 8 --bootstrap-server 127.0.0.1:9093 --command-config  config/consumer.properties
+
+bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9093 --delete --topic topicname
+```
+
 * 一般上面的配置文件中这样配置:
 
 ```properties
