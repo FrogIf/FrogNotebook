@@ -387,6 +387,8 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-top
 bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test-group --describe --command-config aaa.properties
 ```
 
+> 可能存在查询超时的情况(默认5秒没有响应就超时), 可以手动指定超时时间```--timeout 600000```
+
 * 查看消费组列表
 
 ```

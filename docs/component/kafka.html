@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>kafka</title>
+<title>kafka.md</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
 <style>
@@ -807,6 +807,9 @@ props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
 </ul>
 <pre class="hljs"><code><div>bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test-group --describe --command-config aaa.properties
 </div></code></pre>
+<blockquote>
+<p>可能存在查询超时的情况(默认5秒没有响应就超时), 可以手动指定超时时间<code>--timeout 600000</code></p>
+</blockquote>
 <ul>
 <li>查看消费组列表</li>
 </ul>
