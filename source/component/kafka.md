@@ -381,6 +381,8 @@ kafka中的高水位是用来表征消息的位移的, 高水位以下的消息�
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --from-beginning --consumer.config aaa.properties
 ```
 
+> 消费数据时, 通过增加```--property print.timestamp=true```可以显示消息的创建时间戳
+
 * 查看消费组的消费情况
 
 ```

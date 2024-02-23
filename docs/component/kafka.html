@@ -802,6 +802,9 @@ props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
 </ul>
 <pre class="hljs"><code><div>bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --from-beginning --consumer.config aaa.properties
 </div></code></pre>
+<blockquote>
+<p>消费数据时, 通过增加<code>--property print.timestamp=true</code>可以显示消息的创建时间戳</p>
+</blockquote>
 <ul>
 <li>查看消费组的消费情况</li>
 </ul>
