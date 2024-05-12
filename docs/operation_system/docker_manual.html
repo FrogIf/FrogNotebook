@@ -639,21 +639,20 @@ KafkaClient {
 <ol>
 <li>下载并启动容器: <code>docker run -d --name ch-server --ulimit nofile=262144:262144 -p 8123:8123 -p 9000:9000 -p 9009:9009 yandex/clickhouse-server</code></li>
 </ol>
-<p>接下来开始修改用户密码:</p>
-<ol start="2">
+<p>接下来开始修改用户密码, 有两种方式:</p>
+<ul>
+<li>方式1:
+<ol>
 <li>进入容器: <code>docker exec -it clickhouse-server /bin/bash</code></li>
 <li>生成加密后的密码: <code>PASSWORD=$(base64 &lt; /dev/urandom | head -c8); echo &quot;你的密码&quot;; echo -n &quot;你的密码&quot; | sha256sum | tr -d '-'</code></li>
-<li>修改配置文件: <code>vim /etc/clickhouse-server/users.xml</code></li>
-</ol>
-<blockquote>
-<p>第四步可能需要提前安装vim, 1. <code>apt-get update</code>; 2. <code>apt-get install vim -y</code>;</p>
-</blockquote>
-<ol start="5">
+<li>修改配置文件: <code>vim /etc/clickhouse-server/users.xml</code> (可能需要提前安装vim, 1. <code>apt-get update</code>; 2. <code>apt-get install vim -y</code>);</li>
 <li>将配置文件中<code>&lt;password&gt;&lt;/password&gt;</code>替换为上面生成的密文<code>&lt;password_sha256_hex&gt;密文&lt;/password_sha256_hex&gt;</code>;</li>
 <li>保存, 不需要重启, 即刻生效. 可以使用下面的命令测试一下: <code>clickhouse-client -h 127.0.0.1 -d default -m -u default --password '明文密码'</code></li>
 <li>上面修改密码修改的是default用户的密码, 这里再新增一个用户. 依旧是: <code>vim /etc/clickhouse-server/users.xml</code></li>
 <li>在<code>&lt;users&gt;&lt;/users&gt;</code>标签下新增一个用户配置, 例如:</li>
 </ol>
+</li>
+</ul>
 <pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">users</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">frog</span>&gt;</span>    <span class="hljs-comment">&lt;!--用户登录名--&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-name">password</span>&gt;</span>123123<span class="hljs-tag">&lt;/<span class="hljs-name">password</span>&gt;</span>    <span class="hljs-comment">&lt;!--用户登录密码, 如果是密文, 还和上面一样的操作--&gt;</span>
@@ -665,11 +664,66 @@ KafkaClient {
     <span class="hljs-tag">&lt;/<span class="hljs-name">frog</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">users</span>&gt;</span>
 </div></code></pre>
-<ol start="9">
-<li>保存, 不需要重启, 直接生效. <code>clickhouse-client -h 127.0.0.1 -d default -m -u frog --password '123123'</code></li>
+<ol start="8">
+<li>保存, 不需要重启, 直接生效.</li>
+</ol>
+<ul>
+<li>方式2:
+<ol>
+<li>准备一个完整的users.xml配置文件:</li>
+</ol>
+</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">&lt;?xml version="1.0"?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">clickhouse</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">profiles</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">default</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">max_memory_usage</span>&gt;</span>10000000000<span class="hljs-tag">&lt;/<span class="hljs-name">max_memory_usage</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">load_balancing</span>&gt;</span>random<span class="hljs-tag">&lt;/<span class="hljs-name">load_balancing</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">default</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">readonly</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">readonly</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">readonly</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">readonly</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">profiles</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">users</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">frog</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">password_sha256_hex</span>&gt;</span>xxxx<span class="hljs-tag">&lt;/<span class="hljs-name">password_sha256_hex</span>&gt;</span>    <span class="hljs-comment">&lt;!--用户登录密码, 如果是密文, 还和上面一样的操作--&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">networks</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">ip</span>&gt;</span>::/0<span class="hljs-tag">&lt;/<span class="hljs-name">ip</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">networks</span>&gt;</span>   <span class="hljs-comment">&lt;!--允许登录的网络地址--&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>  <span class="hljs-comment">&lt;!--用户使用的profile配置--&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">quota</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">quota</span>&gt;</span>      <span class="hljs-comment">&lt;!--用户能够使用的资源限额/熔断机制--&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">frog</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">default</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">password</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">password</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">networks</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">ip</span>&gt;</span>::/0<span class="hljs-tag">&lt;/<span class="hljs-name">ip</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">networks</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">quota</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">quota</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">default</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">users</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">quotas</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">default</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">interval</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">duration</span>&gt;</span>3600<span class="hljs-tag">&lt;/<span class="hljs-name">duration</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">queries</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">queries</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">errors</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">errors</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">result_rows</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">result_rows</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">read_rows</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">read_rows</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">execution_time</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">execution_time</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">interval</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">default</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">quotas</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">clickhouse</span>&gt;</span>
+</div></code></pre>
+<ol start="2">
+<li>复制到docker容器里面去:  <code>docker cp /mnt/d/docker/clickhouse/users.xml 容器id:/etc/clickhouse-server/users.xml</code></li>
+<li>不需要重启, 直接生效</li>
 </ol>
 <p>其他操作:</p>
 <ul>
+<li>连接数据库: <code>clickhouse-client -h 127.0.0.1 -d default -m -u frog --password '123123'</code></li>
 <li>新建数据库: <code>CREATE DATABASE aaa;</code></li>
 </ul>
 <h2 id="rocketmq">RocketMQ</h2>

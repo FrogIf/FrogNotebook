@@ -330,18 +330,16 @@ services:
 
 1. 下载并启动容器: ```docker run -d --name ch-server --ulimit nofile=262144:262144 -p 8123:8123 -p 9000:9000 -p 9009:9009 yandex/clickhouse-server```
 
-接下来开始修改用户密码:
+接下来开始修改用户密码, 有两种方式:
 
-2. 进入容器: ```docker exec -it clickhouse-server /bin/bash```
-3. 生成加密后的密码: ```PASSWORD=$(base64 < /dev/urandom | head -c8); echo "你的密码"; echo -n "你的密码" | sha256sum | tr -d '-'```
-4. 修改配置文件: ```vim /etc/clickhouse-server/users.xml```
-
-> 第四步可能需要提前安装vim, 1. ```apt-get update```; 2. ```apt-get install vim -y```;
-
-5. 将配置文件中```<password></password>```替换为上面生成的密文```<password_sha256_hex>密文</password_sha256_hex>```;
-6. 保存, 不需要重启, 即刻生效. 可以使用下面的命令测试一下: ```clickhouse-client -h 127.0.0.1 -d default -m -u default --password '明文密码'```
-7. 上面修改密码修改的是default用户的密码, 这里再新增一个用户. 依旧是: ```vim /etc/clickhouse-server/users.xml```
-8. 在```<users></users>```标签下新增一个用户配置, 例如:
+* 方式1:
+  1. 进入容器: ```docker exec -it clickhouse-server /bin/bash```
+  2. 生成加密后的密码: ```PASSWORD=$(base64 < /dev/urandom | head -c8); echo "你的密码"; echo -n "你的密码" | sha256sum | tr -d '-'```
+  3. 修改配置文件: ```vim /etc/clickhouse-server/users.xml``` (可能需要提前安装vim, 1. ```apt-get update```; 2. ```apt-get install vim -y```);
+  4. 将配置文件中```<password></password>```替换为上面生成的密文```<password_sha256_hex>密文</password_sha256_hex>```;
+  5. 保存, 不需要重启, 即刻生效. 可以使用下面的命令测试一下: ```clickhouse-client -h 127.0.0.1 -d default -m -u default --password '明文密码'```
+  6. 上面修改密码修改的是default用户的密码, 这里再新增一个用户. 依旧是: ```vim /etc/clickhouse-server/users.xml```
+  7. 在```<users></users>```标签下新增一个用户配置, 例如:
 
 ```xml
 <users>
@@ -355,10 +353,61 @@ services:
     </frog>
 <users>
 ```
-9. 保存, 不需要重启, 直接生效. ```clickhouse-client -h 127.0.0.1 -d default -m -u frog --password '123123'```
+  8. 保存, 不需要重启, 直接生效. 
+
+
+* 方式2:
+  1. 准备一个完整的users.xml配置文件:
+```xml
+<?xml version="1.0"?>
+<clickhouse>
+    <profiles>
+        <default>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <load_balancing>random</load_balancing>
+        </default>
+        <readonly>
+            <readonly>1</readonly>
+        </readonly>
+    </profiles>
+    <users>
+        <frog>
+            <password_sha256_hex>xxxx</password_sha256_hex>    <!--用户登录密码, 如果是密文, 还和上面一样的操作-->
+            <networks>
+            <ip>::/0</ip>
+            </networks>   <!--允许登录的网络地址-->
+            <profile>default</profile>  <!--用户使用的profile配置-->
+            <quota>default</quota>      <!--用户能够使用的资源限额/熔断机制-->
+        </frog>
+        <default>
+            <password></password>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+        </default>
+    </users>
+    <quotas>
+        <default>
+            <interval>
+                <duration>3600</duration>
+                <queries>0</queries>
+                <errors>0</errors>
+                <result_rows>0</result_rows>
+                <read_rows>0</read_rows>
+                <execution_time>0</execution_time>
+            </interval>
+        </default>
+    </quotas>
+</clickhouse>
+```
+  2. 复制到docker容器里面去:  ```docker cp /mnt/d/docker/clickhouse/users.xml 容器id:/etc/clickhouse-server/users.xml```
+  3. 不需要重启, 直接生效
 
 其他操作:
 
+* 连接数据库: ```clickhouse-client -h 127.0.0.1 -d default -m -u frog --password '123123'```
 * 新建数据库: ```CREATE DATABASE aaa;```
 
 ## RocketMQ
