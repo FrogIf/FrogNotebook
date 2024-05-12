@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>blender.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="blender%E7%AC%94%E8%AE%B0">Blender笔记</h1>
+<h2 id="%E5%9F%BA%E7%A1%80">基础</h2>
+<p><strong>视角控制</strong></p>
+<ul>
+<li>旋转视角: 鼠标中键</li>
+<li>平移视角: shift+中键</li>
+<li>推进/推远视角: 鼠标滚轮</li>
+</ul>
+<p><strong>视图切换</strong></p>
+<ul>
+<li>切换前/后/顶/底/左/右视图:
+<ol>
+<li>alt + 按住鼠标中键滑动</li>
+<li>~ + 甩鼠标</li>
+</ol>
+</li>
+</ul>
+<p><strong>物体控制</strong></p>
+<ul>
+<li>移动物体: G</li>
+<li>旋转物体: R</li>
+<li>缩放物体: S</li>
+</ul>
+<blockquote>
+<p>以上按之后, 可以继续按X,Y,Z, 限制分别在某个方向上进行变换. 或者shift+X,Y,Z限制变换不影响其中一个方向. 可以重复多次, 用于在世界坐标系和物体坐标系进行切换.</p>
+</blockquote>
+<ul>
+<li>重置移动: alt + G</li>
+<li>重置旋转: alt + R</li>
+<li>重置缩放: alt + S</li>
+<li>应用变换: Ctrl + A</li>
+<li>新建物体: shift + A</li>
+<li>复制并移动物体: shift + D</li>
+<li>删除物体: X</li>
+<li>全选物体: A</li>
+<li>加选/减选: shift + 鼠标点击</li>
+<li>物体变换时, 可以仅变换原点</li>
+</ul>
+<img src="img/only_point.png"  height="200"/>
+<blockquote>
+<p>文中大部分操作, 在不点击空白位置时, 会在左下角有一个窗口, 可以修改一些参数, 如果点击空白, 就会消失. 如果这时没有进行其他操作, 可以点击F9重新唤起这个窗口.</p>
+</blockquote>
+<blockquote>
+<p>在物体模式下对物体的缩放操作, 最后一定要应用缩放, 否则在后续的一些修改器或者动画过程中, 会有问题</p>
+</blockquote>
+<p>物体上直接鼠标右键出现的菜单:</p>
+<img src="img/right_menu.png"  height="500"/>
+<p><strong>其他</strong></p>
+<ul>
+<li>游标: 默认是世界中心, 可以用来定位和当轴心点
+<ul>
+<li>游标在哪里, 新建物体就会出现在哪里</li>
+<li>3D视图中, 上方选项中可以将旋转变换的轴改为游标</li>
+</ul>
+</li>
+<li>原点: 每个物体都有一个原点</li>
+<li>调用游标Pie目录: Shift + S (游标-&gt;选中项, 选中项-&gt;游标 ... )</li>
+<li>游标恢复到世界中心: Shift + C</li>
+<li>移动游标: Shift + 右键</li>
+<li>最大化窗口: Ctrl + 空格</li>
+<li>步进移动: 移动状态下, 按住Ctrl 可以以网格为单位进行移动</li>
+<li>渲染: F12</li>
+<li>锁定摄像机: 按N调出视图侧边栏, 然后勾选, 如图:</li>
+</ul>
+<img src="img/pin_camera.png"  height="200"/>
+<ul>
+<li>设置父级目标: Ctrl + P
+<ul>
+<li>先选中的是子级, 最后选中的是父级</li>
+</ul>
+</li>
+</ul>
+<h2 id="%E5%BB%BA%E6%A8%A1">建模</h2>
+<ul>
+<li>物体模式/编辑模式切换: Tab
+<ul>
+<li>按住Tab, 移动鼠标出现Pie目录, 会有更多选择</li>
+</ul>
+</li>
+<li>编辑对象切换: 1 - 点; 2 - 线; 3 - 面</li>
+</ul>
+<p><strong>点线面操作</strong></p>
+<ul>
+<li>框选: B</li>
+<li>刷选: C</li>
+<li>反选: Ctrl + I</li>
+<li>多选: Shift</li>
+<li>选择两个元素最短路径: 先选中第一个元素, 按住Ctrl, 选中第二个元素</li>
+<li>选择相连元素: L</li>
+<li>循环选择: 按住Alt + 双击, 可以选择一个循环边</li>
+<li>垂直方向循环选择: Ctrl Alt + 双击</li>
+<li>随机选择: 左上方选择菜单</li>
+</ul>
+<img src="img/select.png"  height="200"/>
+<ul>
+<li>切换透视模式: Alt + Z</li>
+<li>删除(X): 有多个选项: 例如: 删除边, 融并边等</li>
+<li>法线/法向: 始终垂直某平面或者某切面的虚线, 用来定义光线如何从曲面反弹的向量
+<ul>
+<li>在R旋转时, 再按下N, 就不是旋转平面,而是旋转法线方向</li>
+</ul>
+</li>
+</ul>
+<img src="img/direction.png"  height="200"/>
+<h3 id="%E5%B8%B8%E7%94%A8%E5%BB%BA%E6%A8%A1%E6%93%8D%E4%BD%9C">常用建模操作</h3>
+<ul>
+<li>挤出: E</li>
+<li>向内挤出: I</li>
+<li>环切: Ctrl + R</li>
+<li>倒角: Ctrl + B</li>
+<li>合并: M</li>
+<li>断开: V</li>
+<li>切刀: K
+<ul>
+<li>鼠标右键 或者 空格键退出</li>
+</ul>
+</li>
+<li>填充: F</li>
+<li>栅格填充: Ctrl + F
+<ul>
+<li>直接填充有可能出现多边面</li>
+<li>栅格填充必须是偶数面</li>
+</ul>
+</li>
+<li>桥接: Ctrl + E
+<ul>
+<li>桥接只能基于一个物体进行操作</li>
+<li>合并两个物体为一个物体: Ctrl + J</li>
+</ul>
+</li>
+<li>分离: P</li>
+<li>底部对齐: S + Z + 0</li>
+<li>父子级关系绑定: Ctrl + P
+<ul>
+<li>先选子级, 再选父级</li>
+<li>父级移动, 子级跟随, 子级移动, 父级不变</li>
+<li>一个物体只能有一个父级</li>
+<li>Alt + P : 删除父子级关系</li>
+<li>父子级关系的几种:
+<ol>
+<li>物体: 常规的父子级关系, 指定新的父级时, 跟随原来父级的变换会重置</li>
+<li>物体(保持变换): 更新父级后, 跟随原来的父级的变换依旧保留</li>
+<li>物体(无反向): 使得父子级原点重合</li>
+<li>物体(保持变换无反向): 保留变换</li>
+<li>顶点: 曲线修改器应用于父级时, 子级跟随变换, 同时基于一点进行父子级定位, 只能保持父子级相对位置不变</li>
+<li>顶点(基于三点): 曲线修改器应用于父级时, 子级跟随变换, 同时基于三点进行父子级定位, 可以使得子级跟随进行翻转等复杂操作</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>按路径滑动点: 按两次G</li>
+</ul>
+<blockquote>
+<p>五条边及以上的边组成的面叫多边面, 建模时应避免出现多边面. 各种引擎在渲染的时候, 会将面都转换为三角面, 如果是多边面, 转换为三角面的时候会出问题.</p>
+</blockquote>
+<h3 id="%E4%BF%AE%E6%94%B9%E5%99%A8">修改器</h3>
+<ul>
+<li><strong>表面细分</strong>: 将网格的面分割成更小的面, 使其看起来更平滑. (Ctrl + 2)</li>
+<li><strong>实体化</strong>: 获取任意网格的表面, 然后为之添加深度, 使之变厚.</li>
+<li><strong>倒角</strong>:
+<ul>
+<li>宽度: 坡口形成的两条新边的距离;</li>
+<li>段数: 增加细分</li>
+</ul>
+</li>
+<li><strong>布尔修改器</strong>: 可以对两个物体进行交集, 差集, 并集运算(偶尔会出现奇怪的问题, 慎用)</li>
+<li><strong>简易形变</strong>: 将物体在X/Y/Z方向上进行 扭曲/弯曲/锥化/拉伸</li>
+<li><strong>缩裹</strong>: 将一个平面贴合到目标平面上</li>
+</ul>
+<img src="img/suoguo.png"  height="200"/>
+<ul>
+<li>
+<p><strong>阵列</strong>: 将一个物体按照某种规则, 重复生成多次</p>
+<ul>
+<li>相对偏移: 相对于前一个物体偏移的比例;</li>
+<li>恒定偏移: 以物体原点为基准偏移指定的尺寸;</li>
+<li>物体偏移: 通过物体来决定偏移程度, 原始物体相对偏移物体位移了多少, 阵列的物体就相对偏移多少, 原物体相对偏移物体旋转了多少, 阵列物体就旋转多少.</li>
+</ul>
+</li>
+<li>
+<p><strong>曲线</strong></p>
+</li>
+</ul>
+<p>通过曲线修改器, 可以使物体按照指定的曲线形态进行形变</p>
+<img src="img/quxianxiugaiqi.png"  height="200"/>
+<ul>
+<li><strong>蒙皮</strong></li>
+</ul>
+<p>可以用来做出分叉的结构, 很灵活.</p>
+<p>主要有两个操作:</p>
+<ol>
+<li>可以选中任意一个点, 'E'挤出一个分叉</li>
+<li>选中任意点, Ctrl + A修改半径</li>
+</ol>
+<img src="img/mengpi.png"  height="200"/>
+<blockquote>
+<p>勾选蒙皮修改器的平滑着色, 可以让模型平滑着色</p>
+</blockquote>
+<blockquote>
+<p>Tip: 如何创建一个点? 新建一个平面, 编辑模式, 选中四个点, M合并-到中心</p>
+</blockquote>
+<ul>
+<li><strong>置换</strong></li>
+</ul>
+<p>置换修改器可以将一张图片, 将一个平面变成凹凸的</p>
+<img src="img/zhihuan.png"  height="200"/>
+<img src="img/zhihuantietu.png"  height="200"/>
+<ul>
+<li>
+<p><strong>镜像</strong></p>
+</li>
+<li>
+<p>Clipping: 避免顶点在变换时穿过镜像</p>
+</li>
+</ul>
+<img src="img/jingxiang.png"  height="200"/>
+<h3 id="%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7">辅助工具</h3>
+<p><strong>衰减编辑</strong></p>
+<p>不开启衰减时, 对一个元素的变换只影响这个元素本身, 开启衰减之后, 在指定范围内的其他同类元素也会不同程度的进行变换</p>
+<img src="img/damping.png"  height="200"/>
+<p><strong>吸附工具</strong></p>
+<img src="img/adsorption.png"  height="200"/>
+<blockquote>
+<p>注意这里选择了面投射和旋转对齐</p>
+</blockquote>
+<p><strong>旋绕工具</strong></p>
+<img src="img/xuanrao.png"  height="200"/>
+<p><strong>晶格形变</strong></p>
+<p>晶格形变通过晶格将晶格做&quot;包裹&quot;的子级实体同步进行形变, 可以用于对一组实体进行整体的形变.</p>
+<img src="img/jingge.png"  height="400"/>
+<ol>
+<li>新建晶格;</li>
+<li>放在适当的位置;</li>
+<li>选中子级, 再选中晶格, Ctrl + P, 在弹出菜单中, 选择晶格形变, 使得子级和晶格形成一个整体;</li>
+<li>对晶格的各种变换会同时影响到自己实体.</li>
+</ol>
+<blockquote>
+<p>晶格形变实际上也是一个修改器</p>
+</blockquote>
+<p><strong>曲线建模</strong></p>
+<p>曲线分为两大类:</p>
+<ol>
+<li>贝塞尔曲线</li>
+<li>NURBS曲线</li>
+</ol>
+<ul>
+<li>曲线通过曲线菜单中的倒角可以变成有粗细的实体;
+<ul>
+<li>倒角中有&quot;封盖&quot;选项, 可以将&quot;管&quot;变成&quot;柱&quot;</li>
+<li>选中曲线中的点, Alt + S可以单独正对这个点位置进行粗细调整</li>
+<li>倒角可以选中另一个曲线物体, 就会以这个曲线为轮廓生成&quot;管道&quot;</li>
+</ul>
+</li>
+<li>闭合曲线
+<ul>
+<li>选中要闭合的两个点, F闭合</li>
+<li>选中一个点, Alt + C</li>
+</ul>
+</li>
+<li>断开曲线
+<ul>
+<li>选中两个点, X删除-段数</li>
+</ul>
+</li>
+</ul>
+<h2 id="%E6%9D%90%E8%B4%A8">材质</h2>
+<h3 id="%E5%9F%BA%E7%A1%80">基础</h3>
+<p>基本界面:</p>
+<img src="img/material.png"  height="300"/>
+<p>常用快捷键:</p>
+<ul>
+<li>Ctrl + J : 将选中的节点归为一个组</li>
+</ul>
+<p>在着色器编辑器中, 可以添加各种材质节点, 例如:</p>
+<ul>
+<li>着色器
+<ul>
+<li>原理化BSDF</li>
+<li>混合着色器</li>
+</ul>
+</li>
+<li>纹理
+<ul>
+<li>图像纹理</li>
+</ul>
+</li>
+<li>矢量
+<ul>
+<li>映射</li>
+<li>凹凸</li>
+</ul>
+</li>
+<li>输入
+<ul>
+<li>纹理坐标</li>
+</ul>
+</li>
+<li>转换器
+<ul>
+<li>颜色渐变</li>
+<li>分离XYZ</li>
+<li>混合</li>
+</ul>
+</li>
+</ul>
+<img src="img/material_menu.png"  height="300"/>
+<h3 id="%E5%8E%9F%E7%90%86%E5%8C%96bsdf">原理化BSDF</h3>
+<img src="img/bsdf.png"  height="500"/>
+<ul>
+<li>基础色: 模型的颜色, 也可以接一个颜色贴图, 一般不要纯黑或者纯白</li>
+<li>金属度: 0代表非金属, 1代表金属, 一般我们要么选0, 要么选1</li>
+<li>糙度: 0代表平滑, 1代表粗糙, 确定漫反射和镜面反射时物体表面的粗糙程度</li>
+<li>IOR折射率: 透明材质常用的光折射率, 可以网上搜索各种材质的IOR</li>
+<li>Alpha: 透明度, 默认是1, 当是0的时候, 物体完全消失不可见</li>
+<li>法向: 通常这个会链接PBR的normal map法线贴图</li>
+<li>Subsurface(次表面) - 决定模型是不是透光, 用于皮肤, 窗帘等的通透程度
+<ul>
+<li>随机游走: 一种模拟次表面的渲染方式(仅支持Cycles)</li>
+<li>权重: 决定模型的透光程度, 一般不会调太大, 没有那么通透的东西</li>
+<li>半径: 决定半透光散射的距离, 三个值分别代表RGB三个通道的散射半径, 可以通过改变半径的三个值改变次表面颜色, 决定透过去的颜色是什么样的</li>
+<li>缩放: 用来和半径相乘输出最终结果, 从而改变次表面颜色的明显程度</li>
+<li>IOR折射率: 次表面散射的折射率(仅在Random Walking(Skin)模式下可选, 仅支持Cycles)</li>
+<li>各向异性: 代表次表面散射方向(仅支持Cycles)</li>
+</ul>
+</li>
+<li>高光 - 代表物体菲涅尔效应反射率程度, 数值越大, 高光反射量越大, 高光越亮
+<ul>
+<li>GGX: 是一种微表面反射光照模型, 有比较好的渲染效果</li>
+<li>多重散射GGX: 比GGX会在计算一些微平面间的光线反弹和散射, 但是比GGX慢, 一般肉眼也有看不出来区别, 所以默认都用GGX</li>
+<li>IOR Level: 代表菲涅尔效应反射率程度, 数值越大, 高光反射量越大, 高光越亮, 因为所有物体都是有一些菲涅尔效应的, 所以高光值不要设置为0, 默认是0.5</li>
+<li>Tint: 高光染色, 不设置时, 默认高光是白色的, 可以将高光设置成其他颜色</li>
+<li>各向异性过滤: 调大可以把一些高光转换成沿切线方向的细长高管(仅支持cycles)</li>
+<li>各向异性旋转: 比较常用的是金属部分, 可以控制金属的高光分布方向(仅支持cycles)</li>
+<li>切向: 就是各向异性这种金属的高光方向, 可以作为切向贴图</li>
+</ul>
+</li>
+<li>透射 - 让你的模型透明, 只有打开这个, IOR折射率才起作用
+<ul>
+<li>权重: 透射的权重</li>
+</ul>
+</li>
+<li>涂层 - 类似给材质加了一层包光, 多一层白色高光, 常用于制作车漆材质.
+<ul>
+<li>权重: 涂层的权重</li>
+<li>糙度: 增加的这层涂层的粗糙程度</li>
+<li>法向: 涂层法线, 类似于汽车涂层的法线, 可以接法线贴图</li>
+<li>IOR折射率: 调整涂层的质感, 做出透明漆感</li>
+<li>Tint: 可以单独设置涂层有颜色</li>
+</ul>
+</li>
+<li>Sheen(光泽)
+<ul>
+<li>权重: 用于布料的部分, 调到1, 有天鹅绒的效果, 控制的是褶皱的反光数量, 数值越大越明显</li>
+<li>糙度: 控制布料等表面的反光强度</li>
+<li>Tint: 设置光泽的颜色</li>
+</ul>
+</li>
+<li>自发光 - 让你的模型发光, 霓虹灯等效果, 并且可以设置颜色
+<ul>
+<li>颜色: 自发光颜色</li>
+<li>强度: 自发光强度</li>
+</ul>
+</li>
+</ul>
+<h3 id="%E5%9B%BE%E5%83%8F%E7%BA%B9%E7%90%86">图像纹理</h3>
+<img src="img/tuxiang.png"  height="200"/>
+<blockquote>
+<p>默认情况下, 图像纹理采用的是UV坐标</p>
+</blockquote>
+<h3 id="%E6%98%A0%E5%B0%84">映射</h3>
+<p>用于控制纹理的位置</p>
+<img src="img/yingshe.png"  height="200"/>
+<blockquote>
+<p>单纯添加映射节点, 纹理的显示会有问题, 需要&quot;纹理坐标&quot;节点配合使用</p>
+</blockquote>
+<h3 id="%E7%BA%B9%E7%90%86%E5%9D%90%E6%A0%87">纹理坐标</h3>
+<p>纹理坐标用于指示怎样将一张2D的图片映射到3D物体上</p>
+<img src="img/wenlizuobiao.png"  height="300"/>
+<p>常用的纹理坐标</p>
+<ul>
+<li>生成: 基于全局的坐标进行图像投射</li>
+<li>UV: 将物体展开为二维表面, 然后进行投射</li>
+<li>物体: 基于物体本身原点进行图像投射</li>
+</ul>
+<h3 id="%E9%A2%9C%E8%89%B2%E6%B8%90%E5%8F%98">颜色渐变</h3>
+<img src="img/jianbian.png"  height="300"/>
+<blockquote>
+<p>单独的颜色渐变节点并不会产生渐变效果, 至少需要配合&quot;纹理坐标&quot;, &quot;映射&quot;一起使用
+一般情况下, 还需要配合&quot;分离XYZ&quot;</p>
+</blockquote>
+<h3 id="%E5%88%86%E7%A6%BBxyz">分离XYZ</h3>
+<p>把单独的一个轴保留, 其余两个轴清零</p>
+<img src="img/split_xyz.png"  height="300"/>
+<h3 id="%E7%A8%8B%E5%BA%8F%E5%8C%96%E7%BA%B9%E7%90%86">程序化纹理</h3>
+<p>在纹理菜单下, 有各种各样的内置纹理, 可以统称为程序化纹理.</p>
+<img src="img/chengxuhuawenli.png"  height="300"/>
+<p>利用&quot;噪波纹理&quot;做出的一种类大理石效果:</p>
+<img src="img/zaobo_demo.png"  height="300"/>
+<h3 id="%E6%B7%B7%E5%90%88">混合</h3>
+<ul>
+<li>混合节点可以将两个颜色输入混合在一起</li>
+<li>混合方式有正片叠底, 柔光等等(类PS)</li>
+<li>混合有一个系数, 系数越接近0, 颜色越接近A, 系数越接近1, 颜色越接近B</li>
+</ul>
+<img src="img/hunhe.png"  height="300"/>
+<blockquote>
+<p>在Blender中, 可以使用灰度图表示一个数值, 例如上面混合节点中, 将图片的灰度值作为系数. 白色表示系数值为1, 黑色表示系数值为0</p>
+</blockquote>
+<h3 id="%E5%87%B9%E5%87%B8">凹凸</h3>
+<ul>
+<li>首先有一个灰度图, 代表从0到1的数值
+<ul>
+<li>0.5以上是凸, 0.5以下是凹</li>
+</ul>
+</li>
+<li>将灰度图输入给凹凸节点的高度</li>
+<li>将凹凸节点的输出(法向)与原理化BSDF的法向相连
+<ul>
+<li>凹凸是通过原理化BSDF的法向来控制的(法向用来控制光线如何反射的, 从而模拟出一种凹凸感)</li>
+<li>凹凸节点输出的值如何直接连接到原理化BSDF的颜色节点上, 可以看到彩色, 这是因为凹凸节点输出的法向值是一个向量, 向量有三个维度, 同构于颜色的RGB三个通道, 所以blender里边, 通过RGB颜色和矢量之间可以互相映射</li>
+</ul>
+</li>
+<li>凹凸节点生成的凹凸效果是伪凹凸, 实际上还是平面</li>
+</ul>
+<img src="img/aotu.png"  height="300"/>
+<h3 id="%E7%BD%AE%E6%8D%A2">置换</h3>
+<ul>
+<li>置换节点非常耗性能, 一般不用, 而是用置换修改器来做</li>
+<li>首先需要将材质的设置中置换由默认的&quot;仅凹凸&quot;改为&quot;置换与凹凸&quot;(Cycles下采用这个选项)</li>
+<li>置换只在Cycles下有效</li>
+<li>使用置换节点时, 目标物体需要先加细分</li>
+</ul>
+<img src="img/zhihuan_material.png"  height="300"/>
+<h3 id="uv%E7%BA%B9%E7%90%86%E7%BB%98%E5%88%B6">UV纹理绘制</h3>
+<ul>
+<li>窗口1: 纹理绘制
+<ul>
+<li>按F, 然后移动鼠标, 可以缩放笔刷大小</li>
+</ul>
+</li>
+<li>窗口2: UV编辑器</li>
+<li>窗口3: 着色器编辑器</li>
+<li>窗口4: 模型编辑
+<ul>
+<li>U - UV映射菜单
+<ul>
+<li>可以使用智能展开</li>
+<li>可以选中一组线, 标记缝合边, 然后点击&quot;展开&quot;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="img/draw_uv.png" alt="image"></p>
+<h2 id="%E6%8F%92%E4%BB%B6">插件</h2>
+<ul>
+<li>Loop Tools: 网格建模工具包, 方便的进行一些操作, 可以提升建模效率.</li>
+</ul>
+<img src="img/looptools.png"  height="300"/>
+<ul>
+<li>Node Wrangler: 增强和加速基于节点的工作流的各种工具
+<ul>
+<li>着色器编辑器
+<ul>
+<li>选中一个节点, 按Ctrl + T, 自动补全上游节点</li>
+<li>Ctrl + Shift, 单击一个节点, 将这个节点连接到输出节点上(用于快速预览)</li>
+<li>Ctrl + Shift + T 可以选择材质图, 自动生成一系列置换材质节点(细分以及材质渲染设置需要手动调整)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="%E5%81%8F%E5%A5%BD%E8%AE%BE%E7%BD%AE">偏好设置</h2>
+<blockquote>
+<p>编辑 - 偏好设置</p>
+</blockquote>
+<ul>
+<li>视图切换 - 围绕物体旋转</li>
+<li>视图切换 - 缩放至鼠标位置</li>
+<li>插件</li>
+</ul>
+
+</body>
+</html>
