@@ -32,6 +32,7 @@
 * 全选物体: A
 * 加选/减选: shift + 鼠标点击
 * 物体变换时, 可以仅变换原点
+* 独显/取消独显: /
 
 <img src="img/only_point.png"  height="200"/>
 
@@ -393,9 +394,33 @@
     * 可以选中一组线, 标记缝合边, 然后点击"展开"
 
 
-
 ![image](img/draw_uv.png)
 
+
+## 粒子系统
+
+粒子分为两种:
+
+1. 发射体
+2. 毛发
+
+### 发射体
+
+![image](img/fasheti.png)
+
+![image](img/pengzhuang.png)
+
+![image](img/lichang.png)
+
+### 毛发
+
+![image](img/maofa.png)
+
+## 灯光
+
+* 世界光: 默认情况下, 系统会给一个强度为1的世界光
+
+![image](img/world_light.png)
 
 
 ## 插件
