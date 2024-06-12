@@ -79,7 +79,7 @@ $(function () {
                     context.text += '<li><a href="javascript:void(0);" onclick="scrollToTarget('+i+')">'+dom.text()+'</a></li>';
                 }else if(l > level){
                     context.text += '<ul>';
-                    i = buildDom(l, i, context);
+                    i = buildDom(l, i, context) - 1;
                     context.text += '</ul>';
                 }else{
                     return i;
