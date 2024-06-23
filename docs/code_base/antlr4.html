@@ -841,24 +841,7 @@ result : 17.29
 <p>这里需要注意一点, 我们在上面的讲述中, 从来没有提及对于一段字符流, 从那个文法规则开始进行匹配分析. 实际上, 我们可以从任意文法规则开始, 我们在程序中是指定了的: <code>ParseTree tree = parser.program();</code>, 这段代码指定了从<code>program</code>这个非终结符开始进行分析. 如果想从<code>statement</code>开始, 可以写成: <code>ParseTree tree = parser.statement();</code></p>
 <h3 id="%E4%BC%98%E5%85%88%E7%BA%A7">优先级</h3>
 <p>文法表达式在文件中的顺序代表优先级. 在前面的会优先匹配.</p>
-<p><strong>示例1</strong></p>
-<p>表达式为: <code>let a = 12</code>;</p>
-<p>文法文件局部为:</p>
-<pre class="hljs"><code><div>IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
-LOCAL_DECLARE: 'let';
-</div></code></pre>
-<p>结果, 词法分析得到的结果是:</p>
-<pre class="hljs"><code><div>let:IDENTIFIER
-a:IDENTIFIER
-=:ASSIGN
-12:NUMBER
-</div></code></pre>
-<p>可以看到, <code>let</code>被当做了<code>IDENTIFIER</code>, 实际上我们想让他被识别为<code>LOCAL_DECLARE</code>, 这时, 我们需要调整这两个文法的顺序:</p>
-<pre class="hljs"><code><div>LOCAL_DECLARE: 'let';
-IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
-</div></code></pre>
-<p><strong>示例2</strong></p>
-<p>表达式为: <code>1 + 2 * 3</code></p>
+<p>对于表达式: <code>1 + 2 * 3</code></p>
 <p>文法文件局部为:</p>
 <pre class="hljs"><code><div>expression: expression (PLUS | MINUS) expression
         | expression (STAR | SLASH) expression
@@ -895,6 +878,23 @@ IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
       \- 3
 </div></code></pre>
 <p>这样就可以了.</p>
+<h3 id="%E6%AD%A7%E4%B9%89">歧义</h3>
+<p>歧义问题在词法分析器和语法分析器中都会发生，ANTLR的解决方案使得对规则的解析能够正常进行。在词法分析器中，ANTLR解决歧义问题的方法是：匹配在语法定义中最靠前的那条词法规则。</p>
+<p>表达式为: <code>let a = 12</code>;</p>
+<p>文法文件局部为:</p>
+<pre class="hljs"><code><div>IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
+LOCAL_DECLARE: 'let';
+</div></code></pre>
+<p>结果, 词法分析得到的结果是:</p>
+<pre class="hljs"><code><div>let:IDENTIFIER
+a:IDENTIFIER
+=:ASSIGN
+12:NUMBER
+</div></code></pre>
+<p>可以看到, <code>let</code>被当做了<code>IDENTIFIER</code>, 实际上我们想让他被识别为<code>LOCAL_DECLARE</code>, 这时, 我们需要调整这两个文法的顺序:</p>
+<pre class="hljs"><code><div>LOCAL_DECLARE: 'let';
+IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
+</div></code></pre>
 <h3 id="%E7%BB%93%E5%90%88%E6%80%A7">结合性</h3>
 <p>结合性决定了当一个运算符在表达式中出现多次且没有明确使用括号改变优先级时，这些运算符如何分组或者说如何确定计算顺序。例如, <code>1+2+3</code>显然是先算左边, 即<code>1+2</code>, 再算右边<code>+3</code>, 顺序是从左至右的, 所以是左结合. antlr4默认就是左结合的. 在编程语言中, 常见的右结合是<code>=</code>, 例如: <code>a = b = c = 1</code></p>
 <p>文法文件局部为:</p>

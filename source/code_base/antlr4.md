@@ -515,36 +515,7 @@ result : 17.29
 
 文法表达式在文件中的顺序代表优先级. 在前面的会优先匹配.
 
-**示例1**
-
-表达式为: ```let a = 12```;
-
-文法文件局部为:
-
-```g4
-IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
-LOCAL_DECLARE: 'let';
-```
-
-结果, 词法分析得到的结果是:
-
-```
-let:IDENTIFIER
-a:IDENTIFIER
-=:ASSIGN
-12:NUMBER
-```
-
-可以看到, `let`被当做了`IDENTIFIER`, 实际上我们想让他被识别为`LOCAL_DECLARE`, 这时, 我们需要调整这两个文法的顺序:
-
-```g4
-LOCAL_DECLARE: 'let';
-IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
-```
-
-**示例2**
-
-表达式为: ```1 + 2 * 3```
+对于表达式: ```1 + 2 * 3```
 
 文法文件局部为:
 
@@ -595,6 +566,35 @@ expression
 ```
 
 这样就可以了.
+
+### 歧义
+
+歧义问题在词法分析器和语法分析器中都会发生，ANTLR的解决方案使得对规则的解析能够正常进行。在词法分析器中，ANTLR解决歧义问题的方法是：匹配在语法定义中最靠前的那条词法规则。
+
+表达式为: ```let a = 12```;
+
+文法文件局部为:
+
+```g4
+IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
+LOCAL_DECLARE: 'let';
+```
+
+结果, 词法分析得到的结果是:
+
+```
+let:IDENTIFIER
+a:IDENTIFIER
+=:ASSIGN
+12:NUMBER
+```
+
+可以看到, `let`被当做了`IDENTIFIER`, 实际上我们想让他被识别为`LOCAL_DECLARE`, 这时, 我们需要调整这两个文法的顺序:
+
+```g4
+LOCAL_DECLARE: 'let';
+IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
+```
 
 ### 结合性
 
