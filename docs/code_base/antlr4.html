@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>antlr4.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="antlrv4">ANTLRv4</h1>
+<h2 id="%E7%AE%80%E4%BB%8B">简介</h2>
+<p>ANTLR(ANother Tool for Language Recognition)是一个强大的解析器生成器，用于构建解析器、解释器、编译器以及各种编程语言、领域特定语言或自定义文件格式的转换器。ANTLR4是其最新的主要版本，相比ANTLR3引入了显著的改进和优化。ANTLRv4用java编写, 使用自上而下的递归下降LL(*)剖析器方法. 由旧金山大学的Terence Parr博士等人于1989年开始发展.</p>
+<p>其他类似的解析器生成器或者编译器构造工具有:</p>
+<ul>
+<li>JavaCC(Java Compiler Compiler): JavaCC是一个基于Java的语法分析器生成器，支持LL和LR语法分析器的生成。它的优点是易于学习和使用，具有良好的性能和扩展性，缺点是生成的代码较为冗长和复杂。</li>
+<li>YACC/Bison: YACC是最早的语法分析器生成器之一，也是很多语言工具的基础，例如C语言编译器。Bison是对YACC的增强版，支持更多的特性和扩展性。它们的优点是可靠性高，支持广泛，缺点是学习曲线陡峭，代码难以阅读和维护。</li>
+<li>Flex/Bison: Flex是对LEX的增强版，用于生成词法分析器；Bison是对YACC的增强版，用于生成语法分析器。它们的优点是可靠性高，支持广泛，缺点是学习曲线陡峭，代码难以阅读和维护。</li>
+</ul>
+<blockquote>
+<p>相比较而言, ANTLR4支持LL和LR语法分析器的生成，具有更好的性能和灵活性。它的优点是易于学习和使用，支持广泛，生成的代码简洁清晰，缺点是一些高级特性需要一定的学习成本。</p>
+</blockquote>
+<p>这里有一些ANTLR4的官方文档资料:</p>
+<ul>
+<li>antlr4开源地址: https://github.com/antlr/antlr4</li>
+<li>常见语言的文法: https://github.com/antlr/grammars-v4</li>
+</ul>
+<h2 id="%E6%90%AD%E5%BB%BA%E7%8E%AF%E5%A2%83">搭建环境</h2>
+<ol>
+<li>使用ANLTRv4需要先安装. 下载地址: https://www.antlr.org/download.html, 点击&quot;ANTLR tool itself&quot;开始下载;</li>
+<li>下载之后, 将antlr-4.13.1-complete.jar放到一个位置.</li>
+<li>这时实际上就可以直接使用了. 例如:</li>
+</ol>
+<pre class="hljs"><code><div>java -jar D:\Software\antlr\antlr-4.13.1-complete.jar Hello.g4
+</div></code></pre>
+<p>或者</p>
+<pre class="hljs"><code><div>java -cp D:\Software\antlr\antlr-4.13.1-complete.jar org.antlr.v4.Tool Hello.g4
+</div></code></pre>
+<ol start="4">
+<li>但是这样使用很不方便, 所以需要配置环境. 首先在antlr-4.13.1-complete.jar所在目录新增两个bat脚本:</li>
+</ol>
+<p><strong>antlr.bat</strong>:</p>
+<pre class="hljs"><code><div>java -jar %~dp0antlr-<span class="hljs-number">4</span>.<span class="hljs-number">13</span>.<span class="hljs-number">1</span>-complete.jar %*
+</div></code></pre>
+<blockquote>
+<p>该脚本可以对文法文件进行编译, 生成解释器代码.</p>
+</blockquote>
+<p><strong>grun.bat</strong>:</p>
+<pre class="hljs"><code><div>java -cp %~dp0antlr-<span class="hljs-number">4</span>.<span class="hljs-number">13</span>.<span class="hljs-number">1</span>-complete.jar org.antlr.v4.gui.TestRig %*
+</div></code></pre>
+<blockquote>
+<p>该脚本方便调试使用</p>
+</blockquote>
+<ol start="5">
+<li>将脚本的目录配置到环境变量<code>Path</code>中, 示例: <code>D:\Software\antlr</code></li>
+</ol>
+<p>这样就可以方便的使用了. 例如: <code>antlr Hello.g4</code></p>
+<h2 id="%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B">快速开始</h2>
+<h3 id="%E6%96%87%E6%B3%95%E7%BC%96%E5%86%99">文法编写</h3>
+<p>接下来编写一个简单的文法文件来快速了解ANTLR4. 下面是编写的一个<code>Hello.g4</code>文件的内容:</p>
+<pre class="hljs"><code><div>grammar Hello;
+
+@header{
+package sch.frog.lab.antlr.lang2;
+}
+
+program : 'Hello' NAME EOF;
+NAME: [a-zA-Z]+;
+WD: [ \t\r\n] -&gt; skip;
+</div></code></pre>
+<ul>
+<li><code>grammar Hello;</code>指示这个文法叫'Hello';</li>
+<li><code>@header{ package sch.frog.lab.antlr.lang2; }</code>告诉antlr生成的代码文件开头要以<code>package sch.frog.lab.antlr.lang2;</code>开头(这是java中包声明的语法);</li>
+<li><code>program : 'Hello' NAME EOF;</code>: 是一个语法规则, 指示<code>:</code>左侧的非终结符的匹配规则.</li>
+<li>最后两行时词法规则, ANTLR中约定词法规则以大写字母开头;
+<ul>
+<li><code>WD: [ \t\r\n] -&gt; skip;</code>指示遇到空白符则忽略, 其中的<code>skip</code>是antlr内置指令, 用于告诉解析器在处理输入文本时忽略（或者说跳过）匹配到的特定字符序列;</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>文法(Grammar) = 词法(Lexer Grammar) + 语法(Syntax Grammar)</p>
+</blockquote>
+<p>antlr4的文法文件编写时, 使用的文法和正则表达式很像, 上面没有体现, 但是会很常用的其他一些符号如下:</p>
+<ul>
+<li><code>?</code>: 表示<code>?</code>前面的表达式是可选的, 即可以出现0次或者1次;</li>
+<li><code>*</code>: 表示<code>*</code>前面的表达式是可选的, 即可以出现0次或者多次;</li>
+<li><code>+</code>: 表示<code>+</code>前面的表达式可以出现1次或者多次;</li>
+<li><code>()</code>: 使用<code>()</code>将内部的元素作为一个分组;</li>
+<li><code>|</code>: 表示<code>|</code>左右两侧的匹配规则是或的关系, 即可以按照左侧的规则进行展开, 又可以按照右侧的规则进行展开, 其中左侧的优先级高于右侧;</li>
+<li><code>:</code>: 产生式的推导符号, <code>:</code>左边推导右边;</li>
+<li><code>'xxx'</code>: 严格匹配单引号里面的所有字符;</li>
+<li><code>#xxx</code>: 为产生式加标签;</li>
+<li>EOF: 表示文件流结束(End of File)</li>
+</ul>
+<p>antlr中约定:</p>
+<ul>
+<li>词法: 大写字母开头</li>
+<li>语法: 小写字母开头</li>
+</ul>
+<h3 id="%E7%94%9F%E6%88%90%E8%A7%A3%E9%87%8A%E5%99%A8">生成解释器</h3>
+<p>在文法文件目录执行<code>antlr Hello.g4</code>可以生成该语言的解释器. 生成文件列表如下:</p>
+<ul>
+<li><code>Hello.interp</code></li>
+<li><code>Hello.tokens</code></li>
+<li><code>HelloLexer.interp</code></li>
+<li><code>HelloLexer.tokens</code></li>
+<li><code>HelloListener</code>: 遍历interface, 会为每条规则定义两个方法:enterXXX(访问规则时调用), exitXXX(访问完成时调用)</li>
+<li><code>HelloBaseListener</code>: <code>HelloListener</code>的默认实现</li>
+<li><code>HelloLexer</code>: 词法分析器</li>
+<li><code>HelloParser</code>: 语法分析器</li>
+</ul>
+<p>ANTLR4提供了两种遍历语法树的方式: <code>listener</code>和<code>visitor</code>. 默认情况下生成的解释器中提供的是<code>listener</code>模式. 如果想使用<code>visitor</code>, 可以这样执行:</p>
+<ul>
+<li><code>antlr -visitor Hello.g4</code></li>
+<li><code>antlr -visitor -no-listener Hello.g4</code> -- 生成只支持Visitor的</li>
+</ul>
+<p>通过Visitor模式会生成</p>
+<ul>
+<li><code>HelloVisitor.java</code>: 会为每条规则定义<code>visitorXXX</code>方法;</li>
+<li><code>HelloBaseVisitor.java</code>: <code>HelloVisitor.java</code>的默认实现.</li>
+</ul>
+<h3 id="%E9%81%8D%E5%8E%86%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91">遍历抽象语法树</h3>
+<p>ANTLR在遍历抽象语法树时, 默认采用的是深度优先遍历. 但是在<code>visitor</code>模式下, 可以由使用者自己灵活的定制遍历方式(重写<code>visitChildren</code>方法).</p>
+<p><strong>listener遍历</strong></p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        String expression = <span class="hljs-string">"Hello World"</span>;
+        CodePointCharStream cs = CharStreams.fromString(expression);
+        HelloLexer lexer = <span class="hljs-keyword">new</span> HelloLexer(cs);
+        HelloParser parser = <span class="hljs-keyword">new</span> HelloParser(<span class="hljs-keyword">new</span> CommonTokenStream(lexer));
+        ParseTree tree = parser.program();
+
+        ParseTreeWalker walker = <span class="hljs-keyword">new</span> ParseTreeWalker();
+        walker.walk(<span class="hljs-keyword">new</span> Listener(), tree);
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Listener</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">HelloBaseListener</span></span>{
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">enterEveryRule</span><span class="hljs-params">(ParserRuleContext ctx)</span> </span>{
+            System.out.println(<span class="hljs-string">"enter : "</span> + ctx.getText());
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">exitEveryRule</span><span class="hljs-params">(ParserRuleContext ctx)</span> </span>{
+            System.out.println(<span class="hljs-string">"exit : "</span> + ctx.getText());
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">visitTerminal</span><span class="hljs-params">(TerminalNode node)</span> </span>{
+            System.out.println(<span class="hljs-string">"visit : "</span> + node.getText());
+        }
+    }
+</div></code></pre>
+<p><strong>visitor遍历</strong></p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        String expression = <span class="hljs-string">"Hello World"</span>;
+        CodePointCharStream cs = CharStreams.fromString(expression);
+        HelloLexer lexer = <span class="hljs-keyword">new</span> HelloLexer(cs);
+        HelloParser parser = <span class="hljs-keyword">new</span> HelloParser(<span class="hljs-keyword">new</span> CommonTokenStream(lexer));
+        ParseTree tree = parser.program();
+        <span class="hljs-keyword">new</span> Visitor().visit(tree);
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Visitor</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">HelloBaseVisitor</span>&lt;<span class="hljs-title">Object</span>&gt;</span>{
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">visit</span><span class="hljs-params">(ParseTree tree)</span> </span>{
+            System.out.println(<span class="hljs-string">"tree : "</span> + tree.getText());
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">super</span>.visit(tree);
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">visitTerminal</span><span class="hljs-params">(TerminalNode node)</span> </span>{
+            System.out.println(<span class="hljs-string">"node : "</span> + node.getText());
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">super</span>.visitTerminal(node);
+        }
+    }
+</div></code></pre>
+<p>甚至我们可以完全不按照上面的方式, 自己实现遍历, 这里给出例程, 已经采用深度优先, 去遍历整颗树, 然后输出抽象语法树.</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloLang</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException </span>{
+        String expression = <span class="hljs-string">"Hello World"</span>;
+
+        System.out.println(<span class="hljs-string">"tokens"</span>);
+        CodePointCharStream cs = CharStreams.fromString(expression);
+        HelloLexer lexer = <span class="hljs-keyword">new</span> HelloLexer(cs);
+        List&lt;? extends Token&gt; tokens = lexer.getAllTokens();
+        <span class="hljs-keyword">for</span> (Token token : tokens) {
+            System.out.println(token.getText() + <span class="hljs-string">":"</span> + HelloLexer.VOCABULARY.getSymbolicName(token.getType()));
+        }
+
+
+        lexer = <span class="hljs-keyword">new</span> HelloLexer(CharStreams.fromString(expression));
+        HelloParser parser = <span class="hljs-keyword">new</span> HelloParser(<span class="hljs-keyword">new</span> CommonTokenStream(lexer));
+        ParseTree tree = parser.program();
+
+        System.out.println(<span class="hljs-string">"\nast:"</span>);
+        String s = AstUtil.generateTree(<span class="hljs-keyword">new</span> TreeNode(tree, parser));
+        System.out.println(s);
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> List&lt;AstUtil.TreeVisitor&gt; getChildren(ParseTree parent, HelloParser parser){
+        <span class="hljs-keyword">int</span> childCount = parent.getChildCount();
+        ArrayList&lt;AstUtil.TreeVisitor&gt; visitors = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(childCount);
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; childCount; i++){
+            ParseTree child = parent.getChild(i);
+            visitors.add(<span class="hljs-keyword">new</span> TreeNode(child, parser));
+        }
+        <span class="hljs-keyword">return</span> visitors;
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TreeNode</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">AstUtil</span>.<span class="hljs-title">TreeVisitor</span></span>{
+        <span class="hljs-keyword">private</span> ParseTree node;
+        <span class="hljs-keyword">private</span> HelloParser parser;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">TreeNode</span><span class="hljs-params">(ParseTree node, HelloParser parser)</span> </span>{
+            <span class="hljs-keyword">this</span>.node = node;
+            <span class="hljs-keyword">this</span>.parser = parser;
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-keyword">public</span> List&lt;AstUtil.TreeVisitor&gt; getChildren() {
+            <span class="hljs-keyword">return</span> HelloLang.getChildren(node, parser);
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">return</span> Trees.getNodeText(node, parser);
+        }
+    }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AstUtil</span> </span>{
+
+    <span class="hljs-comment">/**
+     * 将树转为可视化字符串形式输出
+     * <span class="hljs-doctag">@param</span> node 树根
+     * <span class="hljs-doctag">@return</span> 字符串
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">generateTree</span><span class="hljs-params">(TreeVisitor node)</span></span>{
+        StringBuilder sb = <span class="hljs-keyword">new</span> StringBuilder();
+        sb.append(toString(node)).append(<span class="hljs-string">'\n'</span>);
+        buildTree(node, sb, <span class="hljs-number">0</span>, <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">return</span> sb.toString();
+    }
+
+    <span class="hljs-comment">/**
+     * <span class="hljs-doctag">@param</span> parent 父节点
+     * <span class="hljs-doctag">@param</span> sb stringBuilder
+     * <span class="hljs-doctag">@param</span> level 树层级
+     * <span class="hljs-doctag">@param</span> markArr 每一个int标记该层级是否有后继兄弟节点: 0 - 没有; 1 - 有
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">buildTree</span><span class="hljs-params">(TreeVisitor parent, StringBuilder sb, <span class="hljs-keyword">int</span> level, <span class="hljs-keyword">int</span>[] markArr)</span></span>{
+        List&lt;TreeVisitor&gt; children = parent.getChildren();
+        <span class="hljs-keyword">if</span>(children == <span class="hljs-keyword">null</span> || children.isEmpty()){ <span class="hljs-keyword">return</span>; }
+        Iterator&lt;TreeVisitor&gt; itr = children.iterator();
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(markArr, level + <span class="hljs-number">1</span>);
+        <span class="hljs-keyword">while</span>(itr.hasNext()){
+            TreeVisitor child = itr.next();
+            <span class="hljs-keyword">boolean</span> hn = itr.hasNext(); <span class="hljs-comment">// 是否有后继兄弟节点</span>
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= level; i++){
+                <span class="hljs-keyword">if</span>(i == level){
+                    <span class="hljs-keyword">if</span>(hn){
+                        sb.append(<span class="hljs-string">"+- "</span>);
+                    }<span class="hljs-keyword">else</span>{
+                        sb.append(<span class="hljs-string">"\\- "</span>);
+                    }
+                }<span class="hljs-keyword">else</span>{
+                    <span class="hljs-keyword">if</span>(arr[i] == <span class="hljs-number">0</span>){
+                        sb.append(<span class="hljs-string">"   "</span>);
+                    }<span class="hljs-keyword">else</span>{
+                        sb.append(<span class="hljs-string">"|  "</span>);
+                    }
+                }
+            }
+            <span class="hljs-keyword">if</span>(child == <span class="hljs-keyword">null</span>){
+                sb.append(<span class="hljs-string">"??null"</span>).append(<span class="hljs-string">'\n'</span>);
+            }<span class="hljs-keyword">else</span>{
+                sb.append(toString(child)).append(<span class="hljs-string">'\n'</span>);
+                arr[level] = hn ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+                buildTree(child, sb, level + <span class="hljs-number">1</span>, arr);
+            }
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">toString</span><span class="hljs-params">(TreeVisitor node)</span></span>{
+        <span class="hljs-keyword">return</span> node.toString();
+    }
+    <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">TreeVisitor</span></span>{
+        <span class="hljs-function">String <span class="hljs-title">toString</span><span class="hljs-params">()</span></span>;
+        <span class="hljs-function">List&lt;TreeVisitor&gt; <span class="hljs-title">getChildren</span><span class="hljs-params">()</span></span>;
+    }
+}
+</div></code></pre>
+<h2 id="%E4%B8%80%E4%B8%AA%E8%AE%A1%E7%AE%97%E5%99%A8">一个计算器</h2>
+<h3 id="%E7%BC%96%E5%86%99%E6%96%87%E6%B3%95%E6%96%87%E4%BB%B6">编写文法文件</h3>
+<p>文件<code>Calc.g4</code>:</p>
+<pre class="hljs"><code><div>grammar Calc;
+
+@header {
+package sch.frog.lab.antlr.calc;
+}
+
+program: statements? EOF;
+statements: (statement)+;
+statement: expression ';';
+
+constant_expression: NUMBER | IDENTIFIER;
+expression: expression (STAR | SLASH) expression # multOrDiv
+        | expression (PLUS | MINUS) expression  # addOrSub
+        | &lt;assoc = right&gt; IDENTIFIER ASSIGN expression # assign
+        | '(' expression ')'  # group
+        | constant_expression  # constant
+        ;
+
+PLUS: '+';
+MINUS: '-';
+STAR: '*';
+SLASH: '/';
+ASSIGN: '=';
+DECIMAL_PART: '.'  DIGIT*;
+NUMBER: NO_ZERO_DIGIT DIGIT* DECIMAL_PART?
+     | '0' DECIMAL_PART?;
+IDENTIFIER: CHARACTER (CHARACTER | DIGIT | '_')*;
+WS: [ \t\r\n]+ -&gt; skip; // 忽略换行符等
+COMMENT : '//' .*? '\n' -&gt; skip ; // 忽略注释
+NO_ZERO_DIGIT: [1-9];
+DIGIT: [0-9];
+CHARACTER: [a-zA-Z];
+</div></code></pre>
+<blockquote>
+<p>上面的文法中, 使用<code># multOrDiv</code>为规则增加标签, 这样的好处是antlr4会生成<code>visitMultOrDiv</code>方法或者<code>enterMultOrDiv/exitMultOrDiv</code>方法, 方便后续进行求值时进行特殊处理.</p>
+</blockquote>
+<h3 id="%E7%94%9F%E6%88%90%E8%A7%A3%E9%87%8A%E5%99%A8">生成解释器</h3>
+<p>这里我们采用visitor模式, 这样能更灵活的控制对抽象语法树的遍历. 执行命令:</p>
+<pre class="hljs"><code><div>antlr -visitor -no-listener Calc.g4
+</div></code></pre>
+<h3 id="%E6%B1%82%E5%80%BC">求值</h3>
+<p>通过visitor方式, 遍历抽象语法树, 进行表达式求值, 代码如下:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">package</span> sch.frog.lab.antlr;
+
+<span class="hljs-keyword">import</span> org.antlr.v4.runtime.CharStreams;
+<span class="hljs-keyword">import</span> org.antlr.v4.runtime.CodePointCharStream;
+<span class="hljs-keyword">import</span> org.antlr.v4.runtime.CommonTokenStream;
+<span class="hljs-keyword">import</span> org.antlr.v4.runtime.tree.ParseTree;
+<span class="hljs-keyword">import</span> org.antlr.v4.runtime.tree.TerminalNode;
+<span class="hljs-keyword">import</span> org.antlr.v4.runtime.tree.Trees;
+<span class="hljs-keyword">import</span> sch.frog.lab.antlr.calc.CalcBaseVisitor;
+<span class="hljs-keyword">import</span> sch.frog.lab.antlr.calc.CalcLexer;
+<span class="hljs-keyword">import</span> sch.frog.lab.antlr.calc.CalcParser;
+
+<span class="hljs-keyword">import</span> java.math.BigDecimal;
+<span class="hljs-keyword">import</span> java.math.RoundingMode;
+<span class="hljs-keyword">import</span> java.util.HashMap;
+<span class="hljs-keyword">import</span> java.util.Map;
+<span class="hljs-keyword">import</span> java.util.Scanner;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Calculator</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        HashMap&lt;String, BigDecimal&gt; variables = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+        Scanner sc = <span class="hljs-keyword">new</span> Scanner(System.in);
+        <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>){
+            String content = sc.nextLine();
+            <span class="hljs-keyword">if</span>(<span class="hljs-string">"exit"</span>.equals(content)){
+                System.out.println(<span class="hljs-string">"exit..."</span>);
+                <span class="hljs-keyword">break</span>;
+            }
+
+            <span class="hljs-keyword">try</span>{
+                CodePointCharStream cs = CharStreams.fromString(content);
+                CalcLexer lexer = <span class="hljs-keyword">new</span> CalcLexer(cs);
+                CalcParser parser = <span class="hljs-keyword">new</span> CalcParser(<span class="hljs-keyword">new</span> CommonTokenStream(lexer));
+                ParseTree tree = parser.program();
+
+                Value value = <span class="hljs-keyword">new</span> Visitor(parser, variables).visit(tree);
+                System.out.println(<span class="hljs-string">"result : "</span> + value.evaluate(variables) + <span class="hljs-string">"\n"</span>);
+            }<span class="hljs-keyword">catch</span> (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Visitor</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CalcBaseVisitor</span>&lt;<span class="hljs-title">Value</span>&gt;</span>{
+
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> CalcParser parser;
+
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, BigDecimal&gt; variables;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Visitor</span><span class="hljs-params">(CalcParser parser, Map&lt;String, BigDecimal&gt; variables)</span> </span>{
+            <span class="hljs-keyword">this</span>.parser = parser;
+            <span class="hljs-keyword">this</span>.variables = variables;
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> Value <span class="hljs-title">visitMultOrDiv</span><span class="hljs-params">(CalcParser.MultOrDivContext ctx)</span> </span>{
+            <span class="hljs-keyword">return</span> infixEvaluate(ctx);
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> Value <span class="hljs-title">visitTerminal</span><span class="hljs-params">(TerminalNode node)</span> </span>{
+            <span class="hljs-keyword">int</span> type = node.getSymbol().getType();
+            <span class="hljs-keyword">if</span>(type == CalcLexer.NUMBER){
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Value(<span class="hljs-keyword">new</span> BigDecimal(node.getSymbol().getText()));
+            }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(type == CalcLexer.IDENTIFIER){
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Value(node.getSymbol().getText());
+            }
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">super</span>.visitTerminal(node);
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> Value <span class="hljs-title">visitAddOrSub</span><span class="hljs-params">(CalcParser.AddOrSubContext ctx)</span> </span>{
+            <span class="hljs-keyword">return</span> infixEvaluate(ctx);
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> Value <span class="hljs-title">visitAssign</span><span class="hljs-params">(CalcParser.AssignContext ctx)</span> </span>{
+            Value name = ctx.getChild(<span class="hljs-number">0</span>).accept(<span class="hljs-keyword">this</span>);
+            <span class="hljs-keyword">if</span>(name.identifier == <span class="hljs-keyword">null</span>){
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException(<span class="hljs-string">"assign left is unrecognized"</span>);
+            }
+            Value val = ctx.getChild(<span class="hljs-number">2</span>).accept(<span class="hljs-keyword">this</span>);
+            variables.put(name.identifier, val.evaluate(variables));
+            <span class="hljs-keyword">return</span> val;
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">private</span> Value <span class="hljs-title">infixEvaluate</span><span class="hljs-params">(CalcParser.ExpressionContext ctx)</span></span>{
+            BigDecimal left = ctx.getChild(<span class="hljs-number">0</span>).accept(<span class="hljs-keyword">this</span>).evaluate(variables);
+            BigDecimal right = ctx.getChild(<span class="hljs-number">2</span>).accept(<span class="hljs-keyword">this</span>).evaluate(variables);
+            String operator = Trees.getNodeText(ctx.getChild(<span class="hljs-number">1</span>), parser);
+            <span class="hljs-keyword">if</span>(<span class="hljs-string">"*"</span>.equals(operator)){
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Value(left.multiply(right));
+            }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-string">"/"</span>.equals(operator)){
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Value(left.divide(right, <span class="hljs-number">10</span>, RoundingMode.HALF_UP));
+            }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-string">"+"</span>.equals(operator)){
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Value(left.add(right));
+            }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-string">"-"</span>.equals(operator)){
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Value(left.subtract(right));
+            }
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">"operator : "</span> + operator + <span class="hljs-string">" unsupported"</span>);
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">protected</span> Value <span class="hljs-title">aggregateResult</span><span class="hljs-params">(Value aggregate, Value nextResult)</span> </span>{
+            <span class="hljs-keyword">if</span>(nextResult == <span class="hljs-keyword">null</span>){ <span class="hljs-keyword">return</span> aggregate; }
+            <span class="hljs-keyword">else</span> { <span class="hljs-keyword">return</span> nextResult; }
+        }
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Value</span></span>{
+        <span class="hljs-keyword">private</span> BigDecimal number;
+        <span class="hljs-keyword">private</span> String identifier;
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Value</span><span class="hljs-params">(BigDecimal number)</span> </span>{
+            <span class="hljs-keyword">this</span>.number = number;
+        }
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Value</span><span class="hljs-params">(String identifier)</span> </span>{
+            <span class="hljs-keyword">this</span>.identifier = identifier;
+        }
+        <span class="hljs-function"><span class="hljs-keyword">private</span> BigDecimal <span class="hljs-title">evaluate</span><span class="hljs-params">(Map&lt;String, BigDecimal&gt; variables)</span></span>{
+            <span class="hljs-keyword">if</span>(number != <span class="hljs-keyword">null</span>){ <span class="hljs-keyword">return</span> number; }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(variables.containsKey(identifier)){ <span class="hljs-keyword">return</span> variables.get(identifier); }
+            <span class="hljs-keyword">else</span>{
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException(identifier + <span class="hljs-string">" is undefined"</span>);
+            }
+        }
+    }
+}
+</div></code></pre>
+<p>简单测试一下:</p>
+<pre class="hljs"><code><div>1+2*(3+4);
+result : 15
+
+a = 12;
+result : 12
+
+b = c = 2.3;
+result : 2.3
+
+c;
+result : 2.3
+
+a + b * c;
+result : 17.29
+</div></code></pre>
+<p>这里需要注意一点, 我们在上面的讲述中, 从来没有提及对于一段字符流, 从那个文法规则开始进行匹配分析. 实际上, 我们可以从任意文法规则开始, 我们在程序中是指定了的: <code>ParseTree tree = parser.program();</code>, 这段代码指定了从<code>program</code>这个非终结符开始进行分析. 如果想从<code>statement</code>开始, 可以写成: <code>ParseTree tree = parser.statement();</code></p>
+<h3 id="%E4%BC%98%E5%85%88%E7%BA%A7">优先级</h3>
+<p>文法表达式在文件中的顺序代表优先级. 在前面的会优先匹配.</p>
+<p><strong>示例1</strong></p>
+<p>表达式为: <code>let a = 12</code>;</p>
+<p>文法文件局部为:</p>
+<pre class="hljs"><code><div>IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
+LOCAL_DECLARE: 'let';
+</div></code></pre>
+<p>结果, 词法分析得到的结果是:</p>
+<pre class="hljs"><code><div>let:IDENTIFIER
+a:IDENTIFIER
+=:ASSIGN
+12:NUMBER
+</div></code></pre>
+<p>可以看到, <code>let</code>被当做了<code>IDENTIFIER</code>, 实际上我们想让他被识别为<code>LOCAL_DECLARE</code>, 这时, 我们需要调整这两个文法的顺序:</p>
+<pre class="hljs"><code><div>LOCAL_DECLARE: 'let';
+IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
+</div></code></pre>
+<p><strong>示例2</strong></p>
+<p>表达式为: <code>1 + 2 * 3</code></p>
+<p>文法文件局部为:</p>
+<pre class="hljs"><code><div>expression: expression (PLUS | MINUS) expression
+        | expression (STAR | SLASH) expression
+        | NUMBER;
+</div></code></pre>
+<p>得到的抽象语法树是(已简化):</p>
+<pre class="hljs"><code><div>expression
++- expression
+|  +- expression
+|  |  \- 1
+|  +- +
+|  \- expression
+|     \- 2
++- *
+\- expression
+   \- 3
+</div></code></pre>
+<p>从抽象语法树可以看到会先执行<code>1 + 2</code>, 再执行<code>* 3</code></p>
+<p>需要调整两个文法的顺序:</p>
+<pre class="hljs"><code><div>expression: expression (STAR | SLASH) expression
+        | expression (PLUS | MINUS) expression
+        | NUMBER;
+</div></code></pre>
+<p>调整后生成的抽象语法树是(已简化):</p>
+<pre class="hljs"><code><div>expression
++- expression
+|  \- 1
++- +
+\- expression
+   +- expression
+   |  \- 2
+   +- *
+   \- expression
+      \- 3
+</div></code></pre>
+<p>这样就可以了.</p>
+<h3 id="%E7%BB%93%E5%90%88%E6%80%A7">结合性</h3>
+<p>结合性决定了当一个运算符在表达式中出现多次且没有明确使用括号改变优先级时，这些运算符如何分组或者说如何确定计算顺序。例如, <code>1+2+3</code>显然是先算左边, 即<code>1+2</code>, 再算右边<code>+3</code>, 顺序是从左至右的, 所以是左结合. antlr4默认就是左结合的. 在编程语言中, 常见的右结合是<code>=</code>, 例如: <code>a = b = c = 1</code></p>
+<p>文法文件局部为:</p>
+<pre class="hljs"><code><div>expression: expression (STAR | SLASH) expression
+        | expression (PLUS | MINUS) expression
+        | &lt;assoc = right&gt; IDENTIFIER ASSIGN expression
+        | NUMBER;
+</div></code></pre>
+<p>生成的抽象语法树是:</p>
+<pre class="hljs"><code><div>expression
++- expression
+|  \- a
++- =
+\- expression
+   +- expression
+   |  \- b
+   +- =
+   \- expression
+      +- expression
+      |  \- c
+      +- =
+      \- expression
+         \- 1
+</div></code></pre>
+<p>可以看出是从右向左执行的, 属于右结合.</p>
+<h2 id="%E5%85%B6%E4%BB%96">其他</h2>
+<h3 id="%E9%80%92%E5%BD%92%E4%B8%8B%E9%99%8D%E7%AE%97%E6%B3%95">递归下降算法</h3>
+<p>ANTLR采用的是递归下降算法. 递归下降算法是一种自顶向下的语法分析方法，常用于编译器或解释器的设计中，用来解析程序语言的源代码，确定输入串是否符合某种给定的语法规则（即文法）。该算法通过递归调用函数或过程来模拟文法的规则，每条文法规则对应程序中的一个函数，这些函数负责识别并处理相应的语法结构。</p>
+<p>递归下降算法的工作原理可以简化描述如下：</p>
+<ol>
+<li>文法规则对应函数：对于文法中的每个非终结符（代表语言结构的符号），我们定义一个函数。这些函数通常以自顶向下的方式递归调用自身或其他函数来解析输入串中的语法结构。</li>
+<li>递归解析：当函数被调用时，它尝试将输入串匹配到对应的文法规则。如果规则由更小的部分组成（比如表达式可以由项和表达式相加构成），函数会递归调用代表这些更小组件的函数。</li>
+<li>基础情况：递归的终止条件是遇到文法中的终结符（直接代表实际字符或符号的规则），这时直接检查输入流中的下一个符号是否匹配，如果匹配则消耗它并返回成功。</li>
+<li>回溯与选择：如果当前的规则尝试不成功，递归下降算法可能会通过回溯到上一层调用并尝试另一个可能的规则分支来实现选择（这在处理有多个可选项的文法规则时尤为关键）。</li>
+<li>错误处理：当输入不符合预期的文法规则时，递归下降解析器通常能够提供较为精确的错误位置和描述，因为解析过程紧密跟随文法规则。</li>
+</ol>
+<p>递归下降算法的优点在于其简单直观，易于理解和实现，特别是对于那些没有左递归且具有明确层次结构的文法。然而，它对某些复杂的文法结构（如左递归文法）处理起来不够直接，可能需要额外的技术（如消除左递归）来适应。</p>
+<blockquote>
+<p>以上关于递归下降算法的解释来源于通义千问.</p>
+</blockquote>
+<h3 id="%E5%B7%A6%E9%80%92%E5%BD%92">左递归</h3>
+<p>左递归是编译原理和形式语言理论中的一个概念，特别是在上下文无关文法（Context-Free Grammar, CFG）的范畴内讨论时。当一个非终结符（即文法符号，代表语言结构的抽象单元，通常用大写字母表示，如 A、B）可以通过一条或多条产生式直接或间接地推导出以自己为开头的句型（即符号串，包括终结符和非终结符的组合），我们就说这个非终结符存在左递归。</p>
+<p>具体来说，左递归分为两种类型：</p>
+<ol>
+<li>直接左递归：如果一个非终结符A的某个产生式形如 A → Aα，其中α是终结符或非终结符的任意组合（可能为空），那么A直接左递归。</li>
+<li>间接左递归：如果通过一系列产生式可以追溯到一个非终结符直接或间接地以自己为开始的情况，例如，若存在非终结符A和B，且有A → Bβ 和 B → Aγ 或其他形式使得可以从A出发经过若干步推导回到A，那么A存在间接左递归。</li>
+</ol>
+<p>左递归在编写编译器的语法分析器时是个问题，因为它可能导致解析器陷入无限循环。因此，在实现语法分析时，通常需要先消除文法中的左递归，常见的方法包括转换产生式来避免这种自我引用的形式，保证算法的收敛性和效率。消除左递归后，解析器才能有效地解析输入串，确定其是否符合文法规则。</p>
+<blockquote>
+<p>以上关于左递归的解释来源于通义千问.</p>
+</blockquote>
+<blockquote>
+<p>ANTLR4可以自动将直接左递归重写成了等价的非左递归形式, 对于间接左递归是无法处理的. 对于重写可以举个例子:
+例如: <code>a: a '+' a | NUM;</code>是左递归的, 可以重写成<code>a: NUM ax?; ax: '+' NUM ax;</code></p>
+</blockquote>
+<h3 id="llk">LLK</h3>
+<p>LLK文法是编译原理中的一个概念，其中“LLK”通常指的是LL(k)文法，这里的LL是指一种自上而下的解析策略，而(k)表示解析时向前查看的符号数量。在编译器设计中，文法是用来描述编程语言或形式语言的规则系统，而LL(k)文法是一种上下文无关文法（Context-Free Grammar, CFG），其特点是可以使用一个左递归的解析器来解析，同时在做出每个归约步骤的决策时，需要查看输入符号流中接下来的k个符号来决定如何进行。</p>
+<p>具体来说：</p>
+<ul>
+<li>“L”表示解析器是采用从左到右扫描输入符号串的策略。</li>
+<li>第二个“L”意味着在解析过程中使用的是左递归的语法，即产生式的左部至少有一个非终结符可以推导出自身加上一些其他符号的规则。实际应用中，为了效率和避免无限循环，通常会对原始文法进行改造以消除直接左递归。</li>
+<li>“K”是一个自然数，表示解析器在决定下一个动作之前能查看输入中的多少个符号。这决定了解析器的确定性，较大的k值可以使解析器处理更复杂的语言结构，但也会增加实现的复杂性和解析时间。</li>
+</ul>
+<blockquote>
+<p>以上关于LLK的解释来源于通义千问.</p>
+</blockquote>
+
+</body>
+</html>
