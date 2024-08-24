@@ -595,8 +595,15 @@ KafkaClient {
     password=&quot;456456&quot;;
 };
 </div></code></pre>
+<p>新建环境变量文件<code>.env</code>:</p>
+<pre class="hljs"><code><div>IP_ADDRESS=192.168.1.5
+</div></code></pre>
 <p>准备<code>docker-compose.yaml</code>文件:</p>
 <pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'2'</span>
+
+<span class="hljs-attr">include:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">env_file:</span> <span class="hljs-string">./.env</span>
+
 <span class="hljs-attr">services:</span>
     <span class="hljs-attr">zookeeper:</span>
         <span class="hljs-attr">image:</span> <span class="hljs-string">wurstmeister/zookeeper</span>
@@ -618,8 +625,8 @@ KafkaClient {
             <span class="hljs-bullet">-</span> <span class="hljs-number">9093</span><span class="hljs-string">:9093</span>
         <span class="hljs-attr">environment:</span>
             <span class="hljs-attr">KAFKA_LISTENERS:</span> <span class="hljs-string">SASL_PLAINTEXT://0.0.0.0:9093</span>
-            <span class="hljs-attr">KAFKA_ADVERTISED_LISTENERS:</span> <span class="hljs-string">SASL_PLAINTEXT://192.168.77.77:9093</span>
-            <span class="hljs-attr">KAFKA_ZOOKEEPER_CONNECT:</span> <span class="hljs-string">'192.168.77.77:2181'</span>
+            <span class="hljs-attr">KAFKA_ADVERTISED_LISTENERS:</span> <span class="hljs-string">SASL_PLAINTEXT://${IP_ADDRESS}:9093</span>
+            <span class="hljs-attr">KAFKA_ZOOKEEPER_CONNECT:</span> <span class="hljs-string">'${IP_ADDRESS}:2181'</span>
             <span class="hljs-attr">ZOOKEEPER_SASL_ENABLED:</span> <span class="hljs-string">"false"</span>
             <span class="hljs-attr">KAFKA_OPTS:</span> <span class="hljs-string">-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf</span>
             <span class="hljs-attr">KAFKA_INTER_BROKER_LISTENER_NAME:</span> <span class="hljs-string">SASL_PLAINTEXT</span>

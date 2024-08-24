@@ -283,10 +283,21 @@ KafkaClient {
 };
 ```
 
+新建环境变量文件```.env```:
+
+```env
+IP_ADDRESS=192.168.1.5
+```
+
+
 准备```docker-compose.yaml```文件:
 
 ```yaml
 version: '2'
+
+include:
+  - env_file: ./.env
+
 services:
     zookeeper:
         image: wurstmeister/zookeeper
@@ -308,8 +319,8 @@ services:
             - 9093:9093
         environment:
             KAFKA_LISTENERS: SASL_PLAINTEXT://0.0.0.0:9093
-            KAFKA_ADVERTISED_LISTENERS: SASL_PLAINTEXT://192.168.77.77:9093
-            KAFKA_ZOOKEEPER_CONNECT: '192.168.77.77:2181'
+            KAFKA_ADVERTISED_LISTENERS: SASL_PLAINTEXT://${IP_ADDRESS}:9093
+            KAFKA_ZOOKEEPER_CONNECT: '${IP_ADDRESS}:2181'
             ZOOKEEPER_SASL_ENABLED: "false"
             KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
             KAFKA_INTER_BROKER_LISTENER_NAME: SASL_PLAINTEXT
