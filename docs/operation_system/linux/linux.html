@@ -1142,7 +1142,11 @@ KiB Swap:   839676 total,   830708 free,     8968 used.   450648 avail Mem
 <p>其他命令:</p>
 <ul>
 <li><code>top -p &lt;pid&gt;</code>: 查看指定进程的运行状态</li>
+<li><code>top -Hp &lt;pid&gt;</code>: 查看指定进程内部的各个线程的运行状态</li>
 </ul>
+<blockquote>
+<p><code>id</code>可以看出CPU的空闲状态, <code>wa</code>如果过大, 可能表明磁盘IO性能较频繁或者IO较差, 导致有频繁的IO等待.</p>
+</blockquote>
 <h4 id="%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6">进程控制</h4>
 <ul>
 <li><code>nice -n &lt;优先级&gt; &lt;程序启动命令&gt;</code>: 设置优先级, 范围从-20到19, 值越小优先级越高, 抢占资源就越多</li>
@@ -1478,11 +1482,226 @@ sudo service ssh status
 <li>重启<code>systemctl restart sshd</code></li>
 <li>查看是否修改成功<code>netstat -ntlp</code></li>
 </ol>
-<h2 id="%E5%B7%A5%E4%BD%9C%E4%B8%AD%E7%9A%84%E7%A7%AF%E7%B4%AF">工作中的积累</h2>
-<h4 id="%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5">查看磁盘使用情况</h4>
-<p><code>df -h</code></p>
-<p><strong>汇总一个目录下各个文件/文件夹大小</strong></p>
-<p><code>du -sh *</code></p>
+<h2 id="%E7%A3%81%E7%9B%98%E6%9F%A5%E7%9C%8B">磁盘查看</h2>
+<ul>
+<li>查看磁盘使用情况: <code>df -h</code></li>
+<li>汇总一个目录下各个文件/文件夹大小: <code>du -sh *</code></li>
+</ul>
+<p><strong>查看磁盘IO情况</strong></p>
+<blockquote>
+<p>需要安装<code>sysstat</code>(centos: yum install -y sysstat, ubuntu: sudo apt install sysstat)</p>
+</blockquote>
+<p>执行示例:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">&gt;</span><span class="bash">&gt;&gt; iostat -x 1</span>
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           7.47    0.00    2.98    1.23    0.00   88.32
+
+Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
+sda               0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00
+sdb               0.00     0.00    0.00 2855.00     0.00 16384.00    11.48   149.27   52.49    0.00   52.49   0.35 100.00
+dm-0              0.00     0.00    0.00 2864.00     0.00 16424.00    11.47   150.28   52.63    0.00   52.63   0.35 100.10
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           9.50    0.00    3.23    1.20    0.00   86.07
+
+Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
+sda               0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00
+sdb               0.00     0.00    0.00 2513.00     0.00 14400.00    11.46   151.80   59.00    0.00   59.00   0.40 100.00
+dm-0              0.00     0.00    0.00 2528.00     0.00 14472.00    11.45   152.57   59.00    0.00   59.00   0.40  99.90
+</div></code></pre>
+<p>命令解释:</p>
+<ul>
+<li><code>-x</code>: 显示扩展状态;</li>
+<li><code>1</code>: 每次报告的间隔时间;</li>
+<li><code>iostat -x 1 5</code>: 每个1秒报告一次, 供报告五次. 如果不指定5, 则持续输出.</li>
+</ul>
+<p><strong>测试磁盘IO写入速度</strong></p>
+<p>使用示例:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">&gt;</span><span class="bash">&gt;&gt; time dd <span class="hljs-keyword">if</span>=/dev/zero of=/data/test.dbf bs=8k count=10000 oflag=direct,nonblock</span>
+10000+0 records in
+10000+0 records out
+81920000 bytes (82 MB, 78 MiB) copied, 0.702215 s, 117 MB/s
+
+real    0m0.704s
+user    0m0.000s
+sys     0m0.114s
+</div></code></pre>
+<p>解释:</p>
+<ul>
+<li>这是一条复合命令.</li>
+<li><code>time</code>: 用于测量执行后续命令所花费的时间. 它会输出命令执行的用户时间、系统时间和实际（墙钟）时间</li>
+<li><code>dd</code>: 是一个强大的数据复制和转换工具,常被用来进行基准测试或者创建文件系统的完整备份.它的名字来源于&quot;data duplicate&quot;
+<ul>
+<li><code>if=/dev/zero</code>: 指定输入文件为 /dev/zero，这是一个特殊的文件，当读取它的时候，会返回无限的零字节。在这里用作生成大量零填充的数据流。</li>
+<li><code>of=/data/test.dbf</code>: 指定输出文件为 /data/test.dbf，这是要写入数据的目标文件</li>
+<li><code>bs=8k</code>: 设置块大小为8K字节。这意味着每次读写操作都会处理8K字节的数据</li>
+<li><code>count=10000</code>: 设置从输入复制到输出的块数量为10000个。因此，总共将写入 10000 * 8k = 80MB 的数据</li>
+<li><code>oflag=direct,nonblock</code>: 这些标志用于改变 dd 对输出文件的操作方式
+<ul>
+<li><code>direct</code>: 使用直接I/O（Direct I/O），这意味着数据绕过标准文件系统缓存机制，直接对存储设备进行读写。这样可以获得更真实的I/O性能数据，但同时也可能需要更多的硬件资源。</li>
+<li><code>nonblock</code>: 使用非阻塞I/O（Non-blocking I/O），即使设备忙也立即返回错误而不是等待。这通常用于避免I/O操作阻塞进程的情况。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>监控当前系统中各个进程的IO读写情况</strong></p>
+<blockquote>
+<p>需要先安装<code>iotop</code>(centos: yum install -y iotop, ubuntu: sudo apt install iotop)</p>
+</blockquote>
+<ul>
+<li><code>iotop -oPa</code>
+<ul>
+<li><code>o</code>: 显示每个分区的 I/O 使用情况</li>
+<li><code>P</code>: 这个选项使得 iotop 将以 PID（进程标识符）的形式显示进程，而不是尝试解析并显示进程名</li>
+<li><code>a</code>: 这个选项使 iotop 在启动时自动进入“顶部”模式，显示所有活跃的 I/O 操作。如果没有这个选项，iotop 可能只会显示那些正在进行 I/O 活动的进程</li>
+</ul>
+</li>
+</ul>
+<p>显示示例:</p>
+<p><img src="img/iotop.png" alt="image"></p>
+<p>其中<code>IO&gt;</code>命令很重要, 可以显示每个进程的IO使用率.</p>
+<h2 id="%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7">系统监控</h2>
+<p><strong>查看系统虚拟内存信息</strong></p>
+<pre class="hljs"><code><div><span class="hljs-meta">&gt;</span><span class="bash">&gt;&gt; vmstat 1</span>
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 0  0   1548 2289800 430024 2437272    0    0    20   188  266  120  5  3 92  0  0
+ 0  0   1548 2289904 430024 2437272    0    0     0     0  157 3675  0  1 99  0  0
+ 1  0   1548 2289904 430024 2437272    0    0     0  7632  278 4035  1  1 98  0  0
+ 0  0   1548 2291520 430032 2437484    0    0     0   432  171 3925  1  1 98  0  0
+ 0  0   1548 2293188 430032 2436596    0    0     0     0  249 3951  0  1 99  0  0
+ 1  0   1548 2293032 430032 2436644    0    0     0     0  441 4029  5  1 94  0  0
+ 0  0   1548 2293032 430032 2437688    0    0     0     0  837 4481  6  3 91  0  0
+ 0  0   1548 2293032 430032 2437640    0    0     0     0  406 3908  0  1 99  0  0
+ 0  0   1548 2290712 430044 2437628    0    0     0   268  291 4117  0  1 99  0  0
+ 0  0   1548 2299912 430044 2422672    0    0     0     0  311 3841  1  2 98  0  0
+</div></code></pre>
+<p>命令解释:</p>
+<ul>
+<li><code>vmstat</code> : 用于报告有关系统虚拟内存状态的信息</li>
+<li><code>1</code>: 这个数字指定了 vmstat 更新和输出统计信息的间隔时间（以秒为单位）。在这个例子中，1 表示每秒更新一次输出.</li>
+</ul>
+<p>输出解释:</p>
+<p><code>vmstat</code> 的输出通常分为两部分：<code>procs</code> 和 <code>memory</code>，有时还包含 <code>swap</code>、<code>io</code>、<code>system</code> 和 <code>cpu</code> 部分。以下是主要部分的简要说明：</p>
+<ul>
+<li>procs:
+<ul>
+<li><code>r</code>: 正在运行或可运行（在运行队列中等待运行）的进程数量</li>
+<li><code>b</code>: 处于不可中断睡眠状态的进程数量</li>
+</ul>
+</li>
+<li>memory
+<ul>
+<li><code>swpd</code>: 使用的虚拟内存（swap）大小，以 KB 计</li>
+<li><code>free</code>: 空闲的物理内存大小，以 KB 计</li>
+<li><code>buff</code>: 作为缓冲区使用的内存大小，以 KB 计</li>
+<li><code>cache</code>: 作为缓存使用的内存大小，以 KB 计</li>
+</ul>
+</li>
+<li>swap
+<ul>
+<li>每秒从磁盘交换到内存的 KB 数量</li>
+<li>每秒从内存交换到磁盘的 KB 数量</li>
+</ul>
+</li>
+<li>io
+<ul>
+<li><code>bi</code>: 每秒从块设备接收的 KB 数量</li>
+<li><code>bo</code>: 每秒向块设备发送的 KB 数量</li>
+</ul>
+</li>
+<li>system
+<ul>
+<li><code>in</code>: 每秒发生的中断次数</li>
+<li><code>cs</code>: 每秒上下文切换的次数</li>
+</ul>
+</li>
+<li>cpu
+<ul>
+<li><code>us</code>: 用户进程占用的 CPU 百分比</li>
+<li><code>su</code>: 系统进程占用的 CPU 百分比</li>
+<li><code>id</code>: 空闲时间占的 CPU 百分比</li>
+<li><code>wa</code>: 等待 I/O 完成的时间百分比</li>
+<li><code>st</code>: 被偷走的时间百分比（通常在虚拟化环境中出现）</li>
+</ul>
+</li>
+</ul>
+<p>通过这些统计数据，你可以快速了解系统的内存使用情况、CPU 利用率、I/O 活动等，这对于性能调优和故障排查非常有帮助。如果你只需要一次输出，可以省略时间间隔参数，运行 vmstat 即可获得单次输出。例如，vmstat 不带参数会默认输出两次，第一次是最近一段时间的统计，第二次是自上次输出以来的统计。</p>
+<p><strong>监控进程活动</strong></p>
+<pre class="hljs"><code><div><span class="hljs-meta">&gt;</span><span class="bash">&gt;&gt; pidstat -w 1</span>
+Linux 5.10.134-16.2.an8.x86_64 (localhost.localdomain)  2024年08月24日  _x86_64_        (40 CPU)
+
+18时57分41秒   UID       PID   cswch/s nvcswch/s  Command
+18时57分42秒     0        14    271.57      0.00  rcu_sched
+18时57分42秒     0        69      2.94      0.00  ksoftirqd/11
+18时57分42秒     0       104      1.96      0.00  ksoftirqd/18
+18时57分42秒     0       205      0.98      0.00  ksoftirqd/38
+18时57分42秒     0       223      1.96      0.00  kcompactd0
+18时57分42秒     0       224      1.96      0.00  kcompactd1
+18时57分42秒     0       486      4.90      0.00  load_calc
+18时57分42秒     0      1002      0.98      0.00  kworker/9:1H-events_highpri
+18时57分42秒     0      1016     19.61      0.00  xfsaild/dm-0
+18时57分42秒     0      1262      0.98      0.00  irq/16-vmwgfx
+18时57分42秒     0      1342      0.98      0.00  kworker/28:1H-events_highpri
+18时57分42秒     0      1432      0.98      0.00  kworker/32:1H-kblockd
+18时57分42秒     0      1522      1.96      0.00  NetworkManager
+</div></code></pre>
+<ul>
+<li><code>pidstat</code>属于<code>sysstat</code>包的一部分</li>
+<li><code>pidstat</code>: 用于报告进程的统计信息</li>
+<li><code>-w</code>: 这个选项用于显示进程的上下文切换统计信息。具体来说，它会显示每个进程的自愿上下文切换 (voluntary context switches) 和非自愿上下文切换 (involuntary context switches) 的数量。</li>
+<li><code>1</code>: 这个数字指定了 pidstat 更新和输出统计信息的时间间隔，单位是秒</li>
+</ul>
+<p>输出解释:</p>
+<ul>
+<li><code>cswch/s</code>: 每秒自愿上下文切换次数</li>
+<li><code>nvcswch/s</code>: 每秒非自愿上下文切换次数</li>
+</ul>
+<p>命令示例2:</p>
+<pre class="hljs"><code><div>[root@localhost ~]# pidstat -d 2
+Linux 5.10.134-16.2.an8.x86_64 (localhost.localdomain)  2024年08月24日  _x86_64_        (40 CPU)
+
+19时04分20秒   UID       PID   kB_rd/s   kB_wr/s kB_ccwr/s iodelay  Command
+19时04分23秒  1003    897002      0.00      5.91      0.00       0  java
+19时04分23秒  1003    897461      0.00     88.67      0.00       0  java
+19时04分23秒  1005    897737      0.00     17.73      0.00       0  clickhouse
+19时04分23秒  1002    898243      0.00      3.94      0.00       0  java
+19时04分23秒  1003   1506433      0.00      9.85      0.00       0  java
+19时04分23秒  1003   1506665      0.00      5.91      0.00       0  java
+19时04分23秒  1003   1508055      0.00      3.94      0.00       0  java
+19时04分23秒  1003   1508338      0.00      3.94      0.00       0  java
+
+19时04分23秒   UID       PID   kB_rd/s   kB_wr/s kB_ccwr/s iodelay  Command
+19时04分25秒  1003    897002      0.00      2.00      0.00       0  java
+19时04分25秒  1003    897461      0.00     86.00      0.00       0  java
+19时04分25秒  1003   1506665      0.00      2.00      0.00       0  java
+</div></code></pre>
+<p>命令解释:</p>
+<ul>
+<li><code>-d</code>: 显示各个进程的IO使用情况</li>
+<li><code>2</code>: 每2秒更新一次</li>
+</ul>
+<p>输出解释:</p>
+<ul>
+<li><code>PID</code>      ：进程的PID</li>
+<li><code>kB_rd/s</code>  ：磁盘每秒读数据（单位：KB）</li>
+<li><code>kB_wr/s</code>  ：磁盘每秒写数据（单位：KB）</li>
+<li><code>kB_ccwr/s</code>：已被任务取消写入磁盘的数据（单位：KB）</li>
+<li><code>Command</code>  ：进程的命令名称</li>
+</ul>
+<p>其余<code>pidstat</code>补充:</p>
+<ul>
+<li><code>-u</code>：监控CPU</li>
+<li><code>-w</code>：监控上下文切换</li>
+<li><code>-r</code>：监控内存</li>
+<li><code>-h</code>：以人类可读的格式显示输出的单位（例如，K、M、G）</li>
+<li><code>-d</code>：监控I/O统计信息</li>
+<li><code>-t</code>：显示详细信息，也可以指定pidstat必须监视的内容 {task | child | all}</li>
+<li><code>-p</code>：指定PID {pid[，…]| self | all}</li>
+<li><code>-C</code>：指定命令名称包含字符串comm的任务</li>
+</ul>
+<h2 id="%E5%85%B6%E4%BB%96%E5%91%BD%E4%BB%A4">其他命令</h2>
 <p><strong>查看端口监听</strong></p>
 <p><code>lsof -i:端口号</code></p>
 <pre class="hljs"><code><div>[root@localhost gitlab]# lsof -i:80
@@ -1511,7 +1730,6 @@ nginx   10498 gitlab-www    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
 <li>在文档末尾, 填写需要指定的环境变量, 例如:<code>export VAR_KEY=VAR_VALUE</code>;</li>
 <li>执行<code>source /etc/profile</code>使其立即生效.</li>
 </ol>
-<h2 id="%E5%85%B6%E4%BB%96%E5%91%BD%E4%BB%A4">其他命令</h2>
 <ul>
 <li><code>clear</code>: 清屏</li>
 <li><code>lscpu</code>: 查看cpu相关信息</li>
@@ -1555,6 +1773,20 @@ nginx   10498 gitlab-www    7u  IPv4 128147      0t0  TCP *:http (LISTEN)
 <li>
 <p><code>lsblk</code>: list block, 即列出所有可用块设备信息, 显示他们之间的依赖关系</p>
 </li>
+</ul>
+<h2 id="%E8%88%AA%E6%B5%B7%E6%97%A5%E5%BF%97">航海日志</h2>
+<h3 id="%E7%B3%BB%E7%BB%9F%E5%86%85%E9%83%A8web%E5%BA%94%E7%94%A8%E5%93%8D%E5%BA%94%E9%80%9F%E5%BA%A6%E6%85%A2">系统内部web应用响应速度慢</h3>
+<ul>
+<li>通过<code>top</code>命令查看系统当前负载情况</li>
+<li>磁盘相关
+<ol>
+<li>通过<code>iostat -x 1</code>查看磁盘读写情况</li>
+<li>通过<code>time dd if=/dev/zero of=/data/test.dbf bs=8k count=10000 oflag=direct,nonblock</code>测试剩余IO性能</li>
+<li>通过<code>pidstat -d 2</code>查看进程的磁盘读写情况</li>
+<li>通过<code>iotop</code>查看磁盘读写情况</li>
+</ol>
+</li>
+<li>通过<code>vmstat 1</code>查看内存情况</li>
 </ul>
 
 </body>
