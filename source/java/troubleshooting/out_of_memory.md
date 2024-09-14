@@ -145,3 +145,16 @@ jmap -dump:format=b,file=sparrow.bin 10632
 ![image](img/oom_dump_2_unreachable.png)
 
 可以看出, 不可达对象大约占总对象OOMBean的一半.
+
+
+## Dump文件过大解决方案
+
+如果dump文件过大, 会有很多问题, 比如: 1. 从服务器传输到本地非常费时; 2. 个人电脑性能有限, 可能无法打开; 等等. 所以需要在服务器上就地分析. MemoryAnalyzerTool可以直接在linux上执行, 并生成html的分析报告. 具体操作如下:
+
+1. 下载MemoryAnalyzerTool. 一定要下载对应版本的, 比如jdk8就下载1.8.x版本的. 下载地址如下: https://eclipse.dev/mat/downloads.php
+2. 解压到linux下任意文件夹下;
+3. 修改`ParseHeapDump.sh`脚本配置, 添加`-vmargs -Xmx30g -XX:-UseGCOverheadLimit`, 其中`-Xmx`是最大堆内存, 建议比dump文件的大小大一点.
+4. 配置Java环境变量: `PATH=/xxxx/java/bin:$PATH`
+5. 执行分析命令:
+   1. `./ParseHeapDump.sh dump文件 org.eclipse.mat.api:suspects`: 这个输出的分析报告基本上就够用了, 会在dump文件的同级目录输出一个zip压缩包.
+   2. `./ParseHeapDump.sh [hprof文件]  org.eclipse.mat.api:suspects org.eclipse.mat.api:overview org.eclipse.mat.api:top_components`: 输出的更详细, 但是会非常慢.
