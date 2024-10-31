@@ -468,7 +468,7 @@ code {
 <ol>
 <li>下载MemoryAnalyzerTool. 一定要下载对应版本的, 比如jdk8就下载1.8.x版本的. 下载地址如下: https://eclipse.dev/mat/downloads.php</li>
 <li>解压到linux下任意文件夹下;</li>
-<li>修改<code>ParseHeapDump.sh</code>脚本配置, 添加<code>-vmargs -Xmx30g -XX:-UseGCOverheadLimit</code>, 其中<code>-Xmx</code>是最大堆内存, 建议比dump文件的大小大一点.</li>
+<li>修改<code>ParseHeapDump.sh</code>脚本配置, 添加<code>-vmargs -Xmx30g -XX:-UseGCOverheadLimit</code>, 其中<code>-Xmx</code>是最大堆内存, 建议比dump文件的大小大一点. 示例: <code>&quot;$(dirname -- &quot;$0&quot;)&quot;/MemoryAnalyzer -consolelog -application org.eclipse.mat.api.parse &quot;$@&quot; -vmargs -Xmx30g -XX:-UseGCOverheadLimit</code></li>
 <li>配置Java环境变量: <code>PATH=/xxxx/java/bin:$PATH</code></li>
 <li>执行分析命令:
 <ol>

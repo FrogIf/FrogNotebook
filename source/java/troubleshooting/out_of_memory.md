@@ -153,7 +153,7 @@ jmap -dump:format=b,file=sparrow.bin 10632
 
 1. 下载MemoryAnalyzerTool. 一定要下载对应版本的, 比如jdk8就下载1.8.x版本的. 下载地址如下: https://eclipse.dev/mat/downloads.php
 2. 解压到linux下任意文件夹下;
-3. 修改`ParseHeapDump.sh`脚本配置, 添加`-vmargs -Xmx30g -XX:-UseGCOverheadLimit`, 其中`-Xmx`是最大堆内存, 建议比dump文件的大小大一点.
+3. 修改`ParseHeapDump.sh`脚本配置, 添加`-vmargs -Xmx30g -XX:-UseGCOverheadLimit`, 其中`-Xmx`是最大堆内存, 建议比dump文件的大小大一点. 示例: ```"$(dirname -- "$0")"/MemoryAnalyzer -consolelog -application org.eclipse.mat.api.parse "$@" -vmargs -Xmx30g -XX:-UseGCOverheadLimit```
 4. 配置Java环境变量: `PATH=/xxxx/java/bin:$PATH`
 5. 执行分析命令:
    1. `./ParseHeapDump.sh dump文件 org.eclipse.mat.api:suspects`: 这个输出的分析报告基本上就够用了, 会在dump文件的同级目录输出一个zip压缩包.
