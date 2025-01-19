@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>spring_base.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="spring%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86">Spring基础知识</h1>
+<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<ul>
+<li>IOC -- Inversion Of Control, 控制反转. 传统程序中, 应用程序控制着对象的创建和管理, IOC中, 发生反转, 对象的生命周期由Spring容器来控制;</li>
+<li>AOP -- Aspect Oriented Programming, 面向切面编程.</li>
+</ul>
+<h2 id="ioc">IOC</h2>
+<h3 id="bean%E6%B3%A8%E5%85%A5%E7%9A%84%E6%96%B9%E5%BC%8F">Bean注入的方式</h3>
+<ul>
+<li><code>@Autowired</code></li>
+<li>JDK提供的<code>@Resource</code>和<code>@Inject</code></li>
+<li>使用xml文件</li>
+<li>Spring4.3开始, 如果只有一个有参构造, 当这个Bean实例化时, 会自动对构造器形参进行注入</li>
+</ul>
+<blockquote>
+<p>Autowired是先byType再byName, 如果不存在会报错; Resource是先byName再byType, 如果匹配不到会默认null</p>
+</blockquote>
+<blockquote>
+<p>Autowired不仅可以注入单个对象, 还能注入List, Set, array, Map; 并且注入Map时, key就是beanName</p>
+</blockquote>
+<h3 id="spring-bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">Spring Bean生命周期</h3>
+<p>Spring Bean生命周期按顺序如下:</p>
+<ol>
+<li><strong>实例化Bean</strong>: 对于BeanFactory容器, 当客户向容器请求一个尚未初始化的bean时, 或者初始化bean的时候, 需要注入另一个尚未初始化的依赖是, 容器会调用createBean进行实例化. 对于ApplicationContext容器, 当容器启动结束后, 通过BeanDefinition对象中的信息, 实例化所有的Bean.</li>
+<li><strong>设置对象属性(依赖注入)</strong>: 实例化后的对象被封装在BeanWrapper对象中, 紧接着, Spring根据BeanDefinition中的信息, 以及通过BeanWrapper提供的设置属性的接口完成依赖注入.</li>
+<li><strong>处理Aware接口</strong>: 接着, Spring会检测该对象是否实现了xxxAware接口, 并将相关的xxxAware实例注入给Bean:
+<ul>
+<li>如果这个Bean已经实现了BeanNameAware接口, 会调用它实现的setBeanName(beanId)方法, 此处beanId就是配置文件中的Bean的id值</li>
+<li>如果这个Bean实现了BeanFactoryAware接口, 会调用它实现的setBeanFactory()方法, 传递的是BeanFactory</li>
+<li>如果这个Bean已经实现了ApplicationContextAware接口, 会调用setApplicationContext()方法, 传入ApplicationContext</li>
+</ul>
+</li>
+<li><strong>BeanPostProcessor</strong>: 如果想对Bean进行一些自定义的处理, 那么可以让Bean实现了BeanPostProcessor接口, 那么将会调用postProcessBeforeInitialization(obj, s)方法</li>
+<li><strong>InitializingBean</strong>: 如果实现了InitializingBean, 则调用afterPropertiesSet方法</li>
+<li><strong>init-method</strong>: 如果Bean在Spring配置文件中配置了init-method属性, 则会自动调用其配置的初始化方法</li>
+<li><strong>BeanPostProcessor</strong>: 和上面一样, 如果实现了BeanPostProcessor接口, 将会调用postProcessorAfterInitialization(obj, s)方法; 由于这个方法是在Bean初始化结束时调用的, 所以可以被应用于内存或者缓存技术.</li>
+<li><strong>注册Destruction回调</strong>: <code>AbstractAutowireCapableBeanFactory.registerDisposableBeanIfNecessary</code>中对实现了DisposableBean的类或者自定义销毁方法的的bean进行回调注册.</li>
+<li><strong>DisposableBean</strong>: 当Bean不在需要时, 会经过清理阶段, 如果Bean实现了DisposableBean这个接口, 会调用其实现的destory()方法;</li>
+<li><strong>destory-method</strong>: 最后, 如果这个Bean的Spring配置中配置了destory-method属性, 会自动调用其配置的销毁方法.</li>
+</ol>
+<blockquote>
+<p>前1--8步在<code>AbstractAutowireCapableBeanFactory</code>类中, 9--10步在<code>DisposableBeanAdapter</code>类中</p>
+</blockquote>
+<image src="img/spring_bean_lifecycle.png" height="450px">
+<p>示例代码如下(方法调用顺序与方法定义顺序一致):</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">package</span> sch.frog.learn.spring.app;
+
+<span class="hljs-keyword">import</span> org.springframework.beans.BeansException;
+<span class="hljs-keyword">import</span> org.springframework.beans.factory.config.BeanPostProcessor;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Component;
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GlobalLifeCycleDemoBean</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">BeanPostProcessor</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">postProcessBeforeInitialization</span><span class="hljs-params">(Object bean, String beanName)</span> <span class="hljs-keyword">throws</span> BeansException </span>{
+        System.out.println(<span class="hljs-string">"postProcessBeforeInitialization : "</span> + bean + <span class="hljs-string">", beanName : "</span> + beanName);
+        <span class="hljs-keyword">return</span> bean;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">postProcessAfterInitialization</span><span class="hljs-params">(Object bean, String beanName)</span> <span class="hljs-keyword">throws</span> BeansException </span>{
+        System.out.println(<span class="hljs-string">"postProcessAfterInitialization : "</span> + bean + <span class="hljs-string">", beanName : "</span> + beanName);
+        <span class="hljs-keyword">return</span> bean;
+    }
+}
+
+<span class="hljs-comment">//---------------分割线------------------</span>
+
+<span class="hljs-keyword">package</span> sch.frog.learn.spring.app;
+
+<span class="hljs-keyword">import</span> org.springframework.beans.BeansException;
+<span class="hljs-keyword">import</span> org.springframework.beans.factory.*;
+<span class="hljs-keyword">import</span> org.springframework.context.ApplicationContext;
+<span class="hljs-keyword">import</span> org.springframework.context.ApplicationContextAware;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Component;
+
+<span class="hljs-keyword">import</span> javax.annotation.PostConstruct;
+<span class="hljs-keyword">import</span> javax.annotation.PreDestroy;
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LifeCycleDemoBean</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">BeanNameAware</span>, <span class="hljs-title">BeanClassLoaderAware</span>,
+        <span class="hljs-title">BeanFactoryAware</span>, <span class="hljs-title">ApplicationContextAware</span>,
+        <span class="hljs-title">InitializingBean</span>, <span class="hljs-title">DisposableBean</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">LifeCycleDemoBean</span><span class="hljs-params">()</span> </span>{
+        System.out.println(<span class="hljs-string">"contructor"</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setBeanName</span><span class="hljs-params">(String s)</span> </span>{
+        System.out.println(<span class="hljs-string">"set bean name : "</span> + s);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setBeanClassLoader</span><span class="hljs-params">(ClassLoader classLoader)</span> </span>{
+        System.out.println(<span class="hljs-string">"set bean class loader : "</span> + classLoader.toString());
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setBeanFactory</span><span class="hljs-params">(BeanFactory beanFactory)</span> <span class="hljs-keyword">throws</span> BeansException </span>{
+        System.out.println(<span class="hljs-string">"set bean factory : "</span> + beanFactory);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setApplicationContext</span><span class="hljs-params">(ApplicationContext applicationContext)</span> <span class="hljs-keyword">throws</span> BeansException </span>{
+        System.out.println(<span class="hljs-string">"set applicatoin context : "</span> + applicationContext.getApplicationName());
+    }
+
+    <span class="hljs-comment">// 执行全局的 BeanPostProcessor.postProcessBeforeInitialization</span>
+
+    <span class="hljs-meta">@PostConstruct</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postConstructor</span><span class="hljs-params">()</span></span>{
+        System.out.println(<span class="hljs-string">"PostConstruct"</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">afterPropertiesSet</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>{
+        System.out.println(<span class="hljs-string">"afterPropertiesSet"</span>);
+    }
+
+    <span class="hljs-comment">// 执行全局的 BeanPostProcessor.postProcessAfterInitialization</span>
+
+    <span class="hljs-meta">@PreDestroy</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">preDestory</span><span class="hljs-params">()</span></span>{
+        System.out.println(<span class="hljs-string">"PreDestroy"</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">destroy</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>{
+        System.out.println(<span class="hljs-string">"destroy"</span>);
+    }
+}
+</div></code></pre>
+<h3 id="%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96">循环依赖</h3>
+<p>两个或者多个bean之间互相依赖, 形成循环引用的情况. 如果不加以处理, 会导致应用程序启动失败. Spring引入三级缓存用以解决循环依赖.</p>
+<p>限制: 1. 互相依赖的Bean必须是单例的; 2. 依赖注入的方式不能是构造函数注入(构造器循环依赖用@Lazy可以解决);</p>
+<ul>
+<li>singletonObjects: 一级缓存, 存储完整创建好的单例bean对象</li>
+<li>earlySingletonObjects: 二级缓存, 存储尚未完全创建好的单例bean对象</li>
+<li>singletonFactories: 三级缓存, 存储单例bean的创建工厂</li>
+</ul>
+<blockquote>
+<p>bean的创建起始于<code>org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#createBean(java.lang.Class&lt;T&gt;)</code>方法, 可以从这个方法一点点看到它的逻辑</p>
+</blockquote>
+<p>bean创建的流程, 上面bean生命周期中已经有了. 结合循环依赖下的三级缓存的流程如下:</p>
+<p><img src="img/spring_circle_reference.png" alt="image"></p>
+<p>总结就是: beanA创建阶段将自己的ObjectFactory放入三级缓存, 然后发现需要注入beanB, 触发创建beanB, 这时有需要注入beanA, 从三级缓存中取到beanA的factory, 创建beanA, 使得beanB创建成功, 继而beanA也创建成功;</p>
+<blockquote>
+<p>解决循环依赖一定需要三级缓存吗?
+答: 从上图也能看出, 只需要二级缓存也可以, 之所以使用三级缓存, 是为了考虑AOP代理对象. 正常情况下, AOP代理对象是在BeanPostProcessor.postProcessAfterInitialization阶段转换的, 如果只使用二级缓存, 就是上图中&quot;加入三级缓存&quot;改成&quot;加入二级缓存&quot;, 那么就需要保证二级缓存中必须是AOP代理对象, 也就需要把所有的代理对象都提前创建出来, 这就打破了上面的BeanPostProcessor设计. 如果采用三级缓存, 只需从factory中获取对象时才需要稍微破坏一下, 其余依旧保持原样.</p>
+</blockquote>
+<blockquote>
+<p>@Lazy是如何解决循环依赖的?
+答: 有Lazy注解注入的地方, 会先注入一个临时的代理对象, 在真正使用的时候, 会返回实际的对象.</p>
+</blockquote>
+<blockquote>
+<p>SpringBoot2.6及以后的版本呢默认不支持循环依赖, 需要手动加上配置<code>spring.main.allow-circular-references=true</code>.</p>
+</blockquote>
+<h3 id="beanfactory%E5%92%8Cfactorybean">BeanFactory和FactoryBean</h3>
+<ul>
+<li>BeanFactory就是Bean工厂, 是整个SpringIOC容器的一部分, 负责管理Bean的创建和生命周期; ApplicationContext就是BeanFactory的一个实现类. 常用方法例如: <code>applicationContext.getBean(name)</code>;</li>
+<li>FactoryBean用于定义一个工厂Bean, 它可以产生某种类型的对象. 当Spring配置文件中定义一个Bean时, 如果这个Bean实现了FactoryBean接口, 那么FactoryBean.getObject()返回值会放入到IOC容器中.</li>
+</ul>
+<h3 id="bean%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F">bean的作用域</h3>
+<p>Spring容器中的bean可以分为5个范围:</p>
+<ul>
+<li>singleton: 默认, 每个容器中只有一个bean的实例, 单例的模式由BeanFactory自身来维护</li>
+<li>prototype: 为每一个bean请求提供一个实例</li>
+<li>request: 为每一个网络请求创建一个实例, 在请求完成以后, bean会失效并被垃圾回收器回收</li>
+<li>session: 与request范围类似, 确保每一个session中有一个bean实例, 在session过期之后, bean会随之失效</li>
+<li>global-session: 全局作用域, global-session和Portlet应用相关. 当你的应用部署在Portlet容器中工作时, 它包含很多portlet, 如果你想要声明让所有的portlet共用全局的存储变量的话, 那么这全局变量需要存储在global-session中, 全局作用域与Servlet中的session作用域效果相同</li>
+</ul>
+<h3 id="%E8%AE%A9%E6%9F%90%E4%B8%AAbean%E5%9C%A8%E5%85%B6%E4%BB%96%E5%8F%A6%E4%B8%80%E4%B8%AAbean%E4%B9%8B%E5%89%8D%E5%88%9D%E5%A7%8B%E5%8C%96">让某个Bean在其他另一个bean之前初始化</h3>
+<ul>
+<li>使用@Autowired, 会先初始化注入的bean</li>
+<li>使用@DependsOn, 指定需要先初始化某个bean</li>
+<li>利用BeanFactoryPostProcessor, 在实现方法中使用beanFactory.getBean(xxx.class)触发指定bean的优先初始化</li>
+</ul>
+<blockquote>
+<p>注意, @Order只能控制同一类型bean在集合中的顺序, 不能控制不同类型bean的初始化顺序</p>
+</blockquote>
+<h2 id="aop">AOP</h2>
+<ul>
+<li>基本概念: Aspect -- 切面; PointCut -- 切入点; Advice -- 通知; Target -- 目标对象; JoinPoint -- 连接点; Weaving -- 织入;</li>
+<li>常用场景: 参数校验, 缓存, 日志打印, 事务管理.</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">@Target</span>(ElementType.METHOD)
+<span class="hljs-meta">@Retention</span>(RetentionPolicy.RUNTIME)
+<span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> OpLog{}
+
+<span class="hljs-meta">@Aspect</span>
+<span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OpLogAspect</span></span>{   <span class="hljs-comment">// 这整个类就是一个切面</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(OpLogAspect<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> HttpServletRequest request;
+
+    <span class="hljs-meta">@Around</span>(<span class="hljs-string">"@annotation(xxx.xxx.xxx.annotation.OpLog)"</span>) <span class="hljs-comment">// 这个就是PointCut, 类似的注解还有: Pointcut, Before, After等</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">log</span><span class="hljs-params">(ProceedingJoinPoint pjp<span class="hljs-comment">/*这个就是joinPoint连接点*/</span>)</span> <span class="hljs-keyword">throws</span> Exception</span>{
+        <span class="hljs-comment">/*
+         * 这个方法里面的内容就是Advice
+         */</span>
+        Method method = ((MethodSignature)pjp.getSignature()).getMethod();
+        OpLog opLog = method.getAnnotation(OpLog<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+
+        Object response = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">try</span>{
+            response = pjp.proceed();
+        }<span class="hljs-keyword">catch</span>(Throwable t){
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(t);
+        }
+
+        logger.info(<span class="hljs-string">"log"</span>);
+        <span class="hljs-keyword">return</span> response;
+    }
+
+    <span class="hljs-comment">// 织入工作由Spring完成, 将切面与业务逻辑连接起来</span>
+}
+</div></code></pre>
+<p><strong>AOP通知类型</strong></p>
+<ul>
+<li>前置通知(Before advice): 在某连接点(join point)之前执行的通知, 但这个通知不能阻止连接点前的执行(除非它抛出一个异常)</li>
+<li>返回后通知(After returning advice): 在某连接点(join point)正常完成后执行的通知. 例如: 一个方法没有抛出任何异常, 正常返回</li>
+<li>抛出异常后通知(After throwing advice): 在方法抛出异常退出时执行的通知</li>
+<li>后通知(After (finally) advice): 当某连接点退出的时候执行的通知(不论是正常返回还是异常退出)</li>
+<li>环绕通知(Around Advice): 包围一个连接点(join point)通知, 如方法调用.</li>
+</ul>
+<h2 id="%E4%BA%8B%E5%8A%A1">事务</h2>
+<p><strong>Spring事务种类</strong></p>
+<ul>
+<li>编程式事务: 使用transactionTemplate</li>
+<li>声明式事务: 建立在AOP之上, 本质就是通过AOP对方法进行around</li>
+</ul>
+<blockquote>
+<p>声明式事务的优点: 使用@Transactional注解, 侵入低, 不污染代码
+声明式事务的缺点: 粒度只能到方法级别, 无法做到代码块级别</p>
+</blockquote>
+<p>声明式事务演示:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">@Transactional</span>(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = <span class="hljs-number">30</span> <span class="hljs-comment">/*秒*/</span>, readOnly = <span class="hljs-keyword">false</span>, rollbackFor = Exception<span class="hljs-class">.<span class="hljs-keyword">class</span>)
+</span></div></code></pre>
+<blockquote>
+<p>rollbackFor指定哪些异常会触发事务回滚, 如果不指定, 默认是RuntimeException和Error会触发事务回滚
+propagation用于控制多个事务方法相互调用时的事务行为, 默认是Propagation.REQUIRED</p>
+</blockquote>
+<p><strong>传播行为</strong></p>
+<ul>
+<li>REQUIRED: 如果当前没有事务, 就创建一个新事务, 如果当前存在事务, 就加入该事务</li>
+<li>SUPPORTS: 支持当前事务, 如果当前存在事务, 就加入该事务, 如果当前不存在事务, 就以非事务执行</li>
+<li>MANDATORY: 支持当前事务, 如果当前存在事务, 就加入该事务, 如果当前不存在事务, 就抛出异常</li>
+<li>REQUIRES_NEW: 创建新事务, 无论当前存不存在事务, 都创建新事务(独立于原来的事务, 两个事务互不影响)</li>
+<li>NOT_SUPPORTED: 以非事务方式执行操作, 如果当前存在事务, 就把当前事务挂起</li>
+<li>NEVER: 以非事务方式执行, 如果当前存在事务, 则抛出异常</li>
+<li>NESTED: 如果当前存在事务, 则在嵌套事务内执行. 如果当前没有事务, 则按REQUIRED属性执行(里面事务回滚不会影响到外面, 外面事务回滚, 里面一同回滚)</li>
+</ul>
+<p><strong>隔离级别</strong></p>
+<ul>
+<li>DEFAULT: 这是个 PlatfromTransactionManager 默认的隔离级别, 使用数据库默认的事务隔离级别</li>
+<li>READ_UNCOMMITTED: 读未提交, 允许另外一个事务可以看到这个事务未提交的数据</li>
+<li>READ_COMMITTED: 读已提交, 保证一个事务修改的数据提交后才能被另一事务读取, 而且能看到该事务对已有记录的更新</li>
+<li>REPEATABLE_READ: 可重复读, 保证一个事务修改的数据提交后才能被另一事务读取, 但是不能看到该事务对已有记录的更新</li>
+<li>SERIALIZABLE: 一个事务在执行的过程中完全看不到其他事务对数据库所做的更新</li>
+</ul>
+<p><strong>@Transactional事务失效</strong></p>
+<ul>
+<li>代理失效
+<ul>
+<li>@Transactional应用在非public方法上, 没法应用动态代理</li>
+<li>同一个类中方法调用, 走的是this调用, 没法应用动态代理</li>
+<li>final, static方法: final方法无法子类化和覆盖, 所以无法代理; static方法不属于对象, 无法AOP;</li>
+<li>没有被Spring容器管理</li>
+</ul>
+</li>
+<li>Transactional用的不对
+<ul>
+<li>propagation设置错误</li>
+<li>rollbackFor设置错误</li>
+</ul>
+</li>
+<li>异常被捕捉</li>
+<li>事务中使用了多线程
+<ul>
+<li>@Transactional使用的是ThreadLocal机制来存储事务上下文(connection包含在其中), ThreadLocal是线程隔离的, 新线程中的操作不会被包含在原有事务中.</li>
+</ul>
+</li>
+<li>数据库不支持事务</li>
+</ul>
+<blockquote>
+<p>如果@Transactional和@Async注解加在同一个方法上, 那么事务不会失效, 但是如果@Transactional注解的方法调用了@Async的方法, @Async的方法不会触发@Transactional方法事务的回滚</p>
+</blockquote>
+<h2 id="%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</h2>
+<ul>
+<li>工厂模式: BeanFactory就是一个简单的工厂模式的体现, 用来创建对象的实例.</li>
+<li>单例模式: Bean默认为单例模式.</li>
+<li>代理模式: Spring的AOP功能用到了JDK的动态代理和CGLIB字节码生成技术.</li>
+<li>模板方法模式: 用来解决代码重复的问题. restTemplate, jdbcTemplate</li>
+<li>观察者模式: 定义对象间一种一对多的依赖关系, 当一个对象的状态发生改变时, 所有依赖它的对象都会得到通知被动更新, 例如SpringListener的实现--ApplicationListener</li>
+<li>适配器模式: Spring MVC的HandlerAdapter就是适配器模式</li>
+<li>责任链模式: Spring MVC拦截器</li>
+</ul>
+<h2 id="springmvc">SpringMVC</h2>
+<p>Spring MVC是指Model-View-Controller, 即: 模型-视图-控制器.</p>
+<h3 id="%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86">工作原理</h3>
+<p><img src="img/spring_mvc.png" alt="image"></p>
+<ol>
+<li>客户端请求, 进入DispatchServlet, 访问dispatchServlet的doService方法
+<ul>
+<li>DispatcherServlet就是HttpServlet的实现类(HttpServlet是java servlet API定义的处理web请求的interface).</li>
+</ul>
+</li>
+<li>DispatchServlet根据请求信息调用HandlerMapping, 解析请求对应的Handler</li>
+<li>开始执行匹配的拦截器</li>
+<li>根据解析到的handler, 交由HandlerAdapter处理(HandlerAdapter内部会调用具体的Handler, 即Controller)</li>
+<li>处理完成, 返回ModelAndView, Model是返回的数据对象, View是逻辑视图</li>
+<li>ViewResolver会根据逻辑View查找实际的View</li>
+<li>DispatcherServlet把返回的Model传给View(视图渲染)</li>
+<li>把View返回给请求者</li>
+</ol>
+<blockquote>
+<p>HandlerMapping的抽象实现AbstractHandlerMapping中有如何通过url寻找Handler的代码, 可以理解为一个map, key是url, value是handler.</p>
+</blockquote>
+<h3 id="%E5%A6%82%E4%BD%95%E5%8A%A8%E6%80%81%E6%B7%BB%E5%8A%A0requestmapping">如何动态添加RequestMapping*</h3>
+<p>假如有这样一种场景: 需要对一个jar包进行热插拔, 当jar包加载进去之后, 就需要动态的加载RequestMapping, 如果jar包移除就需要动态的移除RequestMapping. 可以这样做:</p>
+<p>动态添加RequestMapping:</p>
+<pre class="hljs"><code><div>RequestMappingHandlerMapping requestMappingHandlerMapping = SpringUtil.getBean(RequestMappingHandlerMapping<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+Object object = applicationContext.getBean(beanName);  <span class="hljs-comment">// 需要注册的controller</span>
+<span class="hljs-keyword">if</span>(object != <span class="hljs-keyword">null</span> &amp;&amp; requestMappingHandlerMapping != <span class="hljs-keyword">null</span>){
+    Method method = requestMappingHandlerMapping.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredMethod(<span class="hljs-string">"detectHandlerMethods"</span>, Object<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+    method.setAccessible(<span class="hljs-keyword">true</span>);
+    method.invoke(requestMappingHandlerMapping, object);
+}
+</div></code></pre>
+<p>移除RequestMapping:</p>
+<pre class="hljs"><code><div>RequestMappingHandlerMapping requestMappingHandlerMapping = SpringUtil.getBean(RequestMappingHandlerMapping<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+Object object = applicationContext.getBean(beanName);  <span class="hljs-comment">// 需要注册的controller</span>
+requestMappingHandlerMapping.getHandlerMethods().forEach((mappingInfo, handlerMethod) -&gt; {
+    <span class="hljs-keyword">if</span>(handlerMethod.getBean().equals(object)){
+        requestMappingHandlerMapping.unregisterMapping(mappingInfo);
+    }
+});
+</div></code></pre>
+<h3 id="%E5%85%A8%E5%B1%80%E5%BC%82%E5%B8%B8%E6%8D%95%E6%8D%89">全局异常捕捉</h3>
+<pre class="hljs"><code><div><span class="hljs-meta">@RestControllerAdvice</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GlobalExceptionHandler</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+
+    <span class="hljs-meta">@ExceptionHandler</span>(ShiroException<span class="hljs-class">.<span class="hljs-keyword">class</span>)
+    @<span class="hljs-title">ResponseBody</span>
+    <span class="hljs-title">public</span> <span class="hljs-title">Object</span> <span class="hljs-title">handleNoAuthException</span>(<span class="hljs-title">HttpServletRequest</span> <span class="hljs-title">request</span>, <span class="hljs-title">HttpServletResponse</span> <span class="hljs-title">response</span>, <span class="hljs-title">Exception</span> <span class="hljs-title">e</span>) </span>{
+        String requestId = RequestUtil.getRequestId();
+        logger.error(<span class="hljs-string">"no auth when processing the request[{}] form action[{}]"</span>, requestId, request.getRequestURI(), e);
+        <span class="hljs-keyword">return</span> EchoErrorBuilder.builder().code(EchoError.AUTH_FAILURE).message(<span class="hljs-string">"no auth"</span>).requestId(requestId).build();
+    }
+
+    <span class="hljs-meta">@ExceptionHandler</span>(Exception<span class="hljs-class">.<span class="hljs-keyword">class</span>)
+    @<span class="hljs-title">ResponseBody</span>
+    <span class="hljs-title">public</span> <span class="hljs-title">Object</span> <span class="hljs-title">handOtherException</span>(<span class="hljs-title">HttpServletRequest</span> <span class="hljs-title">request</span>, <span class="hljs-title">HttpServletRequest</span> <span class="hljs-title">response</span>, <span class="hljs-title">Exception</span> <span class="hljs-title">e</span>)</span>{
+        String requestId = RequestUtil.getRequestId();
+        logger.error(<span class="hljs-string">"internal exception when processing the request[{}] form action[{}]"</span>, requestId, request.getRequestURI(), e);
+        <span class="hljs-keyword">return</span> EchoErrorBuilder.builder().code(EchoError.INTERNAL_ERROR).message(<span class="hljs-string">"internal exception"</span>).requestId(requestId).build();
+    }
+}
+</div></code></pre>
+<p>主要是两个注解:</p>
+<ul>
+<li>RestControllerAdvice</li>
+<li>ExceptionHandler</li>
+</ul>
+<h3 id="%E7%88%B6%E5%AD%90%E5%AE%B9%E5%99%A8">父子容器</h3>
+<p>在传统的SSM架构中, 是存在父子容器的, 即controller层通常是子容器, service和dao是父容器, 子容器可以访问父容器, 但是父容器不能访问子容器. 现在的项目一般都是SpringBoot, 这时不论controller, service, dao都是在同一个容器中, 不存在父子容器了.</p>
+<h2 id="springboot">SpringBoot</h2>
+<p>SpringBoot的主要用途是实现了自动装配和自动配置. 简化了应用程序的配置和Bean的管理.</p>
+<h3 id="%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE">自动配置</h3>
+<p>通过<code>Configuration</code>, <code>Compont</code>等注解可以进行自动配置, bean注入等, 但是这个前提是, spring只会扫描启动类下面的包里的这些注解, 对于依赖的第三方jar中的Spring配置需要如何让Spring扫描到呢. 这时需要在<code>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</code>文件中添加类似配置:<code>sch.frog.custom.config.FrogCustomConfiguration</code>. Spring在启动时自动扫描classpath目录下的所有这个文件, 然后就可以加载第三方的配置了.</p>
+<blockquote>
+<p>旧版Spring中, 这个配置放在<code>META-INF/spring.factories</code>中, 配置形式类似: <code>org.springframework.boot.autoconfigure.EnableAutoConfiguration=sch.frog.custom.config.FrogCustomConfiguration</code></p>
+</blockquote>
+<p><strong>条件化配置</strong></p>
+<p>条件化配置注解有: <code>Conditional</code>, <code>ConditionalOnClass</code>, <code>ConditionalOnMissingBean</code>, <code>ConditionalOnProperty</code>等;</p>
+<h3 id="%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B">启动流程</h3>
+<p>如下是Spring Boot启动的入口:</p>
+<pre class="hljs"><code><div><span class="hljs-meta">@SpringBootApplication</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SparrowApplication</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        SpringApplication.run(SparrowApplication<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">args</span>)</span>;
+    }
+}
+</div></code></pre>
+<p>调用流程如下:</p>
+<ol>
+<li>创建SpringApplication实例
+<ol>
+<li>确定是Servlet容器还是reactive容器;</li>
+<li>获取上下文初始化器<code>BootstrapRegistryInitializer</code>;</li>
+<li>获取应用程序初始化器<code>ApplicationContextlnitializer</code>;</li>
+<li>获取监听器<code>ApplicationListener</code>;</li>
+<li>确定启动主类(这个主类并没有什么关键用途, 只是用来输出日志);</li>
+</ol>
+</li>
+<li>执行run方法
+<ol>
+<li>启动计时器;</li>
+<li>获取监听器, 触发<code>ApplicationStartingEvent</code>事件;</li>
+<li>配置环境变量;</li>
+<li>打印Banner;</li>
+<li>创建<code>ApplicationContext</code>;</li>
+<li>准备<code>ApplicationContext</code>, 包括加载Bean定义等;</li>
+<li>刷新<code>ApplicationContext</code>, 完成Bean的创建和初始化, 以及web容器启动(详见下面)等;</li>
+<li>刷新后置处理器;</li>
+<li>停止计时器;</li>
+<li>触发<code>ApplicationStartedEvent</code>事件;</li>
+<li>调用实现了<code>CommandLineRunner</code>或<code>ApplicationRunner</code>接口的Bean.</li>
+</ol>
+</li>
+</ol>
+<p><strong>web容器的启动</strong></p>
+<p>main方法中调用<code>SpringApplication.run</code> --&gt; <code>refreshContext</code> --&gt; <code>refresh</code> --&gt; <code>onRefresh</code>, 最终<code>ServletWebServerApplicationContext.onRefresh</code>中会调用<code>createWebServer</code>方法. 从而调用了内置的web容器(默认是tomcat).</p>
+<p>如果不用tomcat, 改成别的, 直接将他的starter依赖引入即可, 不需要任何配置.</p>
+<h3 id="%E4%BC%98%E9%9B%85%E5%81%9C%E6%9C%BA">优雅停机</h3>
+<p><strong>生成进程id</strong></p>
+<p>如下代码会在spring boot启动后, 生成一个app.pid文件.</p>
+<pre class="hljs"><code><div><span class="hljs-meta">@SpringBootApplication</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SparrowApplication</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span></span>{
+        SpringApplication application = <span class="hljs-keyword">new</span> SpringApplication(SparrowApplication<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+        application.addListeners(<span class="hljs-keyword">new</span> ApplicationPidFileWriter(<span class="hljs-string">"app.pid"</span>));
+        application.run(args);
+    }
+}
+</div></code></pre>
+<p>之后, 在停机时, 执行: <code>cat app.pid | xargs kill</code>;</p>
+<p><strong>延迟停机</strong></p>
+<p>在<code>application.properties</code>配置文件中配置<code>server.shutdown=graceful</code>(默认值: <code>immediate</code>), 当服务停止时, 不再接受新的请求. 并且服务器也不会立即关闭, 而是等待正在进行的请求处理完成, 其中, 这里的等待时间可以通过<code>spring.lifecycle.timeout-per-shutdown-phase=2m</code>设置为2分钟(默认是30s)</p>
+<p><strong>Actuator</strong></p>
+<p>pom文件增加依赖:</p>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+</div></code></pre>
+<p>增加配置项:</p>
+<pre class="hljs"><code><div>management.endpoint.web.exposure.include=*
+management.endpoint.shutdown.enabled=true
+</div></code></pre>
+<p>然后就可以通过<code>curl -X POST http://localhost:8090/actuator/shutdown</code>, 实现关机.</p>
+<p><strong>Shutdown Hook</strong></p>
+<ul>
+<li><code>DisposableBean</code>实现类的<code>destroy</code>方法;</li>
+<li>有<code>PreDestroy</code>注解的方法</li>
+<li>通过<code>Runtime.getRuntime().addShutdownHook(new Thread(...))</code>注册的shutdown hook</li>
+<li>通过Spring事件机制注册hook:</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestListener</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ApplicationListener</span>&lt;<span class="hljs-title">ContextClosedEvent</span>&gt; </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onApplicationEvent</span><span class="hljs-params">(ContextClosedEvent event)</span> </span>{
+        <span class="hljs-comment">// do something</span>
+    }
+}
+</div></code></pre>
+<h3 id="%E8%87%AA%E5%AE%9A%E4%B9%89starter">自定义starter</h3>
+<p>starter可以作为特定功能或者组件的配置单元, 简化配置过程, 让项目轻松的重用这些功能.</p>
+<ol>
+<li>增加依赖:</li>
+</ol>
+<pre class="hljs"><code><div>        <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+</div></code></pre>
+<ol start="2">
+<li>编写配置逻辑;</li>
+<li>创建配置类入口文件<code>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</code>, 并配置(详见上面的自动配置)</li>
+</ol>
+<h3 id="%E5%A4%9A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">多环境配置</h3>
+<p>环境变量中添加: <code>SPRING_PROFILES_ACTIVE=prod</code>或者JVM参数增加<code>-Dspring.profiles.active=prod</code>;</p>
+<h3 id="%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E8%BD%BD%E9%A1%BA%E5%BA%8F">配置文件加载顺序</h3>
+<ol>
+<li>默认配置(通过SpringApplication.setDefaultProperties方法设置);</li>
+<li>@PropertySource注解加载的配置</li>
+<li>classpath下的:
+<ol>
+<li>bootstrap.yml或bootstrap.properties;</li>
+<li>application.yml或application.properties;</li>
+<li>application-{profile}.yml或application-{profile}.properties;</li>
+</ol>
+</li>
+<li>classpath/config下的:
+<ol>
+<li>bootstrap.yml或bootstrap.properties;</li>
+<li>application.yml或application.properties;</li>
+<li>application-{profile}.yml或application-{profile}.properties;</li>
+</ol>
+</li>
+<li>项目根目录下:
+<ol>
+<li>bootstrap.yml或bootstrap.properties;</li>
+<li>application.yml或application.properties;</li>
+<li>application-{profile}.yml或application-{profile}.properties;</li>
+</ol>
+</li>
+<li>项目根目录/config下:
+<ol>
+<li>bootstrap.yml或bootstrap.properties;</li>
+<li>application.yml或application.properties;</li>
+<li>application-{profile}.yml或application-{profile}.properties;</li>
+</ol>
+</li>
+<li>操作系统环境变量等特殊配置源;</li>
+<li>Servlet容器相关初始化参数;</li>
+<li>SPRING_APPLICATION_JSON格式的环境变量或系统属性;</li>
+<li>命令行参数;</li>
+<li>测试相关的属性注入方式（如@SpringBootTest、@DynamicPropertySource和@TestPropertySource）</li>
+</ol>
+<blockquote>
+<p>后加载的文件中的配置覆盖先加载的, 所以后加载的配置优先级高;</p>
+</blockquote>
+<blockquote>
+<p>同类文件加载顺序: .yaml&gt;.yml&gt;.properties</p>
+</blockquote>
+<blockquote>
+<p>如果是自定义文件名, 可以在项目启动时通过: <code>spring.config.name</code>配置文件名, 通过<code>spring.config.location</code>配置文件路径;</p>
+</blockquote>
+<h2 id="%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3">常用注解</h2>
+<ul>
+<li><code>@Component</code>, <code>@Service</code>, <code>@Repository</code>, <code>@Controller</code>这几个注解都是用来声明bean的, 功能上几乎没有差异, 但是语义上存在区别;</li>
+<li><code>@Bean</code>: 也是用来声明bean的, 用在方法上, 将方法的返回值放入Spring的bean容器;</li>
+<li><code>@Configuration</code>: 标记一个类为配置类, 配合<code>@Bean</code>注解来管理bean的创建等;(Configuration修饰的类也会放入spring容器中)</li>
+<li><code>@Configurable</code>: 这个注解不常用, 用来向普通的非Spring对象中注入Bean, 具体用法有点复杂也不常用, 这里不做介绍.</li>
+<li><code>@RestController</code></li>
+<li><code>@RequestMapping</code>, <code>@PostMapping</code>, <code>@GetMapping</code>, <code>@PutMapping</code>, <code>@DeleteMapping</code></li>
+<li><code>@Value</code>: 设置配置值的, 示例:<code>@Value(&quot;${spring.application.name}&quot;)</code>或者<code>@Value(&quot;${spring.application.name:xxx}&quot;)</code></li>
+<li><code>@Import</code>: 类注解, 用来指定将某一个或多个类的实例对象注入到spring容器中</li>
+<li><code>@PropertySource</code>: 用来加载配置, 示例如下:</li>
+</ul>
+<pre class="hljs"><code><div>fff.properties文件:
+aaa=123
+
+代码:
+
+@Configuration
+@PropertySource(value = &quot;classpath:fff.properties&quot;)
+public class FFFConfiguration {
+
+    @Value(&quot;${aaa}&quot;)
+    private String aaa;
+}
+</div></code></pre>
+
+</body>
+</html>
