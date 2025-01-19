@@ -950,7 +950,7 @@ IDENTIFIER: [a-zA-Z] ([a-zA-Z] | [0-9] | '_')*;
 </blockquote>
 <blockquote>
 <p>ANTLR4可以自动将直接左递归重写成了等价的非左递归形式, 对于间接左递归是无法处理的. 对于重写可以举个例子:
-例如: <code>a: a '+' a | NUM;</code>是左递归的, 可以重写成<code>a: NUM ax?; ax: '+' NUM ax;</code></p>
+例如: <code>a: a '+' a | NUM;</code>是左递归的, 可以重写成<code>a: NUM ('+' NUM)*;</code></p>
 </blockquote>
 <h3 id="llk">LLK</h3>
 <p>LLK文法是编译原理中的一个概念，其中“LLK”通常指的是LL(k)文法，这里的LL是指一种自上而下的解析策略，而(k)表示解析时向前查看的符号数量。在编译器设计中，文法是用来描述编程语言或形式语言的规则系统，而LL(k)文法是一种上下文无关文法（Context-Free Grammar, CFG），其特点是可以使用一个左递归的解析器来解析，同时在做出每个归约步骤的决策时，需要查看输入符号流中接下来的k个符号来决定如何进行。</p>
