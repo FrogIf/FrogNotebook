@@ -299,7 +299,7 @@ Spring MVC是指Model-View-Controller, 即: 模型-视图-控制器.
 
 ### 工作原理
 
-![image](img/spring_mvc.png)
+<image src="img/spring_mvc.png" height="450px">
 
 1. 客户端请求, 进入DispatchServlet, 访问dispatchServlet的doService方法
    * DispatcherServlet就是HttpServlet的实现类(HttpServlet是java servlet API定义的处理web请求的interface).
