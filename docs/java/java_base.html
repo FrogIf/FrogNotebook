@@ -1,0 +1,614 @@
+<!DOCTYPE html><html><head>
+      <title>java_base</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///c:\Users\frogif\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.15\crossnote\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="java基础">Java基础 </h1>
+<h2 id="基本数据类型">基本数据类型 </h2>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>字节</th>
+<th>范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte</td>
+<td>1</td>
+<td>-2^7 ~ 2^7-1</td>
+</tr>
+<tr>
+<td>char</td>
+<td>2</td>
+<td>0 ~ 65535(2^16-1)</td>
+</tr>
+<tr>
+<td>short</td>
+<td>2</td>
+<td>-2^15 ~ 2^15-1</td>
+</tr>
+<tr>
+<td>int</td>
+<td>4</td>
+<td>-2^31 ~ 2^31-1</td>
+</tr>
+<tr>
+<td>long</td>
+<td>8</td>
+<td>-2^63 ~ 2^63-1</td>
+</tr>
+<tr>
+<td>float</td>
+<td>4</td>
+<td>32为IEEE754单精度范围</td>
+</tr>
+<tr>
+<td>double</td>
+<td>8</td>
+<td>64位IEEE754双精度范围</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>java规范没有规定</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>字节(byte)单位为B; 位(bit)的单位为b; 1B = 8b</p>
+</blockquote>
+<blockquote>
+<p>java中char在内容中采用unicode编码字符集进行存储, 所以是两个字节</p>
+</blockquote>
+<h2 id="bigdecimal">BigDecimal </h2>
+<p>BigDecimal使用equals比较时, 即使值相同, 但是标度不同, 返回的也是false; 而compareTo方法进行比较时, 会忽略精度.</p>
+<p>BigDecimal优先使用string作为形参的构造方法, 因为这个方法不会损失精度.</p>
+<h2 id="double">double </h2>
+<p>由于浮点型数据存储特点, 所以浮点型数据判断是否相等时, 不能直接使用等于进行比较, 而是应该限定在一定的误差范围内, 都视为相等.</p>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token keyword keyword-double">double</span> b <span class="token operator">=</span> <span class="token number">2.6</span> <span class="token operator">+</span> <span class="token number">2.7</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-double">double</span> a <span class="token operator">=</span> <span class="token number">5.3</span><span class="token punctuation">;</span>
+<span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>a <span class="token operator">==</span> b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">abs</span><span class="token punctuation">(</span>b <span class="token operator">-</span> a<span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">1e-7</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><p>输出结果:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>false
+true
+</code></pre><h2 id="自动拆箱注意事项">自动拆箱注意事项 </h2>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token class-name">Integer</span> a <span class="token operator">=</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-if">if</span><span class="token punctuation">(</span>a <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"ok"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><p>上面这段代码执行会抛出空指针异常.</p>
+<p>原因在于自动拆箱语法糖, 可以将上面代码生成的class文件反编译看到:</p>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token class-name">Integer</span> a <span class="token operator">=</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-if">if</span><span class="token punctuation">(</span>a<span class="token punctuation">.</span><span class="token function">intValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"ok"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><p>显然, 如果a为null, 则会抛出NullPointerException.</p>
+<p>特别的, 对于有些场景下的比较, 有一些最佳实践:</p>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token keyword keyword-static">static</span> <span class="token keyword keyword-final">final</span> <span class="token class-name">Integer</span> <span class="token constant">MARK</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-if">if</span><span class="token punctuation">(</span><span class="token constant">MARK</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+</code></pre><pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token keyword keyword-if">if</span><span class="token punctuation">(</span><span class="token class-name">Boolean</span><span class="token punctuation">.</span><span class="token constant">TRUE</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>arg<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+</code></pre><h2 id="string">String </h2>
+<ol>
+<li><code>String str = new String("aaa");</code>创建了几个对象? 答: 创建对象数是1个或者2个. 首先, 通过new肯定会创建一个对象. 此外字符串常量<code>"aaa"</code>首次加载时, 会创建一个常量池, 在堆上创建一个对象, 引用常量池变量. 但是什么时候是首次加载是不一定的, 所以是1个或者2个对象.</li>
+<li><code>intern</code>, 当一个String调用<code>intern()</code>方法时, java查找常量池中是否有相同Unicode的字符串常量, 如果有, 则直接返回其引用, 如果没有, 则在常量池中增加一个Unicode等于str的字符串并返回它的引用.</li>
+<li>字符串在编译期的长度限制为65535. 在运行时长度大小为int类型最大值,即<code>2^31-1</code></li>
+</ol>
+<h3 id="字符串常量池">字符串常量池 </h3>
+<p>在jdk1.6及之前版本, 字符串常量池通常被实现为方法区的一部分, 即永久代(用于存储类信息, 常量池, 静态变量, 即时编译器编译后的代码等数据). jdk1.7开始, 字符串常量池的实现方式发生了重大改变. 字符串常量池不再位于永久代, 而是直接存放在堆(Heap)中, 与其他对象共享堆内存. 之所以放到堆中主要是因为永久代回收效率太低, 只有在FullGC的时候才会被执行回收.</p>
+<p>字符串常量来源一般有两个: 1. 代码中的字符串字面量, 会在编译后进入class文件的常量池; 2. intern()方法</p>
+<h3 id="split">split </h3>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token class-name">String</span> str <span class="token operator">=</span> <span class="token string">",,,1,2,,,,,"</span><span class="token punctuation">;</span>
+<span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> strArr <span class="token operator">=</span> str<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-for">for</span><span class="token punctuation">(</span><span class="token class-name">String</span> s <span class="token operator">:</span> strArr<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"&gt;"</span> <span class="token operator">+</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><p>上面代码运行结果是:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>&gt;
+&gt;
+&gt;
+&gt;1
+&gt;2
+</code></pre><p>结尾的空字符串被丢弃了!</p>
+<p>查看源码, 代码是这样的:</p>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token keyword keyword-public">public</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">split</span><span class="token punctuation">(</span><span class="token class-name">String</span> regex<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-return">return</span> <span class="token function">split</span><span class="token punctuation">(</span>regex<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><p>在查看一下两个参数的split方法:</p>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token keyword keyword-public">public</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">split</span><span class="token punctuation">(</span><span class="token class-name">String</span> regex<span class="token punctuation">,</span> <span class="token keyword keyword-int">int</span> limit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><p>通过查看注释, 可以了解limit参数的意义:</p>
+<ol>
+<li>limit &gt; 0: regex对应的模式至多被应用 limit ~ 1次. 返回数组的长度不会超过limit的长度. 数组最后一个元素的将包含所有超出最后一个匹配的分割符.</li>
+<li>limit = 0: regex对应的模式将会被应用尽可能多的次数. 返回的数组长度不固定. 所有尾部空字符将会被丢弃.</li>
+<li>limit &lt; 0: regex对应的模式将会被应用尽可能多的次数. 返回的数组长度不固定.</li>
+</ol>
+<blockquote>
+<p>limit &gt; 0时, 代码中才会认真对待limit的具体值, 如果limit&lt;=0, limit具体值是多少都无所谓.</p>
+</blockquote>
+<p>以"boo:and:foo"为例:</p>
+<ul>
+<li>分割符':'</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>limit</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>{ "boo", "and:foo" }</td>
+</tr>
+<tr>
+<td>5</td>
+<td>{ "boo", "and", "foo" }</td>
+</tr>
+<tr>
+<td>-2</td>
+<td>{ "boo", "and", "foo" }</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>分割符'o'</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>limit</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>{ "b", "", ":and:f", "", "" }</td>
+</tr>
+<tr>
+<td>-2</td>
+<td>{ "b", "", ":and:f", "", "" }</td>
+</tr>
+<tr>
+<td>0</td>
+<td>{ "b", "", ":and:f" }</td>
+</tr>
+</tbody>
+</table>
+<p>所以, 开头那段代码, 如果想保留结尾的空字符串, 只需将limit设置为小于0即可.</p>
+<h2 id="编码规范">编码规范 </h2>
+<ol>
+<li>RPC调用时, 接口返回类型, 建议不要使用基础类型而是包装类型. 因为可以返回null, 在异常情况下返回null要比返回0等更合适.</li>
+<li>POJO对象中如果有布尔值, 不要以is开头, 否则部分框架解析会引起序列化错误.</li>
+</ol>
+<h2 id="语法糖">语法糖 </h2>
+<ol>
+<li>泛型: <code>List&lt;String&gt; list = new ArrayList&lt;&gt;();</code> --&gt; <code>List list = new ArrayList();</code></li>
+<li>自动装箱与拆箱: <code>int a = 1; Integer b = a;</code> --&gt; <code>int a = 1; Integer b = Integer.valueOf(a);</code></li>
+<li>方法变长参数: <code>int aaa(int... args){}</code> --&gt; <code>int aaa(int[] args){}</code></li>
+<li>枚举: <code>public enum E{A, B;}</code> --&gt; <code>public final class E extends Enum{/*也有些细节, 忽略了*/}</code></li>
+<li>内部类: 编译完成后就变成两个文件了</li>
+<li>断言: <code>int a = 1; int b = 1; asset a == b;</code> --&gt; <code>int a = 1; int b = 1; if(!$assertionsDisabled &amp;&amp; a != b) throw new AssertionError()</code>;</li>
+<li>增强for: <code>for(int a : list)</code> --&gt; <code>int a; for(Iterator itr = list.iterator(); itr.hasNext(); ){a = itr.next();}</code></li>
+<li>try-with-resource: <code>tryy(xxxx){}catch(Exception e){}</code> --&gt; <code>太复杂了, 忽略</code></li>
+<li>Lambda表达式</li>
+<li>数值字面量: <code>int a = 10_000</code> --&gt; <code>int a = 10000</code></li>
+<li>条件编译: <code>final boolean t = true; if(t){xxxx}</code> --&gt; <code>final boolean t = true; xxxx</code></li>
+<li>switch支持String和枚举: switch只支持基本类型的比较, 对于String需要先转换为用hashCode进行比较, 然后内部在用equals方法进行比较;</li>
+</ol>
+<h2 id="泛型上下界">泛型上下界 </h2>
+<p>上界: <code>&lt;? extends XXX&gt;</code>, 只是参数化类型可能是XXX或者XXX的子类, 下界: <code>&lt;? super XXX&gt;</code>, 指示参数化类型可能是XXX或者XXX的父类.</p>
+<p>上界生产, 下界消费. 如果需要从一个集合中读取内容, 需要使用上界, 这个集合是用来生产的. 如果向一个集合中写入数据, 需要使用下界, 这个集合是用来消费的.</p>
+<h2 id="java对象的创建方法">java对象的创建方法 </h2>
+<ul>
+<li>new</li>
+</ul>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token class-name">User</span> u <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><ul>
+<li>反射</li>
+</ul>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token class-name">User</span> user <span class="token operator">=</span> <span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><ul>
+<li>clone</li>
+<li>反序列化</li>
+<li>方法句柄</li>
+</ul>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token class-name">MethodType</span> mt <span class="token operator">=</span> <span class="token class-name">MethodType</span><span class="token punctuation">.</span><span class="token function">methodType</span><span class="token punctuation">(</span><span class="token keyword keyword-void">void</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 构造方法句柄返回类型为void, 空参</span>
+<span class="token class-name">MethodHandles<span class="token punctuation">.</span>Lookup</span> lookup <span class="token operator">=</span> <span class="token class-name">MethodHandles</span><span class="token punctuation">.</span><span class="token function">lookup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">MethodHandle</span> constructorHandle <span class="token operator">=</span> lookup<span class="token punctuation">.</span><span class="token function">findConstructor</span><span class="token punctuation">(</span><span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">,</span> mt<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">User</span> user <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">User</span><span class="token punctuation">)</span>constructorHandle<span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><ul>
+<li>Unsafe</li>
+</ul>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token class-name">Field</span> field <span class="token operator">=</span> <span class="token class-name">Unsafe</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">.</span><span class="token function">getDeclaredField</span><span class="token punctuation">(</span><span class="token string">"theUnsafe"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+field<span class="token punctuation">.</span><span class="token function">setAccessible</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">Unsafe</span> unsafe <span class="token operator">=</span> field<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token keyword keyword-null">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword keyword-long">long</span> nameOffset <span class="token operator">=</span> unsafe<span class="token punctuation">.</span><span class="token function">objectFieldOffset</span><span class="token punctuation">(</span><span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">.</span><span class="token function">getDeclaredField</span><span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-long">long</span> ageOffset <span class="token operator">=</span> unsafe<span class="token punctuation">.</span><span class="token function">objectFieldOffset</span><span class="token punctuation">(</span><span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">.</span><span class="token function">getDeclaredField</span><span class="token punctuation">(</span><span class="token string">"age"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token class-name">User</span> user <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">User</span><span class="token punctuation">)</span>unsafe<span class="token punctuation">.</span><span class="token function">allocateInstance</span><span class="token punctuation">(</span><span class="token class-name">User</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+unsafe<span class="token punctuation">.</span><span class="token function">putObject</span><span class="token punctuation">(</span>user<span class="token punctuation">,</span> nameOffset<span class="token punctuation">,</span> <span class="token string">"Hollis"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+unsafe<span class="token punctuation">.</span><span class="token function">putInt</span><span class="token punctuation">(</span>user<span class="token punctuation">,</span> ageOffset<span class="token punctuation">,</span> <span class="token number">12</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><h2 id="文件io">文件IO </h2>
+<p>这里说的IO不仅仅含有普通的文件IO流, 也会介绍socket输入输出等.</p>
+<h3 id="java基本io流">Java基本IO流 </h3>
+<p>java IO流可以分为两类:</p>
+<ol>
+<li>字节流: 以字节为单位(8bit), 包含两个抽象类: InputStream, OutputStream</li>
+<li>字符流: 以字符为单位(8bit), 根据码表映射字符, 包含两个抽象类: Reader, Writer</li>
+</ol>
+<p>常用字节流:</p>
+<p><img src="img/byte_io.jpg" alt="image"></p>
+<p>常用字符流:</p>
+<p><img src="img/char_io.jpg" alt="image"></p>
+<p>从图上可以看出, 字节流的基本实现类是: FileOutputStream和FileInputStream, 其余的实现都是采用装饰者模式对其进行的增强. 这其中OutputStreamWriter/InputStreamReader是将字节流装饰为字符流.</p>
+<h3 id="file">File </h3>
+<p>File file = new File(path);</p>
+<ul>
+<li>createNewFile()   // 创建一个新的文件</li>
+<li>delete()  // 删除file对象</li>
+<li>isFile()  // 判断是否是文件</li>
+<li>isDirectory()   //判断是否是文件夹</li>
+<li>exists()  //判断文件或文件夹是否存在</li>
+<li>listFiles()   //若对象代表目录, 返回该目录下所有, 文件及文件夹</li>
+<li>mkdir()   // 创建目录</li>
+</ul>
+<h2 id="错误及异常">错误及异常 </h2>
+<p>结构:</p>
+<p><img src="img/ex_er.png" alt="image"></p>
+<ul>
+<li>Error是程序运行期间出现的错误, 该错误是不可恢复的. 因此程序中不建议捕获Error, 即catch中不应捕获Error.</li>
+<li>Exception表示可恢复的异常, 是编译器可以捕捉到的. 它包含两种类型: 受检异常和运行时异常.</li>
+</ul>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token keyword keyword-public">public</span> <span class="token keyword keyword-class">class</span> <span class="token class-name">ExceptionDemo</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">triggerThrowable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword keyword-throws">throws</span> <span class="token class-name">FrogThrowable</span> <span class="token punctuation">{</span>
+        <span class="token keyword keyword-throw">throw</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">FrogThrowable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">triggerError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword keyword-throw">throw</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">FrogError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">triggerCheckException</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword keyword-throws">throws</span> <span class="token class-name">FrogCheckException</span> <span class="token punctuation">{</span>
+        <span class="token keyword keyword-throw">throw</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">FrogCheckException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">triggerRuntimeException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword keyword-throw">throw</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">FrogRuntimeException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-class">class</span> <span class="token class-name">FrogThrowable</span> <span class="token keyword keyword-extends">extends</span> <span class="token class-name">Throwable</span><span class="token punctuation">{</span>
+        <span class="token keyword keyword-public">public</span> <span class="token class-name">FrogThrowable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword keyword-super">super</span><span class="token punctuation">(</span><span class="token string">"frog throwable."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-class">class</span> <span class="token class-name">FrogError</span> <span class="token keyword keyword-extends">extends</span> <span class="token class-name">Error</span><span class="token punctuation">{</span>
+        <span class="token keyword keyword-public">public</span> <span class="token class-name">FrogError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword keyword-super">super</span><span class="token punctuation">(</span><span class="token string">"frog error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-class">class</span> <span class="token class-name">FrogCheckException</span> <span class="token keyword keyword-extends">extends</span> <span class="token class-name">Exception</span><span class="token punctuation">{</span>
+        <span class="token keyword keyword-public">public</span> <span class="token class-name">FrogCheckException</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword keyword-super">super</span><span class="token punctuation">(</span><span class="token string">"frog check exception."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-class">class</span> <span class="token class-name">FrogRuntimeException</span> <span class="token keyword keyword-extends">extends</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">{</span>
+        <span class="token keyword keyword-public">public</span> <span class="token class-name">FrogRuntimeException</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword keyword-super">super</span><span class="token punctuation">(</span><span class="token string">"frog funtime exception."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><p>通过上面代码可以Throwable和Exception是受检的, 必须catch或者抛出. Error和RuntimeException是非受检的, 不必catch或抛出. 另外非受检异常虽然也可以抛出或catch, 但是Error不建议catch.</p>
+<blockquote>
+<p>ClassNotFoundException和NoClassDefFoundError区别是什么?<br>
+ClassNotFoundException是一个受检异常, 通常由<code>Class.forName()</code>或者加载器<code>loadClass</code>或者<code>findSystemClass</code>时, 在类路径中没有找到指定名称的类时, 会抛出异常. NoClassDefFoundError是一个错误, 它表示运行时尝试加载一个类的定义时, 虽然找到了类文件, 但在加载/解析/连接类过程中发生了问题.</p>
+</blockquote>
+<h2 id="动态代理">动态代理 </h2>
+<p>动态代理实现有两种方式:</p>
+<ol>
+<li>JDK动态代理: 动态代理的对象必须实现一个或者多个接口.</li>
+<li>Cglib动态代理: 没有限制</li>
+</ol>
+<p>JDK动态代理:</p>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token class-name">Demo</span> ttt <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Demo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">Object</span> proxy <span class="token operator">=</span> <span class="token class-name">Proxy</span><span class="token punctuation">.</span><span class="token function">newProxyInstance</span><span class="token punctuation">(</span><span class="token class-name">Demo</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Class</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">{</span><span class="token class-name">DemoInf</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">InvocationHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword keyword-public">public</span> <span class="token class-name">Object</span> <span class="token function">invoke</span><span class="token punctuation">(</span><span class="token class-name">Object</span> proxy<span class="token punctuation">,</span> <span class="token class-name">Method</span> method<span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword keyword-throws">throws</span> <span class="token class-name">Throwable</span> <span class="token punctuation">{</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"---"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">Object</span> r <span class="token operator">=</span> method<span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span>ttt<span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"---"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword keyword-return">return</span> r<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">DemoInf</span><span class="token punctuation">)</span>proxy<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ttt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-interface">interface</span> <span class="token class-name">DemoInf</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-void">void</span> <span class="token function">ttt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-class">class</span> <span class="token class-name">Demo</span> <span class="token keyword keyword-implements">implements</span> <span class="token class-name">DemoInf</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-void">void</span> <span class="token function">ttt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"ttt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><p>Cglib动态代理:</p>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token class-name">Enhancer</span> enhancer <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Enhancer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    enhancer<span class="token punctuation">.</span><span class="token function">setSuperclass</span><span class="token punctuation">(</span><span class="token class-name">Demo</span><span class="token punctuation">.</span><span class="token keyword keyword-class">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    enhancer<span class="token punctuation">.</span><span class="token function">setCallback</span><span class="token punctuation">(</span><span class="token keyword keyword-new">new</span> <span class="token class-name">MethodInterceptor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword keyword-public">public</span> <span class="token class-name">Object</span> <span class="token function">intercept</span><span class="token punctuation">(</span><span class="token class-name">Object</span> obj<span class="token punctuation">,</span> <span class="token class-name">Method</span> method<span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">,</span> <span class="token class-name">MethodProxy</span> methodProxy<span class="token punctuation">)</span> <span class="token keyword keyword-throws">throws</span> <span class="token class-name">Throwable</span> <span class="token punctuation">{</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"---"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            methodProxy<span class="token punctuation">.</span><span class="token function">invokeSuper</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"---"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword keyword-return">return</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">Object</span> proxy <span class="token operator">=</span> enhancer<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">Demo</span><span class="token punctuation">)</span>proxy<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ttt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-interface">interface</span> <span class="token class-name">DemoInf</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-void">void</span> <span class="token function">ttt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-class">class</span> <span class="token class-name">Demo</span> <span class="token keyword keyword-implements">implements</span> <span class="token class-name">DemoInf</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-void">void</span> <span class="token function">ttt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"ttt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><h2 id="java注解">java注解 </h2>
+<p>注解用于为java代码提供元数据. 注解本身并不是代码的一部分，它们不会直接影响代码的执行，但可以在编译、类加载和运行时被读取和处理。(注解是给程序用的注释)</p>
+<p>java中有四个元注解(定义其他注解的注解):</p>
+<ul>
+<li><code>Target</code>: 表示注解可以用在什么地方; 例如: 类(ElementType.TYPE), 方法(ElementType.METHOD)等等.</li>
+<li><code>Retention</code>: 表示在什么级别保存该注解信息; 有三个可选值: 运行时(RetentionPolicy.RUNTIME), 编译时(RetentionPolicy.SOURCE), 源码中(RetentionPolicy.SOURCE)</li>
+<li><code>Documented</code>: 指示将注解包含在javadoc中;</li>
+<li><code>Inherited</code>: 允许子类继承父类中的注解.</li>
+</ul>
+<h2 id="uuid">UUID </h2>
+<p>UUID全局唯一标识符, 是指在一台机器上生成的数字, 它的目标是保证对在同一时空中所有机器都是唯一的. 有多个不同版本:</p>
+<ol>
+<li>v1: 基于时间戳的UUID -- 时间戳+随机数+机器MAC
+<ul>
+<li>不安全: 大量UUID样本可以反向解析出MAC地址, 进而获取到设备的物理位置或者用户信息.</li>
+</ul>
+</li>
+<li>v2: DCE(Distributed Computing Environment)安全的UUID  -- 与v1版本相同, 但是会把时间戳前4位换为POSIX的UID或GID
+<ul>
+<li>实际中很少用到</li>
+</ul>
+</li>
+<li>v3: 基于名称空间的UUID, 对名称空间使用MD5散列
+<ul>
+<li>保证了相同名称空间中不同名称生成的UUID唯一性; 保证了不同名称空间中UUID的唯一性. 相同名称空间相同名称的UUID重复生成的到的结果是相同的.</li>
+</ul>
+</li>
+<li>v4: 基于随机数的UUID  -- 由随机数生成器生成
+<ul>
+<li>不适合数据量特别大场景</li>
+</ul>
+</li>
+<li>v5: 和v3类似, 只是散列计算使用的是SHA1算法</li>
+</ol>
+<blockquote>
+<p>java中生成UUID使用的是v3和v4两种<br>
+v3: <code>UUID.randomUUID()</code>, v4: <code>UUID.nameUUIDFromBytes(new bytes[]{ 1, 2, 3, 4})</code></p>
+</blockquote>
+<h2 id="各种java对象">各种java对象 </h2>
+<ul>
+<li>POJO: Plain Ordinary Java Object, 简单的java对象.
+<ul>
+<li>POJO持久化后就是PO;</li>
+<li>用它传递, 传递过程中它就是DTO;</li>
+<li>直接用来对应表示层就是VO;</li>
+<li>POJO、PO、DTO、VO都是处理流程中的名字，不是PO对应一个POJO，DTO对应一个POJO，VO对应一个POJO在有些情况下PO、DTO、VO是指同一个POJO</li>
+</ul>
+</li>
+<li>PO: Persistence Object, 持久层对象, (同DO, Data Object)</li>
+<li>DO: Domain Object 领域对象，就是从现实世界中抽象出来的有形或无形的业务实体</li>
+<li>DTO: Data Transfer Object, 数据传输对象</li>
+<li>VO: value object 值对象/ view object 表现层对象</li>
+</ul>
+<img src="img/pojo-object.png" width="600">
+<h2 id="一些术语">一些术语 </h2>
+<ul>
+<li>SDK: Software Development Kit, 即软件开发工具包, 是一组工具,库,文档和示例代码的集合</li>
+<li>SPI: Service Provider Interface, 是由框架或库提供方定义的接口，供第三方开发者进行具体实现. SPI侧重于接口的定义和实现者的开发，它定义了一种服务提供者和服务使用者之间的协议，用于实现可插拔的组件。</li>
+<li>API: Application Programming Interface, 是由开发者主动编写并公开给其他开发者使用的.</li>
+</ul>
+<h2 id="aio-bio-nio">AIO, BIO, NIO </h2>
+<ul>
+<li>BIO: (Blocking I/O), 同步阻塞IO. 线程发起请求后, 一直阻塞, 直到缓冲区数据就绪后, 再进入下一步操作;
+<ul>
+<li>适用于: 连接数较少且稳定的场景</li>
+</ul>
+</li>
+<li>NIO: (Non-Blocking I/O), 同步非阻塞IO. 线程发起IO请求后, 不需要阻塞, 立即返回. 用户线程不原地等待IO缓冲区, 可以先做一些其他操作, 只需要定时轮询检查IO缓冲区是否就绪即可.
+<ul>
+<li>适用于: 高并发场景 (即连接数目多且连接比较短的场景)</li>
+</ul>
+</li>
+<li>AIO: (Asynchronous I/O), 异步非阻塞I/O模型. 线程发起IO请求后, 不需要阻塞, 立即返回, 也不需要定时轮询检查结果, 异步IO操作之后会回调通知调用方.
+<ul>
+<li>适用于: 高吞吐量场景 (即连接数目多且连接比较长的场景)</li>
+</ul>
+</li>
+</ul>
+<p>以读取文件的IO为例:</p>
+<ol>
+<li>BIO</li>
+</ol>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token doc-comment comment">/**
+ * 写文件
+ */</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">writeFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-try">try</span><span class="token punctuation">(</span>
+            <span class="token class-name">FileWriter</span> fileWriter <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">FileWriter</span><span class="token punctuation">(</span><span class="token string">"xxxxx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">BufferedWriter</span> bufferedWriter <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">BufferedWriter</span><span class="token punctuation">(</span>fileWriter<span class="token punctuation">)</span>
+            <span class="token punctuation">)</span><span class="token punctuation">{</span>
+        bufferedWriter<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">"xxxxxx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        bufferedWriter<span class="token punctuation">.</span><span class="token function">newLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword keyword-catch">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token doc-comment comment">/**
+ * 读文件
+ */</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">readFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-try">try</span><span class="token punctuation">(</span>
+            <span class="token class-name">FileReader</span> fileReader <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">FileReader</span><span class="token punctuation">(</span><span class="token string">"xxxxxx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">BufferedReader</span> bufferedReader <span class="token operator">=</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">BufferedReader</span><span class="token punctuation">(</span>fileReader<span class="token punctuation">)</span>
+            <span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">String</span> line<span class="token punctuation">;</span>
+        <span class="token keyword keyword-while">while</span><span class="token punctuation">(</span><span class="token punctuation">(</span>line <span class="token operator">=</span> bufferedReader<span class="token punctuation">.</span><span class="token function">readLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token keyword keyword-catch">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><ol start="2">
+<li>NIO</li>
+</ol>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token doc-comment comment">/**
+ * 写文件
+ */</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-void">void</span> <span class="token function">writeFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-try">try</span><span class="token punctuation">(</span>
+            <span class="token class-name">FileChannel</span> fileChannel <span class="token operator">=</span> <span class="token class-name">FileChannel</span><span class="token punctuation">.</span><span class="token keyword keyword-open">open</span><span class="token punctuation">(</span><span class="token class-name">Paths</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"xxxx"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">StandardOpenOption</span><span class="token punctuation">.</span><span class="token constant">CREATE</span><span class="token punctuation">,</span> <span class="token class-name">StandardOpenOption</span><span class="token punctuation">.</span><span class="token constant">WRITE</span><span class="token punctuation">)</span>
+            <span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">ByteBuffer</span> buffer <span class="token operator">=</span> <span class="token class-name">StandardCharsets</span><span class="token punctuation">.</span><span class="token constant">UTF_8</span><span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span><span class="token string">"xxxxxx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        fileChannel<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword keyword-catch">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token doc-comment comment">/**
+ * 读文件
+ */</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-void">void</span> <span class="token function">readFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-try">try</span><span class="token punctuation">(</span>
+            <span class="token class-name">FileChannel</span> fileChannel <span class="token operator">=</span> <span class="token class-name">FileChannel</span><span class="token punctuation">.</span><span class="token keyword keyword-open">open</span><span class="token punctuation">(</span><span class="token class-name">Paths</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"xxxx"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">StandardOpenOption</span><span class="token punctuation">.</span><span class="token constant">READ</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">ByteBuffer</span> buffer <span class="token operator">=</span> <span class="token class-name">ByteBuffer</span><span class="token punctuation">.</span><span class="token function">allocate</span><span class="token punctuation">(</span><span class="token number">1024</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword keyword-int">int</span> bytesRead <span class="token operator">=</span> fileChannel<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword keyword-while">while</span> <span class="token punctuation">(</span>bytesRead <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            buffer<span class="token punctuation">.</span><span class="token function">flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token class-name">StandardCharsets</span><span class="token punctuation">.</span><span class="token constant">UTF_8</span><span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            buffer<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            bytesRead <span class="token operator">=</span> fileChannel<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token keyword keyword-catch">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><blockquote>
+<p>看似和BIO逻辑上没什么区别, 实际上底层是不一样的. NIO底层可能有多个channel共用一个线程, 通过Selector主动轮询监控多个Channel上的事件.</p>
+</blockquote>
+<ol start="3">
+<li>AIO</li>
+</ol>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token doc-comment comment">/**
+ * 写文件
+ */</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">writeFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-try">try</span><span class="token punctuation">(</span>
+            <span class="token class-name">AsynchronousFileChannel</span> fileChannel <span class="token operator">=</span> <span class="token class-name">AsynchronousFileChannel</span><span class="token punctuation">.</span><span class="token keyword keyword-open">open</span><span class="token punctuation">(</span><span class="token class-name">Path</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token string">"aaa.txt"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">StandardOpenOption</span><span class="token punctuation">.</span><span class="token constant">WRITE</span><span class="token punctuation">,</span> <span class="token class-name">StandardOpenOption</span><span class="token punctuation">.</span><span class="token constant">CREATE</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">ByteBuffer</span> buffer <span class="token operator">=</span> <span class="token class-name">StandardCharsets</span><span class="token punctuation">.</span><span class="token constant">UTF_8</span><span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span><span class="token string">"xxxx"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        fileChannel<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>buffer<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword keyword-null">null</span><span class="token punctuation">,</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">CompletionHandler</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-void">void</span> <span class="token function">completed</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> result<span class="token punctuation">,</span> <span class="token class-name">Object</span> attachment<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"finish"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-void">void</span> <span class="token function">failed</span><span class="token punctuation">(</span><span class="token class-name">Throwable</span> exc<span class="token punctuation">,</span> <span class="token class-name">Object</span> attachment<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                exc<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword keyword-catch">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token doc-comment comment">/**
+ * 读文件
+ */</span>
+<span class="token keyword keyword-public">public</span> <span class="token keyword keyword-static">static</span> <span class="token keyword keyword-void">void</span> <span class="token function">readFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword keyword-try">try</span><span class="token punctuation">{</span>
+        <span class="token class-name">AsynchronousFileChannel</span> fileChannel <span class="token operator">=</span> <span class="token class-name">AsynchronousFileChannel</span><span class="token punctuation">.</span><span class="token keyword keyword-open">open</span><span class="token punctuation">(</span><span class="token class-name">Path</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token string">"aaa.txt"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">StandardOpenOption</span><span class="token punctuation">.</span><span class="token constant">READ</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ByteBuffer</span> buffer <span class="token operator">=</span> <span class="token class-name">ByteBuffer</span><span class="token punctuation">.</span><span class="token function">allocate</span><span class="token punctuation">(</span><span class="token number">1024</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        fileChannel<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> buffer<span class="token punctuation">,</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">CompletionHandler</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-void">void</span> <span class="token function">completed</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> result<span class="token punctuation">,</span> <span class="token class-name">ByteBuffer</span> attachment<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                attachment<span class="token punctuation">.</span><span class="token function">flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token class-name">StandardCharsets</span><span class="token punctuation">.</span><span class="token constant">UTF_8</span><span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span>attachment<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                attachment<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword keyword-try">try</span> <span class="token punctuation">{</span>
+                    fileChannel<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword keyword-catch">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword keyword-public">public</span> <span class="token keyword keyword-void">void</span> <span class="token function">failed</span><span class="token punctuation">(</span><span class="token class-name">Throwable</span> exc<span class="token punctuation">,</span> <span class="token class-name">ByteBuffer</span> attachment<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                exc<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword keyword-try">try</span> <span class="token punctuation">{</span>
+                    fileChannel<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword keyword-catch">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword keyword-catch">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
