@@ -177,7 +177,7 @@ initialCapacity|loadFactor|threshold|resize(threshold*loadFactor)
 16|0.75|16|12
 32|0.75|32|24
 
-## HashMap的扩容
+### HashMap的扩容
 
 当hash槽数量严重不足, 散列表已经链化比较严重, 设置树化, 这时map的操作时间复杂度就比较高了, 需要扩容来降低hash冲突, 提升性能. 扩容时, 新的hash桶个数会扩大为原来的两倍, 设计三个步骤:
 
