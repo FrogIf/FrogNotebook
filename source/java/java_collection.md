@@ -102,6 +102,14 @@ subList方法并没有创建一个新的List, 而是原List的视图.
 2. 对子List做结构性修改, 会影响到父List;(在集合中增加或者删除元素)
 3. 对父List做结构性修改, 再操作子list, 会抛出异常ConcurrentModificationException;
 
+## SynchronizedList和Vector的区别
+
+都是线程安全list, 有什么区别吗?
+
+1. SynchronizedList有很好的扩展和兼容功能。他可以将所有的List的子类转成线程安全的类。 
+2. 使用SynchronizedList的时候，进行遍历时要手动进行同步处理。
+3. SynchronizedList可以指定锁定的对象(非public方法, 用于内部生成线程安全的sublist)
+
 ## HashMap数据结构
 
 <image src="img/hashmap.png" width="600"/>
@@ -199,6 +207,10 @@ initialCapacity|loadFactor|threshold|resize(threshold*loadFactor)
 4. 建立公共溢出区: 将哈希表分为基本表和溢出表两部分, 发生冲突的元素都放入溢出表中.
 5. 一致性哈希: 将哈希值空间组织成一个逻辑环, 以均匀分布方式将数据映射到环上的节点, 主要用于分布式缓存系统.
 
+### HashMap线程安全问题
+
+首先HashMap是线程不安全的. 然后在jdk1.7及以前的版本有一个问题是: 就是在并发put元素时, 如果出发的hashMap的扩容, 会采用的是链表的头插法, 对链表进行重新构建, 这会导致原来的A->B->C链表变为新的C->B->A链表, 如果有并发操作, 就会生成环(即循环引用), 后续执行get操作时, 如果get不到数据就会陷入死循环. jdk1.8之后改为了尾插法, 就不存在这个问题了. 但是hashMap还是不能用在并发场景的!!!
+
 ## 常用map对比
 
 集合|HashMap|Hashtable|ConcurrentHashMap
@@ -212,7 +224,75 @@ initialCapacity|loadFactor|threshold|resize(threshold*loadFactor)
 是否支持fail-fast|支持|支持|fail-safe
 
 > fail-fast: 一旦发生异常, 立即抛出
-> fail-safe: 在系统出现故障或错误时，保持系统的基本功能或以最安全的方式停止运行
+> fail-safe: 在系统出现故障或错误时，保持系统的基本功能或以最安全的方式停止运行. (类似事务一样, 可能有回滚/提交之类的机制)
+
+> ConcurrentHashMap为什么不允许null值? 非并发map, 如果get返回null, 可以通过containsKey来判断是不存在还是值为null. 但是ConcurrentHashMap在并发场景下不能这么操作, 所以不允许.
+
+## ConcurrentHashMap
+
+**线程安全实现原理**
+
+jdk1.7中采用分段锁来实现, 即将hash表分成多个段, 每个段拥有独立的锁. 这样访问时只需要锁住需要的段, 不需要锁住整个hash表.
+
+jdk1.8采用了节点锁(我觉得叫槽锁更合适, 之所以叫节点是因为槽里边存储的是链表的头节点或者红黑树的根), 并且采用CAS+synchronize机制, 锁定的是一个hash槽, 然后针对这个链表或者红黑树进行操作. 显然jdk1.8这种锁粒度更细, 更不容易发生锁冲突.
+
 
 ## Stream
 
+stream提供了一种更直观的贴近语义的集合操作的高阶抽象. 使得代码更加简洁. 有以下特点:
+
+1. 无存储; 它不是一种数据结构, 只是数据源的一个视图;
+2. 为函数式编程而生; stream的任何修改都不会影响到原始数据源, 而是会产生一个新的stream;
+3. 惰性执行; stream操作不会立即执行, 只有等到用户真正需要结果的时候才会执行;
+4. 可消费; stream只能被消费一次;
+
+stream分为三类关键性操作: 1. 流的创建; 2. 中间操作; 3, 最终操作;
+
+**流的创建**
+
+```java
+// 方式1
+Stream<Object> stream = new ArrayList<>().stream();
+// 方式2
+Stream<Object> stream = Stream.of("a", 1, 2, "b")
+```
+
+**中间操作**
+
+操作|效果|输入
+-|-|-
+filter|通过给定的过滤条件进行过滤|过滤条件
+map|将每一个元素按照指定的映射f映射到新的元素上|映射f
+limit|限制返回前n个元素|元素个数
+skip|限制丢弃前n个元素|元素个数
+sorted|对stream进行排序|排序的Comparator(可选)
+distinct|通过equals方法去重|无
+
+**最终操作**
+
+最终操作会消费流, 产生最终结果. 最终操作之后, 流不可以再使用.
+
+操作|效果|输入
+-|-|-
+forEach|遍历stream|遍历时具体要执行的内容
+count|计数|无
+collect|规约, 可以接受各种函数作为参数, 从而得到一个汇总结果|规约函数
+reduce|从流中生成单一结果|常规情况下: 二元运算+单位元(可选)
+
+> 规约函数的调用和内置实现都非常复杂, 常用的规约函数都在`Collectors`类下, 有`Collectors.toList()`, `Collectors.toSet()`等
+> 规约函数原理一般是把规约函数抽象几个概念: 1. 结果容器提供者supplier; 2. 积聚者accumulator用于将流中的数据放入结果容器中去; 3. 多个结果容器的结合器combiner; 4. 对容器执行最终转换的finisher.
+> 其中supplier, accumulator, combiner都是必须得, finisher是可选的.
+> 例如对于Collectors.toList()这个规约. `supplier = () -> new ArrayList<>()`, `accumulator = (list, e) -> list.add(e)`, `combiner -> (list1, list2) -> list1.addAll(list2); return list1;`, `finisher = a -> return a;`
+> 于是, 真正执行规约时, 大概是这样执行的:
+> ```
+> A a2 = supplier.get();  
+> accumulator.accept(a2, t1);  
+> A a3 = supplier.get();  
+> accumulator.accept(a3, t2);
+> R r2 = finisher.apply(combiner.apply(a2, a3));
+> ```
+> 注意: 上面这个执行说的是"大概", 因为实际执行时, 有可能只会调用supplier.get()一次, 而连续调用accumulator.accept多次, 这与是否为并行stream有关. 同时, Collector接口的注释中有要求上面这些函数必须满足结合律, 并且单位元是空集, 使得执行顺序不会影响最终结果.
+
+**并行流**
+
+使用parallelStream可以创建并行流. 底层采用Fork/Join框架, 将大任务分割成多个小任务, 这些小任务可以并行执行, 然后再将这些小任务的结果合并(join)成最终结果.
