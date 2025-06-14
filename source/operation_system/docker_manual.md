@@ -117,6 +117,27 @@ docker run --name rabbitmq -d -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_US
 ### ElasticSearch
 
 
+ElasticSearch单节点启动:
+
+```
+docker pull elasticsearch:7.17.21
+docker run -d --name elasticsearch -e "discovery.type=single-node" -e "xpack.security.enabled=true" -e "ELASTIC_PASSWORD=frog1234" -p 8200:9200 elasticsearch:7.17.21
+```
+
+> 这里指定了单节点启动, 并开启`xpack.security.enabled=true`使得可以自由创建新的账号密码, 同时这里指定了ELASTIC_PASSWORD=frog1234, 即默认账号`elastic`的密码
+> 自定义账号需要这样做:
+> ```
+> curl -X POST "http://localhost:9200/_security/user/<username>" \
+> -H "Content-Type: application/json" \
+> -u elastic:<password> \
+> -d '{
+>   "password": "<new_password>",
+>   "roles": ["superuser"]
+> }'
+> ```
+
+
+
 ElasticSearch全家桶安装:
 
 找一个文件夹, 新建文件:```docker-compose.yaml```

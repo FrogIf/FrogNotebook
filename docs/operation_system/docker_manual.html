@@ -454,6 +454,22 @@ docker run --name nacos -d -p 8848:8848 -e MODE=standalone nacos/nacos-server
 docker run --name rabbitmq -d -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_USER=spring -e RABBITMQ_DEFAULT_PASS=spring rabbitmq:3.7-management
 </div></code></pre>
 <h3 id="elasticsearch">ElasticSearch</h3>
+<p>ElasticSearch单节点启动:</p>
+<pre class="hljs"><code><div>docker pull elasticsearch:7.17.21
+docker run -d --name elasticsearch -e &quot;discovery.type=single-node&quot; -e &quot;xpack.security.enabled=true&quot; -e &quot;ELASTIC_PASSWORD=frog1234&quot; -p 8200:9200 elasticsearch:7.17.21
+</div></code></pre>
+<blockquote>
+<p>这里指定了单节点启动, 并开启<code>xpack.security.enabled=true</code>使得可以自由创建新的账号密码, 同时这里指定了ELASTIC_PASSWORD=frog1234, 即默认账号<code>elastic</code>的密码
+自定义账号需要这样做:</p>
+<pre class="hljs"><code><div>curl -X POST &quot;http://localhost:9200/_security/user/&lt;username&gt;&quot; \
+-H &quot;Content-Type: application/json&quot; \
+-u elastic:&lt;password&gt; \
+-d '{
+  &quot;password&quot;: &quot;&lt;new_password&gt;&quot;,
+  &quot;roles&quot;: [&quot;superuser&quot;]
+}'
+</div></code></pre>
+</blockquote>
 <p>ElasticSearch全家桶安装:</p>
 <p>找一个文件夹, 新建文件:<code>docker-compose.yaml</code></p>
 <p>内部添加内容:</p>
