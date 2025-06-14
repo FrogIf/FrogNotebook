@@ -1439,7 +1439,7 @@ dd if=/dev/zero of=test
 
 * ```lsblk```: list block, 即列出所有可用块设备信息, 显示他们之间的依赖关系
 
-## 航海日志
+## Trouble Shooting
 
 ### 系统内部web应用响应速度慢
 
@@ -1450,3 +1450,29 @@ dd if=/dev/zero of=test
   3. 通过`pidstat -d 2`查看进程的磁盘读写情况
   4. 通过`iotop`查看磁盘读写情况
 * 通过`vmstat 1`查看内存情况
+
+### 用户切换时报Resource temporarily unavailable
+
+主机登录或者切换用户时报错资源暂时不可用(Resource temporarily unavailable):
+
+```
+[root@aaaa ~] su frog
+-bash: fork: retry: Resource temporarily unavailable
+```
+
+这是由于主机上用户打开的线程太多了, 超过了系统内核参数设置, 需要调整主机上的参数.
+
+1. 编辑文件`/etc/security/limits.conf`, 调整对应用户的参数:
+
+```
+frog soft nproc 65535
+frog hard nproc 65535
+frog soft nofile 65535
+frog hard nofile 65535
+```
+
+2. 一般上面那个配置就足够了, 如果不行, 可以再修改一下: `/etc/security/limits.d/90-nproc.conf`, 修改配置基本相同:
+
+```
+frog nproc 65535
+```
