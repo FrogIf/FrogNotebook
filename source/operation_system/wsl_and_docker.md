@@ -111,6 +111,8 @@ PS C:\WINDOWS\system32> wsl -l -v
 docker setting界面 -- Resources -- WSL INTERGRATION -- Ubuntu-20.04的一个开关, 调整为开启状态
 ```
 
+> 安装之后, 如果显示"docker engine stopped", 需要执行```wsl --update```
+
 
 6. **配置国内镜像源**
  

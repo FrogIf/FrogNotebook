@@ -33,11 +33,14 @@
         * 入口等待队列: 同一时刻, 只有一个线程可以进入管程内部, 其余线程在**入口等待队列**中, 等待锁的获取
         * 条件等待队列: wait()方法, 会将管程内部的线程转移到**条件等待队列**中, 同时释放锁. notify, notifyAll方法, 会触发条件等待队列中的线程重新进入**入口等待队列**
         * synchronized的条件等待队列只有一个, Lock&Condition的条件等待队列可以有多个.
-![image](img/mesa.png)
+
+<image src="img/mesa.png" height="500" />
 
 ## 线程安全性
 
-引发线程安全的必要条件有两个:
+线程安全是指某个函数在并发环境中被调用时, 能够正确地处理**多个线程**之间的**共享变量**, 使程序功能**正确完成**.
+
+引发线程安全问题的核心就是**共享变量**, 可以拆解为两个必要条件有两个:
 
 1. 可变的量
 2. 多线程共享
@@ -161,9 +164,9 @@ java提供的具体手段有:
 
 原子性: 对于其他线程来说, 一组操作, 要么全都执行完成, 要么全都未执行, 原子性问题的根源是线程切换导致的. 解决原子性问题, 就是要保证一组操作不可分割, 操作的中间状态对外不可见.
 
-java提供的解决手段: 锁
+java提供的解决手段: 锁, CAS
 
-## java线程的生命周期
+## 线程的生命周期
 
 java线程中共有六个状态
 
@@ -195,6 +198,21 @@ java线程中共有六个状态
 
 > 调用阻塞式API时(I/O操作等), 是否会由RUNNABLE转换为BLOCKED? 不会, 对于操作系统来说, 确实是进入了阻塞状态, 但是JVM 层面并不关心操作系统调度相关的状态, 在JVM看来, 等待CPU使用权和等待IO没有区别, 都是RUNNABLE状态.
 
+<image src="img/thread_state.png" height="400" />
+
+## 死锁
+
+死锁是指两个或者两个以上的进程(或线程)在执行过程中, 由于竞争资源或者由于彼此通信而造成的一种阻塞现象, 若无外界干预, 它们都将无法推进下去.
+
+产生死锁的四个必要条件:
+
+1. 互斥条件: 一个资源每次只能被一个进程使用
+2. 占有且等待: 一个进程因请求资源而阻塞时, 对已获得的资源不释放;
+3. 不可强行占有: 进程已获得的资源, 在未使用完之前, 不能强行剥夺;
+4. 循环等待条件: 若干进程之间形成一种头尾相接的循环等待资源关系;
+
+避免这四个条件同时发生, 就可以避免死锁.
+
 ## 线程数的确定
 
 使用多线程的目的, 可以归结为: 降低延迟，提高吞吐量. 多线程就是要解决CPU和I/O设备的综合利用率问题.
@@ -203,9 +221,20 @@ java线程中共有六个状态
     * 理论上: 线程数 = CPU核数
     * 工程实践中: 线程数 = CPU核数 + 1
 * I/O密集型程序
-    * 线程数: [1 + (I/O耗时/CPU耗时)] * CPU核数
-* 最佳实践: 根据实际情况, 调整线程数, 使得硬件性能发挥到极致
+    * 线程数: 2N + 1
+* 最佳实践: 没有固定的数值, 根据实际情况, 调整线程数, 使得硬件性能发挥到极致
 
+## 守护线程
+
+正常情况下创建的线程是普通线程, 通过`new Thread().setDaemon(true)`创建的线程是守护线程. 两者唯一区别是: java进程会在所有普通用户线程结束后退出, 而不会等守护线程执行完成.
+
+## 线程上下文
+
+线程上下文是指CPU从一个线程转到另一个线程时, 需要保存当前线程的上下文状态, 恢复另一个线程的上下文状态, 以便下一次恢复执行该线程时能够正确地运行. 例如程序计数器, 寄存器, 栈指针等信息都是上下文信息.
+
+## 并发与并行
+
+<image src="img/concurrent_and_parallel.png" height="300">
 
 # 第二部分 并发实践
 
@@ -216,6 +245,9 @@ synchronized是java提供的内置锁, 可重入
 * synchronized代码块中的锁对象是synchronized后指定的
 * synchronized修饰实例方法, 锁对象就是this
 * synchronized修饰静态方法, 锁对象就是Class对象
+* synchronized采用的是管程的原理来实现的锁
+* synchronized通过monitorenter和monitorexit这两个字节码指令实现的
+* synchronized是非公平锁, 这种通常会有更高的吞吐量
 
 **锁与等待-通知 的 最佳实践**
 
@@ -278,6 +310,39 @@ synchronized是java提供的内置锁, 可重入
 ```
 
 > 顺便提及一下, Thread.sleep不会释放锁, 仅仅是让渡CPU执行时间
+> 存在`Thread.sleep(0)`这种写法, 作用有: 1. 让渡出CPU, 防止某个线程长时间占用CPU资源; 2. 这个方法是native方法, 相当于程序可以进入safepoint, 可以执行GC. 防止有长循环没有safepoint导致长时间不能gc.(native函数不在JVM管理中, 不会对JVM内部的状态进行修改, 所以JVM不需要关心它, 因此它是一个safepoint)
+
+### 锁状态
+
+* <= jdk1.6: 只有重量级锁
+* > jdk1.6 & < jdk15: 偏向锁 + 轻量级锁 + 重量级锁
+* >= jdk15: 轻量级锁 + 重量级锁
+
+一个对象被用作锁时, 会通过对象头来标记锁状态:
+
+![image](img/object_head.png)
+
+* 偏向锁: 当线程第一次访问一个对象的同步块时, 对象锁标志位会变为"偏向锁", JVM会在对象头中设置thread ID.
+  * 这种情况下, 其他线程访问有该对象锁的同步代码块时, 会先检查对象的偏向锁标识, 如果和自己线程ID相同则直接获取锁, 如果不同, 则会升级为轻量级锁;
+* 轻量级锁: 当有其他线程访问该对象锁时, 偏向锁会升级为轻量级锁.
+  * 升级轻量级锁的过程中, JVM会先将对象头中的Mark Word复制到线程栈中的锁记录(Lock Record); 然后通过CAS操作将对象头Mark Word更新为指向锁记录的指针. 如果这个CAS更新操作成功, 这个线程就成功获取到了轻量级锁.
+* 重量级锁: 当轻量级锁CAS操作失败, 即出现了实际的竞争, 锁会进一步升级为重量级锁.
+  * 当升级为重量级锁后, 对象头的Mark Word会更新为指向重量级锁结构(Monitor)的指针, 这个重量级锁结构就是一系列的"管程"相关信息, 包括入口等待队列(Entry Set)等等.
+  * 在锁升级为重量级锁之前, 会有自旋的过程, 避免线程立即进入阻塞状态. 这个自旋的时间是不固定的, 称为JVM的自适应自旋, JVM会根据实际情况动态调整.
+
+<image src="img/lock_status.png" height="300">
+
+> * Mark Word: 每个对象头部都有一个Mark Word, 它用于存储对象自身的运行时数据, 如hashCode, 锁状态信息, 分代年龄等.
+> * 在升级为轻量级锁过程中, 为什么需要将对象头的原始Mark Word复制到线程栈中的锁记录(Lock Record)? 这是为了在锁释放时, 可以将原始的对象头Mark Word恢复过来.
+> * HotSpot只支持锁升级, 不支持锁降级.
+> * 上述的锁状态中, 只有重量级锁会导致线程阻塞. 线程阻塞和唤醒是很重的操作, 需要在用户态和内核态之间切换, 涉及操作系统调度, 所以才会有这些锁状态来避免.
+> * 为什么jdk15之后取消了偏向锁? 偏向锁最初设计主要是为了HashTable, Vector等比较老的线程安全集合考虑的, 假定一个锁一直由同一个线程持有, 避免其他级别锁的一些操作消耗. 但是偏向锁在有其他线程竞争锁的情况下, 出现升级等会损耗性能. 新的java有了更现代的并发编程技术, 同时废弃偏向锁可以减少JVM相关逻辑代码的复杂度, 因此被废弃掉了.
+
+### 锁优化
+
+1. 自适应自旋: 即上面提到的在升级成重量级锁之前的自旋
+2. 锁消除: 运行时阶段, JIT编译器通过逃逸分析, 如果认为一段同步块只可能同时被一个线程访问到, 那么在进行JIT编译时, 就会取消掉对这部分代码的加锁;
+3. 锁粗化: 频繁的加锁解锁是很耗费资源的, 运行时阶段, JIT编译器发现一系列连续操作都是对同一个对象反复加锁解锁, 甚至是在一个循环体内部, 会将加锁的范围扩散(粗化)到整个操作序列外部.
 
 ## ThreadLocal
 
@@ -327,7 +392,8 @@ ThreadLocalMap对key(ThreadLocal)是弱引用, 只要ThreadLocal本身的生命�
 
 **InheritableThreadLocal**
 
-如果想在一个线程创建的子线程中, 访问父线程的ThreadLocal中的变量, 需要使用InheritableThreadLocal. 但是, 不建议使用, 会导致继承关系混乱.
+1. 如果想在一个线程创建的子线程中, 访问父线程的ThreadLocal中的变量, 需要使用InheritableThreadLocal. 但是, 不建议使用, 会导致继承关系混乱.
+2. InheritableThreadLocal只能用在手动创建的子线程中传递变量, 如果是线程池中的线程, 不可以用, 这时可以使用TransmittableThreadLocal类.
 
 ## Lock和Condition
 
@@ -387,6 +453,17 @@ Lock&Condition简单示例:
         }
     }
 ```
+
+## AbstractQueuedSynchronizer
+
+AQS(AbstractQueuedSynchronizer)是一个用于构建锁和同步器的框架, 许多同步器都可以通过AQS很容易并且高效地构造出来. 不仅ReentrantLock和Semaphore是基于AQS构建的, 还包括CountDownLatch, ReentrantReadWriteLock, SynchronousQueue和FutureTask. java中的AQS就是管程模型(MESA)的具体实现, 对于管程模型, 看最上面的图就可以了解了. 也可以结合下图:
+
+<image src="img/AQS.png" height="300" />
+
+* 锁类型有独占锁和共享锁. 独占锁保证同一时刻只有一个线程可以获取到锁(ReentrantLock). 共享锁同一时刻可以有多个线程获取到锁(ReadWriteLock/Semaphore等).
+* AQS中有两个FIFO队列: 1. 入口等待队列; 2. 条件等待队列
+* 入口等待队列是双向链表, 这出于几方面考虑: 1. 高效的中断支持(方便从任意节点去检查它前序和后继节点); 2. 高效的挂起支持(方便从任意节点去检查它前序和后继节点); 3. 高效的线程判断(从尾部向前遍历, 减少头部状态的竞争);
+* AQS图中的await, signal等方法内部的线程阻塞与唤醒使用的是`LockSupport.park`和`LockSupport.unpark`方法, park是阻塞, unpark是唤醒
 
 ## Semaphore信号量
 
@@ -681,9 +758,11 @@ synchronized (list) {
 
 **CAS**: 原子类实现原理, 依赖与硬件的支持, CPU为解决并发问题, 提供了CAS(Compare And Swap)指令. CAS指令包含3个参数: 共享变量内存地址A, 用于比较的值B, 共享变量的新值C; 并且当内存中A处的值等于B时, 产能将内存中地址A出的值更新为新值C. 作为一条CPU指令, CAS指令本身是能保证原子性的.
 
-**自旋**: 即循环尝试. 例如, ((AtomicLong)count).getAndIncrement()操作, 就是使用"CAS+自旋"的实现方案. 首先, newValue = count + 1; 然后, cas(count, newValue); 如果返回值不等于count, 说明执行cas执行没有成功; 这时, 重新获取当前count值, 重新计算newValue, 重新执行cas, 这样循环自旋, 直至成功.
+**自旋**: 即循环尝试. 例如, ((AtomicLong)count).getAndIncrement()操作, 就是使用"CAS+自旋"的实现方案. 首先, newValue = count + 1; 然后, cas(count, newValue); 如果返回值不等于count, 说明执行cas执行没有成功; 这时, 重新获取当前count值, 重新计算newValue, 重新执行cas, 这样循环自旋, 直至成功. 
 
 **ABA问题**: CAS中常见的一个问题是ABA问题, 就是说一个值, 原来是A, 修改为B后, 又被修改为A, 这时, CAS是无法感知到这个修改过程的. 大多数时候, 不必关心ABA问题, 但有些时候, 也需要注意.
+
+**忙等待**: 自旋操作如果一致持续下去, 导致线程一直在无意义的运行, 称为忙等待.
 
 原子类
 
@@ -1181,6 +1260,8 @@ ForkJoinPool本质上也是一个生产者-消费者实现, 内部有多个任�
 
 ForkJoinPool任务队列采用的是双端队列, 工作线程正常获取任务和窃取任务分别从任务队列不同的端消费, 避免很多不必要的数据竞争.
 
+> Fork/Join从数学上理解, 相当于针对数据进行反复的同一种二元运算, 这个二元运算满足结核律, 就可以使用Fork/Join了. 这时Fork相当于'给运算加括号'. 如果一个任务虽然能拆分成多个子任务, 但是join操作不满足结合律, 那么就不能使用Fork/Join, 因为执行结果会和顺序执行不一样.
+
 ## 线程的终止
 
 java中有三种方式终止一个线程:
@@ -1231,9 +1312,55 @@ try {
 
 > ```awaitTermination```方法是当前线程阻塞, 等待线程池中的线程执行结束. 返回值true-所有线程执行结束, false - 没有全部结束(等待超时了).
 
-## 其他知识
+## 虚拟线程
 
-### 活跃性问题的演示
+虚拟线程是jdk21推出的轻量级线程; 它的实现原理是不再每一个线程都一对一的对应一个操作系统线程了, 而是会将多个虚拟线程映射到少量操作系统线程中, 通过有效的调度来避免那些上下文切换.
+
+* 虚拟线程总是守护线程, 不可更改
+* 虚拟线程始终具有normal的优先级, 不可更改
+* 虚拟线程不支持stop, suspend, resume, 调用这些方法会抛出UnsupportedOperationException
+
+```java
+public static void main(String[] args) throws InterruptedException {
+    // 方式1
+    Thread.startVirtualThread(new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("aaa");
+        }
+    });
+    // 方式2
+    Thread.ofVirtual().name("aaaa").start(new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("vvv");
+        }
+    });
+    // 方式3, 不建议使用, 因为虚拟线程没有必要搞个线程池
+    try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("ccc");
+            }
+        });
+    }
+    Thread.sleep(10000L); // 虚拟线程都是守护线程, 如果没有这句, 有可能没等虚拟线程执行, 就进程结束了
+}
+```
+
+注意事项:
+
+1. 虚拟线程不要和线程池一起用: 像所有资源池一样, 线程池旨在共享昂贵的资源, 但虚拟线程并不昂贵, 因此永远不需要将它们池化.
+2. 虚拟线程中不要使用synchronized: 如果使用synchronized, 会导致PINNED, 即: 虚拟线程会绑定到一个特定的底层操作系统线程上, 期间它不能被调度器移动到其他载体线程上执行. 固定虚拟线程到底层线程意味着减少了虚拟机能够灵活调度和优化任务执行的能力, 因此降低了资源利用效率. 这种情况建议使用ReentrantLock
+3. 虚拟线程避免使用ThreadLocal: 虚拟线程本身是支持ThreadLocal的, 但是由于可能创建的虚拟线程数量巨大, 不当使用ThreadLocal可能导致内存泄漏等问题.
+   * 如果需要使用, 可以考虑使用作用域局部变量(Scope-local variable)作为替代方案; 作用域局部变量不是绑定到线程上, 而是绑定到特定的执行范围或上下文上.
+
+> 在执行synchronize或者本地方法或外部函数时, 都会发生PINNED, 因为这些机制可能会涉及与操作系统或者外部资源的直接交互, 必须在特定的操作系统线程上执行.
+
+# 第三部分 其他知识
+
+## 活跃性问题的演示
 
 ```java
 package sch.frog.concurrency;
@@ -1390,7 +1517,7 @@ public class LivenessProblem {
 }
 ```
 
-### 指令重排存在的证明
+## 指令重排存在的证明
 
 ```java
 package sch.frog.concurrency;
@@ -1456,3 +1583,25 @@ public class Disorder {
     }   
 }
 ```
+
+### CAS底层支持
+
+CAS是一种基本的原子操作, 用于解决并发问题. 在x86架构的CPU中, CAS操作通常使用cmpxchg指令实现. 关于cmpxchg指令, 主要有以下几点:
+
+1. cmpxchg是原子指令, CPU执行该指令时, 处理器会自动锁定总线, 防止其他CPU访问共享变量.
+2. cmpxchg执行期间, CPU会自动禁止中断事件;
+3. cmpxchg是硬件实现的, 可以保证原子性和正确性;
+4. cmpxchg是基于CPU缓存一致性协议实现的. 在多核CPU中, 可以保证变量的可见性.
+
+### 使多个线程顺序执行
+
+1. 使用thread.join();
+2. new CountDownLaunch(1);
+3. new Semaphore(1);
+4. Executors.newSingleThreadExecutor();
+5. ((CompletableFuture<Void>)future).join();
+
+### 总线嗅探和总线风暴
+
+* 总线嗅探: 在多核处理器中, 为了保证缓存一致性, CPU使用总线嗅探机制来检查是否有其他处理器核修改了该某个共享变量. 如果有, 则将缓存中的旧值更新为新值.
+* 总线风暴: 如果多个线程频繁的读写共享变量, 会导致大量的总线通信, 引发总线风暴, 降低系统性能.
