@@ -154,7 +154,3 @@ public class ConsistencyHash {
     }
 }
 ```
-
-## 扩展
-
-有没有, 扩充节点后, 完全不影响之前数据的算法呢? 有的!
