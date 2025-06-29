@@ -484,6 +484,7 @@ code {
 <p>score越小, 越靠前</p>
 </blockquote>
 <p>应用场景: 排行榜, 社交需求(用户点赞等)</p>
+<p>zset底层使用ziplist(压缩列表)和skiplist(跳跃表)来实现的. 默认情况下, 元素数量小于128并且每个元素长度小于64字节时, 使用ziplist, 否则使用SkipList.</p>
 <p><strong>三种特殊数据类型</strong></p>
 <ul>
 <li>Geo: 3.2推出的, 地理位置定位, 用于存储地理位置信息, 并对存储的信息进行操作</li>
@@ -879,10 +880,13 @@ JedisSentinelPool pool = <span class="hljs-keyword">new</span> JedisSentinelPool
 <h2 id="redis%E5%8F%8C%E5%86%99%E4%B8%80%E8%87%B4%E6%80%A7">Redis双写一致性</h2>
 <p>使用redis作为缓存时, 需要保证redis中的数据和数据库中的数据保持双写一致, 有以下三种方案:</p>
 <ul>
-<li>缓存延时双删</li>
-<li>删除缓存重试机制</li>
-<li>读取binlog异步删除缓存</li>
+<li>缓存延时双删: 先删除缓存, 再更新数据库, 再删除一次缓存;</li>
+<li>删除缓存重试机制: 先更新数据库, 再删除缓存, 删除失败重试;</li>
+<li>读取数据库binlog异步删除缓存</li>
 </ul>
+<blockquote>
+<p>为什么不更新而是删除: 1. 更新缓存动作操作复杂容易出错; 2. 并发更新下, 更新操作有可能导致数据不一致;</p>
+</blockquote>
 <p><strong>延时双删</strong></p>
 <ol>
 <li>先删除缓存</li>
@@ -911,12 +915,15 @@ JedisSentinelPool pool = <span class="hljs-keyword">new</span> JedisSentinelPool
 </ul>
 </li>
 <li>计数器功能 - 实时展示播放量等, 主要使用的命令: <code>incr key</code>, <code>incrby key number</code>, <code>decr key</code>, <code>decrby key number</code></li>
+<li>分布式ID - 全局自增计数器, 实现全局唯一id;</li>
 <li>session共享</li>
 <li>分布式锁</li>
-<li>消息队列 - redis提供了发布/订阅及阻塞队列功能, 可以实现一个简单的消息队列系统, 常用命令有: <code>subscribe channel</code>, <code>psubscribe channel*</code>, <code>publish channel content</code></li>
+<li>布隆过滤器</li>
+<li>分布式限流 -</li>
+<li>消息队列(不推荐) - redis提供了发布/订阅及阻塞队列功能, 可以实现一个简单的消息队列系统, 常用命令有: <code>subscribe channel</code>, <code>psubscribe channel*</code>, <code>publish channel content</code></li>
 </ol>
 <h2 id="%E5%85%B6%E4%BB%96">其他</h2>
-<p><strong>Redis事务</strong></p>
+<h3 id="redis%E4%BA%8B%E5%8A%A1">Redis事务</h3>
 <p>redis通过multi, exec, watch等一组指令来实现事务机制. 事务支持一次执行多个命令, 一个事务中所有命令都会被序列化. 在事务执行过程中, 会按照顺序串行化执行队列中的命令, 其他客户端提交的命令请求不会插入到事务执行命令序列中. 简而言之, redis事务就是顺序性, 一次性, 排他性的执行一个命令序列中的一系列命令.</p>
 <p>redis执行事务的流程如下:</p>
 <ol>
@@ -954,10 +961,13 @@ JedisSentinelPool pool = <span class="hljs-keyword">new</span> JedisSentinelPool
 </tr>
 </tbody>
 </table>
-<p><strong>Hash冲突</strong></p>
+<blockquote>
+<p>Redis的事务主要是保障多个命令原子性执行, 不会被打断, 它是不支持回滚的, 执行过程中如果执行报错, 会继续执行剩余指令.</p>
+</blockquote>
+<h3 id="hash%E5%86%B2%E7%AA%81">Hash冲突</h3>
 <p>redis使用一张全局hash来保存所有的键值对. 这张hash表有多个hash桶, hash桶中的entry元素保存了key和value的指针, 其中key指针指向了实际的键, value指针指向了实际的值.</p>
 <p>不同的key, hash值可能相同, 这就会导致hash冲突. redis为了解决hash冲突, 采用的是链式hash. 这种结构与java.util.HashMap中的类似. 但是这样, 有可能导致冲突链表过长, 影响性能, 因此, redis会对hash表做rehash, 来增加hash桶, 减少冲突. 为了rehash更高效, redis还默认使用了两个全局hash表,  一个用于当前使用, 称为主hash表, 一个用于扩容, 称为备用hash表.</p>
-<p><strong>热Key问题</strong></p>
+<h3 id="%E7%83%ADkey%E9%97%AE%E9%A2%98">热Key问题</h3>
 <p>访问频率高的key称为热key. 如果某一热点key的请求到redis服务器主机时, 请求量特别大, 可能会导致redis资源不足, 甚至宕机.</p>
 <p>产生原因:</p>
 <ul>
@@ -975,6 +985,57 @@ JedisSentinelPool pool = <span class="hljs-keyword">new</span> JedisSentinelPool
 <li>redis集群扩容: 增加分片副本, 均衡读流量;</li>
 <li>将热点key分散到不同服务器中;</li>
 <li>使用二级缓存, 及jvm本地缓存, 减少redis读请求.</li>
+<li>限流</li>
+</ul>
+<h3 id="%E5%A4%A7key%E9%97%AE%E9%A2%98">大Key问题</h3>
+<p>某个key对应的value占用的内存过大, 称之为大key问题. 大key的影响:</p>
+<ol>
+<li>影响性能: 读取速度慢;</li>
+<li>占用内存大;</li>
+<li>内存空间不均匀: 集群环境下, 如果摸个节点存储了大key, 导致节点内存不均匀;</li>
+<li>影响redis备份和恢复: 需要大量时间, 甚至无法恢复;</li>
+<li>搜索困难;</li>
+<li>迁移困难;</li>
+<li>过期执行耗时;</li>
+</ol>
+<blockquote>
+<p>对于大key的界定是没有规范的, 一般String超过5M算作, Set/List元素超过10000, Hash元素超过1000, 则视为大key</p>
+</blockquote>
+<p>通过执行<code>redis-cli -bigkeys</code>, 可以将结果输出到本地文件中;</p>
+<p>问题解决:</p>
+<ol>
+<li>有选择的删除BigKey</li>
+<li>设置合理的TTL;</li>
+<li>拆分到多个key中;</li>
+<li>存到单独的数据库中;</li>
+</ol>
+<h3 id="%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE">通信协议</h3>
+<p>Redis客户端和服务端之间采用的通信协议是自己设计的-- RESP(REdis Serialization Protocol), 这是应用层的协议, 传输层使用的是TCP. 该协议的结构大致如下:</p>
+<p>请求:</p>
+<pre class="hljs"><code><div>*&lt;参数个数&gt;\r\n
+$&lt;参数1长度&gt;\r\n
+&lt;参数1数据&gt;\r\n
+$&lt;参数2长度&gt;\r\n
+&lt;参数2数据&gt;\r\n
+...
+</div></code></pre>
+<p>响应略, 也是基于<code>\r\n</code>来分割的</p>
+<h3 id="redis%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">Redis使用注意事项</h3>
+<ul>
+<li>避免使用<code>KEYS</code>命令获取所有key, 因为该命令会遍历所有key, 阻塞redis主线程;</li>
+<li>避免<code>FLUSHALL</code>或<code>FLUSHDB</code>命令清空Redis数据库, 因为会清空所有数据库, 不止当前数据库;</li>
+<li>避免大key;</li>
+<li>合理设置过期时间;</li>
+<li>写入操作频繁的数据, 考虑使用Redis的持久化;</li>
+<li>避免使用Lua脚本无限循环;</li>
+<li>对于需要频繁更新的数据, 建议使用Hash结构, 支持部分更新;</li>
+<li>避免运行复杂的计算;</li>
+</ul>
+<h3 id="setnxsetex">SETNX+SETEX</h3>
+<ul>
+<li><code>SETNX</code>: 只有键不存在的时候设置;</li>
+<li><code>SETEX</code>: 设置并指定过期时间;</li>
+<li><code>SET xxxxkey xxxxvalue NX EX xxxttl</code>: 上两者同时配置;</li>
 </ul>
 
 </body>
