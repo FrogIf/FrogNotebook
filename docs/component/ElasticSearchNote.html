@@ -1,372 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>ElasticSearchNote.md</title>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-
-<style>
-/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-body {
-	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
-	font-size: var(--vscode-markdown-font-size, 14px);
-	padding: 0 26px;
-	line-height: var(--vscode-markdown-line-height, 22px);
-	word-wrap: break-word;
-}
-
-#code-csp-warning {
-	position: fixed;
-	top: 0;
-	right: 0;
-	color: white;
-	margin: 16px;
-	text-align: center;
-	font-size: 12px;
-	font-family: sans-serif;
-	background-color:#444444;
-	cursor: pointer;
-	padding: 6px;
-	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
-}
-
-#code-csp-warning:hover {
-	text-decoration: none;
-	background-color:#007acc;
-	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
-}
-
-body.scrollBeyondLastLine {
-	margin-bottom: calc(100vh - 22px);
-}
-
-body.showEditorSelection .code-line {
-	position: relative;
-}
-
-body.showEditorSelection .code-active-line:before,
-body.showEditorSelection .code-line:hover:before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: -12px;
-	height: 100%;
-}
-
-body.showEditorSelection li.code-active-line:before,
-body.showEditorSelection li.code-line:hover:before {
-	left: -30px;
-}
-
-.vscode-light.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.15);
-}
-
-.vscode-light.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.40);
-}
-
-.vscode-light.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-dark.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.4);
-}
-
-.vscode-dark.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.60);
-}
-
-.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-high-contrast.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 160, 0, 0.7);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 160, 0, 1);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-img {
-	max-width: 100%;
-	max-height: 100%;
-}
-
-a {
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:focus,
-input:focus,
-select:focus,
-textarea:focus {
-	outline: 1px solid -webkit-focus-ring-color;
-	outline-offset: -1px;
-}
-
-hr {
-	border: 0;
-	height: 2px;
-	border-bottom: 2px solid;
-}
-
-h1 {
-	padding-bottom: 0.3em;
-	line-height: 1.2;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-}
-
-h1, h2, h3 {
-	font-weight: normal;
-}
-
-table {
-	border-collapse: collapse;
-}
-
-table > thead > tr > th {
-	text-align: left;
-	border-bottom: 1px solid;
-}
-
-table > thead > tr > th,
-table > thead > tr > td,
-table > tbody > tr > th,
-table > tbody > tr > td {
-	padding: 5px 10px;
-}
-
-table > tbody > tr + tr > td {
-	border-top: 1px solid;
-}
-
-blockquote {
-	margin: 0 7px 0 5px;
-	padding: 0 16px 0 10px;
-	border-left-width: 5px;
-	border-left-style: solid;
-}
-
-code {
-	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
-	font-size: 1em;
-	line-height: 1.357em;
-}
-
-body.wordWrap pre {
-	white-space: pre-wrap;
-}
-
-pre:not(.hljs),
-pre.hljs code > div {
-	padding: 16px;
-	border-radius: 3px;
-	overflow: auto;
-}
-
-pre code {
-	color: var(--vscode-editor-foreground);
-	tab-size: 4;
-}
-
-/** Theming */
-
-.vscode-light pre {
-	background-color: rgba(220, 220, 220, 0.4);
-}
-
-.vscode-dark pre {
-	background-color: rgba(10, 10, 10, 0.4);
-}
-
-.vscode-high-contrast pre {
-	background-color: rgb(0, 0, 0);
-}
-
-.vscode-high-contrast h1 {
-	border-color: rgb(0, 0, 0);
-}
-
-.vscode-light table > thead > tr > th {
-	border-color: rgba(0, 0, 0, 0.69);
-}
-
-.vscode-dark table > thead > tr > th {
-	border-color: rgba(255, 255, 255, 0.69);
-}
-
-.vscode-light h1,
-.vscode-light hr,
-.vscode-light table > tbody > tr + tr > td {
-	border-color: rgba(0, 0, 0, 0.18);
-}
-
-.vscode-dark h1,
-.vscode-dark hr,
-.vscode-dark table > tbody > tr + tr > td {
-	border-color: rgba(255, 255, 255, 0.18);
-}
-
-</style>
-
-<style>
-/* Tomorrow Theme */
-/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
-/* Original theme - https://github.com/chriskempson/tomorrow-theme */
-
-/* Tomorrow Comment */
-.hljs-comment,
-.hljs-quote {
-	color: #8e908c;
-}
-
-/* Tomorrow Red */
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag,
-.hljs-name,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-regexp,
-.hljs-deletion {
-	color: #c82829;
-}
-
-/* Tomorrow Orange */
-.hljs-number,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-literal,
-.hljs-type,
-.hljs-params,
-.hljs-meta,
-.hljs-link {
-	color: #f5871f;
-}
-
-/* Tomorrow Yellow */
-.hljs-attribute {
-	color: #eab700;
-}
-
-/* Tomorrow Green */
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-	color: #718c00;
-}
-
-/* Tomorrow Blue */
-.hljs-title,
-.hljs-section {
-	color: #4271ae;
-}
-
-/* Tomorrow Purple */
-.hljs-keyword,
-.hljs-selector-tag {
-	color: #8959a8;
-}
-
-.hljs {
-	display: block;
-	overflow-x: auto;
-	color: #4d4d4c;
-	padding: 0.5em;
-}
-
-.hljs-emphasis {
-	font-style: italic;
-}
-
-.hljs-strong {
-	font-weight: bold;
-}
-</style>
-
-<style>
-/*
- * Markdown PDF CSS
- */
-
- body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
-	padding: 0 12px;
-}
-
-pre {
-	background-color: #f8f8f8;
-	border: 1px solid #cccccc;
-	border-radius: 3px;
-	overflow-x: auto;
-	white-space: pre-wrap;
-	overflow-wrap: break-word;
-}
-
-pre:not(.hljs) {
-	padding: 23px;
-	line-height: 19px;
-}
-
-blockquote {
-	background: rgba(127, 127, 127, 0.1);
-	border-color: rgba(0, 122, 204, 0.5);
-}
-
-.emoji {
-	height: 1.4em;
-}
-
-code {
-	font-size: 14px;
-	line-height: 19px;
-}
-
-/* for inline code */
-:not(pre):not(.hljs) > code {
-	color: #C9AE75; /* Change the old color so it seems less like an error */
-	font-size: inherit;
-}
-
-/* Page Break : use <div class="page"/> to insert page break
--------------------------------------------------------- */
-.page {
-	page-break-after: always;
-}
-
-</style>
-
-<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-</head>
-<body>
-  <script>
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
-          ? 'dark'
-          : 'default'
-    });
-  </script>
-<h1 id="elasticsearch%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0">ElasticSearch学习笔记</h1>
-<h2 id="%E6%A6%82%E8%BF%B0">概述</h2>
+<!DOCTYPE html><html><head>
+      <title>ElasticSearch学习笔记</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="elasticsearch学习笔记">ElasticSearch学习笔记 </h1>
+<h2 id="概述">概述 </h2>
 <p>ElasticSearch是基于lucene的全文搜索引擎. 包括ElasticSearch在内, Elastic开发了一系列的软件包, 组成了Elastic Stack, 其中主要包括:</p>
 <ul>
 <li>数据抓取:
@@ -389,7 +48,8 @@ code {
 <p>ElasticSearch+LogStash+Kibana可以组成强大的日志管理系统, 感兴趣可以了解: <a href="https://frogif.github.io/FrogNotebook/apm/ELK.html">ELK</a></p>
 <p>es官方文档很强大, 地址在这里<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html</a></p>
 <p>文中会用到一些数据, 数据准备相关, 参见附录: <a href="#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">数据准备</a></p>
-<h2 id="%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5">基本概念</h2>
+<p>Elasticsearch使用Query DSL(Domain Specific Language), 这是一种非常灵活的查询语言, 基于JSON, 支持全文搜索/复合查询/过滤以及聚合等;</p>
+<h2 id="基本概念">基本概念 </h2>
 <p>逻辑概念:</p>
 <ul>
 <li>文档(document): 可搜索的最小数据单元, 会被序列化为json格式(示例: <a href="#document%E7%A4%BA%E4%BE%8B">document示例</a>)
@@ -428,7 +88,7 @@ code {
 <p>分片数过多, 会影响搜索结果相关性的打分, 影响统计结果准确性; 单个节点上有过多分片, 导致资源浪费, 影响性能</p>
 </blockquote>
 <p>小结: 索引和文档是包含关系, 索引包含文档. 节点和分片没有关系, 是两个独立的概念, 节点是硬件单元, 分片是数据单元.</p>
-<h2 id="%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95">倒排索引</h2>
+<h2 id="倒排索引">倒排索引 </h2>
 <p>上面我们知道了数据在es中是如何进行存储的, 在使用es的时候, 数据是如何被查询出来的呢? 这里就用到了倒排索引的技术. 倒排索引是指词条到文档id的索引, 这种索引方式的索引方向与一般书的目录正好相反, 称之为倒排索引.</p>
 <p>倒排索引的核心组成:</p>
 <ul>
@@ -454,7 +114,7 @@ code {
 <li>优点: 1. 不需要考虑并发写文件的问题; 2. 读入缓存的数据不存在脏数据的情况; 3. 缓存容易生成和维护/数据可以被压缩</li>
 <li>缺点: 对文档的一些变更需要reindex.</li>
 </ol>
-<h2 id="%E5%88%86%E8%AF%8D">分词</h2>
+<h2 id="分词">分词 </h2>
 <p>分词(Analysis)是文本分析, 就是把全文本转换为一系列单词(term/token). 分词通过分词器来实现.</p>
 <p>分词器由三部分组成:</p>
 <ul>
@@ -504,14 +164,14 @@ code {
 <blockquote>
 <p>可以在创建索引时, 自定义分词器, 不做详细介绍.</p>
 </blockquote>
-<h2 id="%E7%B4%A2%E5%BC%95%E5%AE%9A%E4%B9%89">索引定义</h2>
+<h2 id="索引定义">索引定义 </h2>
 <p>再来介绍一下es中如何定义索引, ElasticSearch索引的定义可分为多个维度, 分别是:</p>
 <ol>
 <li>setting: 定义不同的数据分布, 即一个索引需要使用多少个分片, 多少个副本</li>
 <li>mapping: 类似于数据库中schema的定义, 用来描述一个索引的字段名称,字段类型,倒排索引配置等</li>
 <li>template: 通过模板匹配, 设置索引的setting和mapping</li>
 </ol>
-<h4 id="mapping">mapping</h4>
+<h4 id="mapping">mapping </h4>
 <p>mapping又分为mapping和dynamic mapping. dynamic mapping是指在写入文档时, 如果索引不存在, 会自动创建索引. ElasticSearch会根据文档信息, 自动推断出各个字段的类型.</p>
 <p>es中字段类型有如下:</p>
 <ul>
@@ -536,7 +196,7 @@ code {
 </ul>
 </li>
 </ul>
-<pre class="hljs"><code><div>关于这些类型的一些建议:
+<pre data-role="codeBlock" data-info="" class="language-text"><code>关于这些类型的一些建议:
 Text: 
 1. 用于全文本字段, 文本会被分词
 2. 默认不支持聚合分析及排序. 需要设置fielddata为true
@@ -557,46 +217,43 @@ es默认情况下, 会为文本类型设置成text, 同时设置一个keyword子
 避免一个文档中过多的字段:
 1. 不容易维护
 2. mapping信息保存在Cluster State中, 字段过多会对集群性能有影响
-</div></code></pre>
-<p>常用命令如下:</p>
+</code></pre><p>常用命令如下:</p>
 <ul>
 <li><code>GET &lt;index&gt;/_mapping</code>: 查看一个索引的mapping信息</li>
 </ul>
 <p>定义一个索引的mapping的示例:</p>
-<pre class="hljs"><code><div>PUT frog_index
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PUT frog_index
 {
-  &quot;mappings&quot;:{
-    &quot;properties&quot;: {
-      &quot;age&quot;:{
-        &quot;type&quot;: &quot;integer&quot;
+  "mappings":{
+    "properties": {
+      "age":{
+        "type": "integer"
       },
-      &quot;firstName&quot;:{
-        &quot;type&quot;: &quot;text&quot;,
-        &quot;copy_to&quot;: &quot;fullName&quot; // firstName和lastName会结合放入fullName中, fullName不会出现在_source中
+      "firstName":{
+        "type": "text",
+        "copy_to": "fullName" // firstName和lastName会结合放入fullName中, fullName不会出现在_source中
       },
-      &quot;lastName&quot;:{
-        &quot;type&quot;: &quot;text&quot;,
-        &quot;copy_to&quot;: &quot;fullName&quot;
+      "lastName":{
+        "type": "text",
+        "copy_to": "fullName"
       },
-      &quot;mobile&quot;:{
-        &quot;type&quot;:&quot;text&quot;,
-        &quot;index&quot;: false  // 指定该字段不可以被索引, 也就不进行分词, 不存储倒排索引, 这样可以减少存储空间, 提升性能
+      "mobile":{
+        "type":"text",
+        "index": false  // 指定该字段不可以被索引, 也就不进行分词, 不存储倒排索引, 这样可以减少存储空间, 提升性能
       },
-      &quot;nickname&quot;:{
-        &quot;type&quot;: &quot;keyword&quot;,  // keyword类型的字段不会分词, 而是将整个字段值作为一个term, 也就实现了精确值查询
-        &quot;null_value&quot;: &quot;不知道&quot;  // keyword字段可以配置null_value属性, 指示该值没有时, 填入的默认值, 这样可以方便搜索
+      "nickname":{
+        "type": "keyword",  // keyword类型的字段不会分词, 而是将整个字段值作为一个term, 也就实现了精确值查询
+        "null_value": "不知道"  // keyword字段可以配置null_value属性, 指示该值没有时, 填入的默认值, 这样可以方便搜索
       }
     }
   }
 }
-</div></code></pre>
-<p>配置一个索引的dynamic mapping行为:</p>
-<pre class="hljs"><code><div>PUT frog_index/_mapping
+</code></pre><p>配置一个索引的dynamic mapping行为:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PUT frog_index/_mapping
 {
-  &quot;dynamic&quot;:&quot;false&quot;
+  "dynamic":"false"
 }
-</div></code></pre>
-<p>上面的dynamic字段可以控制一个索引是否允许dynamic mapping, 它有三个可选值.</p>
+</code></pre><p>上面的dynamic字段可以控制一个索引是否允许dynamic mapping, 它有三个可选值.</p>
 <p>对于新增字段:</p>
 <ul>
 <li>true - 新增字段写入文档, mapping同时被更新</li>
@@ -604,55 +261,52 @@ es默认情况下, 会为文本类型设置成text, 同时设置一个keyword子
 <li>strict - 新增字段直接导致整个文档写入失败</li>
 </ul>
 <p>全局关闭dynamic mapping的设置:</p>
-<pre class="hljs"><code><div>PUT _cluster/settings
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PUT _cluster/settings
 {
-  &quot;persistent&quot;:{
-    &quot;action.auto_create_index&quot;: false
+  "persistent":{
+    "action.auto_create_index": false
   }
 }
 
 或者设置白名单:
 PUT _cluster/settings
 {
-  &quot;persistent&quot;:{
-    &quot;action.auto_create_index&quot;: &quot;logstash-*,.kibana*&quot;
+  "persistent":{
+    "action.auto_create_index": "logstash-*,.kibana*"
   }
 }
-</div></code></pre>
-<p>对于已有字段, 一旦已经写入数据, 就不能修改字段定义. 如果希望修改字段类型, 必须通过reindex重建索引.</p>
-<p>es的mapping提供了一种&quot;多字段特性&quot;, 可以为任意字段增加子字段. 示例如下:</p>
-<pre class="hljs"><code><div>PUT frog_index2
+</code></pre><p>对于已有字段, 一旦已经写入数据, 就不能修改字段定义. 如果希望修改字段类型, 必须通过reindex重建索引.</p>
+<p>es的mapping提供了一种"多字段特性", 可以为任意字段增加子字段. 示例如下:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PUT frog_index2
 {
-  &quot;mappings&quot;:{
-    &quot;properties&quot;: {
-      &quot;name&quot;:{
-        &quot;type&quot;:&quot;text&quot;,
-        &quot;fields&quot;:{
-          &quot;name_k&quot;:{
-            &quot;type&quot;:&quot;keyword&quot;
+  "mappings":{
+    "properties": {
+      "name":{
+        "type":"text",
+        "fields":{
+          "name_k":{
+            "type":"keyword"
           }
         }
       }
     } 
   }
 }
-</div></code></pre>
-<p>这时, 我们查询时, 可以查询name字段, 也可以查询name.name_k字段.</p>
-<h4 id="setting">setting</h4>
+</code></pre><p>这时, 我们查询时, 可以查询name字段, 也可以查询name.name_k字段.</p>
+<h4 id="setting">setting </h4>
 <p>常用命令:</p>
 <ul>
 <li><code>GET &lt;index&gt;/settings</code>: 查询指定索引的settings.</li>
 </ul>
 <p>定义一个索引的setting:</p>
-<pre class="hljs"><code><div>PUT fff_index
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PUT fff_index
 {
-  &quot;settings&quot;: {
-    &quot;number_of_shards&quot;: 1,
-    &quot;number_of_replicas&quot;: 1
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
   }
 }
-</div></code></pre>
-<h4 id="template">template</h4>
+</code></pre><h4 id="template">template </h4>
 <p>ElasticSearch中有两种template, 分别是index template和dynamic template</p>
 <ul>
 <li>index template: 可以按照一定的规则, 自动的设定mapping和setting, 应用到匹配的新索引上. 常见应用场景是: 我们使用elk时, 每天会根据日期生成一个索引, 这时候, 每天生成的索引就是通过index template生成的.</li>
@@ -661,44 +315,42 @@ PUT _cluster/settings
 <p>模板只会对新创建的索引起作用, 不会修改已创建的索引. 可以创建多个索引模板, 这些设置会被合并在一起. 当多个模板之间存在冲突的设定时, 通过order来控制优先级.</p>
 <p>查询index template: <code>GET _template/&lt;template_name&gt;</code></p>
 <p>index template创建示例:</p>
-<pre class="hljs"><code><div>PUT _template/frog_template
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PUT _template/frog_template
 {
-  &quot;index_patterns&quot;: [&quot;frog_*&quot;],
-  &quot;order&quot;: 1,
-  &quot;settings&quot;: {
-    &quot;number_of_shards&quot;: 1,
-    &quot;number_of_replicas&quot;: 2
+  "index_patterns": ["frog_*"],
+  "order": 1,
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 2
   },
-  &quot;mappings&quot;: {
-    &quot;date_detection&quot;: false,
-    &quot;numeric_detection&quot;: true
+  "mappings": {
+    "date_detection": false,
+    "numeric_detection": true
   }
 }
-</div></code></pre>
-<p>这个template创建好之后, 所有以<code>frog_</code>开头的索引都会使用这个template.</p>
+</code></pre><p>这个template创建好之后, 所有以<code>frog_</code>开头的索引都会使用这个template.</p>
 <blockquote>
 <p>order越小, 越会被先执行. 后执行的配置会覆盖新执行的.</p>
 </blockquote>
 <p>对于dynamic template, 示例如下:</p>
-<pre class="hljs"><code><div>PUT frog_vvvv_index
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PUT frog_vvvv_index
 {
-  &quot;mappings&quot;:{
-    &quot;dynamic_templates&quot;:[
+  "mappings":{
+    "dynamic_templates":[
       {
-        &quot;aaa_template&quot;:{
-          &quot;match_mapping_type&quot;:&quot;string&quot;,
-          &quot;match&quot;:&quot;is*&quot;,
-          &quot;mapping&quot;:{
-            &quot;type&quot;:&quot;boolean&quot;
+        "aaa_template":{
+          "match_mapping_type":"string",
+          "match":"is*",
+          "mapping":{
+            "type":"boolean"
           }
         }
       }
     ]
   }
 }
-</div></code></pre>
-<p>这里设置了一个dynamic template, 匹配所有字符串类型, 但是字段以is开头的, 另它的类型为boolean.</p>
-<h2 id="%E5%A2%9E%E5%88%A0%E6%94%B9">增删改</h2>
+</code></pre><p>这里设置了一个dynamic template, 匹配所有字符串类型, 但是字段以is开头的, 另它的类型为boolean.</p>
+<h2 id="增删改">增删改 </h2>
 <ul>
 <li>增
 <ul>
@@ -719,16 +371,16 @@ PUT _cluster/settings
 </li>
 </ul>
 <p>示例如下:</p>
-<pre class="hljs"><code><div>示例1, 新增文档, id指定为1:
+<pre data-role="codeBlock" data-info="" class="language-text"><code>示例1, 新增文档, id指定为1:
 PUT frog/_create/1
 {
-  &quot;name&quot;: &quot;frog&quot;
+  "name": "frog"
 }
 
 示例2, 新增文档, id自动生成:
 POST frog/_doc
 {
-  &quot;name&quot;: &quot;frog2&quot;
+  "name": "frog2"
 }
 
 示例3, 删除指定id的文档:
@@ -737,55 +389,53 @@ DELETE frog/_doc/nzSF74AB-CY9KE2R-ICW
 示例4, 修改指定id的文档:
 POST frog/_update/1
 {
-  &quot;doc&quot;:{
-    &quot;name&quot;: &quot;frog3&quot;,
-    &quot;age&quot;: 99
+  "doc":{
+    "name": "frog3",
+    "age": 99
   }
 }
-</div></code></pre>
-<h2 id="%E6%89%B9%E9%87%8F%E6%93%8D%E4%BD%9C">批量操作</h2>
+</code></pre><h2 id="批量操作">批量操作 </h2>
 <p>为了减少反复多次请求的网络开销, 大多数时候, 可以使用批量操作. 批量操作分为两种: 1. 批量增删改; 2. 批量查询;</p>
 <ul>
 <li><code>POST _bulk</code>: 批量增删改, 其中一个操作失败不会影响其他操作</li>
 <li><code>GET _mget</code>: 批量查询</li>
 <li><code>POST _msearch</code>: 批量查询</li>
 </ul>
-<pre class="hljs"><code><div>示例1:
+<pre data-role="codeBlock" data-info="" class="language-text"><code>示例1:
 POST _bulk
-{ &quot;index&quot;: { &quot;_index&quot;:&quot;test&quot;,&quot;_id&quot;:&quot;1&quot; } }
-{ &quot;field1&quot;:&quot;value1&quot; }
-{ &quot;delete&quot;:{ &quot;_index&quot;:&quot;test&quot;, &quot;_id&quot;:&quot;2&quot;} }
-{ &quot;create&quot;:{ &quot;_index&quot;: &quot;test2&quot;, &quot;_id&quot;:&quot;3&quot; } }
-{ &quot;field1&quot;:&quot;value3&quot; }
-{ &quot;update&quot;:{ &quot;_id&quot;:&quot;1&quot;, &quot;_index&quot;:&quot;test&quot; } }
-{ &quot;doc&quot;:{ &quot;field2&quot;:&quot;value2&quot; } }
+{ "index": { "_index":"test","_id":"1" } }
+{ "field1":"value1" }
+{ "delete":{ "_index":"test", "_id":"2"} }
+{ "create":{ "_index": "test2", "_id":"3" } }
+{ "field1":"value3" }
+{ "update":{ "_id":"1", "_index":"test" } }
+{ "doc":{ "field2":"value2" } }
 
 示例2:
 GET _mget
 {
-  &quot;docs&quot;:[
+  "docs":[
       {
-        &quot;_index&quot;:&quot;frog&quot;,
-        &quot;_id&quot;:1
+        "_index":"frog",
+        "_id":1
       },
       {
-        &quot;_index&quot;: &quot;test&quot;,
-        &quot;_id&quot;:2
+        "_index": "test",
+        "_id":2
       }
     ]
 }
 
 示例3:
 POST _msearch
-{&quot;index&quot;:&quot;frog&quot;}
-{&quot;query&quot;:{&quot;match_all&quot;:{}}, &quot;size&quot;:1}
-{&quot;index&quot;:&quot;test2&quot;}
-{&quot;query&quot;:{&quot;match_all&quot;:{}}}
-</div></code></pre>
-<blockquote>
+{"index":"frog"}
+{"query":{"match_all":{}}, "size":1}
+{"index":"test2"}
+{"query":{"match_all":{}}}
+</code></pre><blockquote>
 <p>批量查询时, 也不要一次性发送过多的数据, 这样有可能适得其反</p>
 </blockquote>
-<h2 id="%E5%9F%BA%E6%9C%AC%E6%9F%A5%E8%AF%A2">基本查询</h2>
+<h2 id="基本查询">基本查询 </h2>
 <p>首先有一种简单的查询, 通过id查询: <code>GET &lt;index&gt;/_doc/&lt;id&gt;</code>; 然后, ElasticSearch提供了两种文本查询方式, 一种是URI Search, 一种是Request Body Search. URI Search就是在URL中使用查询参数进行查询, 功能比较局限, 这里不做介绍, 只介绍Request Body Search.</p>
 <p>Request Body Search的使用POST请求, 除了请求体以外, 其余格式是很固定的:</p>
 <ol>
@@ -794,20 +444,19 @@ POST _msearch
 <li><code>POST &lt;index_pattern&gt;/_search</code></li>
 </ol>
 <p>首先, 给出一个典型的示例:</p>
-<pre class="hljs"><code><div>POST movies/_search
+<pre data-role="codeBlock" data-info="" class="language-text"><code>POST movies/_search
 {
-  &quot;_source&quot;:[&quot;title&quot;, &quot;year&quot;],
-  &quot;query&quot;:{
-    &quot;match_all&quot;: {}
+  "_source":["title", "year"],
+  "query":{
+    "match_all": {}
   },
-  &quot;from&quot;: 0,
-  &quot;size&quot;: 10,
-  &quot;sort&quot;:[
-    {&quot;year&quot;:&quot;desc&quot;}
+  "from": 0,
+  "size": 10,
+  "sort":[
+    {"year":"desc"}
   ]
 }
-</div></code></pre>
-<p>接下来具体介绍一下通过指定的词句进行搜索.</p>
+</code></pre><p>接下来具体介绍一下通过指定的词句进行搜索.</p>
 <ul>
 <li>term: 对查询条件不做分词处理, 而是直接将条件去倒排索引中匹配(注意是去倒排索引中进行完整匹配, 而倒排索引中都是进行了分词的)
 <ul>
@@ -824,33 +473,32 @@ POST _msearch
 <li>simple_query_string: query_string的简化版</li>
 </ul>
 <p>一个查询的标准模板是这样的:</p>
-<pre class="hljs"><code><div>{
-  &quot;query&quot;:{
-    &quot;bool&quot;:{
-      &quot;must&quot;:[
+<pre data-role="codeBlock" data-info="" class="language-text"><code>{
+  "query":{
+    "bool":{
+      "must":[
         // 贡献算分
       ],
-      &quot;should&quot;:[
+      "should":[
         // 贡献算分, 如果只有should没有must, 则这里的条件必须有一个满足, 如果存在must, 这里的条件可以都不满足
       ],
-      &quot;filter&quot;:[
+      "filter":[
         // 一系列的查询条件, 这里的条件不贡献算分
       ],
-      &quot;must_not&quot;:[
+      "must_not":[
         // 取反的一些条件, 这里的条件不贡献算分
       ]
     }
   }
 }
-</div></code></pre>
-<p>示例如下:</p>
-<pre class="hljs"><code><div>示例1, 单一匹配:
+</code></pre><p>示例如下:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>示例1, 单一匹配:
 POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;match&quot;: {
-      &quot;title&quot;:{
-        &quot;query&quot;:&quot;War&quot;
+  "query":{
+    "match": {
+      "title":{
+        "query":"War"
       }
     }
   }
@@ -859,10 +507,10 @@ POST movies/_search
 示例2, 通过分词器分词后, 变为两个单词war,room, 然后进行匹配, 这时两个单词匹配之间是or关系
 POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;match&quot;: {
-      &quot;title&quot;:{
-        &quot;query&quot;:&quot;War Room&quot;
+  "query":{
+    "match": {
+      "title":{
+        "query":"War Room"
       }
     }
   }
@@ -871,48 +519,48 @@ POST movies/_search
 示例3, 同上, 但是显示指定为and关系
 POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;match&quot;: {
-      &quot;title&quot;:{
-        &quot;query&quot;:&quot;War Room&quot;,
-        &quot;operator&quot;:&quot;AND&quot;
+  "query":{
+    "match": {
+      "title":{
+        "query":"War Room",
+        "operator":"AND"
       }
     }
   }
 }
 
-示例4, 词组匹配, 只查询存在&quot;one love&quot;这个词组的文档
+示例4, 词组匹配, 只查询存在"one love"这个词组的文档
 POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;match_phrase&quot;: {
-      &quot;title&quot;: {
-        &quot;query&quot;:&quot;one love&quot;
+  "query":{
+    "match_phrase": {
+      "title": {
+        "query":"one love"
       }
     }
   }
 }
 
-示例5, 词组匹配, 通过配置slot, 允许&quot;one love&quot;这个词组的两个单词之间可以存在一个其他单词
+示例5, 词组匹配, 通过配置slot, 允许"one love"这个词组的两个单词之间可以存在一个其他单词
 POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;match_phrase&quot;: {
-      &quot;title&quot;: {
-        &quot;query&quot;:&quot;one love&quot;,
-        &quot;slop&quot;:1
+  "query":{
+    "match_phrase": {
+      "title": {
+        "query":"one love",
+        "slop":1
       }
     }
   }
 }
 
-示例6, query_string, 这里查询的是&quot;必须有war, 并且room和love至少有一个存在&quot;
+示例6, query_string, 这里查询的是"必须有war, 并且room和love至少有一个存在"
 POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;query_string&quot;: {
-      &quot;default_field&quot;: &quot;title&quot;,
-      &quot;query&quot;: &quot;war AND (room OR love)&quot;
+  "query":{
+    "query_string": {
+      "default_field": "title",
+      "query": "war AND (room OR love)"
     }
   }
 }
@@ -920,9 +568,9 @@ POST movies/_search
 示例7, term查询:
 POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;term&quot;:{
-      &quot;title&quot;:&quot;war&quot;
+  "query":{
+    "term":{
+      "title":"war"
     }
   }
 }
@@ -930,11 +578,11 @@ POST movies/_search
 示例8, 范围查询, 这里使用filter, 不会进行算分操作, 使得查询速度更快:
 POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;bool&quot;:{
-      &quot;filter&quot;:{
-        &quot;range&quot;:{
-          &quot;year&quot;:{ &quot;gte&quot;: 2000, &quot;lte&quot;: 2010 }
+  "query":{
+    "bool":{
+      "filter":{
+        "range":{
+          "year":{ "gte": 2000, "lte": 2010 }
         }
       }
     }
@@ -944,53 +592,50 @@ POST movies/_search
 示例9, 多种查询复合:
 POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;bool&quot;:{
-      &quot;should&quot;:{
-        &quot;exists&quot;:{ &quot;field&quot;:&quot;vvv&quot; }
+  "query":{
+    "bool":{
+      "should":{
+        "exists":{ "field":"vvv" }
       },
-      &quot;filter&quot;:{
-        &quot;range&quot;:{
-          &quot;year&quot;:{ &quot;gte&quot;: 2000, &quot;lte&quot;: 2010 }
+      "filter":{
+        "range":{
+          "year":{ "gte": 2000, "lte": 2010 }
         }
       }
     }
   }
 }
-</div></code></pre>
-<blockquote>
+</code></pre><blockquote>
 <p>must和should是需要计算算分的, filter和must_not不需要算分, 这样会加速查询.</p>
 </blockquote>
 <p>此外, 上面的查询是支持嵌套的, 例如这样:</p>
-<pre class="hljs"><code><div>{
-  <span class="hljs-attr">"query"</span>:{
-    <span class="hljs-attr">"bool"</span>:{
-      <span class="hljs-attr">"should"</span>:{
-        <span class="hljs-attr">"bool"</span>:{
-          <span class="hljs-attr">"must"</span>:[
-            { <span class="hljs-attr">"match"</span>:{ <span class="hljs-attr">"title"</span>:{ <span class="hljs-attr">"query"</span>:<span class="hljs-string">"war"</span> } } },
-            { <span class="hljs-attr">"match"</span>:{ <span class="hljs-attr">"title"</span>:{ <span class="hljs-attr">"query"</span>:<span class="hljs-string">"room"</span> } } }
-          ]
-        }
-      },
-      <span class="hljs-attr">"filter"</span>:{
-        <span class="hljs-attr">"range"</span>:{ <span class="hljs-attr">"year"</span>:{ <span class="hljs-attr">"gte"</span>: <span class="hljs-number">2000</span>, <span class="hljs-attr">"lte"</span>: <span class="hljs-number">2010</span> } }
-      }
-    }
-  }
-}
-</div></code></pre>
-<p>再介绍一下termsquery:</p>
-<pre class="hljs"><code><div>POST movies/_search
+<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+  <span class="token property">"query"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+    <span class="token property">"bool"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      <span class="token property">"should"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        <span class="token property">"bool"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+          <span class="token property">"must"</span><span class="token operator">:</span><span class="token punctuation">[</span>
+            <span class="token punctuation">{</span> <span class="token property">"match"</span><span class="token operator">:</span><span class="token punctuation">{</span> <span class="token property">"title"</span><span class="token operator">:</span><span class="token punctuation">{</span> <span class="token property">"query"</span><span class="token operator">:</span><span class="token string">"war"</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token punctuation">{</span> <span class="token property">"match"</span><span class="token operator">:</span><span class="token punctuation">{</span> <span class="token property">"title"</span><span class="token operator">:</span><span class="token punctuation">{</span> <span class="token property">"query"</span><span class="token operator">:</span><span class="token string">"room"</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"filter"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        <span class="token property">"range"</span><span class="token operator">:</span><span class="token punctuation">{</span> <span class="token property">"year"</span><span class="token operator">:</span><span class="token punctuation">{</span> <span class="token property">"gte"</span><span class="token operator">:</span> <span class="token number">2000</span><span class="token punctuation">,</span> <span class="token property">"lte"</span><span class="token operator">:</span> <span class="token number">2010</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><p>再介绍一下termsquery:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;terms&quot;:{
-      &quot;title&quot;:[ &quot;war&quot;,&quot;love&quot; ]
+  "query":{
+    "terms":{
+      "title":[ "war","love" ]
     }
   }
 }
-</div></code></pre>
-<h2 id="%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2">聚合查询</h2>
+</code></pre><h2 id="聚合查询">聚合查询 </h2>
 <p>聚合(aggregation)查询, 就是在查询时进行统计计算. 聚合查询分为四种:</p>
 <ol>
 <li>Bucket Aggregation: 类似于sql中的group by</li>
@@ -999,45 +644,44 @@ POST movies/_search
 <li>Matrix Aggregation</li>
 </ol>
 <p>下面这个示例包含Bucket Aggregation,Metric Aggregation,PipelineAggregation</p>
-<pre class="hljs"><code><div>示例, 先对员工按照职位进行分组, 然后求最大值/最小值/平均值, 最后再单独列出平均值最小的职位
+<pre data-role="codeBlock" data-info="" class="language-text"><code>示例, 先对员工按照职位进行分组, 然后求最大值/最小值/平均值, 最后再单独列出平均值最小的职位
 POST employees/_search
 {
-  &quot;size&quot;: 0,
-  &quot;aggs&quot;: {
-    &quot;jobs&quot;:{
-      &quot;terms&quot;:{ // bucket aggr
-        &quot;field&quot;:&quot;job.keyword&quot;
+  "size": 0,
+  "aggs": {
+    "jobs":{
+      "terms":{ // bucket aggr
+        "field":"job.keyword"
       },
-      &quot;aggs&quot;:{
-        &quot;max_salary&quot;: { // metric aggr
-          &quot;max&quot;: {
-            &quot;field&quot;: &quot;salary&quot;
+      "aggs":{
+        "max_salary": { // metric aggr
+          "max": {
+            "field": "salary"
           }
         },
-        &quot;min_salary&quot;: {
-          &quot;min&quot;: {
-            &quot;field&quot;: &quot;salary&quot;
+        "min_salary": {
+          "min": {
+            "field": "salary"
           }
         },
-        &quot;avg_salary&quot;: {
-          &quot;avg&quot;: {
-            &quot;field&quot;: &quot;salary&quot;
+        "avg_salary": {
+          "avg": {
+            "field": "salary"
           }
         }
       }
     },
-    &quot;min_salary_by_job&quot;:{ // pipeline aggr
-      &quot;min_bucket&quot;: {
-        &quot;buckets_path&quot;: &quot;jobs&gt;avg_salary&quot;
+    "min_salary_by_job":{ // pipeline aggr
+      "min_bucket": {
+        "buckets_path": "jobs&gt;avg_salary"
       }
     }
   }
 }
-</div></code></pre>
-<blockquote>
+</code></pre><blockquote>
 <p>terms不能对text字段进行聚合分析, 需要对这个text字段开启fielddata</p>
 </blockquote>
-<h2 id="%E7%9B%B8%E5%85%B3%E6%80%A7%E7%AE%97%E5%88%86">相关性算分</h2>
+<h2 id="相关性算分">相关性算分 </h2>
 <p>相关性算分描述了一个文档和查询语句匹配的程度. es会对每个匹配的查询条件的结果进行算分_score. 打分的本质是排序, 把最符合用户需求的文档排在前面. es5之前, 默认的相关性算分采用TF-IDF, 现在采用BM 25.</p>
 <p>TF-IDF算法采用的是TF和IDF两个指标, 计算得到相关性算分:</p>
 <ul>
@@ -1048,24 +692,24 @@ POST employees/_search
 <p>在Lucene中的TF-IDF在上面的基础上又做了调整, 对于每一个查询的关键词: <code>TF(词x) * IDF(词x) * boost(词x) * norm(词x)</code>, 这里面boost是在查询时指定的, 用于进行权重提升, 从而改变算分, norm的作用是文档越短, 相关性越高.</p>
 <p>对于BM25算法对于经典TF-IDF算法进行了优化, 使得TF无限增加时, 算分趋于一个稳定的数值.</p>
 <p>上面, 我们知道, must和should会贡献相关度算分, filter和must_not不会贡献相关度算分, 这里演示一下权重提升boost:</p>
-<pre class="hljs"><code><div>POST movies/_search
+<pre data-role="codeBlock" data-info="" class="language-text"><code>POST movies/_search
 {
-  &quot;query&quot;:{
-    &quot;bool&quot;:{
-      &quot;must&quot;:[
+  "query":{
+    "bool":{
+      "must":[
         {
-          &quot;match&quot;: {
-            &quot;title&quot;: {
-              &quot;query&quot;: &quot;war&quot;,
-              &quot;boost&quot;: 1.0
+          "match": {
+            "title": {
+              "query": "war",
+              "boost": 1.0
             }
           }
         },
         {
-          &quot;match&quot;: {
-            &quot;title&quot;: {
-              &quot;query&quot;: &quot;room&quot;,
-              &quot;boost&quot;: 2.0
+          "match": {
+            "title": {
+              "query": "room",
+              "boost": 2.0
             }
           }
         }
@@ -1073,8 +717,7 @@ POST employees/_search
     }
   }
 }
-</div></code></pre>
-<h2 id="filedata%E4%B8%8Edocvalues">filedata与doc_values</h2>
+</code></pre><h2 id="filedata与doc_values">filedata与doc_values </h2>
 <p>ES默认是使用算分进行排序的, 我们通过制定排序的字段, 而不通过算分排序. 这时, 排序是针对字段的原始内容, 倒排索引无法发挥作用. 需要使用正排索引, 通过文档id和字段快速得到字段原始内容. ElasticSearch有两种正排索引的实现方式:</p>
 <ul>
 <li>filedata</li>
@@ -1112,12 +755,12 @@ POST employees/_search
 </tbody>
 </table>
 <p>doc_values是默认开启的, 可以通过mapping设置来关闭, 如果需要重新打开, 则需要reindex. 关闭doc_values后, 可以增加新增文档时的索引速度, 减少磁盘空间. 但是关闭doc_values之后, 该字段就不可以用来排序了.</p>
-<h2 id="%E9%9B%86%E7%BE%A4%E5%88%86%E5%B8%83%E5%BC%8F%E6%A8%A1%E5%9E%8B">集群分布式模型</h2>
+<h2 id="集群分布式模型">集群分布式模型 </h2>
 <ul>
 <li>分布式特性
 <ol>
 <li>优点: 存储支持水平扩容, 支持PB级数据; 提高系统可用性, 部分节点停止不影响整个集群</li>
-<li>不同的集群通过名字来区分, 默认&quot;elasticsearch&quot;, 通过配置文件修改或者命令行<code>-E cluster.name=xxx</code>进行设定</li>
+<li>不同的集群通过名字来区分, 默认"elasticsearch", 通过配置文件修改或者命令行<code>-E cluster.name=xxx</code>进行设定</li>
 </ol>
 </li>
 <li>节点
@@ -1209,19 +852,18 @@ POST employees/_search
 </li>
 <li>配置索引到Hot Node
 <ul>
-<li>创建索引时, setting增加<code>&quot;index.routing.allocation.require.jiao_sha_dou_xing&quot;:&quot;hotxxx&quot;</code>, 要求索引数据必须存储到<code>jiao_sha_dou_xing=hotxxx</code>的节点.</li>
+<li>创建索引时, setting增加<code>"index.routing.allocation.require.jiao_sha_dou_xing":"hotxxx"</code>, 要求索引数据必须存储到<code>jiao_sha_dou_xing=hotxxx</code>的节点.</li>
 </ul>
 </li>
 <li>配置索引到Warm Node
 <ul>
-<li>当一个索引上不再有频繁的读写后, 可以修改该setting<code>&quot;index.routing.allocation.require.jiao_sha_dou_xing&quot;:&quot;yyywarm&quot;</code>指定到warm节点上去</li>
+<li>当一个索引上不再有频繁的读写后, 可以修改该setting<code>"index.routing.allocation.require.jiao_sha_dou_xing":"yyywarm"</code>指定到warm节点上去</li>
 </ul>
 </li>
 </ol>
-<pre class="hljs"><code><div>通过这个命令, 可以查看节点的attribute的key/value对
+<pre data-role="codeBlock" data-info="" class="language-text"><code>通过这个命令, 可以查看节点的attribute的key/value对
 GET /_cat/nodeattrs?v
-</div></code></pre>
-<p><strong>Rack Awareness</strong></p>
+</code></pre><p><strong>Rack Awareness</strong></p>
 <p>es的多个节点可能分布在多个机架上, 当一个机架断电后, 可能会同时丢失几个节点. 如果一个索引相同的主分片和副本分片在同一个机架上, 就会导致数据丢失. 通过Rack Awareness机制, 可以尽可能的避免将同一个索引的主副分片同时分配在一个机架的节点上.</p>
 <p>和Hot&amp;Warm节点配置类似, 也是通过attribute来实现的:</p>
 <ol>
@@ -1233,17 +875,16 @@ GET /_cat/nodeattrs?v
 </li>
 <li>设置集群全局配置, 然后, 集群就会自动将相同的主副本分片分配到不同的机架上了:</li>
 </ol>
-<pre class="hljs"><code><div>PUT _cluster/settings
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PUT _cluster/settings
 {
-  &quot;persistent&quot;:{
-    &quot;cluster.routing.allocation.awareness.attributes&quot;:&quot;jijia&quot;
+  "persistent":{
+    "cluster.routing.allocation.awareness.attributes":"jijia"
   }
 }
-</div></code></pre>
-<blockquote>
-<p>通过增加<code>&quot;cluster.routing.allocation.awareness.force.jijia.values&quot;:&quot;jijia1,jijia2&quot;</code>使得只有一个机架时, 无法分配</p>
+</code></pre><blockquote>
+<p>通过增加<code>"cluster.routing.allocation.awareness.force.jijia.values":"jijia1,jijia2"</code>使得只有一个机架时, 无法分配</p>
 </blockquote>
-<h2 id="%E5%88%86%E7%89%87">分片</h2>
+<h2 id="分片">分片 </h2>
 <ul>
 <li>分片
 <ol>
@@ -1306,7 +947,7 @@ GET /_cat/nodeattrs?v
 </ul>
 </li>
 </ul>
-<h2 id="es%E6%96%87%E6%A1%A3%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B">ES文档写入流程</h2>
+<h2 id="es文档写入流程">ES文档写入流程 </h2>
 <ul>
 <li>Lucene Index
 <ol>
@@ -1356,7 +997,7 @@ GET /_cat/nodeattrs?v
 </ol>
 </li>
 </ul>
-<h2 id="es%E6%96%87%E6%A1%A3%E6%9F%A5%E8%AF%A2%E6%B5%81%E7%A8%8B">ES文档查询流程</h2>
+<h2 id="es文档查询流程">ES文档查询流程 </h2>
 <ul>
 <li>query阶段
 <ol>
@@ -1403,25 +1044,25 @@ GET /_cat/nodeattrs?v
 </li>
 </ol>
 <p>SearchAfter示例:</p>
-<pre class="hljs"><code><div>初次查询:
+<pre data-role="codeBlock" data-info="" class="language-text"><code>初次查询:
 POST movies/_search
 {
-  &quot;size&quot;:10,
-  &quot;query&quot;:{
-    &quot;match_all&quot;: {}
+  "size":10,
+  "query":{
+    "match_all": {}
   },
-  &quot;sort&quot;:[
-    {&quot;year&quot;:&quot;desc&quot;},
-    {&quot;_id&quot;: &quot;asc&quot;}
+  "sort":[
+    {"year":"desc"},
+    {"_id": "asc"}
   ]
 }
 
 可以拿到最后一条记录的sort信息:
 {
   ......
-        &quot;sort&quot; : [
+        "sort" : [
           2018,
-          &quot;184015&quot;
+          "184015"
         ]
   ......
 }
@@ -1429,66 +1070,64 @@ POST movies/_search
 之后查询, 将上一次sort返回的结果, 放入到search_after中:
 POST movies/_search
 {
-  &quot;size&quot;:10,
-  &quot;query&quot;:{
-    &quot;match_all&quot;: {}
+  "size":10,
+  "query":{
+    "match_all": {}
   },
-  &quot;search_after&quot;:[2018, &quot;184015&quot;],
-  &quot;sort&quot;:[
-    {&quot;year&quot;:&quot;desc&quot;},
-    {&quot;_id&quot;: &quot;asc&quot;}
+  "search_after":[2018, "184015"],
+  "sort":[
+    {"year":"desc"},
+    {"_id": "asc"}
   ]
 }
-</div></code></pre>
-<p>scroll api示例</p>
-<pre class="hljs"><code><div>初次查询
+</code></pre><p>scroll api示例</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>初次查询
 POST movies/_search?scroll=5m
 {
-  &quot;size&quot;:10,
-  &quot;query&quot;:{
-    &quot;match_all&quot;: {}
+  "size":10,
+  "query":{
+    "match_all": {}
   }
 }
 
 返回scroll_id:
 {
-  &quot;_scroll_id&quot; : &quot;DXF1ZXJ5QW5kRmV0Y2gBAAAAAAAAhncWOHFZd1lEWGVURU9RWEhMMDJ0S3E1UQ==&quot;,
+  "_scroll_id" : "DXF1ZXJ5QW5kRmV0Y2gBAAAAAAAAhncWOHFZd1lEWGVURU9RWEhMMDJ0S3E1UQ==",
   ... ...
 }
 
 使用scroll_id继续查询:
 POST _search/scroll
 {
-  &quot;scroll&quot;:&quot;1m&quot;,
-  &quot;scroll_id&quot;: &quot;DXF1ZXJ5QW5kRmV0Y2gBAAAAAAAAhncWOHFZd1lEWGVURU9RWEhMMDJ0S3E1UQ==&quot;
+  "scroll":"1m",
+  "scroll_id": "DXF1ZXJ5QW5kRmV0Y2gBAAAAAAAAhncWOHFZd1lEWGVURU9RWEhMMDJ0S3E1UQ=="
 }
-</div></code></pre>
-<h2 id="%E5%B9%B6%E5%8F%91%E8%AF%BB%E5%86%99%E6%96%87%E6%A1%A3">并发读写文档</h2>
+</code></pre><h2 id="并发读写文档">并发读写文档 </h2>
 <p>ES中采用乐观锁的方式进行并发控制. 首先ES中的文档是不可变更的. 更新一个文档实际上是将原有文档删除, 同时增加一个新的文档, 并将文档的version加1. ES并发控制就是通过版本号来实现的乐观锁. 并发控制需要客户端配合使用, 而不是服务端自己就能完成的.</p>
 <ul>
 <li>内部版本控制: if_seq_no + if_primary_term</li>
 <li>外部版本控制: version + version_type=external</li>
 </ul>
 <p>示例如下:</p>
-<pre class="hljs"><code><div>内部版本控制:
+<pre data-role="codeBlock" data-info="" class="language-text"><code>内部版本控制:
 先查出一个文档:
 GET /movies/_doc/184015
 {
-  &quot;_index&quot; : &quot;movies&quot;,
-  &quot;_type&quot; : &quot;_doc&quot;,
-  &quot;_id&quot; : &quot;184015&quot;,
-  &quot;_version&quot; : 1,
-  &quot;_seq_no&quot; : 9687,
-  &quot;_primary_term&quot; : 1,
-  &quot;found&quot; : true,
-  &quot;_source&quot; : {
-    &quot;genre&quot; : [
-      &quot;Comedy&quot;
+  "_index" : "movies",
+  "_type" : "_doc",
+  "_id" : "184015",
+  "_version" : 1,
+  "_seq_no" : 9687,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "genre" : [
+      "Comedy"
     ],
-    &quot;year&quot; : 2018,
-    &quot;@version&quot; : &quot;1&quot;,
-    &quot;title&quot; : &quot;When We First Met&quot;,
-    &quot;id&quot; : &quot;184015&quot;
+    "year" : 2018,
+    "@version" : "1",
+    "title" : "When We First Met",
+    "id" : "184015"
   }
 }
 
@@ -1496,7 +1135,7 @@ GET /movies/_doc/184015
 执行更新:
 PUT /movies/_doc/184015?if_seq_no=9687&amp;if_primary_term=1
 {
-  &quot;title&quot;:&quot;When We First Met-fix&quot;
+  "title":"When We First Met-fix"
 }
 
 如果有多个线程并发的访问, 使用的相同的seq_no和primary_term, 只有一个会更新成功, 另一个会报错.
@@ -1504,17 +1143,16 @@ PUT /movies/_doc/184015?if_seq_no=9687&amp;if_primary_term=1
 外部版本控制示例, version来源于第三方存储, 例如数据库, 这时不需要先查询es, 而是直接更新:
 PUT /movies/_doc/184015?version=10&amp;version_type=external
 {
-    &quot;genre&quot; : [
-      &quot;Comedy&quot;
+    "genre" : [
+      "Comedy"
     ],
-    &quot;year&quot; : 2018,
-    &quot;@version&quot; : &quot;1&quot;,
-    &quot;title&quot; : &quot;When We First Met&quot;,
-    &quot;id&quot; : &quot;184015&quot;
+    "year" : 2018,
+    "@version" : "1",
+    "title" : "When We First Met",
+    "id" : "184015"
 }
 这时, 并发更新的另一个线程如果version小于等于这个version, 则会直接报错.
-</div></code></pre>
-<h2 id="update-by-query%E5%92%8Creindex">update by query和reindex</h2>
+</code></pre><h2 id="update-by-query和reindex">update by query和reindex </h2>
 <p>对索引重建有两种方式:</p>
 <ul>
 <li>update by query:
@@ -1530,40 +1168,40 @@ PUT /movies/_doc/184015?version=10&amp;version_type=external
 <li>reindex要求<code>_source</code>必须是enable</li>
 <li>必须先配置好目标mapping</li>
 <li>可以在<code>dest</code>下增加<code>op_type</code>防止对目标索引中已有文档产生覆盖</li>
-<li>跨集群的reindex需要修改elasticsearch.yml文件中的配置<code>reindex.remote.whitelist:&quot;host1,host2&quot;</code>, 并重启</li>
+<li>跨集群的reindex需要修改elasticsearch.yml文件中的配置<code>reindex.remote.whitelist:"host1,host2"</code>, 并重启</li>
 </ul>
 </li>
 </ul>
 <p>示例如下:</p>
-<pre class="hljs"><code><div>update by query示例:
+<pre data-role="codeBlock" data-info="" class="language-text"><code>update by query示例:
 POST frog_index/_update_by_query
 {}
 
 reindex示例, 先设定一个新的索引, 然后执行reindex:
 PUT /employees_fff/
 {
-  &quot;mappings&quot; : {
-      &quot;properties&quot; : {
-        &quot;age&quot; : {
-          &quot;type&quot; : &quot;integer&quot;
+  "mappings" : {
+      "properties" : {
+        "age" : {
+          "type" : "integer"
         },
-        &quot;gender&quot; : {
-          &quot;type&quot; : &quot;keyword&quot;
+        "gender" : {
+          "type" : "keyword"
         },
-        &quot;job&quot; : {
-          &quot;type&quot; : &quot;text&quot;,
-          &quot;fields&quot; : {
-            &quot;keyword&quot; : {
-              &quot;type&quot; : &quot;keyword&quot;,
-              &quot;ignore_above&quot; : 50
+        "job" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 50
             }
           }
         },
-        &quot;name&quot; : {
-          &quot;type&quot; : &quot;keyword&quot;
+        "name" : {
+          "type" : "keyword"
         },
-        &quot;salary&quot; : {
-          &quot;type&quot; : &quot;integer&quot;
+        "salary" : {
+          "type" : "integer"
         }
       }
     }
@@ -1571,15 +1209,14 @@ PUT /employees_fff/
 
 POST _reindex
 {
-  &quot;source&quot;: {
-    &quot;index&quot;: &quot;employees&quot;
+  "source": {
+    "index": "employees"
   },
-  &quot;dest&quot;:{
-    &quot;index&quot;: &quot;employees_fff&quot;
+  "dest":{
+    "index": "employees_fff"
   }
 }
-</div></code></pre>
-<h2 id="elasticsearch%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E6%B8%85%E5%8D%95">ElasticSearch生产环境常用配置清单</h2>
+</code></pre><h2 id="elasticsearch生产环境常用配置清单">ElasticSearch生产环境常用配置清单 </h2>
 <p><strong>JVM设置</strong></p>
 <ul>
 <li>
@@ -1604,8 +1241,8 @@ POST _reindex
 <p>日志类应用, 内存磁盘配比: 1 : 48 -- 1 : 96</p>
 </li>
 </ul>
-<h2 id="elasticsearch%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7%E5%8F%8A%E8%BF%90%E7%BB%B4">ElasticSearch集群监控及运维</h2>
-<pre class="hljs"><code><div># 获取集群级别的信息
+<h2 id="elasticsearch集群监控及运维">ElasticSearch集群监控及运维 </h2>
+<pre data-role="codeBlock" data-info="" class="language-text"><code># 获取集群级别的信息
 GET _cluster/stats
 
 # 获取节点级别的信息
@@ -1632,16 +1269,16 @@ GET _nodes/hot_threads
 # 可以为索引设置慢查询日志阈值
 PUT frog_vvv_index/
 {
-  &quot;settings&quot;: {
-    &quot;index.search.slowlog.threshold&quot;:{
-      &quot;query.warn&quot;:&quot;10s&quot;,
-      &quot;query.info&quot;:&quot;3s&quot;,
-      &quot;query.debug&quot;:&quot;2s&quot;,
-      &quot;query.trace&quot;:&quot;0s&quot;,
-      &quot;fetch.warn&quot;:&quot;1s&quot;,
-      &quot;fetch.info&quot;:&quot;600ms&quot;,
-      &quot;fetch.debug&quot;:&quot;400ms&quot;,
-      &quot;fetch.trace&quot;:&quot;0s&quot;
+  "settings": {
+    "index.search.slowlog.threshold":{
+      "query.warn":"10s",
+      "query.info":"3s",
+      "query.debug":"2s",
+      "query.trace":"0s",
+      "fetch.warn":"1s",
+      "fetch.info":"600ms",
+      "fetch.debug":"400ms",
+      "fetch.trace":"0s"
     }
   }
 }
@@ -1657,8 +1294,7 @@ GET /_cluster/health?level=shards
 
 # 查看索引分配问题
 GET /_cluster/allocation/explain
-</div></code></pre>
-<h2 id="elasticsearch%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">ElasticSearch性能优化</h2>
+</code></pre><h2 id="elasticsearch性能优化">ElasticSearch性能优化 </h2>
 <p><strong>写入性能优化</strong></p>
 <ul>
 <li>客户端
@@ -1709,14 +1345,14 @@ GET /_cluster/allocation/explain
 <li>当index不在有写入操作时, 手动执行force merge操作. 提升查询速度, 减少内存开销.</li>
 <li>segment合并之后越少越好, 最好是1个, 但是force merge会占用大量的网络/IO/CPU.</li>
 </ol>
-<h2 id="es%E7%BC%93%E5%AD%98">ES缓存</h2>
+<h2 id="es缓存">ES缓存 </h2>
 <p>ES缓存分为三类</p>
 <ul>
 <li>Node Query Cache
 <ul>
 <li>每个节点存在一个, 节点上所有shard共享, 只缓存了filter查询的内容</li>
 <li>采用LRU算法</li>
-<li>indices.queries.cache.size: &quot;10%&quot;(总堆内存的10%)</li>
+<li>indices.queries.cache.size: "10%"(总堆内存的10%)</li>
 <li>segment合并时, 会失效</li>
 </ul>
 </li>
@@ -1724,7 +1360,7 @@ GET /_cluster/allocation/explain
 <ul>
 <li>缓存每个分片的查询结果, 只缓存Aggregations和Suggestions</li>
 <li>采用LRU算法</li>
-<li>indices.request.cache.size: &quot;1%&quot;</li>
+<li>indices.request.cache.size: "1%"</li>
 <li>refresh时, 会失效</li>
 </ul>
 </li>
@@ -1736,10 +1372,9 @@ GET /_cluster/allocation/explain
 </li>
 </ul>
 <p>Circuit Breaker - es内部提供多种断路器, 避免不合理操作引发的OOM, 每个断路器可以指定内存使用限制</p>
-<pre class="hljs"><code><div>查询circuit breaker统计信息, tripped大于0说明有熔断
+<pre data-role="codeBlock" data-info="" class="language-text"><code>查询circuit breaker统计信息, tripped大于0说明有熔断
 GET /_nodes/stats/breaker
-</div></code></pre>
-<h2 id="logstash">Logstash</h2>
+</code></pre><h2 id="logstash">Logstash </h2>
 <p>ELT工具(数据经过抽取、清洗转换之后加载到数据仓库), 数据搜集处理引擎, 支持200+插件.</p>
 <p>概念:</p>
 <ul>
@@ -1752,418 +1387,419 @@ GET /_nodes/stats/breaker
 </li>
 <li>Event: 数据在内部流转的具体表现形式. 数据在input阶段, 被转换为Event, 在output阶段被转换为目标格式数据</li>
 </ul>
-<h2 id="%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%87%E5%BF%98">常用命令备忘</h2>
+<h2 id="常用命令备忘">常用命令备忘 </h2>
 <ul>
 <li>列出索引列表:</li>
 </ul>
-<pre class="hljs"><code><div>curl -s -u username:password http://xxxxxxx/_cat/indices?v
-</div></code></pre>
-<ul>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>curl -s -u username:password http://xxxxxxx/_cat/indices?v
+</code></pre><ul>
 <li>删除指定索引</li>
 </ul>
-<pre class="hljs"><code><div>curl -s -u username:password -X DELETE http://xxxxxxxx/index_name
-</div></code></pre>
-<ul>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>curl -s -u username:password -X DELETE http://xxxxxxxx/index_name
+</code></pre><ul>
 <li>查看节点信息</li>
 </ul>
-<pre class="hljs"><code><div>curl -s -u usename:password http://xxxxxxxx/_cat/nodes
-</div></code></pre>
-<h2 id="reference">Reference</h2>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>curl -s -u usename:password http://xxxxxxxx/_cat/nodes
+</code></pre><h2 id="reference">Reference </h2>
 <ul>
 <li>极客时间-ElasticSearch核心技术与实战</li>
 </ul>
-<h2 id="%E9%99%84%E5%BD%95">附录</h2>
-<h5 id="document%E7%A4%BA%E4%BE%8B">document示例</h5>
-<pre class="hljs"><code><div>{
-  <span class="hljs-attr">"_index"</span>: <span class="hljs-string">"sw_segment-20220517"</span>,
-  <span class="hljs-attr">"_type"</span>: <span class="hljs-string">"_doc"</span>,
-  <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"2ce2eff1dff1413f84b9c296f7e401aa.66.16527767270910008"</span>,
-  <span class="hljs-attr">"_version"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">"_score"</span>: <span class="hljs-number">0</span>,
-  <span class="hljs-attr">"_source"</span>: {
-    <span class="hljs-attr">"trace_id"</span>: <span class="hljs-string">"d00ffbb17be345a4b6ee0724489ec950.68.16527767270880005"</span>,
-    <span class="hljs-attr">"endpoint_name"</span>: <span class="hljs-string">"GET:/hello"</span>,
-    <span class="hljs-attr">"latency"</span>: <span class="hljs-number">4</span>,
-    <span class="hljs-attr">"end_time"</span>: <span class="hljs-number">1652776727095</span>,
-    <span class="hljs-attr">"endpoint_id"</span>: <span class="hljs-string">"RGVtb0FwcEI=.1_R0VUOi9oZWxsbw=="</span>,
-    <span class="hljs-attr">"service_instance_id"</span>: <span class="hljs-string">"RGVtb0FwcEI=.1_MzI2ZDBhMDBjYmEyNDk4NTk2MmQ5Yzc4YzhjOTkwNmJAMTkyLjE2OC41Ni4x"</span>,
-    <span class="hljs-attr">"version"</span>: <span class="hljs-number">3</span>,
-    <span class="hljs-attr">"tags"</span>: [
-      <span class="hljs-string">"http.method=GET"</span>
-    ],
-    <span class="hljs-attr">"start_time"</span>: <span class="hljs-number">1652776727091</span>,
-    <span class="hljs-attr">"data_binary"</span>: <span class="hljs-string">"CjVkMDBmZmJiMTdiZTM0NWE0YjZlZTA3MjQ0ODllYzk1MC42OC4xNjUyNzc2NzI3MDg4MDAwNRI1MmNlMmVmZjFkZmYxNDEzZjg0YjljMjk2ZjdlNDAxYWEuNjYuMTY1Mjc3NjcyNzA5MTAwMDgaNwgBGLXkrYmNMCC15K2JjTAyIUhpa2FyaUNQL0Nvbm5lY3Rpb24vZ2V0Q29ubmVjdGlvbkACUHQaLwgCGLfkrYmNMCC35K2JjTAyGUhpa2FyaUNQL0Nvbm5lY3Rpb24vY2xvc2VAAlB0GqkCEP///////////wEYs+StiY0wILfkrYmNMCrFARI1ZDAwZmZiYjE3YmUzNDVhNGI2ZWUwNzI0NDg5ZWM5NTAuNjguMTY1Mjc3NjcyNzA4ODAwMDUaNWQwMGZmYmIxN2JlMzQ1YTRiNmVlMDcyNDQ4OWVjOTUwLjY4LjE2NTI3NzY3MjcwODgwMDA0IAEqCERlbW9BcHBBMi1iZDMyMmQxNDk4MDc0YTNmODU5Nzg2ODM5ZWZkZWY0ZUAxOTIuMTY4LjU2LjE6CkdFVDovaGVsbG9CDmxvY2FsaG9zdDo5MDkyMgpHRVQ6L2hlbGxvSANQDmIiCgN1cmwSG2h0dHA6Ly9sb2NhbGhvc3Q6OTA5Mi9oZWxsb2ISCgtodHRwLm1ldGhvZBIDR0VUIghEZW1vQXBwQiotMzI2ZDBhMDBjYmEyNDk4NTk2MmQ5Yzc4YzhjOTkwNmJAMTkyLjE2OC41Ni4x"</span>,
-    <span class="hljs-attr">"service_id"</span>: <span class="hljs-string">"RGVtb0FwcEI=.1"</span>,
-    <span class="hljs-attr">"statement"</span>: <span class="hljs-string">"GET:/hello - d00ffbb17be345a4b6ee0724489ec950.68.16527767270880005"</span>,
-    <span class="hljs-attr">"time_bucket"</span>: <span class="hljs-number">20220517163847</span>,
-    <span class="hljs-attr">"is_error"</span>: <span class="hljs-number">0</span>,
-    <span class="hljs-attr">"segment_id"</span>: <span class="hljs-string">"2ce2eff1dff1413f84b9c296f7e401aa.66.16527767270910008"</span>
-  }
-}
-</div></code></pre>
-<h5 id="mapping%E7%A4%BA%E4%BE%8B">mapping示例</h5>
-<pre class="hljs"><code><div>{
-  <span class="hljs-attr">"mapping"</span>: {
-    <span class="hljs-attr">"properties"</span>: {
-      <span class="hljs-attr">"data_binary"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"binary"</span>
-      },
-      <span class="hljs-attr">"end_time"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"long"</span>
-      },
-      <span class="hljs-attr">"endpoint_id"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
-      },
-      <span class="hljs-attr">"endpoint_name"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>,
-        <span class="hljs-attr">"copy_to"</span>: [
-          <span class="hljs-string">"endpoint_name_match"</span>
-        ]
-      },
-      <span class="hljs-attr">"endpoint_name_match"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"text"</span>,
-        <span class="hljs-attr">"analyzer"</span>: <span class="hljs-string">"oap_analyzer"</span>
-      },
-      <span class="hljs-attr">"is_error"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"integer"</span>
-      },
-      <span class="hljs-attr">"latency"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"integer"</span>
-      },
-      <span class="hljs-attr">"segment_id"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
-      },
-      <span class="hljs-attr">"service_id"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
-      },
-      <span class="hljs-attr">"service_instance_id"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
-      },
-      <span class="hljs-attr">"start_time"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"long"</span>
-      },
-      <span class="hljs-attr">"statement"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
-      },
-      <span class="hljs-attr">"tags"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
-      },
-      <span class="hljs-attr">"time_bucket"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"long"</span>
-      },
-      <span class="hljs-attr">"trace_id"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"keyword"</span>
-      },
-      <span class="hljs-attr">"version"</span>: {
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"integer"</span>,
-        <span class="hljs-attr">"index"</span>: <span class="hljs-literal">false</span>
-      }
-    }
-  }
-}
-</div></code></pre>
-<h5 id="setting%E7%A4%BA%E4%BE%8B">setting示例</h5>
-<pre class="hljs"><code><div>{
-  <span class="hljs-attr">"settings"</span>: {
-    <span class="hljs-attr">"index"</span>: {
-      <span class="hljs-attr">"refresh_interval"</span>: <span class="hljs-string">"10s"</span>,
-      <span class="hljs-attr">"number_of_shards"</span>: <span class="hljs-string">"5"</span>,
-      <span class="hljs-attr">"provided_name"</span>: <span class="hljs-string">"sw_segment-20220517"</span>,
-      <span class="hljs-attr">"creation_date"</span>: <span class="hljs-string">"1652773059350"</span>,
-      <span class="hljs-attr">"analysis"</span>: {
-        <span class="hljs-attr">"analyzer"</span>: {
-          <span class="hljs-attr">"oap_analyzer"</span>: {
-            <span class="hljs-attr">"type"</span>: <span class="hljs-string">"stop"</span>
-          }
-        }
-      },
-      <span class="hljs-attr">"number_of_replicas"</span>: <span class="hljs-string">"0"</span>,
-      <span class="hljs-attr">"uuid"</span>: <span class="hljs-string">"9ZWSlvzATteNnObwnGhVfQ"</span>,
-      <span class="hljs-attr">"version"</span>: {
-        <span class="hljs-attr">"created"</span>: <span class="hljs-string">"7010099"</span>
-      }
-    }
-  },
-  <span class="hljs-attr">"defaults"</span>: {
-    <span class="hljs-attr">"index"</span>: {
-      <span class="hljs-attr">"max_inner_result_window"</span>: <span class="hljs-string">"100"</span>,
-      <span class="hljs-attr">"unassigned"</span>: {
-        <span class="hljs-attr">"node_left"</span>: {
-          <span class="hljs-attr">"delayed_timeout"</span>: <span class="hljs-string">"1m"</span>
-        }
-      },
-      <span class="hljs-attr">"max_terms_count"</span>: <span class="hljs-string">"65536"</span>,
-      <span class="hljs-attr">"lifecycle"</span>: {
-        <span class="hljs-attr">"name"</span>: <span class="hljs-string">""</span>,
-        <span class="hljs-attr">"rollover_alias"</span>: <span class="hljs-string">""</span>,
-        <span class="hljs-attr">"indexing_complete"</span>: <span class="hljs-string">"false"</span>
-      },
-      <span class="hljs-attr">"routing_partition_size"</span>: <span class="hljs-string">"1"</span>,
-      <span class="hljs-attr">"force_memory_term_dictionary"</span>: <span class="hljs-string">"false"</span>,
-      <span class="hljs-attr">"max_docvalue_fields_search"</span>: <span class="hljs-string">"100"</span>,
-      <span class="hljs-attr">"merge"</span>: {
-        <span class="hljs-attr">"scheduler"</span>: {
-          <span class="hljs-attr">"max_thread_count"</span>: <span class="hljs-string">"4"</span>,
-          <span class="hljs-attr">"auto_throttle"</span>: <span class="hljs-string">"true"</span>,
-          <span class="hljs-attr">"max_merge_count"</span>: <span class="hljs-string">"9"</span>
-        },
-        <span class="hljs-attr">"policy"</span>: {
-          <span class="hljs-attr">"reclaim_deletes_weight"</span>: <span class="hljs-string">"2.0"</span>,
-          <span class="hljs-attr">"floor_segment"</span>: <span class="hljs-string">"2mb"</span>,
-          <span class="hljs-attr">"max_merge_at_once_explicit"</span>: <span class="hljs-string">"30"</span>,
-          <span class="hljs-attr">"max_merge_at_once"</span>: <span class="hljs-string">"10"</span>,
-          <span class="hljs-attr">"max_merged_segment"</span>: <span class="hljs-string">"5gb"</span>,
-          <span class="hljs-attr">"expunge_deletes_allowed"</span>: <span class="hljs-string">"10.0"</span>,
-          <span class="hljs-attr">"segments_per_tier"</span>: <span class="hljs-string">"10.0"</span>,
-          <span class="hljs-attr">"deletes_pct_allowed"</span>: <span class="hljs-string">"33.0"</span>
-        }
-      },
-      <span class="hljs-attr">"max_refresh_listeners"</span>: <span class="hljs-string">"1000"</span>,
-      <span class="hljs-attr">"max_regex_length"</span>: <span class="hljs-string">"1000"</span>,
-      <span class="hljs-attr">"load_fixed_bitset_filters_eagerly"</span>: <span class="hljs-string">"true"</span>,
-      <span class="hljs-attr">"number_of_routing_shards"</span>: <span class="hljs-string">"1"</span>,
-      <span class="hljs-attr">"write"</span>: {
-        <span class="hljs-attr">"wait_for_active_shards"</span>: <span class="hljs-string">"1"</span>
-      },
-      <span class="hljs-attr">"mapping"</span>: {
-        <span class="hljs-attr">"coerce"</span>: <span class="hljs-string">"false"</span>,
-        <span class="hljs-attr">"nested_fields"</span>: {
-          <span class="hljs-attr">"limit"</span>: <span class="hljs-string">"50"</span>
-        },
-        <span class="hljs-attr">"nested_objects"</span>: {
-          <span class="hljs-attr">"limit"</span>: <span class="hljs-string">"10000"</span>
-        },
-        <span class="hljs-attr">"depth"</span>: {
-          <span class="hljs-attr">"limit"</span>: <span class="hljs-string">"20"</span>
-        },
-        <span class="hljs-attr">"ignore_malformed"</span>: <span class="hljs-string">"false"</span>,
-        <span class="hljs-attr">"total_fields"</span>: {
-          <span class="hljs-attr">"limit"</span>: <span class="hljs-string">"1000"</span>
-        }
-      },
-      <span class="hljs-attr">"source_only"</span>: <span class="hljs-string">"false"</span>,
-      <span class="hljs-attr">"soft_deletes"</span>: {
-        <span class="hljs-attr">"enabled"</span>: <span class="hljs-string">"false"</span>,
-        <span class="hljs-attr">"retention"</span>: {
-          <span class="hljs-attr">"operations"</span>: <span class="hljs-string">"0"</span>
-        },
-        <span class="hljs-attr">"retention_lease"</span>: {
-          <span class="hljs-attr">"period"</span>: <span class="hljs-string">"12h"</span>
-        }
-      },
-      <span class="hljs-attr">"max_script_fields"</span>: <span class="hljs-string">"32"</span>,
-      <span class="hljs-attr">"query"</span>: {
-        <span class="hljs-attr">"default_field"</span>: [
-          <span class="hljs-string">"*"</span>
-        ],
-        <span class="hljs-attr">"parse"</span>: {
-          <span class="hljs-attr">"allow_unmapped_fields"</span>: <span class="hljs-string">"true"</span>
-        }
-      },
-      <span class="hljs-attr">"format"</span>: <span class="hljs-string">"0"</span>,
-      <span class="hljs-attr">"frozen"</span>: <span class="hljs-string">"false"</span>,
-      <span class="hljs-attr">"sort"</span>: {
-        <span class="hljs-attr">"missing"</span>: [],
-        <span class="hljs-attr">"mode"</span>: [],
-        <span class="hljs-attr">"field"</span>: [],
-        <span class="hljs-attr">"order"</span>: []
-      },
-      <span class="hljs-attr">"priority"</span>: <span class="hljs-string">"1"</span>,
-      <span class="hljs-attr">"codec"</span>: <span class="hljs-string">"default"</span>,
-      <span class="hljs-attr">"max_rescore_window"</span>: <span class="hljs-string">"10000"</span>,
-      <span class="hljs-attr">"max_adjacency_matrix_filters"</span>: <span class="hljs-string">"100"</span>,
-      <span class="hljs-attr">"analyze"</span>: {
-        <span class="hljs-attr">"max_token_count"</span>: <span class="hljs-string">"10000"</span>
-      },
-      <span class="hljs-attr">"gc_deletes"</span>: <span class="hljs-string">"60s"</span>,
-      <span class="hljs-attr">"optimize_auto_generated_id"</span>: <span class="hljs-string">"true"</span>,
-      <span class="hljs-attr">"max_ngram_diff"</span>: <span class="hljs-string">"1"</span>,
-      <span class="hljs-attr">"translog"</span>: {
-        <span class="hljs-attr">"generation_threshold_size"</span>: <span class="hljs-string">"64mb"</span>,
-        <span class="hljs-attr">"flush_threshold_size"</span>: <span class="hljs-string">"512mb"</span>,
-        <span class="hljs-attr">"sync_interval"</span>: <span class="hljs-string">"5s"</span>,
-        <span class="hljs-attr">"retention"</span>: {
-          <span class="hljs-attr">"size"</span>: <span class="hljs-string">"512mb"</span>,
-          <span class="hljs-attr">"age"</span>: <span class="hljs-string">"12h"</span>
-        },
-        <span class="hljs-attr">"durability"</span>: <span class="hljs-string">"REQUEST"</span>
-      },
-      <span class="hljs-attr">"auto_expand_replicas"</span>: <span class="hljs-string">"false"</span>,
-      <span class="hljs-attr">"mapper"</span>: {
-        <span class="hljs-attr">"dynamic"</span>: <span class="hljs-string">"true"</span>
-      },
-      <span class="hljs-attr">"requests"</span>: {
-        <span class="hljs-attr">"cache"</span>: {
-          <span class="hljs-attr">"enable"</span>: <span class="hljs-string">"true"</span>
-        }
-      },
-      <span class="hljs-attr">"data_path"</span>: <span class="hljs-string">""</span>,
-      <span class="hljs-attr">"highlight"</span>: {
-        <span class="hljs-attr">"max_analyzed_offset"</span>: <span class="hljs-string">"1000000"</span>
-      },
-      <span class="hljs-attr">"routing"</span>: {
-        <span class="hljs-attr">"rebalance"</span>: {
-          <span class="hljs-attr">"enable"</span>: <span class="hljs-string">"all"</span>
-        },
-        <span class="hljs-attr">"allocation"</span>: {
-          <span class="hljs-attr">"enable"</span>: <span class="hljs-string">"all"</span>,
-          <span class="hljs-attr">"total_shards_per_node"</span>: <span class="hljs-string">"-1"</span>
-        }
-      },
-      <span class="hljs-attr">"search"</span>: {
-        <span class="hljs-attr">"slowlog"</span>: {
-          <span class="hljs-attr">"level"</span>: <span class="hljs-string">"TRACE"</span>,
-          <span class="hljs-attr">"threshold"</span>: {
-            <span class="hljs-attr">"fetch"</span>: {
-              <span class="hljs-attr">"warn"</span>: <span class="hljs-string">"-1"</span>,
-              <span class="hljs-attr">"trace"</span>: <span class="hljs-string">"-1"</span>,
-              <span class="hljs-attr">"debug"</span>: <span class="hljs-string">"-1"</span>,
-              <span class="hljs-attr">"info"</span>: <span class="hljs-string">"-1"</span>
-            },
-            <span class="hljs-attr">"query"</span>: {
-              <span class="hljs-attr">"warn"</span>: <span class="hljs-string">"-1"</span>,
-              <span class="hljs-attr">"trace"</span>: <span class="hljs-string">"-1"</span>,
-              <span class="hljs-attr">"debug"</span>: <span class="hljs-string">"-1"</span>,
-              <span class="hljs-attr">"info"</span>: <span class="hljs-string">"-1"</span>
-            }
-          }
-        },
-        <span class="hljs-attr">"idle"</span>: {
-          <span class="hljs-attr">"after"</span>: <span class="hljs-string">"30s"</span>
-        },
-        <span class="hljs-attr">"throttled"</span>: <span class="hljs-string">"false"</span>
-      },
-      <span class="hljs-attr">"fielddata"</span>: {
-        <span class="hljs-attr">"cache"</span>: <span class="hljs-string">"node"</span>
-      },
-      <span class="hljs-attr">"default_pipeline"</span>: <span class="hljs-string">"_none"</span>,
-      <span class="hljs-attr">"max_slices_per_scroll"</span>: <span class="hljs-string">"1024"</span>,
-      <span class="hljs-attr">"shard"</span>: {
-        <span class="hljs-attr">"check_on_startup"</span>: <span class="hljs-string">"false"</span>
-      },
-      <span class="hljs-attr">"xpack"</span>: {
-        <span class="hljs-attr">"watcher"</span>: {
-          <span class="hljs-attr">"template"</span>: {
-            <span class="hljs-attr">"version"</span>: <span class="hljs-string">""</span>
-          }
-        },
-        <span class="hljs-attr">"version"</span>: <span class="hljs-string">""</span>,
-        <span class="hljs-attr">"ccr"</span>: {
-          <span class="hljs-attr">"following_index"</span>: <span class="hljs-string">"false"</span>
-        }
-      },
-      <span class="hljs-attr">"percolator"</span>: {
-        <span class="hljs-attr">"map_unmapped_fields_as_text"</span>: <span class="hljs-string">"false"</span>
-      },
-      <span class="hljs-attr">"allocation"</span>: {
-        <span class="hljs-attr">"max_retries"</span>: <span class="hljs-string">"5"</span>
-      },
-      <span class="hljs-attr">"indexing"</span>: {
-        <span class="hljs-attr">"slowlog"</span>: {
-          <span class="hljs-attr">"reformat"</span>: <span class="hljs-string">"true"</span>,
-          <span class="hljs-attr">"threshold"</span>: {
-            <span class="hljs-attr">"index"</span>: {
-              <span class="hljs-attr">"warn"</span>: <span class="hljs-string">"-1"</span>,
-              <span class="hljs-attr">"trace"</span>: <span class="hljs-string">"-1"</span>,
-              <span class="hljs-attr">"debug"</span>: <span class="hljs-string">"-1"</span>,
-              <span class="hljs-attr">"info"</span>: <span class="hljs-string">"-1"</span>
-            }
-          },
-          <span class="hljs-attr">"source"</span>: <span class="hljs-string">"1000"</span>,
-          <span class="hljs-attr">"level"</span>: <span class="hljs-string">"TRACE"</span>
-        }
-      },
-      <span class="hljs-attr">"compound_format"</span>: <span class="hljs-string">"0.1"</span>,
-      <span class="hljs-attr">"blocks"</span>: {
-        <span class="hljs-attr">"metadata"</span>: <span class="hljs-string">"false"</span>,
-        <span class="hljs-attr">"read"</span>: <span class="hljs-string">"false"</span>,
-        <span class="hljs-attr">"read_only_allow_delete"</span>: <span class="hljs-string">"false"</span>,
-        <span class="hljs-attr">"read_only"</span>: <span class="hljs-string">"false"</span>,
-        <span class="hljs-attr">"write"</span>: <span class="hljs-string">"false"</span>
-      },
-      <span class="hljs-attr">"max_result_window"</span>: <span class="hljs-string">"10000"</span>,
-      <span class="hljs-attr">"store"</span>: {
-        <span class="hljs-attr">"stats_refresh_interval"</span>: <span class="hljs-string">"10s"</span>,
-        <span class="hljs-attr">"type"</span>: <span class="hljs-string">""</span>,
-        <span class="hljs-attr">"fs"</span>: {
-          <span class="hljs-attr">"fs_lock"</span>: <span class="hljs-string">"native"</span>
-        },
-        <span class="hljs-attr">"preload"</span>: []
-      },
-      <span class="hljs-attr">"queries"</span>: {
-        <span class="hljs-attr">"cache"</span>: {
-          <span class="hljs-attr">"enabled"</span>: <span class="hljs-string">"true"</span>
-        }
-      },
-      <span class="hljs-attr">"warmer"</span>: {
-        <span class="hljs-attr">"enabled"</span>: <span class="hljs-string">"true"</span>
-      },
-      <span class="hljs-attr">"max_shingle_diff"</span>: <span class="hljs-string">"3"</span>,
-      <span class="hljs-attr">"query_string"</span>: {
-        <span class="hljs-attr">"lenient"</span>: <span class="hljs-string">"false"</span>
-      }
-    }
-  }
-}
-</div></code></pre>
-<h5 id="%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">数据准备</h5>
+<h2 id="附录">附录 </h2>
+<h5 id="document示例">document示例 </h5>
+<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+  <span class="token property">"_index"</span><span class="token operator">:</span> <span class="token string">"sw_segment-20220517"</span><span class="token punctuation">,</span>
+  <span class="token property">"_type"</span><span class="token operator">:</span> <span class="token string">"_doc"</span><span class="token punctuation">,</span>
+  <span class="token property">"_id"</span><span class="token operator">:</span> <span class="token string">"2ce2eff1dff1413f84b9c296f7e401aa.66.16527767270910008"</span><span class="token punctuation">,</span>
+  <span class="token property">"_version"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token property">"_score"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token property">"_source"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"trace_id"</span><span class="token operator">:</span> <span class="token string">"d00ffbb17be345a4b6ee0724489ec950.68.16527767270880005"</span><span class="token punctuation">,</span>
+    <span class="token property">"endpoint_name"</span><span class="token operator">:</span> <span class="token string">"GET:/hello"</span><span class="token punctuation">,</span>
+    <span class="token property">"latency"</span><span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+    <span class="token property">"end_time"</span><span class="token operator">:</span> <span class="token number">1652776727095</span><span class="token punctuation">,</span>
+    <span class="token property">"endpoint_id"</span><span class="token operator">:</span> <span class="token string">"RGVtb0FwcEI=.1_R0VUOi9oZWxsbw=="</span><span class="token punctuation">,</span>
+    <span class="token property">"service_instance_id"</span><span class="token operator">:</span> <span class="token string">"RGVtb0FwcEI=.1_MzI2ZDBhMDBjYmEyNDk4NTk2MmQ5Yzc4YzhjOTkwNmJAMTkyLjE2OC41Ni4x"</span><span class="token punctuation">,</span>
+    <span class="token property">"version"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+    <span class="token property">"tags"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token string">"http.method=GET"</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"start_time"</span><span class="token operator">:</span> <span class="token number">1652776727091</span><span class="token punctuation">,</span>
+    <span class="token property">"data_binary"</span><span class="token operator">:</span> <span class="token string">"CjVkMDBmZmJiMTdiZTM0NWE0YjZlZTA3MjQ0ODllYzk1MC42OC4xNjUyNzc2NzI3MDg4MDAwNRI1MmNlMmVmZjFkZmYxNDEzZjg0YjljMjk2ZjdlNDAxYWEuNjYuMTY1Mjc3NjcyNzA5MTAwMDgaNwgBGLXkrYmNMCC15K2JjTAyIUhpa2FyaUNQL0Nvbm5lY3Rpb24vZ2V0Q29ubmVjdGlvbkACUHQaLwgCGLfkrYmNMCC35K2JjTAyGUhpa2FyaUNQL0Nvbm5lY3Rpb24vY2xvc2VAAlB0GqkCEP///////////wEYs+StiY0wILfkrYmNMCrFARI1ZDAwZmZiYjE3YmUzNDVhNGI2ZWUwNzI0NDg5ZWM5NTAuNjguMTY1Mjc3NjcyNzA4ODAwMDUaNWQwMGZmYmIxN2JlMzQ1YTRiNmVlMDcyNDQ4OWVjOTUwLjY4LjE2NTI3NzY3MjcwODgwMDA0IAEqCERlbW9BcHBBMi1iZDMyMmQxNDk4MDc0YTNmODU5Nzg2ODM5ZWZkZWY0ZUAxOTIuMTY4LjU2LjE6CkdFVDovaGVsbG9CDmxvY2FsaG9zdDo5MDkyMgpHRVQ6L2hlbGxvSANQDmIiCgN1cmwSG2h0dHA6Ly9sb2NhbGhvc3Q6OTA5Mi9oZWxsb2ISCgtodHRwLm1ldGhvZBIDR0VUIghEZW1vQXBwQiotMzI2ZDBhMDBjYmEyNDk4NTk2MmQ5Yzc4YzhjOTkwNmJAMTkyLjE2OC41Ni4x"</span><span class="token punctuation">,</span>
+    <span class="token property">"service_id"</span><span class="token operator">:</span> <span class="token string">"RGVtb0FwcEI=.1"</span><span class="token punctuation">,</span>
+    <span class="token property">"statement"</span><span class="token operator">:</span> <span class="token string">"GET:/hello - d00ffbb17be345a4b6ee0724489ec950.68.16527767270880005"</span><span class="token punctuation">,</span>
+    <span class="token property">"time_bucket"</span><span class="token operator">:</span> <span class="token number">20220517163847</span><span class="token punctuation">,</span>
+    <span class="token property">"is_error"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"segment_id"</span><span class="token operator">:</span> <span class="token string">"2ce2eff1dff1413f84b9c296f7e401aa.66.16527767270910008"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><h5 id="mapping示例">mapping示例 </h5>
+<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+  <span class="token property">"mapping"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"data_binary"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"binary"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"end_time"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"long"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"endpoint_id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"endpoint_name"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span><span class="token punctuation">,</span>
+        <span class="token property">"copy_to"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"endpoint_name_match"</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"endpoint_name_match"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"text"</span><span class="token punctuation">,</span>
+        <span class="token property">"analyzer"</span><span class="token operator">:</span> <span class="token string">"oap_analyzer"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"is_error"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"integer"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"latency"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"integer"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"segment_id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"service_id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"service_instance_id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"start_time"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"long"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"statement"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"tags"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"time_bucket"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"long"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"trace_id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"keyword"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"integer"</span><span class="token punctuation">,</span>
+        <span class="token property">"index"</span><span class="token operator">:</span> <span class="token boolean">false</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><h5 id="setting示例">setting示例 </h5>
+<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+  <span class="token property">"settings"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"index"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"refresh_interval"</span><span class="token operator">:</span> <span class="token string">"10s"</span><span class="token punctuation">,</span>
+      <span class="token property">"number_of_shards"</span><span class="token operator">:</span> <span class="token string">"5"</span><span class="token punctuation">,</span>
+      <span class="token property">"provided_name"</span><span class="token operator">:</span> <span class="token string">"sw_segment-20220517"</span><span class="token punctuation">,</span>
+      <span class="token property">"creation_date"</span><span class="token operator">:</span> <span class="token string">"1652773059350"</span><span class="token punctuation">,</span>
+      <span class="token property">"analysis"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"analyzer"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"oap_analyzer"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"stop"</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"number_of_replicas"</span><span class="token operator">:</span> <span class="token string">"0"</span><span class="token punctuation">,</span>
+      <span class="token property">"uuid"</span><span class="token operator">:</span> <span class="token string">"9ZWSlvzATteNnObwnGhVfQ"</span><span class="token punctuation">,</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"created"</span><span class="token operator">:</span> <span class="token string">"7010099"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"defaults"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"index"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"max_inner_result_window"</span><span class="token operator">:</span> <span class="token string">"100"</span><span class="token punctuation">,</span>
+      <span class="token property">"unassigned"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"node_left"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"delayed_timeout"</span><span class="token operator">:</span> <span class="token string">"1m"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"max_terms_count"</span><span class="token operator">:</span> <span class="token string">"65536"</span><span class="token punctuation">,</span>
+      <span class="token property">"lifecycle"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"rollover_alias"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"indexing_complete"</span><span class="token operator">:</span> <span class="token string">"false"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"routing_partition_size"</span><span class="token operator">:</span> <span class="token string">"1"</span><span class="token punctuation">,</span>
+      <span class="token property">"force_memory_term_dictionary"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+      <span class="token property">"max_docvalue_fields_search"</span><span class="token operator">:</span> <span class="token string">"100"</span><span class="token punctuation">,</span>
+      <span class="token property">"merge"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"scheduler"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"max_thread_count"</span><span class="token operator">:</span> <span class="token string">"4"</span><span class="token punctuation">,</span>
+          <span class="token property">"auto_throttle"</span><span class="token operator">:</span> <span class="token string">"true"</span><span class="token punctuation">,</span>
+          <span class="token property">"max_merge_count"</span><span class="token operator">:</span> <span class="token string">"9"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"policy"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"reclaim_deletes_weight"</span><span class="token operator">:</span> <span class="token string">"2.0"</span><span class="token punctuation">,</span>
+          <span class="token property">"floor_segment"</span><span class="token operator">:</span> <span class="token string">"2mb"</span><span class="token punctuation">,</span>
+          <span class="token property">"max_merge_at_once_explicit"</span><span class="token operator">:</span> <span class="token string">"30"</span><span class="token punctuation">,</span>
+          <span class="token property">"max_merge_at_once"</span><span class="token operator">:</span> <span class="token string">"10"</span><span class="token punctuation">,</span>
+          <span class="token property">"max_merged_segment"</span><span class="token operator">:</span> <span class="token string">"5gb"</span><span class="token punctuation">,</span>
+          <span class="token property">"expunge_deletes_allowed"</span><span class="token operator">:</span> <span class="token string">"10.0"</span><span class="token punctuation">,</span>
+          <span class="token property">"segments_per_tier"</span><span class="token operator">:</span> <span class="token string">"10.0"</span><span class="token punctuation">,</span>
+          <span class="token property">"deletes_pct_allowed"</span><span class="token operator">:</span> <span class="token string">"33.0"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"max_refresh_listeners"</span><span class="token operator">:</span> <span class="token string">"1000"</span><span class="token punctuation">,</span>
+      <span class="token property">"max_regex_length"</span><span class="token operator">:</span> <span class="token string">"1000"</span><span class="token punctuation">,</span>
+      <span class="token property">"load_fixed_bitset_filters_eagerly"</span><span class="token operator">:</span> <span class="token string">"true"</span><span class="token punctuation">,</span>
+      <span class="token property">"number_of_routing_shards"</span><span class="token operator">:</span> <span class="token string">"1"</span><span class="token punctuation">,</span>
+      <span class="token property">"write"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"wait_for_active_shards"</span><span class="token operator">:</span> <span class="token string">"1"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"mapping"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"coerce"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+        <span class="token property">"nested_fields"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"limit"</span><span class="token operator">:</span> <span class="token string">"50"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"nested_objects"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"limit"</span><span class="token operator">:</span> <span class="token string">"10000"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"depth"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"limit"</span><span class="token operator">:</span> <span class="token string">"20"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"ignore_malformed"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+        <span class="token property">"total_fields"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"limit"</span><span class="token operator">:</span> <span class="token string">"1000"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"source_only"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+      <span class="token property">"soft_deletes"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"enabled"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+        <span class="token property">"retention"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"operations"</span><span class="token operator">:</span> <span class="token string">"0"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"retention_lease"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"period"</span><span class="token operator">:</span> <span class="token string">"12h"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"max_script_fields"</span><span class="token operator">:</span> <span class="token string">"32"</span><span class="token punctuation">,</span>
+      <span class="token property">"query"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"default_field"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"*"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"parse"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"allow_unmapped_fields"</span><span class="token operator">:</span> <span class="token string">"true"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"0"</span><span class="token punctuation">,</span>
+      <span class="token property">"frozen"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+      <span class="token property">"sort"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"missing"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"mode"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"field"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"order"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"priority"</span><span class="token operator">:</span> <span class="token string">"1"</span><span class="token punctuation">,</span>
+      <span class="token property">"codec"</span><span class="token operator">:</span> <span class="token string">"default"</span><span class="token punctuation">,</span>
+      <span class="token property">"max_rescore_window"</span><span class="token operator">:</span> <span class="token string">"10000"</span><span class="token punctuation">,</span>
+      <span class="token property">"max_adjacency_matrix_filters"</span><span class="token operator">:</span> <span class="token string">"100"</span><span class="token punctuation">,</span>
+      <span class="token property">"analyze"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"max_token_count"</span><span class="token operator">:</span> <span class="token string">"10000"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"gc_deletes"</span><span class="token operator">:</span> <span class="token string">"60s"</span><span class="token punctuation">,</span>
+      <span class="token property">"optimize_auto_generated_id"</span><span class="token operator">:</span> <span class="token string">"true"</span><span class="token punctuation">,</span>
+      <span class="token property">"max_ngram_diff"</span><span class="token operator">:</span> <span class="token string">"1"</span><span class="token punctuation">,</span>
+      <span class="token property">"translog"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"generation_threshold_size"</span><span class="token operator">:</span> <span class="token string">"64mb"</span><span class="token punctuation">,</span>
+        <span class="token property">"flush_threshold_size"</span><span class="token operator">:</span> <span class="token string">"512mb"</span><span class="token punctuation">,</span>
+        <span class="token property">"sync_interval"</span><span class="token operator">:</span> <span class="token string">"5s"</span><span class="token punctuation">,</span>
+        <span class="token property">"retention"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"size"</span><span class="token operator">:</span> <span class="token string">"512mb"</span><span class="token punctuation">,</span>
+          <span class="token property">"age"</span><span class="token operator">:</span> <span class="token string">"12h"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"durability"</span><span class="token operator">:</span> <span class="token string">"REQUEST"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"auto_expand_replicas"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+      <span class="token property">"mapper"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"dynamic"</span><span class="token operator">:</span> <span class="token string">"true"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"requests"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"cache"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"enable"</span><span class="token operator">:</span> <span class="token string">"true"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"data_path"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+      <span class="token property">"highlight"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"max_analyzed_offset"</span><span class="token operator">:</span> <span class="token string">"1000000"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"routing"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"rebalance"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"enable"</span><span class="token operator">:</span> <span class="token string">"all"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"allocation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"enable"</span><span class="token operator">:</span> <span class="token string">"all"</span><span class="token punctuation">,</span>
+          <span class="token property">"total_shards_per_node"</span><span class="token operator">:</span> <span class="token string">"-1"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"search"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"slowlog"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"level"</span><span class="token operator">:</span> <span class="token string">"TRACE"</span><span class="token punctuation">,</span>
+          <span class="token property">"threshold"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"fetch"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token property">"warn"</span><span class="token operator">:</span> <span class="token string">"-1"</span><span class="token punctuation">,</span>
+              <span class="token property">"trace"</span><span class="token operator">:</span> <span class="token string">"-1"</span><span class="token punctuation">,</span>
+              <span class="token property">"debug"</span><span class="token operator">:</span> <span class="token string">"-1"</span><span class="token punctuation">,</span>
+              <span class="token property">"info"</span><span class="token operator">:</span> <span class="token string">"-1"</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"query"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token property">"warn"</span><span class="token operator">:</span> <span class="token string">"-1"</span><span class="token punctuation">,</span>
+              <span class="token property">"trace"</span><span class="token operator">:</span> <span class="token string">"-1"</span><span class="token punctuation">,</span>
+              <span class="token property">"debug"</span><span class="token operator">:</span> <span class="token string">"-1"</span><span class="token punctuation">,</span>
+              <span class="token property">"info"</span><span class="token operator">:</span> <span class="token string">"-1"</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"idle"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"after"</span><span class="token operator">:</span> <span class="token string">"30s"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"throttled"</span><span class="token operator">:</span> <span class="token string">"false"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"fielddata"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"cache"</span><span class="token operator">:</span> <span class="token string">"node"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"default_pipeline"</span><span class="token operator">:</span> <span class="token string">"_none"</span><span class="token punctuation">,</span>
+      <span class="token property">"max_slices_per_scroll"</span><span class="token operator">:</span> <span class="token string">"1024"</span><span class="token punctuation">,</span>
+      <span class="token property">"shard"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"check_on_startup"</span><span class="token operator">:</span> <span class="token string">"false"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"xpack"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"watcher"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"template"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">""</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"ccr"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"following_index"</span><span class="token operator">:</span> <span class="token string">"false"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"percolator"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"map_unmapped_fields_as_text"</span><span class="token operator">:</span> <span class="token string">"false"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"allocation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"max_retries"</span><span class="token operator">:</span> <span class="token string">"5"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"indexing"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"slowlog"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"reformat"</span><span class="token operator">:</span> <span class="token string">"true"</span><span class="token punctuation">,</span>
+          <span class="token property">"threshold"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"index"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token property">"warn"</span><span class="token operator">:</span> <span class="token string">"-1"</span><span class="token punctuation">,</span>
+              <span class="token property">"trace"</span><span class="token operator">:</span> <span class="token string">"-1"</span><span class="token punctuation">,</span>
+              <span class="token property">"debug"</span><span class="token operator">:</span> <span class="token string">"-1"</span><span class="token punctuation">,</span>
+              <span class="token property">"info"</span><span class="token operator">:</span> <span class="token string">"-1"</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"source"</span><span class="token operator">:</span> <span class="token string">"1000"</span><span class="token punctuation">,</span>
+          <span class="token property">"level"</span><span class="token operator">:</span> <span class="token string">"TRACE"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"compound_format"</span><span class="token operator">:</span> <span class="token string">"0.1"</span><span class="token punctuation">,</span>
+      <span class="token property">"blocks"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"metadata"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+        <span class="token property">"read"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+        <span class="token property">"read_only_allow_delete"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+        <span class="token property">"read_only"</span><span class="token operator">:</span> <span class="token string">"false"</span><span class="token punctuation">,</span>
+        <span class="token property">"write"</span><span class="token operator">:</span> <span class="token string">"false"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"max_result_window"</span><span class="token operator">:</span> <span class="token string">"10000"</span><span class="token punctuation">,</span>
+      <span class="token property">"store"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"stats_refresh_interval"</span><span class="token operator">:</span> <span class="token string">"10s"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"fs"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"fs_lock"</span><span class="token operator">:</span> <span class="token string">"native"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"preload"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"queries"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"cache"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"enabled"</span><span class="token operator">:</span> <span class="token string">"true"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"warmer"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"enabled"</span><span class="token operator">:</span> <span class="token string">"true"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"max_shingle_diff"</span><span class="token operator">:</span> <span class="token string">"3"</span><span class="token punctuation">,</span>
+      <span class="token property">"query_string"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"lenient"</span><span class="token operator">:</span> <span class="token string">"false"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><h5 id="数据准备">数据准备 </h5>
 <p>windows下的演示:</p>
 <ol>
-<li>下载数据集 https://grouplens.org/datasets/movielens/</li>
-<li>下载logstash https://www.elastic.co/cn/downloads/logstash</li>
+<li>下载数据集 <a href="https://grouplens.org/datasets/movielens/">https://grouplens.org/datasets/movielens/</a></li>
+<li>下载logstash <a href="https://www.elastic.co/cn/downloads/logstash">https://www.elastic.co/cn/downloads/logstash</a></li>
 <li>在logstash的bin目录下增加文件<code>logstash.conf</code>:</li>
 </ol>
-<pre class="hljs"><code><div>input {
+<pre data-role="codeBlock" data-info="conf" class="language-conf conf"><code>input {
   file {
-    path =&gt; [&quot;D:/Download/ml-25m/movies.csv&quot;]
-    start_position =&gt; &quot;beginning&quot;
-    sincedb_path =&gt; &quot;D:/Download/ml-25m/www&quot;
+    path =&gt; ["D:/Download/ml-25m/movies.csv"]
+    start_position =&gt; "beginning"
+    sincedb_path =&gt; "D:/Download/ml-25m/www"
   }
 }
 filter {
   csv {
-    separator =&gt; &quot;,&quot;
-    columns =&gt; [&quot;id&quot;,&quot;content&quot;,&quot;genre&quot;]
+    separator =&gt; ","
+    columns =&gt; ["id","content","genre"]
   }
 
   mutate {
-    split =&gt; { &quot;genre&quot; =&gt; &quot;|&quot; }
-    remove_field =&gt; [&quot;path&quot;, &quot;host&quot;,&quot;@timestamp&quot;,&quot;message&quot;]
+    split =&gt; { "genre" =&gt; "|" }
+    remove_field =&gt; ["path", "host","@timestamp","message"]
   }
 
   mutate {
 
-    split =&gt; [&quot;content&quot;, &quot;(&quot;]
-    add_field =&gt; { &quot;title&quot; =&gt; &quot;%{[content][0]}&quot;}
-    add_field =&gt; { &quot;year&quot; =&gt; &quot;%{[content][1]}&quot;}
+    split =&gt; ["content", "("]
+    add_field =&gt; { "title" =&gt; "%{[content][0]}"}
+    add_field =&gt; { "year" =&gt; "%{[content][1]}"}
   }
 
   mutate {
     convert =&gt; {
-      &quot;year&quot; =&gt; &quot;integer&quot;
+      "year" =&gt; "integer"
     }
-    strip =&gt; [&quot;title&quot;]
-    remove_field =&gt; [&quot;path&quot;, &quot;host&quot;,&quot;@timestamp&quot;,&quot;message&quot;,&quot;content&quot;]
+    strip =&gt; ["title"]
+    remove_field =&gt; ["path", "host","@timestamp","message","content"]
   }
 
 }
 output {
    elasticsearch {
-     hosts =&gt; &quot;http://localhost:9200&quot;
-     index =&gt; &quot;movies&quot;
-     document_id =&gt; &quot;%{id}&quot;
+     hosts =&gt; "http://localhost:9200"
+     index =&gt; "movies"
+     document_id =&gt; "%{id}"
    }
   stdout {}
 }
-</div></code></pre>
-<ol start="4">
+</code></pre><ol start="4">
 <li>执行命令</li>
 </ol>
-<pre class="hljs"><code><div>logstash.bat -f logstash.conf
-</div></code></pre>
-<ol start="5">
+<pre data-role="codeBlock" data-info="" class="language-text"><code>logstash.bat -f logstash.conf
+</code></pre><ol start="5">
 <li>看到命令行输出从csv文件中读出的数据, 说明正在导入, 等待一会, 即可完成数据的导入.</li>
 </ol>
 
-</body>
-</html>
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>

@@ -23,6 +23,8 @@ es官方文档很强大, 地址在这里[https://www.elastic.co/guide/en/elastic
 
 文中会用到一些数据, 数据准备相关, 参见附录: [数据准备](#数据准备)
 
+Elasticsearch使用Query DSL(Domain Specific Language), 这是一种非常灵活的查询语言, 基于JSON, 支持全文搜索/复合查询/过滤以及聚合等;
+
 ## 基本概念
 
 逻辑概念:
