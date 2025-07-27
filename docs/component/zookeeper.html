@@ -1,395 +1,123 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>zookeeper.md</title>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-
-<style>
-/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-body {
-	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
-	font-size: var(--vscode-markdown-font-size, 14px);
-	padding: 0 26px;
-	line-height: var(--vscode-markdown-line-height, 22px);
-	word-wrap: break-word;
-}
-
-#code-csp-warning {
-	position: fixed;
-	top: 0;
-	right: 0;
-	color: white;
-	margin: 16px;
-	text-align: center;
-	font-size: 12px;
-	font-family: sans-serif;
-	background-color:#444444;
-	cursor: pointer;
-	padding: 6px;
-	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
-}
-
-#code-csp-warning:hover {
-	text-decoration: none;
-	background-color:#007acc;
-	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
-}
-
-body.scrollBeyondLastLine {
-	margin-bottom: calc(100vh - 22px);
-}
-
-body.showEditorSelection .code-line {
-	position: relative;
-}
-
-body.showEditorSelection .code-active-line:before,
-body.showEditorSelection .code-line:hover:before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: -12px;
-	height: 100%;
-}
-
-body.showEditorSelection li.code-active-line:before,
-body.showEditorSelection li.code-line:hover:before {
-	left: -30px;
-}
-
-.vscode-light.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.15);
-}
-
-.vscode-light.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.40);
-}
-
-.vscode-light.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-dark.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.4);
-}
-
-.vscode-dark.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.60);
-}
-
-.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-high-contrast.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 160, 0, 0.7);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 160, 0, 1);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-img {
-	max-width: 100%;
-	max-height: 100%;
-}
-
-a {
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:focus,
-input:focus,
-select:focus,
-textarea:focus {
-	outline: 1px solid -webkit-focus-ring-color;
-	outline-offset: -1px;
-}
-
-hr {
-	border: 0;
-	height: 2px;
-	border-bottom: 2px solid;
-}
-
-h1 {
-	padding-bottom: 0.3em;
-	line-height: 1.2;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-}
-
-h1, h2, h3 {
-	font-weight: normal;
-}
-
-table {
-	border-collapse: collapse;
-}
-
-table > thead > tr > th {
-	text-align: left;
-	border-bottom: 1px solid;
-}
-
-table > thead > tr > th,
-table > thead > tr > td,
-table > tbody > tr > th,
-table > tbody > tr > td {
-	padding: 5px 10px;
-}
-
-table > tbody > tr + tr > td {
-	border-top: 1px solid;
-}
-
-blockquote {
-	margin: 0 7px 0 5px;
-	padding: 0 16px 0 10px;
-	border-left-width: 5px;
-	border-left-style: solid;
-}
-
-code {
-	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
-	font-size: 1em;
-	line-height: 1.357em;
-}
-
-body.wordWrap pre {
-	white-space: pre-wrap;
-}
-
-pre:not(.hljs),
-pre.hljs code > div {
-	padding: 16px;
-	border-radius: 3px;
-	overflow: auto;
-}
-
-pre code {
-	color: var(--vscode-editor-foreground);
-	tab-size: 4;
-}
-
-/** Theming */
-
-.vscode-light pre {
-	background-color: rgba(220, 220, 220, 0.4);
-}
-
-.vscode-dark pre {
-	background-color: rgba(10, 10, 10, 0.4);
-}
-
-.vscode-high-contrast pre {
-	background-color: rgb(0, 0, 0);
-}
-
-.vscode-high-contrast h1 {
-	border-color: rgb(0, 0, 0);
-}
-
-.vscode-light table > thead > tr > th {
-	border-color: rgba(0, 0, 0, 0.69);
-}
-
-.vscode-dark table > thead > tr > th {
-	border-color: rgba(255, 255, 255, 0.69);
-}
-
-.vscode-light h1,
-.vscode-light hr,
-.vscode-light table > tbody > tr + tr > td {
-	border-color: rgba(0, 0, 0, 0.18);
-}
-
-.vscode-dark h1,
-.vscode-dark hr,
-.vscode-dark table > tbody > tr + tr > td {
-	border-color: rgba(255, 255, 255, 0.18);
-}
-
-</style>
-
-<style>
-/* Tomorrow Theme */
-/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
-/* Original theme - https://github.com/chriskempson/tomorrow-theme */
-
-/* Tomorrow Comment */
-.hljs-comment,
-.hljs-quote {
-	color: #8e908c;
-}
-
-/* Tomorrow Red */
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag,
-.hljs-name,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-regexp,
-.hljs-deletion {
-	color: #c82829;
-}
-
-/* Tomorrow Orange */
-.hljs-number,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-literal,
-.hljs-type,
-.hljs-params,
-.hljs-meta,
-.hljs-link {
-	color: #f5871f;
-}
-
-/* Tomorrow Yellow */
-.hljs-attribute {
-	color: #eab700;
-}
-
-/* Tomorrow Green */
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-	color: #718c00;
-}
-
-/* Tomorrow Blue */
-.hljs-title,
-.hljs-section {
-	color: #4271ae;
-}
-
-/* Tomorrow Purple */
-.hljs-keyword,
-.hljs-selector-tag {
-	color: #8959a8;
-}
-
-.hljs {
-	display: block;
-	overflow-x: auto;
-	color: #4d4d4c;
-	padding: 0.5em;
-}
-
-.hljs-emphasis {
-	font-style: italic;
-}
-
-.hljs-strong {
-	font-weight: bold;
-}
-</style>
-
-<style>
-/*
- * Markdown PDF CSS
- */
-
- body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
-	padding: 0 12px;
-}
-
-pre {
-	background-color: #f8f8f8;
-	border: 1px solid #cccccc;
-	border-radius: 3px;
-	overflow-x: auto;
-	white-space: pre-wrap;
-	overflow-wrap: break-word;
-}
-
-pre:not(.hljs) {
-	padding: 23px;
-	line-height: 19px;
-}
-
-blockquote {
-	background: rgba(127, 127, 127, 0.1);
-	border-color: rgba(0, 122, 204, 0.5);
-}
-
-.emoji {
-	height: 1.4em;
-}
-
-code {
-	font-size: 14px;
-	line-height: 19px;
-}
-
-/* for inline code */
-:not(pre):not(.hljs) > code {
-	color: #C9AE75; /* Change the old color so it seems less like an error */
-	font-size: inherit;
-}
-
-/* Page Break : use <div class="page"/> to insert page break
--------------------------------------------------------- */
-.page {
-	page-break-after: always;
-}
-
-</style>
-
-<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-</head>
-<body>
-  <script>
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
-          ? 'dark'
-          : 'default'
-    });
-  </script>
-<h1 id="zookeeper">Zookeeper</h1>
-<h2 id="%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%90%AF%E5%8A%A8%E4%B8%8E%E5%81%9C%E6%AD%A2">服务的启动与停止</h2>
-<p>找到 %zkHome%\bin 目录, 通过该目录下的 zkServer.sh</p>
+<!DOCTYPE html><html><head>
+      <title>zookeeper</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="zookeeper">Zookeeper </h1>
+<h2 id="常用应用场景">常用应用场景 </h2>
+<p>Zookeeper是一个分布式的, 开放源码的分布式应用程序协调服务. 常见应用场景:</p>
 <ul>
-<li>启动 zkServer.sh start</li>
-<li>停止 zkServer.sh stop</li>
-<li>重启 zkServer.sh restart</li>
-<li>查看ZK服务状态 zkServer.sh status</li>
+<li>分布式配置管理: Zookeeper可以存储配置信息, 应用程序可以动态读取配置信息;</li>
+<li>分布式同步: Zookeeper可以协调各个节点的同步, 确保数据的一致性;</li>
+<li>命名服务: Zookeeper可以作为一个命名服务, 应用程序可以通过名字找到所需的服务;</li>
+<li>集群管理: 管理分布式集群, 协调各个节点的加入和退出;</li>
+<li>Master选举: 可以用来实现Master选举, 选择一个节点作为Master节点;</li>
+<li>分布式协调服务: 分布式锁, 唯一标识等;</li>
+<li>服务注册和发现: 可以用于服务注册发现, 简化服务的部署和更新;</li>
+<li>负载均衡: 可以用于动态的对请求进行负载均衡, 以提高系统的可用性;</li>
 </ul>
-<h2 id="zk%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4">zk客户端命令</h2>
-<p>ZooKeeper命令行工具类似于Linux的shell环境，不过功能肯定不及shell啦，但 是使用它我们可以简单的对ZooKeeper进行访问，数据创建，数据修改等操作.  使用 zkCli.sh -server 127.0.0.1:2181 连接到 ZooKeeper 服务，连接成功后，系统会输出 ZooKeeper 的相关环境以及配置信息。命令行工具的一些简单操作如下:</p>
+<blockquote>
+<p>它的职责是保证数据(配置数据/状态数据)在其管辖下的所有服务之间保持同步,一致. 它是一个CP的分布式系统(Consistency-一致性 + Partition tolerance-分区容错性). 所以它会牺牲可用性, 即在极端情况下丢弃一些请求, 消费者程序需要重新请求才能获取. 总体体现在如下:</p>
+<ol>
+<li>集群中存活节点数低于总结点数的一半, 整个集群将无法接受新的写请求;</li>
+<li>在ZK的master选举中, 在新的Master被选举出来之前, 这个集群也无法接受新的写请求;</li>
+</ol>
+</blockquote>
+<h2 id="zookeeper的数据结构">Zookeeper的数据结构 </h2>
+<p>zk中的数据是以目录的形式存储的. 其中每个存储数据的节点都叫做Znode, 每个Znode都有一个唯一的路径标识. 和目录结构类似, 每一个节点都可以有子节点(临时节点除外). 节点中可以存储数据和状态信息, 每个Znode上可以配置监听器, 用于监听节点中的数据变化. 节点不支持部分读写, 而是一次性完整读写.</p>
+<p>Znode有四种类型:</p>
+<ul>
+<li>PERSISTENT: 持久节点;
+<ul>
+<li>在节点创建后, 就一直存在, 直到有删除操作来主动清除这个节点;</li>
+</ul>
+</li>
+<li>PERSISTENT_SEQUENTIAL: 持久的连续节点;
+<ul>
+<li>创建的节点时, 会自动给节点名加上一个数字后缀作为新的节点名, 范围是整型的最大值;</li>
+</ul>
+</li>
+<li>EPHEMERAL: 临时节点;
+<ul>
+<li>临时节点的生命周期和客户端会话绑定, 客户端会话失效, 那么这个节点就会自动被清除掉;</li>
+<li>临时节点不能有子节点;</li>
+</ul>
+</li>
+<li>EPHEMERAL_SEQUENTIAL: 临时的连续节点;
+<ul>
+<li>创建的节点会自动加上编号;</li>
+</ul>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="java" class="language-java java"><code><span class="token class-name">String</span> root <span class="token operator">=</span> <span class="token string">"/computer"</span><span class="token punctuation">;</span>
+<span class="token class-name">String</span> createPath <span class="token operator">=</span> zk<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> root<span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">Ids</span><span class="token punctuation">.</span><span class="token constant">OPEN_ACL_UNSAFE</span><span class="token punctuation">,</span> <span class="token class-name">CreateMode</span><span class="token punctuation">.</span><span class="token constant">PERSISTENT</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"createPath = "</span> <span class="token operator">+</span> createPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-for">for</span><span class="token punctuation">(</span><span class="token keyword keyword-int">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token class-name">String</span> path <span class="token operator">=</span> <span class="token string">"/computer/node"</span><span class="token punctuation">;</span>
+    <span class="token class-name">String</span> createPath <span class="token operator">=</span> zk<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> root<span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">Ids</span><span class="token punctuation">.</span><span class="token constant">OPEN_ACL_UNSAFE</span><span class="token punctuation">,</span> <span class="token class-name">CreateMode</span><span class="token punctuation">.</span><span class="token constant">PERSISTENT_SEQUENTIAL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"createPath = "</span> <span class="token operator">+</span> createPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+zk<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><p>运行结果:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>createPath = /computer
+createPath = /computer/node0000000000
+createPath = /computer/node0000000001
+createPath = /computer/node0000000002
+createPath = /computer/node0000000003
+createPath = /computer/node0000000004
+</code></pre><p>每个znode被创建时都会带有一个ACL列表, 用于决定谁可以对它执行何种操作.</p>
+<p>watcher在Zookeeper是一个核心功能, Watcher可以监控目录节点的数据变化以及子目录变化, 一旦这些状态发生变化, 服务器就会通知所有设置在这个目录节点上的watcher, 从而每个客户端都很快知道它所关注的目录节点状态发生变化, 而做出相应的反应. 可以设置观察的操作: <code>exists</code>, <code>getChildren</code>, <code>getData</code>, 可以触发观察的操作: <code>create</code>, <code>delete</code>, <code>setData</code></p>
+<h2 id="集群角色">集群角色 </h2>
+<ul>
+<li>Leader(领导者): 负责进行投票的发起和决议, 更新系统状态. 为客户端提供读和写服务;</li>
+<li>Follower(跟随者): 用于接受客户端请求并响应客户端返回结果, 在选主过程中参与投票. 为客户端提供读服务;</li>
+<li>Observer(观察者): 可以接受客户端连接, 将写请求转发给leader, 但observer不参加投票过程, 只同步leader状态, observer的目的是为了扩展系统, 提高读取速度;</li>
+<li>Client(客户端): 请求发起方</li>
+</ul>
+<h2 id="服务的启动与停止">服务的启动与停止 </h2>
+<p>找到 %zkHome%\bin 目录, 通过该目录下的 <a href="http://zkServer.sh">zkServer.sh</a></p>
+<ul>
+<li>启动 <a href="http://zkServer.sh">zkServer.sh</a> start</li>
+<li>停止 <a href="http://zkServer.sh">zkServer.sh</a> stop</li>
+<li>重启 <a href="http://zkServer.sh">zkServer.sh</a> restart</li>
+<li>查看ZK服务状态 <a href="http://zkServer.sh">zkServer.sh</a> status</li>
+</ul>
+<h2 id="zk客户端命令">zk客户端命令 </h2>
+<p>ZooKeeper命令行工具类似于Linux的shell环境，不过功能肯定不及shell啦，但 是使用它我们可以简单的对ZooKeeper进行访问，数据创建，数据修改等操作.  使用 <a href="http://zkCli.sh">zkCli.sh</a> -server 127.0.0.1:2181 连接到 ZooKeeper 服务，连接成功后，系统会输出 ZooKeeper 的相关环境以及配置信息。命令行工具的一些简单操作如下:</p>
 <ul>
 <li>显示根目录下、文件： ls / 使用 ls 命令来查看当前 ZooKeeper 中所包含的内容</li>
 <li>显示根目录下、文件： ls2 / 查看当前节点数据并能看到更新次数等数据</li>
-<li>创建文件，并设置初始内容： create /zk &quot;test&quot; 创建一个新的 znode节点&quot; zk &quot;以及与它关联的字符串</li>
+<li>创建文件，并设置初始内容： create /zk "test" 创建一个新的 znode节点" zk "以及与它关联的字符串</li>
 <li>获取文件内容： get /zk 确认 znode 是否包含我们所创建的字符串</li>
-<li>修改文件内容： set /zk &quot;zkbak&quot; 对 zk 所关联的字符串进行设置</li>
+<li>修改文件内容： set /zk "zkbak" 对 zk 所关联的字符串进行设置</li>
 <li>删除文件： delete /zk 将刚才创建的 znode 删除</li>
 <li>退出客户端： quit</li>
 <li>帮助命令： help</li>
 </ul>
 <p>登录账号:</p>
-<pre class="hljs"><code><div>addauth digest user:password
-</div></code></pre>
-<h2 id="%E5%86%85%E7%BD%AE%E7%9A%84%E5%9B%9B%E5%AD%97%E5%91%BD%E4%BB%A4%E6%96%B9%E4%BE%BF%E4%B8%94%E5%AE%9E%E7%94%A8">内置的四字命令(方便且实用)</h2>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>addauth digest user:password
+</code></pre><h2 id="内置的四字命令方便且实用">内置的四字命令(方便且实用) </h2>
 <p>ZooKeeper 支持某些特定的四字命令字母与其的交互。它们大多是查询命令，用来获取 ZooKeeper 服务的当前状态及相关信息。用户在客户端可以通过 telnet 或 nc 向 ZooKeeper 提交相应的命令。nc的做法为 nc localhost 2181 + 回车 ，然后输入以下命令中的一个，则服务器会返回相应的信息</p>
 <ul>
 <li>stat 来查看哪个节点被选择作为follower或者leader</li>
@@ -407,6 +135,95 @@ code {
 <li>srst ,重置服务器的统计信息（功能性命令，慎用）</li>
 <li>crst ,重置所有连接的统计信息（功能性命令，慎用）</li>
 </ul>
+<h2 id="选举机制">选举机制 </h2>
+<ol>
+<li>初始化阶段: 在一个Zookeeper集群中, 每个Follower节点都可以成为Leader节点. 初始状态下, 所有Follower节点都是处于"LOOKING"状态, 即寻找Leader. 每个节点都会监视集群中的其他节点, 以侦听Leader选举消息;</li>
+<li>提名和投票: 当一个节点启动时, 它会向其他节点发送投票请求, 称为提名. 节点收到提名后可以选择投票支持这个提名节点, 也可以不投票. 每个节点只能在一个选举周期内投出一票;
+<ul>
+<li>提名过程中, 所有投票者都遵循一个原则: 遇强投强</li>
+<li>强弱的判断: 通过数据是否足够新来判断这个节点是不是够强. Zookeeper中以事务id(zxid)来标识数据的新旧程度, 节点的zxid越大表示数据越新, 节点能力越强.</li>
+<li>投票过程中, 节点首先会认为自己是最强的, 先投自己一票, 然后把投票信息广播出去, 这里包含zxid和sid, zxid就是自己的事务id, sid就是自己的唯一标识;</li>
+<li>集群中的节点就会不断收到别人发过来的投票结果, 然后这个节点就会拿别人的zxid和自己的zxid进行比较, 如果别人的更大, 说明他的数据更新, 那么就会重新投票, 把zxid和sid都换成别人的信息再发出去.</li>
+</ul>
+</li>
+<li>选举过程: 选举过程分为多轮, 每轮称为一个"选举周期". 在每个选举周期中, 节点根据投票数来选择新的Leader候选者. 如果一个候选者获得了大多数节点(超过半数)的投票, 那么它就会成为新的Leader. 否则, 没有候选者获得足够的投票, 那么这个选举周期失败, 所有节点继续下一个选举周期.</li>
+<li>Leader确认: 一旦一个候选者获得了大多数节点的投票, 它就会成为新的Leader. 这个Leader会向其他节点发送Leader就绪消息, 告知它们自己已经成为Leader, 并且开始处理客户端请求.</li>
+<li>集群同步: 一旦新的Leader选举完成, 其他节点会与新的Leader同步数据, 确保所有节点在一个一致的状态下运行. 这个同步过程也包括了未完成的客户端请求, 以保证数据的一致性.</li>
+</ol>
+<h2 id="脑裂">脑裂 </h2>
+<p>由于网络或者节点故障等原因, 导致一个分布式系统被分为多个独立的子系统, 每个子系统独立运行, 无法相互通信, 同时认为自己是整个系统的主节点, 这就导致整个系统失去一致性和可用性.</p>
+<p>Zookeeper集群中脑裂出现的原因通常有以下两种情况:</p>
+<ul>
+<li>网络分区: 当Zookeeper集群中的某些节点无法与其他节点通信时, 就会出现网络分区现象. 这时, 无法确定哪个节点是主节点, 容易导致多个主节点的情况;</li>
+<li>主节点宕机: 当Zookeeper集群中的主节点宕机时, 其他节点可能会重新选举新的主节点. 如果宕机的主节点恢复后, 会与其他节点产生不一致, 可能导致脑裂.</li>
+</ul>
+<p>脑裂恢复:</p>
+<ul>
+<li>自动恢复机制: 脑裂后, Zookeeper会自动发现并尝试恢复. 当大多数节点恢复后, 会重新选举主节点, 并将状态同步给其他节点.</li>
+<li>手动恢复</li>
+</ul>
+<p>脑裂避免</p>
+<ul>
+<li>设置合适的选举时间</li>
+<li>设置合适的节点数量</li>
+<li>通过Watch机制来监听节点状态变化, 及时发现并处理异常情况</li>
+</ul>
+<h2 id="实现分布式锁">实现分布式锁 </h2>
+<p>基于Zookeeper临时有序节点(EPHEMERAL_SEQUENTIAL)可以实现分布式锁.</p>
+<p>思路: 客户端对方法加锁时, zookeeper上的与该方法对应的指定节点目录下, 生成一个唯一的瞬时有序节点. 判断是否获取锁的方式很简单, 只需要判断有序节点中序号最小的一个. 当释放锁的时候, 只需将这个瞬时节点删除即可. 同时, 其可以避免服务宕机导致的锁无法释放, 而产生的死锁问题.</p>
+<p>细节问题:</p>
+<ul>
+<li>客户端宕机导致锁无法释放: 一旦客户端获取到锁之后突然挂掉, 临时节点就会自动删掉.</li>
+<li>阻塞锁: 客户端创建顺序节点, 并在节点上绑定监听器, 一旦节点有变化, Zookeeper会通知客户端, 客户端可以检查自己创建的节点是不是当前所有节点中序号最小的, 如果是, 那么自己就获取到锁, 便可以执行业务逻辑了.</li>
+<li>可重入: 客户端在创建节点的时候, 把客户端的主机信息,线程信息直接写入节点中, 下次想要获取锁的时候和当前最小的节点中的数据对比一下就可以了.</li>
+<li>单点问题: 只要有半数以上的机器存活, 就可以对外提供服务;</li>
+</ul>
+<h2 id="watch机制">Watch机制 </h2>
+<p>watch在zookeeper中非常重要, 它能够让应用程序监听zookeeper上节点的变化, 从而及时做出响应.</p>
+<ul>
+<li>服务端
+<ul>
+<li>WatchManager: 管理所有watcher操作, 包括: 注册, 注销, 触发</li>
+</ul>
+</li>
+<li>客户端
+<ul>
+<li>ZkWatcherManager: 管理所有客户端watcher相关操作, 包括: 创建, 注册, 事件处理等;</li>
+</ul>
+</li>
+</ul>
+<p>工作机制如下:</p>
+<ol>
+<li>客户端连接到ZK, 会创建一个ZkWatcherManager, 用于管理客户端中的所有watcher;</li>
+<li>当客户端想要监控某个znode节点时, 它可以调用ZkWatcherManager中的方法创建watcher, 并注册到客户端. 客户端将watcher信息发送到ZK服务端;</li>
+<li>服务端收到消息后, 交给WatchManager进行注册, 将信息保存在内存中;</li>
+<li>节点发生变化时, WatchManager会通知ZK Server</li>
+<li>ZK Server会根据变化类型通知对应客户端, 告知它们发生了哪些变化;</li>
+<li>客户端接收到通知后, ZkWatcherManager会根据watcher的类型来触发对应的事件处理方法;</li>
+</ol>
+<h2 id="服务发现">服务发现 </h2>
+<p>可以这样实现服务发现:</p>
+<ol>
+<li>向ZK注册服务: 服务提供者在ZK上创建<strong>临时节点</strong>, 来注册自己. 节点名称通常是服务名称和版本号等信息的组合, 节点数据可以包含服务地址, 端口, 协议等信息. 因为是临时节点, 所以当服务提供者关闭或者崩溃时, 节点自动删除.</li>
+<li>客户端订阅服务: 服务消费者需要订阅自己所需的服务, 可以监听服务节点变化, 一旦节点变化, 就会收到通知.</li>
+</ol>
+<h2 id="缺点">缺点 </h2>
+<ol>
+<li>性能问题: ZK设计是为了高一致性, ZAB协议需要同步写操作到大多数节点, 导致写操作的性能较低. 在高并发写入场景下, Zookeeper的新能称为瓶颈.</li>
+<li>ZK写操作必须经过Leader节点, Leader将成为集群的瓶颈;</li>
+<li>ZK使用内存存储数据, 如果数据量过大, 会导致内存不足或者性能下降;</li>
+<li>如果频繁触发Leader选举, 会影响可用性;</li>
+<li>易用性和工具生态略显不足, 运维和管理复杂度较高;</li>
+</ol>
 
-</body>
-</html>
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
