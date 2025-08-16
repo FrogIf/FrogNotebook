@@ -1,372 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Mysql.md</title>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-
-<style>
-/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-body {
-	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
-	font-size: var(--vscode-markdown-font-size, 14px);
-	padding: 0 26px;
-	line-height: var(--vscode-markdown-line-height, 22px);
-	word-wrap: break-word;
-}
-
-#code-csp-warning {
-	position: fixed;
-	top: 0;
-	right: 0;
-	color: white;
-	margin: 16px;
-	text-align: center;
-	font-size: 12px;
-	font-family: sans-serif;
-	background-color:#444444;
-	cursor: pointer;
-	padding: 6px;
-	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
-}
-
-#code-csp-warning:hover {
-	text-decoration: none;
-	background-color:#007acc;
-	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
-}
-
-body.scrollBeyondLastLine {
-	margin-bottom: calc(100vh - 22px);
-}
-
-body.showEditorSelection .code-line {
-	position: relative;
-}
-
-body.showEditorSelection .code-active-line:before,
-body.showEditorSelection .code-line:hover:before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: -12px;
-	height: 100%;
-}
-
-body.showEditorSelection li.code-active-line:before,
-body.showEditorSelection li.code-line:hover:before {
-	left: -30px;
-}
-
-.vscode-light.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.15);
-}
-
-.vscode-light.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.40);
-}
-
-.vscode-light.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-dark.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.4);
-}
-
-.vscode-dark.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.60);
-}
-
-.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-high-contrast.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 160, 0, 0.7);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 160, 0, 1);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-img {
-	max-width: 100%;
-	max-height: 100%;
-}
-
-a {
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:focus,
-input:focus,
-select:focus,
-textarea:focus {
-	outline: 1px solid -webkit-focus-ring-color;
-	outline-offset: -1px;
-}
-
-hr {
-	border: 0;
-	height: 2px;
-	border-bottom: 2px solid;
-}
-
-h1 {
-	padding-bottom: 0.3em;
-	line-height: 1.2;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-}
-
-h1, h2, h3 {
-	font-weight: normal;
-}
-
-table {
-	border-collapse: collapse;
-}
-
-table > thead > tr > th {
-	text-align: left;
-	border-bottom: 1px solid;
-}
-
-table > thead > tr > th,
-table > thead > tr > td,
-table > tbody > tr > th,
-table > tbody > tr > td {
-	padding: 5px 10px;
-}
-
-table > tbody > tr + tr > td {
-	border-top: 1px solid;
-}
-
-blockquote {
-	margin: 0 7px 0 5px;
-	padding: 0 16px 0 10px;
-	border-left-width: 5px;
-	border-left-style: solid;
-}
-
-code {
-	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
-	font-size: 1em;
-	line-height: 1.357em;
-}
-
-body.wordWrap pre {
-	white-space: pre-wrap;
-}
-
-pre:not(.hljs),
-pre.hljs code > div {
-	padding: 16px;
-	border-radius: 3px;
-	overflow: auto;
-}
-
-pre code {
-	color: var(--vscode-editor-foreground);
-	tab-size: 4;
-}
-
-/** Theming */
-
-.vscode-light pre {
-	background-color: rgba(220, 220, 220, 0.4);
-}
-
-.vscode-dark pre {
-	background-color: rgba(10, 10, 10, 0.4);
-}
-
-.vscode-high-contrast pre {
-	background-color: rgb(0, 0, 0);
-}
-
-.vscode-high-contrast h1 {
-	border-color: rgb(0, 0, 0);
-}
-
-.vscode-light table > thead > tr > th {
-	border-color: rgba(0, 0, 0, 0.69);
-}
-
-.vscode-dark table > thead > tr > th {
-	border-color: rgba(255, 255, 255, 0.69);
-}
-
-.vscode-light h1,
-.vscode-light hr,
-.vscode-light table > tbody > tr + tr > td {
-	border-color: rgba(0, 0, 0, 0.18);
-}
-
-.vscode-dark h1,
-.vscode-dark hr,
-.vscode-dark table > tbody > tr + tr > td {
-	border-color: rgba(255, 255, 255, 0.18);
-}
-
-</style>
-
-<style>
-/* Tomorrow Theme */
-/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
-/* Original theme - https://github.com/chriskempson/tomorrow-theme */
-
-/* Tomorrow Comment */
-.hljs-comment,
-.hljs-quote {
-	color: #8e908c;
-}
-
-/* Tomorrow Red */
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag,
-.hljs-name,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-regexp,
-.hljs-deletion {
-	color: #c82829;
-}
-
-/* Tomorrow Orange */
-.hljs-number,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-literal,
-.hljs-type,
-.hljs-params,
-.hljs-meta,
-.hljs-link {
-	color: #f5871f;
-}
-
-/* Tomorrow Yellow */
-.hljs-attribute {
-	color: #eab700;
-}
-
-/* Tomorrow Green */
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-	color: #718c00;
-}
-
-/* Tomorrow Blue */
-.hljs-title,
-.hljs-section {
-	color: #4271ae;
-}
-
-/* Tomorrow Purple */
-.hljs-keyword,
-.hljs-selector-tag {
-	color: #8959a8;
-}
-
-.hljs {
-	display: block;
-	overflow-x: auto;
-	color: #4d4d4c;
-	padding: 0.5em;
-}
-
-.hljs-emphasis {
-	font-style: italic;
-}
-
-.hljs-strong {
-	font-weight: bold;
-}
-</style>
-
-<style>
-/*
- * Markdown PDF CSS
- */
-
- body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
-	padding: 0 12px;
-}
-
-pre {
-	background-color: #f8f8f8;
-	border: 1px solid #cccccc;
-	border-radius: 3px;
-	overflow-x: auto;
-	white-space: pre-wrap;
-	overflow-wrap: break-word;
-}
-
-pre:not(.hljs) {
-	padding: 23px;
-	line-height: 19px;
-}
-
-blockquote {
-	background: rgba(127, 127, 127, 0.1);
-	border-color: rgba(0, 122, 204, 0.5);
-}
-
-.emoji {
-	height: 1.4em;
-}
-
-code {
-	font-size: 14px;
-	line-height: 19px;
-}
-
-/* for inline code */
-:not(pre):not(.hljs) > code {
-	color: #C9AE75; /* Change the old color so it seems less like an error */
-	font-size: inherit;
-}
-
-/* Page Break : use <div class="page"/> to insert page break
--------------------------------------------------------- */
-.page {
-	page-break-after: always;
-}
-
-</style>
-
-<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-</head>
-<body>
-  <script>
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
-          ? 'dark'
-          : 'default'
-    });
-  </script>
-<h1 id="mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0">Mysql学习笔记</h1>
-<h2 id="%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84">基础架构</h2>
+<!DOCTYPE html><html><head>
+      <title>Mysql</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///c:\Users\frogif\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.18\crossnote\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="mysql学习笔记">Mysql学习笔记 </h1>
+<h2 id="基础架构">基础架构 </h2>
 <p><img src="img/basic_arth.png" alt="image"></p>
 <blockquote>
 <p>图片来源: 极客时间-Mysql实战45讲</p>
@@ -396,7 +55,7 @@ code {
 <blockquote>
 <p>个人理解: mysql中, 会将schema整体在内存中存储一份, 这样可供分析器, 优化器等全局使用</p>
 </blockquote>
-<h2 id="%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F">日志系统</h2>
+<h2 id="日志系统">日志系统 </h2>
 <ul>
 <li>redo log: Innodb存储引擎特有的日志系统, 通过WAL保证数据不丢失
 <ul>
@@ -433,7 +92,7 @@ code {
 <blockquote>
 <p>一次insert操作涉及的日志以及顺序: undolog --&gt; redolog(prepare) --&gt; binlog --&gt; redolog(commit)</p>
 </blockquote>
-<h2 id="%E4%BA%8B%E5%8A%A1">事务</h2>
+<h2 id="事务">事务 </h2>
 <p>事务的属性(ACID):</p>
 <ul>
 <li>原子性(Atomicity): 事务作为整体执行, 要么全部执行, 要么都不执行;
@@ -514,19 +173,18 @@ code {
 </ul>
 </li>
 </ol>
-<h2 id="%E7%B4%A2%E5%BC%95">索引</h2>
+<h2 id="索引">索引 </h2>
 <p>这里只介绍Innodb引擎的索引. Innodb引擎使用B+树来存储数据.</p>
 <ul>
 <li>主键索引: 主键索引的叶子节点保存了整行的数据记录. 也被称为聚簇索引.</li>
 <li>非主键索引: 非主键索引的叶子节点保存了主键索引的id, 被称为二级索引.</li>
 </ul>
 <blockquote>
-<p>这种将数据直接存储在主键索引下的叶子节点中的方式称为&quot;索引组织表&quot;</p>
+<p>这种将数据直接存储在主键索引下的叶子节点中的方式称为"索引组织表"</p>
 </blockquote>
 <p>添加索引的sql:</p>
-<pre class="hljs"><code><div><span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> table_name <span class="hljs-keyword">add</span> <span class="hljs-keyword">index</span> index_name(col1(<span class="hljs-keyword">len</span>));
-</div></code></pre>
-<p>B+树存储的优点:</p>
+<pre data-role="codeBlock" data-info="sql" class="language-sql sql"><code><span class="token keyword keyword-alter">alter</span> <span class="token keyword keyword-table">table</span> table_name <span class="token keyword keyword-add">add</span> <span class="token keyword keyword-index">index</span> index_name<span class="token punctuation">(</span>col1<span class="token punctuation">(</span>len<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><p>B+树存储的优点:</p>
 <ol>
 <li>B+树是多叉树, 可以有效降低树的高度.</li>
 <li>每个数据页存储多个树节点, 可以有效减少访问磁盘的次数.</li>
@@ -547,7 +205,7 @@ code {
 </li>
 <li>索引下推: 在5.6开始, 推出的一项优化措施. 如果查询条件是多个时, 通过二级索引查询到主键, 当需要回表时, 会向校验这个索引中的其他数据是否与查询条件匹配, 如果不匹配, 则该条记录不会回表. 这样就减少了回表的数据记录条数.</li>
 </ul>
-<h4 id="%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96">索引优化</h4>
+<h4 id="索引优化">索引优化 </h4>
 <ul>
 <li>选错索引
 <ul>
@@ -563,8 +221,8 @@ code {
 </ul>
 </li>
 </ul>
-<h2 id="%E9%94%81">锁</h2>
-<h4 id="%E5%85%A8%E5%B1%80%E9%94%81">全局锁</h4>
+<h2 id="锁">锁 </h2>
+<h4 id="全局锁">全局锁 </h4>
 <p>命令: <code>flush tables with read lock</code>, 执行该命令后, 其他线程的数据更新语句, 数据定义语句, 更新类的事务提交语句都会被阻塞.</p>
 <p>应用场景:</p>
 <ul>
@@ -572,7 +230,7 @@ code {
 </ul>
 <p>全局锁是在Mysql的Server层执行的, 这样不管底层数据库执行引擎是什么, 都能使用这个工具. 但是, 全局锁导致整个数据库都处于只读状态, 大部分时候, 这显然是不可接受的. 对于Innodb引擎来说, 可以通过MVCC在事务中取得一个一致性视图, 保证数据的逻辑时间点一致.</p>
 <p>全局锁还有一个特点: 加锁的这个会话中, 如果客户端意外断开, 数据库会自动释放全局锁.</p>
-<h4 id="%E8%A1%A8%E7%BA%A7%E9%94%81">表级锁</h4>
+<h4 id="表级锁">表级锁 </h4>
 <p>表级别的锁分为两种:</p>
 <ol>
 <li>表锁</li>
@@ -594,7 +252,7 @@ code {
 <p>读锁之间不互斥, 因此可以有多个线程对同一张表进行增删改查; 写锁是排它锁, 只允许一个线程执行</p>
 </blockquote>
 <p>MDL会遇到一种情况, 是: 获取写锁后, 由于有读锁存在, 导致自身阻塞, 而这时实际上已经获取到了写锁, 进而导致新的获取读锁的线程阻塞, 最终可能引发大量线程阻塞.</p>
-<h4 id="%E8%A1%8C%E9%94%81">行锁</h4>
+<h4 id="行锁">行锁 </h4>
 <p>两阶段锁协议: Innodb中行锁在需要的时候加上, 在事务结束时释放.</p>
 <p>当两个事务互相等待对方资源释放时, 就会出现死锁. mysql内置死锁处理措施有二:</p>
 <ol>
@@ -609,15 +267,14 @@ code {
 <li>默认情况下<code>innodb_print_all_deadlocks</code>是关闭的, 如果是开启的, 会将死锁日志输出到日志文件(通过<code>show variables like 'innodb_print_all_deadlocks';</code>查看是否开启); 开启后, 默认日志输出到<code>/var/log/mysql/error.log</code>或者通过<code>SHOW VARIABLES LIKE 'log_error'</code>;</li>
 </ol>
 </blockquote>
-<h4 id="%E4%BA%8B%E5%8A%A1%E4%B8%8E%E9%94%81--%E5%BD%93%E5%89%8D%E8%AF%BB">事务与锁--当前读</h4>
+<h4 id="事务与锁-当前读">事务与锁--当前读 </h4>
 <p>当前读: 更新数据都是先读后写, 而这个读, 只能读当前的值.</p>
 <p>当前读的时候, 完全依赖锁, 而无视事务的隔离性了.</p>
 <p>只要加锁, 就会触发当前读, 下面这三条都会使用当前读.</p>
-<pre class="hljs"><code><div><span class="hljs-keyword">update</span> t <span class="hljs-keyword">set</span> k = k + <span class="hljs-number">1</span> <span class="hljs-keyword">where</span> <span class="hljs-keyword">id</span> = <span class="hljs-number">1</span>;
-<span class="hljs-keyword">select</span> k <span class="hljs-keyword">from</span> t <span class="hljs-keyword">where</span> <span class="hljs-keyword">id</span>=<span class="hljs-number">1</span> <span class="hljs-keyword">lock</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">share</span> <span class="hljs-keyword">mode</span>;
-<span class="hljs-keyword">select</span> k <span class="hljs-keyword">from</span> t <span class="hljs-keyword">where</span> <span class="hljs-keyword">id</span>=<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> <span class="hljs-keyword">update</span>;
-</div></code></pre>
-<h4 id="%E9%97%B4%E9%9A%99%E9%94%81%E4%B8%8Enext-key-lock">间隙锁与next-key lock</h4>
+<pre data-role="codeBlock" data-info="sql" class="language-sql sql"><code><span class="token keyword keyword-update">update</span> t <span class="token keyword keyword-set">set</span> k <span class="token operator">=</span> k <span class="token operator">+</span> <span class="token number">1</span> <span class="token keyword keyword-where">where</span> id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-select">select</span> k <span class="token keyword keyword-from">from</span> t <span class="token keyword keyword-where">where</span> id<span class="token operator">=</span><span class="token number">1</span> <span class="token keyword keyword-lock">lock</span> <span class="token operator">in</span> <span class="token keyword keyword-share">share</span> <span class="token keyword keyword-mode">mode</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-select">select</span> k <span class="token keyword keyword-from">from</span> t <span class="token keyword keyword-where">where</span> id<span class="token operator">=</span><span class="token number">1</span> <span class="token keyword keyword-for">for</span> <span class="token keyword keyword-update">update</span><span class="token punctuation">;</span>
+</code></pre><h4 id="间隙锁与next-key-lock">间隙锁与next-key lock </h4>
 <p>innodb在可重复读级别下, 为了防止当前读时出现幻读, 会使用间隙锁(gap lock). 间隙锁是指在已存在的数据行之间添加的锁. 间隙锁的作用是: 阻塞向这个间隙中插入一个记录这个操作.</p>
 <p>next-key lock是间隙锁和行锁的组合.</p>
 <p>间隙锁是开区间范围上的锁, next-key lock是前开后闭区间上的锁.</p>
@@ -634,7 +291,7 @@ code {
 <li>索引上的等值查询, 向右遍历, 最后一个值不满足等值条件时, next-key lock退化为间隙锁</li>
 <li>唯一索引上的范围查询, 会访问到不满足条件的第一个值为止</li>
 </ol>
-<h2 id="innodb%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B">Innodb写入流程</h2>
+<h2 id="innodb写入流程">Innodb写入流程 </h2>
 <p>以下这些概念都是Innodb的:</p>
 <ul>
 <li>Buffer Pool
@@ -687,10 +344,10 @@ code {
 </li>
 </ul>
 <blockquote>
-<p>在读多写少的一些场景中, 由于数据页会频繁的被加载至内存中, 所以没有必要使用ChangeBuffer, 反而增加了ChangeBuffer维护成本
+<p>在读多写少的一些场景中, 由于数据页会频繁的被加载至内存中, 所以没有必要使用ChangeBuffer, 反而增加了ChangeBuffer维护成本<br>
 在对唯一索引字段上的数据进行修改时, 不会使用到change buffer, 这是因为需要先将数据页加载到Buffer Pool用以验证唯一性约束是否满足.</p>
 </blockquote>
-<h2 id="%E6%8E%92%E5%BA%8F">排序</h2>
+<h2 id="排序">排序 </h2>
 <p>排序主体流程:</p>
 <ol>
 <li>将符合条件的记录加载至sort buffer, sort buffer是线程私有的, <code>sort_buffer_size</code>控制这块内存区域的大小;</li>
@@ -707,7 +364,7 @@ code {
 <p>通过配置<code>max_length_for_sort_data</code>, 可以控制使用哪种排序方式, 如果单行数据尺寸超出这个值, 就被视为单行太大, 从而使用rowid.</p>
 </blockquote>
 <p>如果排序字段上存在索引, 则不需要上面的排序了, 因为这时的数据本身就是有序的.</p>
-<h2 id="%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2">关联查询</h2>
+<h2 id="关联查询">关联查询 </h2>
 <p>关联查询join, 在mysql中存在几种不同的关联查询方式:</p>
 <ul>
 <li>Index Nested-Loop Join: 先全量扫描驱动表, 扫描过程中, 根据每条记录结果, 通过被驱动表的索引树, 获取被驱动表关联记录
@@ -733,33 +390,32 @@ code {
 <li>判断 join 条件需要执行 M*N 次对比（M、N 分别是两张表的行数），如果是大表就会占用非常多的 CPU 资源；</li>
 <li>可能会导致 Buffer Pool 的热数据被淘汰，影响内存命中率。</li>
 </ol>
-<h2 id="%E5%85%B6%E4%BB%96">其他</h2>
+<h2 id="其他">其他 </h2>
 <ul>
-<li>数据库中删除一条记录, 只是将数据页中该记录的空间标记为可复用. 这样久而久之产生很多&quot;空洞&quot;;</li>
+<li>数据库中删除一条记录, 只是将数据页中该记录的空间标记为可复用. 这样久而久之产生很多"空洞";</li>
 <li>innodb引擎中, 处于MVCC考虑, <code>count(*)</code>会进行全表扫描;</li>
 <li>查询条件, 对索引字段做函数操作, 会破坏索引值的有序性, 因此优化器会放弃走索引树;</li>
 <li>mysql中, 如果字符串和数字进行比较, 会将字符串转为数字;</li>
 </ul>
-<h4 id="%E6%9F%A5%E8%AF%A2%E6%85%A2%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9C%BA%E6%99%AF">查询慢的一些场景</h4>
+<h4 id="查询慢的一些场景">查询慢的一些场景 </h4>
 <ul>
 <li>MDL导致, 通过<code>show processlist</code>查看线程状态;</li>
 <li>行锁导致, 一个查询使用的当前读, 遇到另一个线程持有行锁. 通过<code>select * from sys.innodb_lock_waits where locked_table = 'test.t'</code>找到持有锁的线程</li>
 <li>一致性读的情况下, 有可能一条数据的活跃版本太多, 导致通过undo log回溯的链条太长, 导致查询慢</li>
 </ul>
-<h4 id="%E8%A1%A8%E7%A9%BA%E9%97%B4">表空间</h4>
+<h4 id="表空间">表空间 </h4>
 <ul>
 <li>系统表空间: 用于存放系统信息, 对应磁盘文件<code>ibdata1</code></li>
 <li>数据表空间: 用于存放用户数据, 对应磁盘文件<code>表名.ibd</code></li>
 </ul>
-<h4 id="%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92">执行计划</h4>
-<pre class="hljs"><code><div>mysql&gt; <span class="hljs-keyword">explain</span> <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> city;
-+<span class="hljs-comment">----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+</span>
-| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
-+<span class="hljs-comment">----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+</span>
-|  1 | SIMPLE      | city  | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    1 |   100.00 | NULL  |
-+<span class="hljs-comment">----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+</span>
-</div></code></pre>
-<ul>
+<h4 id="执行计划">执行计划 </h4>
+<pre data-role="codeBlock" data-info="sql" class="language-sql sql"><code>mysql<span class="token operator">&gt;</span> <span class="token keyword keyword-explain">explain</span> <span class="token keyword keyword-select">select</span> <span class="token operator">*</span> <span class="token keyword keyword-from">from</span> city<span class="token punctuation">;</span>
+<span class="token operator">+</span><span class="token comment">----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+</span>
+<span class="token operator">|</span> id <span class="token operator">|</span> select_type <span class="token operator">|</span> <span class="token keyword keyword-table">table</span> <span class="token operator">|</span> partitions <span class="token operator">|</span> <span class="token keyword keyword-type">type</span> <span class="token operator">|</span> possible_keys <span class="token operator">|</span> <span class="token keyword keyword-key">key</span>  <span class="token operator">|</span> key_len <span class="token operator">|</span> ref  <span class="token operator">|</span> <span class="token keyword keyword-rows">rows</span> <span class="token operator">|</span> filtered <span class="token operator">|</span> Extra <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+</span>
+<span class="token operator">|</span>  <span class="token number">1</span> <span class="token operator">|</span> <span class="token keyword keyword-SIMPLE">SIMPLE</span>      <span class="token operator">|</span> city  <span class="token operator">|</span> <span class="token boolean">NULL</span>       <span class="token operator">|</span> <span class="token keyword keyword-ALL">ALL</span>  <span class="token operator">|</span> <span class="token boolean">NULL</span>          <span class="token operator">|</span> <span class="token boolean">NULL</span> <span class="token operator">|</span> <span class="token boolean">NULL</span>    <span class="token operator">|</span> <span class="token boolean">NULL</span> <span class="token operator">|</span>    <span class="token number">1</span> <span class="token operator">|</span>   <span class="token number">100.00</span> <span class="token operator">|</span> <span class="token boolean">NULL</span>  <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">----+-------------+-------+------------+------+---------------+------+---------+------+------+----------+-------+</span>
+</code></pre><ul>
 <li>select type : 表示select类型, 常见取值如下:
 <ul>
 <li>simple : 简单表, 不使用表连接和子查询的查询</li>
@@ -770,15 +426,16 @@ code {
 </li>
 <li>table : 查询的表</li>
 <li>partitions : 查询的分区</li>
-<li>type : 访问类型: 性能由差到好排列如下:
+<li>type : 访问类型: 性能由好到差排列如下:
 <ul>
-<li>all : 全表扫描, mysql遍历全表找到匹配行</li>
-<li>index : 全索引扫描, mysql遍历该表的全部索引找到匹配行</li>
-<li>range : 局部索引扫描, 常见于&lt;, &lt;=, &gt;, &gt;=, between等查询.</li>
+<li>null: 查询语句没有表时;</li>
+<li>system: 访问系统表;</li>
+<li>const: 查询使用主键聚集索引或者唯一索引;</li>
+<li>eq_ref : 使用唯一索引扫描, 出现在多表连接使用primary key或者unique index作为关联条件的查询中;</li>
 <li>ref : 使用非唯一索引或者前缀索引扫描, 返回匹配某个单独值的记录. ref还常出现于join中.</li>
-<li>eq_ref : 使用唯一索引扫描, 出现在多表连接使用primary key或者unique index作为关联条件的查询中.</li>
-<li>const/system : 单表中使用主键索引或者唯一索引只匹配一行的查询.</li>
-<li>null : 不需要访问表和索引就能得出结果的查询.</li>
+<li>range : 局部索引扫描, 常见于&lt;, &lt;=, &gt;, &gt;=, between等查询.</li>
+<li>index : 用了索引, 但是遍历了整个索引树;</li>
+<li>all : 全表扫描</li>
 </ul>
 </li>
 <li>possible_key : 查询中可能使用的索引</li>
@@ -797,24 +454,24 @@ code {
 </li>
 </ul>
 <blockquote>
-<p>type类型还有一些:
-ref_or_null: 和ref相似, 区别在于条件中包含对null的查询.
-index_merge: 索引合并优化
-unique_subquery : in的后面是一个查询主键字段的子查询
+<p>type类型还有一些:<br>
+ref_or_null: 和ref相似, 区别在于条件中包含对null的查询.<br>
+index_merge: 索引合并优化<br>
+unique_subquery : in的后面是一个查询主键字段的子查询<br>
 index_subquery : in后面是查询非唯一索引字段的子查询</p>
 </blockquote>
-<h4 id="%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">主从复制</h4>
+<h4 id="主从复制">主从复制 </h4>
 <p>MySQL主从复制时基于binlog实现的. 大致流程如下:</p>
 <img src="img/mysql_data_sync.png" height="300px">
-<h2 id="%E5%9C%BA%E6%99%AF%E5%BA%94%E7%94%A8">场景应用</h2>
-<h4 id="%E7%83%AD%E7%82%B9%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0">热点数据更新</h4>
+<h2 id="场景应用">场景应用 </h2>
+<h4 id="热点数据更新">热点数据更新 </h4>
 <p>Mysql层面如何应对热点数据频繁更新?</p>
 <ol>
 <li>数据分桶: 将一大批数据拆分成多个小数据, 分别在不同的桶中执行;</li>
 <li>合并请求: 多次更新操作合并为一个, 进行批量更新;</li>
 <li>改造Mysql底层</li>
 </ol>
-<h4 id="%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E7%94%A8%E5%B0%BD%E4%BA%86">自增主键用尽了</h4>
+<h4 id="自增主键用尽了">自增主键用尽了 </h4>
 <ul>
 <li>对于自定义的主键, 自增主键用尽之后, 新插入数据时, 主键不会自增, 进而导致报主键冲突;</li>
 <li>对于不是自定义的主键, mysql会自己创建一个隐式主键<code>row_id</code>, 这时如果用尽了, 会从0开始重新自增, 这时即使原来已经有<code>row_id</code>为0的数据, 也不会报主键重复, 而是直接覆盖这条数据;</li>
@@ -824,19 +481,19 @@ index_subquery : in后面是查询非唯一索引字段的子查询</p>
 <li>如果原来是int, 改成bigint就可以了;</li>
 <li>如果原始是bigint, 那么建议将旧数据归档到另一个表, 然后再利用释放出来的主键;</li>
 </ul>
-<h4 id="like%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96">like模糊查询优化</h4>
+<h4 id="like模糊查询优化">like模糊查询优化 </h4>
 <p>对于<code>abc%</code>查询, 可以直接走索引, 就不需要考虑啥优化了; 对于<code>%abc</code>如何优化呢? 可以这样: 新建一个列, 保存原始字符串值的倒序, 然后查询的时候, 这样查: <code>like 'cba%'</code>.</p>
 <blockquote>
-<p>在MySQL5.7.6之后, 新增了虚拟列, 可以直接使用虚拟列实现这一点;
-alter table xxx add column v_column varchar(50) generated always as (reverse(<code>name</code>)) virtual;  // 创建虚拟列
+<p>在MySQL5.7.6之后, 新增了虚拟列, 可以直接使用虚拟列实现这一点;<br>
+alter table xxx add column v_column varchar(50) generated always as (reverse(<code>name</code>)) virtual;  // 创建虚拟列<br>
 alter table xxx add index idx_name_virt (v_name); // 为虚拟列创建索引</p>
 </blockquote>
-<h4 id="%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8A%A0%E5%AF%86%E5%90%8E%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2">数据库加密后模糊查询</h4>
+<h4 id="数据库加密后模糊查询">数据库加密后模糊查询 </h4>
 <ol>
 <li>对于加密时候使用的是数据库加密函数进行加密的情况, 这时模糊查询可以使用解密函数解密后查询;</li>
 <li>明文分词: 将字符串分词之后, 再分别加密, 然后再拼接后存入数据库. 查询时, 也是先分词, 再加密, 再拼接, 再查询;</li>
 </ol>
-<h4 id="%E4%B8%8D%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%E5%A4%96%E9%94%AE">不建议使用外键</h4>
+<h4 id="不建议使用外键">不建议使用外键 </h4>
 <p>阿里开发手册中指出: 不得使用外键与级联, 一切外键概念必须在应用层解决;</p>
 <p>使用外键会带来的问题:</p>
 <ol>
@@ -845,26 +502,33 @@ alter table xxx add index idx_name_virt (v_name); // 为虚拟列创建索引</p
 <li>无法适应分库分表</li>
 <li>逻辑删除: 业务中经常使用的是逻辑删除, 有外键会导致这种删除很麻烦;</li>
 </ol>
-<h4 id="deletedroptruncate">DELETE/DROP/TRUNCATE</h4>
+<h4 id="deletedroptruncate">DELETE/DROP/TRUNCATE </h4>
 <ul>
 <li>DELETE基于行的删除;</li>
 <li>TRUNCATE用于快速删除表中所有记录, 并重置任何自增的计数器;</li>
 <li>DROP用于删除整个表结构;</li>
 </ul>
-<h2 id="%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">常用命令</h2>
+<h2 id="常用命令">常用命令 </h2>
 <ul>
 <li>登录mysql</li>
 </ul>
-<pre class="hljs"><code><div>./mysql -h127.0.0.1 -P3306 -uaaa -p
-</div></code></pre>
-<pre class="hljs"><code><div>show databases;
+<pre data-role="codeBlock" data-info="" class="language-text"><code>./mysql -h127.0.0.1 -P3306 -uaaa -p
+</code></pre><pre data-role="codeBlock" data-info="" class="language-text"><code>show databases;
 
 use xxdatabaseName;
-</div></code></pre>
-<h2 id="reference">Reference</h2>
+</code></pre><h2 id="reference">Reference </h2>
 <ul>
 <li>极客时间-MySQL实战45讲</li>
 </ul>
 
-</body>
-</html>
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>

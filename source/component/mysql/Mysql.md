@@ -352,14 +352,15 @@ mysql> explain select * from city;
     * subquery : 子查询中的第一个select
 * table : 查询的表
 * partitions : 查询的分区
-* type : 访问类型: 性能由差到好排列如下:
-    * all : 全表扫描, mysql遍历全表找到匹配行
-    * index : 全索引扫描, mysql遍历该表的全部索引找到匹配行
-    * range : 局部索引扫描, 常见于&lt;, &lt;=, &gt;, &gt;=, between等查询.
+* type : 访问类型: 性能由好到差排列如下:
+    * null: 查询语句没有表时;
+    * system: 访问系统表;
+    * const: 查询使用主键聚集索引或者唯一索引;
+    * eq\_ref : 使用唯一索引扫描, 出现在多表连接使用primary key或者unique index作为关联条件的查询中;
     * ref : 使用非唯一索引或者前缀索引扫描, 返回匹配某个单独值的记录. ref还常出现于join中.
-    * eq\_ref : 使用唯一索引扫描, 出现在多表连接使用primary key或者unique index作为关联条件的查询中.
-    * const/system : 单表中使用主键索引或者唯一索引只匹配一行的查询.
-    * null : 不需要访问表和索引就能得出结果的查询.
+    * range : 局部索引扫描, 常见于&lt;, &lt;=, &gt;, &gt;=, between等查询.
+    * index : 用了索引, 但是遍历了整个索引树;
+    * all : 全表扫描
 * possible\_key : 查询中可能使用的索引
 * key : 实际使用的索引
 * key\_len : 使用到索引字段的长度
