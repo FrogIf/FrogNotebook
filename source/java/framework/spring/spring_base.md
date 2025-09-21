@@ -14,7 +14,7 @@
 * 使用xml文件
 * Spring4.3开始, 如果只有一个有参构造, 当这个Bean实例化时, 会自动对构造器形参进行注入
 
-> Autowired是先byType再byName, 如果不存在会报错; Resource是先byName再byType, 如果匹配不到会默认null
+> Autowired是先byType再byName, 如果不存在会报错; Resource是先byName再byType, 如果匹配不到会抛异常
 
 > Autowired不仅可以注入单个对象, 还能注入List, Set, array, Map; 并且注入Map时, key就是beanName
 
@@ -276,6 +276,7 @@ public class OpLogAspect{   // 这整个类就是一个切面
 * Transactional用的不对
   * propagation设置错误
   * rollbackFor设置错误
+    * 默认情况下, spring事务只会对RuntimeException和Error这些非受检异常进行回滚;
 * 异常被捕捉
 * 事务中使用了多线程
   * @Transactional使用的是ThreadLocal机制来存储事务上下文(connection包含在其中), ThreadLocal是线程隔离的, 新线程中的操作不会被包含在原有事务中.

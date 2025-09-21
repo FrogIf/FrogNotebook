@@ -3,7 +3,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       
-      <link rel="stylesheet" href="file:///c:\Users\frogif\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.15\crossnote\dependencies\katex\katex.min.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
       
       
       
@@ -39,7 +39,7 @@
 <li>Spring4.3开始, 如果只有一个有参构造, 当这个Bean实例化时, 会自动对构造器形参进行注入</li>
 </ul>
 <blockquote>
-<p>Autowired是先byType再byName, 如果不存在会报错; Resource是先byName再byType, 如果匹配不到会默认null</p>
+<p>Autowired是先byType再byName, 如果不存在会报错; Resource是先byName再byType, 如果匹配不到会抛异常</p>
 </blockquote>
 <blockquote>
 <p>Autowired不仅可以注入单个对象, 还能注入List, Set, array, Map; 并且注入Map时, key就是beanName</p>
@@ -297,7 +297,11 @@ propagation用于控制多个事务方法相互调用时的事务行为, 默认�
 <li>Transactional用的不对
 <ul>
 <li>propagation设置错误</li>
-<li>rollbackFor设置错误</li>
+<li>rollbackFor设置错误
+<ul>
+<li>默认情况下, spring事务只会对RuntimeException和Error这些非受检异常进行回滚;</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>异常被捕捉</li>
