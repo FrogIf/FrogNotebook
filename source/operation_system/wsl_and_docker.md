@@ -175,6 +175,59 @@ Windows的docker删除容器后 WSL2 磁盘空间不释放, 久而久之导致�
 7. 退出diskpart, `exit`
 8. 发现磁盘空间已经释放了
 
+## 其他
+
+在`%UserProfile%\.wslconfig`目录下有wsl配置文件, 可以更详细的修改wsl配置:
+
+```
+# Settings apply across all Linux distros running on WSL 2
+[wsl2]
+
+# Limits VM memory to use no more than 4 GB, this can be set as whole numbers using GB or MB
+memory=4GB
+
+# Sets the VM to use two virtual processors
+processors=2
+
+# Specify a custom Linux kernel to use with your installed distros. The default kernel used can be found at https://github.com/microsoft/WSL2-Linux-Kernel
+kernel=C:\\temp\\myCustomKernel
+
+# Specify the modules VHD for the custum Linux kernel to use with your installed distros.
+kernelModules=C:\\temp\\modules.vhdx
+
+# Sets additional kernel parameters, in this case enabling older Linux base images such as Centos 6
+kernelCommandLine = vsyscall=emulate
+
+# Sets amount of swap storage space to 8GB, default is 25% of available RAM
+swap=8GB
+
+# Sets swapfile path location, default is %UserProfile%\AppData\Local\Temp\swap.vhdx
+swapfile=C:\\temp\\wsl-swap.vhdx
+
+# Disable page reporting so WSL retains all allocated memory claimed from Windows and releases none back when free
+pageReporting=false
+
+# Turn on default connection to bind WSL 2 localhost to Windows localhost. Setting is ignored when networkingMode=mirrored
+localhostforwarding=true
+
+# Disables nested virtualization
+nestedVirtualization=false
+
+# Turns on output console showing contents of dmesg when opening a WSL 2 distro for debugging
+debugConsole=true
+
+# Sets the maximum number of crash dump files to retain (default is 5)
+maxCrashDumpCount=10
+
+# Enable experimental features
+[experimental]
+sparseVhd=true
+```
+
+例如, 默认情况下, 如果内存不足, 会在`%UserProfile%\AppData\Local\Temp\swap.vhdx`使用磁盘作为内存, 导致C盘过大, 可以通过配置`swapfile`将其转移到其他磁盘.
+
+> 官方文档: https://learn.microsoft.com/en-us/windows/wsl/wsl-config#configure-global-options-with-wslconfig
+
 ## 其他命令
 
 1. 指定默认wsl发行版: ```wslconfig /setdefault Ubuntu-20.04```

@@ -3,7 +3,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       
-      <link rel="stylesheet" href="file:///c:\Users\frogif\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.10\crossnote\dependencies\katex\katex.min.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
       
       
       
@@ -37,19 +37,19 @@
 <li><strong>启用系统功能</strong></li>
 </ol>
 <p>启用"适用于Linux的Windows子系统"可选组件:</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-</code></pre><pre data-role="codeBlock" data-info="" class="language-text text"><code>Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
+<pre data-role="codeBlock" data-info="" class="language-text"><code>Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+</code></pre><pre data-role="codeBlock" data-info="" class="language-text"><code>Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 </code></pre><ol start="3">
 <li><strong>切换系统WSL默认版本到2</strong></li>
 </ol>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>wsl --set-default-version 2
+<pre data-role="codeBlock" data-info="" class="language-text"><code>wsl --set-default-version 2
 </code></pre><p>这里可能会报错:</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>PS C:\WINDOWS\system32&gt; wsl --set-default-version 2
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PS C:\WINDOWS\system32&gt; wsl --set-default-version 2
 WSL 2 requires an update to its kernel component. For information please visit https://aka.ms/wsl2kernel
 For information on key differences with WSL 2 please visit https://aka.ms/wsl2
 </code></pre><p>这里需要去<a href="https://aka.ms/wsl2kernel">https://aka.ms/wsl2kernel</a>下载Linux 内核, 并安装.</p>
 <p>之后, 执行, 发现没有问题</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>PS C:\WINDOWS\system32&gt; wsl --set-default-version 2
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PS C:\WINDOWS\system32&gt; wsl --set-default-version 2
 For information on key differences with WSL 2 please visit https://aka.ms/wsl2
 </code></pre><ol start="4">
 <li><strong>下载并安装WSL</strong></li>
@@ -60,17 +60,17 @@ For information on key differences with WSL 2 please visit https://aka.ms/wsl2
 </blockquote>
 <p>如果以前已经安装过了, 就不需要下载了, 但是, 有点问题, 需要修改一下:</p>
 <p>对于原来的Ubuntu, 可以执行:</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>PS C:\WINDOWS\system32&gt; wsl -l -v
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PS C:\WINDOWS\system32&gt; wsl -l -v
   NAME            STATE           VERSION
 * Ubuntu-20.04    Running         1
 </code></pre><p>发现wsl版本还是1, 这就需要手动改一下了:</p>
 <p>windows powershell中输入:</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>wsl --shutdown
+<pre data-role="codeBlock" data-info="" class="language-text"><code>wsl --shutdown
 </code></pre><p>然后输入:</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>wsl --set-version Ubuntu-20.04 2
+<pre data-role="codeBlock" data-info="" class="language-text"><code>wsl --set-version Ubuntu-20.04 2
 </code></pre><p>这样wsl2就完成了.</p>
 <p>检查Ubuntu是否在WSL2的环境下启动:</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>PS C:\WINDOWS\system32&gt; wsl -l -v
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PS C:\WINDOWS\system32&gt; wsl -l -v
   NAME            STATE           VERSION
 * Ubuntu-20.04    Running         2
 </code></pre><ol start="5">
@@ -88,13 +88,16 @@ For information on key differences with WSL 2 please visit https://aka.ms/wsl2
 <p>这里使用<code>Docker Desktop for Windows</code></p>
 <p>到docker官网下载该安装包, 然后安装即可.</p>
 <p>如果发现在WSL下无法执行docker命令, 可以通过如下操作打开:</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>docker setting界面 -- Resources -- WSL INTERGRATION -- Ubuntu-20.04的一个开关, 调整为开启状态
-</code></pre><ol start="6">
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker setting界面 -- Resources -- WSL INTERGRATION -- Ubuntu-20.04的一个开关, 调整为开启状态
+</code></pre><blockquote>
+<p>安装之后, 如果显示"docker engine stopped", 需要执行<code>wsl --update</code></p>
+</blockquote>
+<ol start="6">
 <li><strong>配置国内镜像源</strong></li>
 </ol>
 <p>这里使用阿里镜像, 登录阿里云, 在弹性计算中, 找到"容器镜像服务-镜像加速", 复制加速地址.</p>
 <p>打开docker desktop设置, 在docker engine中修改如下:</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>{
+<pre data-role="codeBlock" data-info="" class="language-text"><code>{
   "registry-mirrors": [
     "https://xxxxxx.mirror.aliyuncs.com"
   ],
@@ -105,7 +108,7 @@ For information on key differences with WSL 2 please visit https://aka.ms/wsl2
 </code></pre><p>重启之后, 执行<code>docker info</code>命令, 发现镜像地址已经改好了:</p>
 <p><img src="img/docker_image_address.png" alt="image"></p>
 <p>Docker本身的wsl也可以调整地方, 原来的安装位置是<code>C:\Users\frogif\AppData\Local\Docker\wsl</code>, 极度消耗c盘空间:</p>
-<pre data-role="codeBlock" data-info="" class="language-text text"><code>PS C:\Users\frogif&gt; wsl -l --all -v
+<pre data-role="codeBlock" data-info="" class="language-text"><code>PS C:\Users\frogif&gt; wsl -l --all -v
   NAME                   STATE           VERSION
 * Ubuntu-20.04           Stopped         2
   docker-desktop         Stopped         2
@@ -139,6 +142,54 @@ PS C:\Users\frogif&gt; wsl -l --all -v
 <li>退出diskpart, <code>exit</code></li>
 <li>发现磁盘空间已经释放了</li>
 </ol>
+<h2 id="其他">其他 </h2>
+<p>在<code>%UserProfile%\.wslconfig</code>目录下有wsl配置文件, 可以更详细的修改wsl配置:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code># Settings apply across all Linux distros running on WSL 2
+[wsl2]
+
+# Limits VM memory to use no more than 4 GB, this can be set as whole numbers using GB or MB
+memory=4GB
+
+# Sets the VM to use two virtual processors
+processors=2
+
+# Specify a custom Linux kernel to use with your installed distros. The default kernel used can be found at https://github.com/microsoft/WSL2-Linux-Kernel
+kernel=C:\\temp\\myCustomKernel
+
+# Specify the modules VHD for the custum Linux kernel to use with your installed distros.
+kernelModules=C:\\temp\\modules.vhdx
+
+# Sets additional kernel parameters, in this case enabling older Linux base images such as Centos 6
+kernelCommandLine = vsyscall=emulate
+
+# Sets amount of swap storage space to 8GB, default is 25% of available RAM
+swap=8GB
+
+# Sets swapfile path location, default is %UserProfile%\AppData\Local\Temp\swap.vhdx
+swapfile=C:\\temp\\wsl-swap.vhdx
+
+# Disable page reporting so WSL retains all allocated memory claimed from Windows and releases none back when free
+pageReporting=false
+
+# Turn on default connection to bind WSL 2 localhost to Windows localhost. Setting is ignored when networkingMode=mirrored
+localhostforwarding=true
+
+# Disables nested virtualization
+nestedVirtualization=false
+
+# Turns on output console showing contents of dmesg when opening a WSL 2 distro for debugging
+debugConsole=true
+
+# Sets the maximum number of crash dump files to retain (default is 5)
+maxCrashDumpCount=10
+
+# Enable experimental features
+[experimental]
+sparseVhd=true
+</code></pre><p>例如, 默认情况下, 如果内存不足, 会在<code>%UserProfile%\AppData\Local\Temp\swap.vhdx</code>使用磁盘作为内存, 导致C盘过大, 可以通过配置<code>swapfile</code>将其转移到其他磁盘.</p>
+<blockquote>
+<p>官方文档: <a href="https://learn.microsoft.com/en-us/windows/wsl/wsl-config#configure-global-options-with-wslconfig">https://learn.microsoft.com/en-us/windows/wsl/wsl-config#configure-global-options-with-wslconfig</a></p>
+</blockquote>
 <h2 id="其他命令">其他命令 </h2>
 <ol>
 <li>指定默认wsl发行版: <code>wslconfig /setdefault Ubuntu-20.04</code></li>
