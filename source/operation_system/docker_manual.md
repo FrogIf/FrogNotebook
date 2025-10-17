@@ -635,6 +635,74 @@ accounts:
   admin: true
 ```
 
+## Milvus
+
+docker-compose.yml:
+
+```yaml
+version: '3.5'
+
+services:
+  milvus-standalone:
+    container_name: milvus-standalone
+    image: milvusdb/milvus:v2.5.1
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+      - COMMON_STORAGETYPE=local
+      - DEPLOY_MODE=STANDALONE
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/milvus/volumes/milvus:/var/lib/milvus
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/milvus/configs/user.yaml:/milvus/configs/user.yaml  # 需要预先有这个文件: 
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/milvus/configs/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml # 需要预先有这个文件
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+      - "2379:2379"
+    networks:
+      - default
+  attu:
+    image: zilliz/attu
+    container_name: attu
+    environment:
+      - MILVUS_URL=milvus-standalone:19530
+    ports:
+      - "8000:3000"
+    depends_on:
+      - milvus-standalone
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+```
+
+user.yaml:
+
+```yaml
+# Extra config to override default milvus.yaml
+```
+
+embedEtcd.yaml:
+```yaml
+listen-client-urls: http://0.0.0.0:2379
+advertise-client-urls: http://0.0.0.0:2379
+quota-backend-bytes: 4294967296
+auto-compaction-mode: revision
+auto-compaction-retention: '1000'
+```
+
 ## CentOS7 docker安装
 
 1. 更新yum包, 防止安装过程中出现问题`yum update`;

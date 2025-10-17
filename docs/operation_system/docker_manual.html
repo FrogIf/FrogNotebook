@@ -1,375 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>docker_manual.md</title>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-
-<style>
-/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-body {
-	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
-	font-size: var(--vscode-markdown-font-size, 14px);
-	padding: 0 26px;
-	line-height: var(--vscode-markdown-line-height, 22px);
-	word-wrap: break-word;
-}
-
-#code-csp-warning {
-	position: fixed;
-	top: 0;
-	right: 0;
-	color: white;
-	margin: 16px;
-	text-align: center;
-	font-size: 12px;
-	font-family: sans-serif;
-	background-color:#444444;
-	cursor: pointer;
-	padding: 6px;
-	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
-}
-
-#code-csp-warning:hover {
-	text-decoration: none;
-	background-color:#007acc;
-	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
-}
-
-body.scrollBeyondLastLine {
-	margin-bottom: calc(100vh - 22px);
-}
-
-body.showEditorSelection .code-line {
-	position: relative;
-}
-
-body.showEditorSelection .code-active-line:before,
-body.showEditorSelection .code-line:hover:before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: -12px;
-	height: 100%;
-}
-
-body.showEditorSelection li.code-active-line:before,
-body.showEditorSelection li.code-line:hover:before {
-	left: -30px;
-}
-
-.vscode-light.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.15);
-}
-
-.vscode-light.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.40);
-}
-
-.vscode-light.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-dark.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.4);
-}
-
-.vscode-dark.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.60);
-}
-
-.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-high-contrast.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 160, 0, 0.7);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 160, 0, 1);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-img {
-	max-width: 100%;
-	max-height: 100%;
-}
-
-a {
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:focus,
-input:focus,
-select:focus,
-textarea:focus {
-	outline: 1px solid -webkit-focus-ring-color;
-	outline-offset: -1px;
-}
-
-hr {
-	border: 0;
-	height: 2px;
-	border-bottom: 2px solid;
-}
-
-h1 {
-	padding-bottom: 0.3em;
-	line-height: 1.2;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-}
-
-h1, h2, h3 {
-	font-weight: normal;
-}
-
-table {
-	border-collapse: collapse;
-}
-
-table > thead > tr > th {
-	text-align: left;
-	border-bottom: 1px solid;
-}
-
-table > thead > tr > th,
-table > thead > tr > td,
-table > tbody > tr > th,
-table > tbody > tr > td {
-	padding: 5px 10px;
-}
-
-table > tbody > tr + tr > td {
-	border-top: 1px solid;
-}
-
-blockquote {
-	margin: 0 7px 0 5px;
-	padding: 0 16px 0 10px;
-	border-left-width: 5px;
-	border-left-style: solid;
-}
-
-code {
-	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
-	font-size: 1em;
-	line-height: 1.357em;
-}
-
-body.wordWrap pre {
-	white-space: pre-wrap;
-}
-
-pre:not(.hljs),
-pre.hljs code > div {
-	padding: 16px;
-	border-radius: 3px;
-	overflow: auto;
-}
-
-pre code {
-	color: var(--vscode-editor-foreground);
-	tab-size: 4;
-}
-
-/** Theming */
-
-.vscode-light pre {
-	background-color: rgba(220, 220, 220, 0.4);
-}
-
-.vscode-dark pre {
-	background-color: rgba(10, 10, 10, 0.4);
-}
-
-.vscode-high-contrast pre {
-	background-color: rgb(0, 0, 0);
-}
-
-.vscode-high-contrast h1 {
-	border-color: rgb(0, 0, 0);
-}
-
-.vscode-light table > thead > tr > th {
-	border-color: rgba(0, 0, 0, 0.69);
-}
-
-.vscode-dark table > thead > tr > th {
-	border-color: rgba(255, 255, 255, 0.69);
-}
-
-.vscode-light h1,
-.vscode-light hr,
-.vscode-light table > tbody > tr + tr > td {
-	border-color: rgba(0, 0, 0, 0.18);
-}
-
-.vscode-dark h1,
-.vscode-dark hr,
-.vscode-dark table > tbody > tr + tr > td {
-	border-color: rgba(255, 255, 255, 0.18);
-}
-
-</style>
-
-<style>
-/* Tomorrow Theme */
-/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
-/* Original theme - https://github.com/chriskempson/tomorrow-theme */
-
-/* Tomorrow Comment */
-.hljs-comment,
-.hljs-quote {
-	color: #8e908c;
-}
-
-/* Tomorrow Red */
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag,
-.hljs-name,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-regexp,
-.hljs-deletion {
-	color: #c82829;
-}
-
-/* Tomorrow Orange */
-.hljs-number,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-literal,
-.hljs-type,
-.hljs-params,
-.hljs-meta,
-.hljs-link {
-	color: #f5871f;
-}
-
-/* Tomorrow Yellow */
-.hljs-attribute {
-	color: #eab700;
-}
-
-/* Tomorrow Green */
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-	color: #718c00;
-}
-
-/* Tomorrow Blue */
-.hljs-title,
-.hljs-section {
-	color: #4271ae;
-}
-
-/* Tomorrow Purple */
-.hljs-keyword,
-.hljs-selector-tag {
-	color: #8959a8;
-}
-
-.hljs {
-	display: block;
-	overflow-x: auto;
-	color: #4d4d4c;
-	padding: 0.5em;
-}
-
-.hljs-emphasis {
-	font-style: italic;
-}
-
-.hljs-strong {
-	font-weight: bold;
-}
-</style>
-
-<style>
-/*
- * Markdown PDF CSS
- */
-
- body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
-	padding: 0 12px;
-}
-
-pre {
-	background-color: #f8f8f8;
-	border: 1px solid #cccccc;
-	border-radius: 3px;
-	overflow-x: auto;
-	white-space: pre-wrap;
-	overflow-wrap: break-word;
-}
-
-pre:not(.hljs) {
-	padding: 23px;
-	line-height: 19px;
-}
-
-blockquote {
-	background: rgba(127, 127, 127, 0.1);
-	border-color: rgba(0, 122, 204, 0.5);
-}
-
-.emoji {
-	height: 1.4em;
-}
-
-code {
-	font-size: 14px;
-	line-height: 19px;
-}
-
-/* for inline code */
-:not(pre):not(.hljs) > code {
-	color: #C9AE75; /* Change the old color so it seems less like an error */
-	font-size: inherit;
-}
-
-/* Page Break : use <div class="page"/> to insert page break
--------------------------------------------------------- */
-.page {
-	page-break-after: always;
-}
-
-</style>
-
-<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-</head>
-<body>
-  <script>
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
-          ? 'dark'
-          : 'default'
-    });
-  </script>
-<h1 id="docker%E4%BD%BF%E7%94%A8">Docker使用</h1>
-<h2 id="%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">常用命令</h2>
+<!DOCTYPE html><html><head>
+      <title>docker_manual</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="docker使用">Docker使用 </h1>
+<h2 id="常用命令">常用命令 </h2>
 <ul>
-<li>docker pull <image-name>  -- 拉取指定镜像</li>
-<li>docker pull <image-name>:version  -- 拉取指定版本镜像</li>
+<li>docker pull <image-name>  -- 拉取指定镜像</image-name></li>
+<li>docker pull <image-name>:version  -- 拉取指定版本镜像</image-name></li>
 <li>docker ps -- 获取运行中的docker容器</li>
 <li>docker ps -a -- 获取运行中的docker以及历史运行docker容器</li>
 <li>docker info -- 查看docker详细信息</li>
@@ -392,40 +51,34 @@ code {
 <ul>
 <li>docker run --env VAR1=value1 --env VAR2=value2 xxxx</li>
 </ul>
-<h2 id="%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B">使用实例</h2>
-<h3 id="mongo">mongo</h3>
-<pre class="hljs"><code><div>docker pull mongo
+<h2 id="使用实例">使用实例 </h2>
+<h3 id="mongo">mongo </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker pull mongo
 docker run --name mongo -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin -d mongo
-</div></code></pre>
-<p>连接:</p>
-<pre class="hljs"><code><div>docker exec -it mongo bash
+</code></pre><p>连接:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker exec -it mongo bash
 mongo -u admin -p admin
-</div></code></pre>
-<p>创建仓库:</p>
-<pre class="hljs"><code><div>use springbucks;
-db.createUser({user:&quot;springbucks&quot;, pwd:&quot;springbucks&quot;, roles:[{role:&quot;readWrite&quot;, db:&quot;springbucks&quot;}]})
-</div></code></pre>
-<h3 id="redis">redis</h3>
-<pre class="hljs"><code><div>docker pull redis
+</code></pre><p>创建仓库:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>use springbucks;
+db.createUser({user:"springbucks", pwd:"springbucks", roles:[{role:"readWrite", db:"springbucks"}]})
+</code></pre><h3 id="redis">redis </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker pull redis
 docker run --name redis -d -p 6379:6379 redis
 docker exec -it &lt;containerId&gt; redis-cli
-</div></code></pre>
-<blockquote>
+</code></pre><blockquote>
 <p>如果设置密码: docker run --name redis -d -p 6379:6379 redis --requirepass 123456</p>
 </blockquote>
-<h3 id="mysql">mysql</h3>
-<pre class="hljs"><code><div>docker pull mysql:5.7.17
+<h3 id="mysql">mysql </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker pull mysql:5.7.17
 docker run --name mysql -d -p 3306:3306 -e MYSQL_DATABASE=springbucks -e MYSQL_USER=springbucks -e MYSQL_PASSWORD=springbucks -e MYSQL_ROOT_PASSWORD=root_password mysql:5.7.17
-</div></code></pre>
-<blockquote>
+</code></pre><blockquote>
 <p>可能需要执行:set @@Global.sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';</p>
 </blockquote>
-<h3 id="zookeeper">zookeeper</h3>
-<pre class="hljs"><code><div>docker pull zookeeper:3.5
+<h3 id="zookeeper">zookeeper </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker pull zookeeper:3.5
 docker run --name zookeeper -p 2181:2181 -d zookeeper:3.5
-</div></code></pre>
-<p>使用:</p>
-<pre class="hljs"><code><div>&gt;&gt;&gt; docker exec -it zookeeper bash
+</code></pre><p>使用:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>&gt;&gt;&gt; docker exec -it zookeeper bash
 &gt;&gt;&gt; cd bin
 &gt;&gt;&gt; ./zkCli.sh
 &gt;&gt;&gt; ls /
@@ -433,124 +86,116 @@ docker run --name zookeeper -p 2181:2181 -d zookeeper:3.5
 &gt;&gt;&gt; ls /services/frog-coffee
 ...
 
-</div></code></pre>
-<h3 id="consul">consul</h3>
-<pre class="hljs"><code><div>docker pull consul
+</code></pre><h3 id="consul">consul </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker pull consul
 docker run --name consul -d -p 8500:8500 -p 8600:8600/udp consul
-</div></code></pre>
-<blockquote>
-<p>用户界面: http://192.168.99.100:8500</p>
+</code></pre><blockquote>
+<p>用户界面: <a href="http://192.168.99.100:8500">http://192.168.99.100:8500</a></p>
 </blockquote>
-<h3 id="nacos">nacos</h3>
-<pre class="hljs"><code><div>docker pull nacos/nacos-server
+<h3 id="nacos">nacos </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker pull nacos/nacos-server
 docker run --name nacos -d -p 8848:8848 -e MODE=standalone nacos/nacos-server
-</div></code></pre>
-<blockquote>
-<p>用户名密码为:nacos
-用户界面:http://192.168.99.100:8848/nacos</p>
+</code></pre><blockquote>
+<p>用户名密码为:nacos<br>
+用户界面:<a href="http://192.168.99.100:8848/nacos">http://192.168.99.100:8848/nacos</a></p>
 </blockquote>
-<h3 id="rabbitmq">rabbitMq</h3>
-<pre class="hljs"><code><div>docker pull rabbitmq:3.7-management
+<h3 id="rabbitmq">rabbitMq </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker pull rabbitmq:3.7-management
 docker run --name rabbitmq -d -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_USER=spring -e RABBITMQ_DEFAULT_PASS=spring rabbitmq:3.7-management
-</div></code></pre>
-<h3 id="elasticsearch">ElasticSearch</h3>
+</code></pre><h3 id="elasticsearch">ElasticSearch </h3>
 <p>ElasticSearch单节点启动:</p>
-<pre class="hljs"><code><div>docker pull elasticsearch:7.17.21
-docker run -d --name elasticsearch -e &quot;discovery.type=single-node&quot; -e &quot;xpack.security.enabled=true&quot; -e &quot;ELASTIC_PASSWORD=frog1234&quot; -p 8200:9200 elasticsearch:7.17.21
-</div></code></pre>
-<blockquote>
-<p>这里指定了单节点启动, 并开启<code>xpack.security.enabled=true</code>使得可以自由创建新的账号密码, 同时这里指定了ELASTIC_PASSWORD=frog1234, 即默认账号<code>elastic</code>的密码
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker pull elasticsearch:7.17.21
+docker run -d --name elasticsearch -e "discovery.type=single-node" -e "xpack.security.enabled=true" -e "ELASTIC_PASSWORD=frog1234" -p 8200:9200 elasticsearch:7.17.21
+</code></pre><blockquote>
+<p>这里指定了单节点启动, 并开启<code>xpack.security.enabled=true</code>使得可以自由创建新的账号密码, 同时这里指定了ELASTIC_PASSWORD=frog1234, 即默认账号<code>elastic</code>的密码<br>
 自定义账号需要这样做:</p>
-<pre class="hljs"><code><div>curl -X POST &quot;http://localhost:9200/_security/user/&lt;username&gt;&quot; \
--H &quot;Content-Type: application/json&quot; \
+<pre data-role="codeBlock" data-info="" class="language-text"><code>curl -X POST "http://localhost:9200/_security/user/&lt;username&gt;" \
+-H "Content-Type: application/json" \
 -u elastic:&lt;password&gt; \
 -d '{
-  &quot;password&quot;: &quot;&lt;new_password&gt;&quot;,
-  &quot;roles&quot;: [&quot;superuser&quot;]
+  "password": "&lt;new_password&gt;",
+  "roles": ["superuser"]
 }'
-</div></code></pre>
-</blockquote>
+</code></pre></blockquote>
 <p>ElasticSearch全家桶安装:</p>
 <p>找一个文件夹, 新建文件:<code>docker-compose.yaml</code></p>
 <p>内部添加内容:</p>
-<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'2.2'</span>
-<span class="hljs-attr">services:</span>
-  <span class="hljs-attr">cerebro:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">lmenezes/cerebro:0.8.3</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">cerebro</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"9000:9000"</span>
-    <span class="hljs-attr">command:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">-Dhosts.0.host=http://elasticsearch:9200</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">es7net</span>
-  <span class="hljs-attr">kibana:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">kibana:7.1.0</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">kibana7</span>
-    <span class="hljs-attr">environment:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">I18N_LOCALE=zh-CN</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">XPACK_GRAPH_ENABLED=true</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">TIMELION_ENABLED=true</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">XPACK_MONITORING_COLLECTION_ENABLED="true"</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"5601:5601"</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">es7net</span>
-  <span class="hljs-attr">elasticsearch:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">elasticsearch:7.1.0</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">es7_01</span>
-    <span class="hljs-attr">environment:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">cluster.name=geektime</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">node.name=es7_01</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">bootstrap.memory_lock=true</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"ES_JAVA_OPTS=-Xms512m -Xmx512m"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">discovery.seed_hosts=es7_01,es7_02</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">cluster.initial_master_nodes=es7_01,es7_02</span>
-    <span class="hljs-attr">ulimits:</span>
-      <span class="hljs-attr">memlock:</span>
-        <span class="hljs-attr">soft:</span> <span class="hljs-number">-1</span>
-        <span class="hljs-attr">hard:</span> <span class="hljs-number">-1</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">es7data1:/usr/share/elasticsearch/data</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-number">9200</span><span class="hljs-string">:9200</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">es7net</span>
-  <span class="hljs-attr">elasticsearch2:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">elasticsearch:7.1.0</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">es7_02</span>
-    <span class="hljs-attr">environment:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">cluster.name=geektime</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">node.name=es7_02</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">bootstrap.memory_lock=true</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"ES_JAVA_OPTS=-Xms512m -Xmx512m"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">discovery.seed_hosts=es7_01,es7_02</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">cluster.initial_master_nodes=es7_01,es7_02</span>
-    <span class="hljs-attr">ulimits:</span>
-      <span class="hljs-attr">memlock:</span>
-        <span class="hljs-attr">soft:</span> <span class="hljs-number">-1</span>
-        <span class="hljs-attr">hard:</span> <span class="hljs-number">-1</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">es7data2:/usr/share/elasticsearch/data</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">es7net</span>
+<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">'2.2'</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">cerebro</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> lmenezes/cerebro<span class="token punctuation">:</span>0.8.3
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> cerebro
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"9000:9000"</span>
+    <span class="token key atrule">command</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token punctuation">-</span>Dhosts.0.host=http<span class="token punctuation">:</span>//elasticsearch<span class="token punctuation">:</span><span class="token number">9200</span>
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> es7net
+  <span class="token key atrule">kibana</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> kibana<span class="token punctuation">:</span>7.1.0
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> kibana7
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> I18N_LOCALE=zh<span class="token punctuation">-</span>CN
+      <span class="token punctuation">-</span> XPACK_GRAPH_ENABLED=true
+      <span class="token punctuation">-</span> TIMELION_ENABLED=true
+      <span class="token punctuation">-</span> XPACK_MONITORING_COLLECTION_ENABLED="true"
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"5601:5601"</span>
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> es7net
+  <span class="token key atrule">elasticsearch</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> elasticsearch<span class="token punctuation">:</span>7.1.0
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> es7_01
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> cluster.name=geektime
+      <span class="token punctuation">-</span> node.name=es7_01
+      <span class="token punctuation">-</span> bootstrap.memory_lock=true
+      <span class="token punctuation">-</span> <span class="token string">"ES_JAVA_OPTS=-Xms512m -Xmx512m"</span>
+      <span class="token punctuation">-</span> discovery.seed_hosts=es7_01<span class="token punctuation">,</span>es7_02
+      <span class="token punctuation">-</span> cluster.initial_master_nodes=es7_01<span class="token punctuation">,</span>es7_02
+    <span class="token key atrule">ulimits</span><span class="token punctuation">:</span>
+      <span class="token key atrule">memlock</span><span class="token punctuation">:</span>
+        <span class="token key atrule">soft</span><span class="token punctuation">:</span> <span class="token number">-1</span>
+        <span class="token key atrule">hard</span><span class="token punctuation">:</span> <span class="token number">-1</span>
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> es7data1<span class="token punctuation">:</span>/usr/share/elasticsearch/data
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> 9200<span class="token punctuation">:</span><span class="token number">9200</span>
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> es7net
+  <span class="token key atrule">elasticsearch2</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> elasticsearch<span class="token punctuation">:</span>7.1.0
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> es7_02
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> cluster.name=geektime
+      <span class="token punctuation">-</span> node.name=es7_02
+      <span class="token punctuation">-</span> bootstrap.memory_lock=true
+      <span class="token punctuation">-</span> <span class="token string">"ES_JAVA_OPTS=-Xms512m -Xmx512m"</span>
+      <span class="token punctuation">-</span> discovery.seed_hosts=es7_01<span class="token punctuation">,</span>es7_02
+      <span class="token punctuation">-</span> cluster.initial_master_nodes=es7_01<span class="token punctuation">,</span>es7_02
+    <span class="token key atrule">ulimits</span><span class="token punctuation">:</span>
+      <span class="token key atrule">memlock</span><span class="token punctuation">:</span>
+        <span class="token key atrule">soft</span><span class="token punctuation">:</span> <span class="token number">-1</span>
+        <span class="token key atrule">hard</span><span class="token punctuation">:</span> <span class="token number">-1</span>
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> es7data2<span class="token punctuation">:</span>/usr/share/elasticsearch/data
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> es7net
 
 
-<span class="hljs-attr">volumes:</span>
-  <span class="hljs-attr">es7data1:</span>
-    <span class="hljs-attr">driver:</span> <span class="hljs-string">local</span>
-  <span class="hljs-attr">es7data2:</span>
-    <span class="hljs-attr">driver:</span> <span class="hljs-string">local</span>
+<span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+  <span class="token key atrule">es7data1</span><span class="token punctuation">:</span>
+    <span class="token key atrule">driver</span><span class="token punctuation">:</span> local
+  <span class="token key atrule">es7data2</span><span class="token punctuation">:</span>
+    <span class="token key atrule">driver</span><span class="token punctuation">:</span> local
 
-<span class="hljs-attr">networks:</span>
-  <span class="hljs-attr">es7net:</span>
-    <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
-</div></code></pre>
-<p>然后, 在该文件夹中, 执行:</p>
-<pre class="hljs"><code><div>docker-compose up
-</div></code></pre>
-<p>其余可能用到的命令:</p>
-<pre class="hljs"><code><div>#启动
+<span class="token key atrule">networks</span><span class="token punctuation">:</span>
+  <span class="token key atrule">es7net</span><span class="token punctuation">:</span>
+    <span class="token key atrule">driver</span><span class="token punctuation">:</span> bridge
+</code></pre><p>然后, 在该文件夹中, 执行:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker-compose up
+</code></pre><p>其余可能用到的命令:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>#启动
 docker-compose up
 
 #停止容器
@@ -575,90 +220,83 @@ $docker stop Name/ID
 $docker start Name/ID  
 $docker kill Name/ID  
 $docker restart name/ID
-</div></code></pre>
-<p>之后, 就成了. 但是, es启动可能报错, 运行elasticsearch需要<code>vm.max_map_count</code>至少需要262144内存:</p>
-<pre class="hljs"><code><div>在宿主机上, 切换到root用户修改配置sysctl.conf
+</code></pre><p>之后, 就成了. 但是, es启动可能报错, 运行elasticsearch需要<code>vm.max_map_count</code>至少需要262144内存:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>在宿主机上, 切换到root用户修改配置sysctl.conf
 vi /etc/sysctl.conf
 在尾行添加以下内容   
 vm.max_map_count=262144
 并执行命令
 sysctl -p
-</div></code></pre>
-<h2 id="kibana%E5%8D%95%E7%8B%AC%E4%BD%9C%E4%B8%BA%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%89%E8%A3%85">Kibana单独作为客户端安装</h2>
+</code></pre><h2 id="kibana单独作为客户端安装">Kibana单独作为客户端安装 </h2>
 <ol>
 <li>下载Kibana镜像.</li>
-<li>启动镜像.<pre class="hljs"><code><div>docker run -d --env ELASTICSEARCH_HOSTS=http://10.128.2.95:9200 --env ELASTICSEARCH_USERNAME=frog --env ELASTICSEARCH_PASSWORD=frog --name kb95 -p 5601:5601 docker.elastic.co/kibana/kibana:7.4.2
-</div></code></pre>
-</li>
+<li>启动镜像.<pre data-role="codeBlock" data-info="" class="language-text"><code>docker run -d --env ELASTICSEARCH_HOSTS=http://10.128.2.95:9200 --env ELASTICSEARCH_USERNAME=frog --env ELASTICSEARCH_PASSWORD=frog --name kb95 -p 5601:5601 docker.elastic.co/kibana/kibana:7.4.2
+</code></pre></li>
 </ol>
-<h2 id="grafana%E5%AE%89%E8%A3%85">Grafana安装</h2>
+<h2 id="grafana安装">Grafana安装 </h2>
 <p>直接执行:</p>
-<pre class="hljs"><code><div>docker run -d --name=grafana -p 3000:3000 grafana/grafana:8.0.6-ubuntu
-</div></code></pre>
-<h2 id="kafkazookeeper%E5%AE%89%E8%A3%85">Kafka&amp;Zookeeper安装</h2>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>docker run -d --name=grafana -p 3000:3000 grafana/grafana:8.0.6-ubuntu
+</code></pre><h2 id="kafkazookeeper安装">Kafka&amp;Zookeeper安装 </h2>
 <p>这里采用docker-compose进行安装. 并且kafka增加授权, zookeeper不加授权.</p>
 <p>首先准备授权文件<code>kafka_server_jaas.conf</code>:</p>
-<pre class="hljs"><code><div>KafkaServer {
+<pre data-role="codeBlock" data-info="conf" class="language-conf conf"><code>KafkaServer {
     org.apache.kafka.common.security.plain.PlainLoginModule required
-    username=&quot;admin&quot;
-    password=&quot;123123&quot;
-    user_admin=&quot;123123&quot;
-    user_kafka=&quot;456456&quot;;
+    username="admin"
+    password="123123"
+    user_admin="123123"
+    user_kafka="456456";
 };
 KafkaClient {
     org.apache.kafka.common.security.plain.PlainLoginModule required
-    username=&quot;kafka&quot;
-    password=&quot;456456&quot;;
+    username="kafka"
+    password="456456";
 };
-</div></code></pre>
-<p>新建环境变量文件<code>.env</code>:</p>
-<pre class="hljs"><code><div>IP_ADDRESS=192.168.1.5
-</div></code></pre>
-<p>准备<code>docker-compose.yaml</code>文件:</p>
-<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'2'</span>
+</code></pre><p>新建环境变量文件<code>.env</code>:</p>
+<pre data-role="codeBlock" data-info="env" class="language-env env"><code>IP_ADDRESS=192.168.1.5
+</code></pre><p>准备<code>docker-compose.yaml</code>文件:</p>
+<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">'2'</span>
 
-<span class="hljs-attr">include:</span>
-  <span class="hljs-bullet">-</span> <span class="hljs-attr">env_file:</span> <span class="hljs-string">./.env</span>
+<span class="token key atrule">include</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">env_file</span><span class="token punctuation">:</span> ./.env
 
-<span class="hljs-attr">services:</span>
-    <span class="hljs-attr">zookeeper:</span>
-        <span class="hljs-attr">image:</span> <span class="hljs-string">wurstmeister/zookeeper</span>
-        <span class="hljs-attr">hostname:</span> <span class="hljs-string">zookeeper</span>
-        <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span>
-        <span class="hljs-attr">ports:</span>
-            <span class="hljs-bullet">-</span> <span class="hljs-number">2181</span><span class="hljs-string">:2181</span>
-        <span class="hljs-attr">environment:</span>
-            <span class="hljs-attr">ZOOKEEPER_CLIENT_PORT:</span> <span class="hljs-number">2181</span>
-            <span class="hljs-attr">ZOOKEEPER_TICK_TIME:</span> <span class="hljs-number">2000</span>
-            <span class="hljs-attr">ZOOKEEPER_SASL_ENABLED:</span> <span class="hljs-string">"false"</span>
-    <span class="hljs-attr">kafka:</span>
-        <span class="hljs-attr">image:</span> <span class="hljs-string">wurstmeister/kafka</span>
-        <span class="hljs-attr">hostname:</span> <span class="hljs-string">broker</span>
-        <span class="hljs-attr">container_name:</span> <span class="hljs-string">kafka</span>
-        <span class="hljs-attr">depends_on:</span>
-            <span class="hljs-bullet">-</span> <span class="hljs-string">zookeeper</span>
-        <span class="hljs-attr">ports:</span>
-            <span class="hljs-bullet">-</span> <span class="hljs-number">9093</span><span class="hljs-string">:9093</span>
-        <span class="hljs-attr">environment:</span>
-            <span class="hljs-attr">KAFKA_LISTENERS:</span> <span class="hljs-string">SASL_PLAINTEXT://0.0.0.0:9093</span>
-            <span class="hljs-attr">KAFKA_ADVERTISED_LISTENERS:</span> <span class="hljs-string">SASL_PLAINTEXT://${IP_ADDRESS}:9093</span>
-            <span class="hljs-attr">KAFKA_ZOOKEEPER_CONNECT:</span> <span class="hljs-string">'${IP_ADDRESS}:2181'</span>
-            <span class="hljs-attr">ZOOKEEPER_SASL_ENABLED:</span> <span class="hljs-string">"false"</span>
-            <span class="hljs-attr">KAFKA_OPTS:</span> <span class="hljs-string">-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf</span>
-            <span class="hljs-attr">KAFKA_INTER_BROKER_LISTENER_NAME:</span> <span class="hljs-string">SASL_PLAINTEXT</span>
-            <span class="hljs-attr">KAFKA_SASL_ENABLED_MECHANISMS:</span> <span class="hljs-string">PLAIN</span>
-            <span class="hljs-attr">KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL:</span> <span class="hljs-string">PLAIN</span>
-            <span class="hljs-attr">KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR:</span> <span class="hljs-number">1</span>
-            <span class="hljs-attr">KAFKA_AUTO_CREATE_TOPICS_ENABLE:</span> <span class="hljs-string">"true"</span>
-        <span class="hljs-attr">volumes:</span>
-            <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/kafka:/etc/kafka/secrets</span>
-</div></code></pre>
-<p>启动<code>docker-compose up -d</code></p>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+    <span class="token key atrule">zookeeper</span><span class="token punctuation">:</span>
+        <span class="token key atrule">image</span><span class="token punctuation">:</span> wurstmeister/zookeeper
+        <span class="token key atrule">hostname</span><span class="token punctuation">:</span> zookeeper
+        <span class="token key atrule">restart</span><span class="token punctuation">:</span> always
+        <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> 2181<span class="token punctuation">:</span><span class="token number">2181</span>
+        <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+            <span class="token key atrule">ZOOKEEPER_CLIENT_PORT</span><span class="token punctuation">:</span> <span class="token number">2181</span>
+            <span class="token key atrule">ZOOKEEPER_TICK_TIME</span><span class="token punctuation">:</span> <span class="token number">2000</span>
+            <span class="token key atrule">ZOOKEEPER_SASL_ENABLED</span><span class="token punctuation">:</span> <span class="token string">"false"</span>
+    <span class="token key atrule">kafka</span><span class="token punctuation">:</span>
+        <span class="token key atrule">image</span><span class="token punctuation">:</span> wurstmeister/kafka
+        <span class="token key atrule">hostname</span><span class="token punctuation">:</span> broker
+        <span class="token key atrule">container_name</span><span class="token punctuation">:</span> kafka
+        <span class="token key atrule">depends_on</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> zookeeper
+        <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> 9093<span class="token punctuation">:</span><span class="token number">9093</span>
+        <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+            <span class="token key atrule">KAFKA_LISTENERS</span><span class="token punctuation">:</span> SASL_PLAINTEXT<span class="token punctuation">:</span>//0.0.0.0<span class="token punctuation">:</span><span class="token number">9093</span>
+            <span class="token key atrule">KAFKA_ADVERTISED_LISTENERS</span><span class="token punctuation">:</span> SASL_PLAINTEXT<span class="token punctuation">:</span>//$<span class="token punctuation">{</span>IP_ADDRESS<span class="token punctuation">}</span><span class="token punctuation">:</span><span class="token number">9093</span>
+            <span class="token key atrule">KAFKA_ZOOKEEPER_CONNECT</span><span class="token punctuation">:</span> <span class="token string">'${IP_ADDRESS}:2181'</span>
+            <span class="token key atrule">ZOOKEEPER_SASL_ENABLED</span><span class="token punctuation">:</span> <span class="token string">"false"</span>
+            <span class="token key atrule">KAFKA_OPTS</span><span class="token punctuation">:</span> <span class="token punctuation">-</span>Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
+            <span class="token key atrule">KAFKA_INTER_BROKER_LISTENER_NAME</span><span class="token punctuation">:</span> SASL_PLAINTEXT
+            <span class="token key atrule">KAFKA_SASL_ENABLED_MECHANISMS</span><span class="token punctuation">:</span> PLAIN
+            <span class="token key atrule">KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL</span><span class="token punctuation">:</span> PLAIN
+            <span class="token key atrule">KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR</span><span class="token punctuation">:</span> <span class="token number">1</span>
+            <span class="token key atrule">KAFKA_AUTO_CREATE_TOPICS_ENABLE</span><span class="token punctuation">:</span> <span class="token string">"true"</span>
+        <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> /mnt/d/docker/kafka<span class="token punctuation">:</span>/etc/kafka/secrets
+</code></pre><p>启动<code>docker-compose up -d</code></p>
 <blockquote>
-<p>上面的示例中, 将这两个文件都放在了<code>D:/docker/kafka</code>目录下, 这个docker-compose只能在wsl内部执行, 不能在windows中执行.
+<p>上面的示例中, 将这两个文件都放在了<code>D:/docker/kafka</code>目录下, 这个docker-compose只能在wsl内部执行, 不能在windows中执行.<br>
 这里面使用kafka端口是9093</p>
 </blockquote>
-<h2 id="clickhouse">clickhouse</h2>
+<h2 id="clickhouse">clickhouse </h2>
 <ol>
 <li>下载并启动容器: <code>docker run -d --name ch-server --ulimit nofile=262144:262144 -p 8123:8123 -p 9000:9000 -p 9009:9009 yandex/clickhouse-server</code></li>
 </ol>
@@ -667,7 +305,7 @@ KafkaClient {
 <li>方式1:
 <ol>
 <li>进入容器: <code>docker exec -it clickhouse-server /bin/bash</code></li>
-<li>生成加密后的密码: <code>PASSWORD=$(base64 &lt; /dev/urandom | head -c8); echo &quot;你的密码&quot;; echo -n &quot;你的密码&quot; | sha256sum | tr -d '-'</code></li>
+<li>生成加密后的密码: <code>PASSWORD=$(base64 &lt; /dev/urandom | head -c8); echo "你的密码"; echo -n "你的密码" | sha256sum | tr -d '-'</code></li>
 <li>修改配置文件: <code>vim /etc/clickhouse-server/users.xml</code> (可能需要提前安装vim, 1. <code>apt-get update</code>; 2. <code>apt-get install vim -y</code>);</li>
 <li>将配置文件中<code>&lt;password&gt;&lt;/password&gt;</code>替换为上面生成的密文<code>&lt;password_sha256_hex&gt;密文&lt;/password_sha256_hex&gt;</code>;</li>
 <li>保存, 不需要重启, 即刻生效. 可以使用下面的命令测试一下: <code>clickhouse-client -h 127.0.0.1 -d default -m -u default --password '明文密码'</code></li>
@@ -676,18 +314,17 @@ KafkaClient {
 </ol>
 </li>
 </ul>
-<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">users</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">frog</span>&gt;</span>    <span class="hljs-comment">&lt;!--用户登录名--&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">password</span>&gt;</span>123123<span class="hljs-tag">&lt;/<span class="hljs-name">password</span>&gt;</span>    <span class="hljs-comment">&lt;!--用户登录密码, 如果是密文, 还和上面一样的操作--&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">networks</span>&gt;</span>
-           <span class="hljs-tag">&lt;<span class="hljs-name">ip</span>&gt;</span>::/0<span class="hljs-tag">&lt;/<span class="hljs-name">ip</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">networks</span>&gt;</span>   <span class="hljs-comment">&lt;!--允许登录的网络地址--&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>  <span class="hljs-comment">&lt;!--用户使用的profile配置--&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">quota</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">quota</span>&gt;</span>      <span class="hljs-comment">&lt;!--用户能够使用的资源限额/熔断机制--&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">frog</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">users</span>&gt;</span>
-</div></code></pre>
-<ol start="8">
+<pre data-role="codeBlock" data-info="xml" class="language-xml xml"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>users</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>frog</span><span class="token punctuation">&gt;</span></span>    <span class="token comment">&lt;!--用户登录名--&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>password</span><span class="token punctuation">&gt;</span></span>123123<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>password</span><span class="token punctuation">&gt;</span></span>    <span class="token comment">&lt;!--用户登录密码, 如果是密文, 还和上面一样的操作--&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>networks</span><span class="token punctuation">&gt;</span></span>
+           <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ip</span><span class="token punctuation">&gt;</span></span>::/0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ip</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>networks</span><span class="token punctuation">&gt;</span></span>   <span class="token comment">&lt;!--允许登录的网络地址--&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>profile</span><span class="token punctuation">&gt;</span></span>default<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>profile</span><span class="token punctuation">&gt;</span></span>  <span class="token comment">&lt;!--用户使用的profile配置--&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>quota</span><span class="token punctuation">&gt;</span></span>default<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>quota</span><span class="token punctuation">&gt;</span></span>      <span class="token comment">&lt;!--用户能够使用的资源限额/熔断机制--&gt;</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>frog</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>users</span><span class="token punctuation">&gt;</span></span>
+</code></pre><ol start="8">
 <li>保存, 不需要重启, 直接生效.</li>
 </ol>
 <ul>
@@ -697,50 +334,49 @@ KafkaClient {
 </ol>
 </li>
 </ul>
-<pre class="hljs"><code><div><span class="hljs-meta">&lt;?xml version="1.0"?&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">clickhouse</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">profiles</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">default</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">max_memory_usage</span>&gt;</span>10000000000<span class="hljs-tag">&lt;/<span class="hljs-name">max_memory_usage</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">load_balancing</span>&gt;</span>random<span class="hljs-tag">&lt;/<span class="hljs-name">load_balancing</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">default</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">readonly</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">readonly</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">readonly</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">readonly</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">profiles</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">users</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">frog</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">password_sha256_hex</span>&gt;</span>xxxx<span class="hljs-tag">&lt;/<span class="hljs-name">password_sha256_hex</span>&gt;</span>    <span class="hljs-comment">&lt;!--用户登录密码, 如果是密文, 还和上面一样的操作--&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">networks</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">ip</span>&gt;</span>::/0<span class="hljs-tag">&lt;/<span class="hljs-name">ip</span>&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">networks</span>&gt;</span>   <span class="hljs-comment">&lt;!--允许登录的网络地址--&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>  <span class="hljs-comment">&lt;!--用户使用的profile配置--&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">quota</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">quota</span>&gt;</span>      <span class="hljs-comment">&lt;!--用户能够使用的资源限额/熔断机制--&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">frog</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">default</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">password</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">password</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">networks</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">ip</span>&gt;</span>::/0<span class="hljs-tag">&lt;/<span class="hljs-name">ip</span>&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">networks</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">profile</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">profile</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">quota</span>&gt;</span>default<span class="hljs-tag">&lt;/<span class="hljs-name">quota</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">default</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">users</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">quotas</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">default</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">interval</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">duration</span>&gt;</span>3600<span class="hljs-tag">&lt;/<span class="hljs-name">duration</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">queries</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">queries</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">errors</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">errors</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">result_rows</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">result_rows</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">read_rows</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">read_rows</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">execution_time</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">execution_time</span>&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">interval</span>&gt;</span>
-        <span class="hljs-tag">&lt;/<span class="hljs-name">default</span>&gt;</span>
-    <span class="hljs-tag">&lt;/<span class="hljs-name">quotas</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">clickhouse</span>&gt;</span>
-</div></code></pre>
-<ol start="2">
+<pre data-role="codeBlock" data-info="xml" class="language-xml xml"><code><span class="token prolog">&lt;?xml version="1.0"?&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>clickhouse</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>profiles</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>default</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>max_memory_usage</span><span class="token punctuation">&gt;</span></span>10000000000<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>max_memory_usage</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>load_balancing</span><span class="token punctuation">&gt;</span></span>random<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>load_balancing</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>default</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>readonly</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>readonly</span><span class="token punctuation">&gt;</span></span>1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>readonly</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>readonly</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>profiles</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>users</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>frog</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>password_sha256_hex</span><span class="token punctuation">&gt;</span></span>xxxx<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>password_sha256_hex</span><span class="token punctuation">&gt;</span></span>    <span class="token comment">&lt;!--用户登录密码, 如果是密文, 还和上面一样的操作--&gt;</span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>networks</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ip</span><span class="token punctuation">&gt;</span></span>::/0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ip</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>networks</span><span class="token punctuation">&gt;</span></span>   <span class="token comment">&lt;!--允许登录的网络地址--&gt;</span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>profile</span><span class="token punctuation">&gt;</span></span>default<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>profile</span><span class="token punctuation">&gt;</span></span>  <span class="token comment">&lt;!--用户使用的profile配置--&gt;</span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>quota</span><span class="token punctuation">&gt;</span></span>default<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>quota</span><span class="token punctuation">&gt;</span></span>      <span class="token comment">&lt;!--用户能够使用的资源限额/熔断机制--&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>frog</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>default</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>password</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>password</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>networks</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ip</span><span class="token punctuation">&gt;</span></span>::/0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ip</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>networks</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>profile</span><span class="token punctuation">&gt;</span></span>default<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>profile</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>quota</span><span class="token punctuation">&gt;</span></span>default<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>quota</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>default</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>users</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>quotas</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>default</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>interval</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>duration</span><span class="token punctuation">&gt;</span></span>3600<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>duration</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>queries</span><span class="token punctuation">&gt;</span></span>0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>queries</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>errors</span><span class="token punctuation">&gt;</span></span>0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>errors</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>result_rows</span><span class="token punctuation">&gt;</span></span>0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>result_rows</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>read_rows</span><span class="token punctuation">&gt;</span></span>0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>read_rows</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>execution_time</span><span class="token punctuation">&gt;</span></span>0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>execution_time</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>interval</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>default</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>quotas</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>clickhouse</span><span class="token punctuation">&gt;</span></span>
+</code></pre><ol start="2">
 <li>复制到docker容器里面去:  <code>docker cp /mnt/d/docker/clickhouse/users.xml 容器id:/etc/clickhouse-server/users.xml</code></li>
 <li>不需要重启, 直接生效</li>
 </ol>
@@ -749,71 +385,70 @@ KafkaClient {
 <li>连接数据库: <code>clickhouse-client -h 127.0.0.1 -d default -m -u frog --password '123123'</code></li>
 <li>新建数据库: <code>CREATE DATABASE aaa;</code></li>
 </ul>
-<h2 id="rocketmq">RocketMQ</h2>
+<h2 id="rocketmq">RocketMQ </h2>
 <ul>
 <li>docker-compose.yaml:</li>
 </ul>
-<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'3.5'</span>
-<span class="hljs-attr">services:</span>
-  <span class="hljs-attr">rmqnamesrv:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">foxiswho/rocketmq:server</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">rmqnamesrv</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-number">9876</span><span class="hljs-string">:9876</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/data/logs:/opt/logs</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/data/logs:/opt/store</span>
-    <span class="hljs-attr">networks:</span>
-        <span class="hljs-attr">rmq:</span>
-          <span class="hljs-attr">aliases:</span>
-            <span class="hljs-bullet">-</span> <span class="hljs-string">rmqnamesrv</span>
+<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">'3.5'</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">rmqnamesrv</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> foxiswho/rocketmq<span class="token punctuation">:</span>server
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> rmqnamesrv
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> 9876<span class="token punctuation">:</span><span class="token number">9876</span>
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> /mnt/d/docker/rocketmq/data/logs<span class="token punctuation">:</span>/opt/logs
+      <span class="token punctuation">-</span> /mnt/d/docker/rocketmq/data/logs<span class="token punctuation">:</span>/opt/store
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+        <span class="token key atrule">rmq</span><span class="token punctuation">:</span>
+          <span class="token key atrule">aliases</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> rmqnamesrv
  
-  <span class="hljs-attr">rmqbroker:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">foxiswho/rocketmq:broker</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">rmqbroker</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-number">10909</span><span class="hljs-string">:10909</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-number">10911</span><span class="hljs-string">:10911</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/data/logs:/opt/logs</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/data/store:/opt/store</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/compose/broker.conf:/etc/rocketmq/broker.conf</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/d/docker/rocketmq/compose/plain_acl.conf:/etc/rocketmq/plain_acl.conf</span>
-    <span class="hljs-attr">environment:</span>
-        <span class="hljs-attr">NAMESRV_ADDR:</span> <span class="hljs-string">"rmqnamesrv:9876"</span>
-        <span class="hljs-attr">JAVA_OPTS:</span> <span class="hljs-string">" -Duser.home=/opt"</span>
-        <span class="hljs-attr">JAVA_OPT_EXT:</span> <span class="hljs-string">"-server -Xms128m -Xmx128m -Xmn128m"</span>
-    <span class="hljs-attr">command:</span> <span class="hljs-string">mqbroker</span> <span class="hljs-string">-c</span> <span class="hljs-string">/etc/rocketmq/broker.conf</span>
-    <span class="hljs-attr">depends_on:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">rmqnamesrv</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-attr">rmq:</span>
-        <span class="hljs-attr">aliases:</span>
-          <span class="hljs-bullet">-</span> <span class="hljs-string">rmqbroker</span>
+  <span class="token key atrule">rmqbroker</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> foxiswho/rocketmq<span class="token punctuation">:</span>broker
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> rmqbroker
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> 10909<span class="token punctuation">:</span><span class="token number">10909</span>
+      <span class="token punctuation">-</span> 10911<span class="token punctuation">:</span><span class="token number">10911</span>
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> /mnt/d/docker/rocketmq/data/logs<span class="token punctuation">:</span>/opt/logs
+      <span class="token punctuation">-</span> /mnt/d/docker/rocketmq/data/store<span class="token punctuation">:</span>/opt/store
+      <span class="token punctuation">-</span> /mnt/d/docker/rocketmq/compose/broker.conf<span class="token punctuation">:</span>/etc/rocketmq/broker.conf
+      <span class="token punctuation">-</span> /mnt/d/docker/rocketmq/compose/plain_acl.conf<span class="token punctuation">:</span>/etc/rocketmq/plain_acl.conf
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+        <span class="token key atrule">NAMESRV_ADDR</span><span class="token punctuation">:</span> <span class="token string">"rmqnamesrv:9876"</span>
+        <span class="token key atrule">JAVA_OPTS</span><span class="token punctuation">:</span> <span class="token string">" -Duser.home=/opt"</span>
+        <span class="token key atrule">JAVA_OPT_EXT</span><span class="token punctuation">:</span> <span class="token string">"-server -Xms128m -Xmx128m -Xmn128m"</span>
+    <span class="token key atrule">command</span><span class="token punctuation">:</span> mqbroker <span class="token punctuation">-</span>c /etc/rocketmq/broker.conf
+    <span class="token key atrule">depends_on</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> rmqnamesrv
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token key atrule">rmq</span><span class="token punctuation">:</span>
+        <span class="token key atrule">aliases</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> rmqbroker
  
-  <span class="hljs-attr">rmqconsole:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">styletang/rocketmq-console-ng</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">rmqconsole</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-number">18080</span><span class="hljs-string">:8080</span>
-    <span class="hljs-attr">environment:</span>
-        <span class="hljs-attr">JAVA_OPTS:</span> <span class="hljs-string">"-Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"</span>
-    <span class="hljs-attr">depends_on:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">rmqnamesrv</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-attr">rmq:</span>
-        <span class="hljs-attr">aliases:</span>
-          <span class="hljs-bullet">-</span> <span class="hljs-string">rmqconsole</span>
+  <span class="token key atrule">rmqconsole</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> styletang/rocketmq<span class="token punctuation">-</span>console<span class="token punctuation">-</span>ng
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> rmqconsole
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> 18080<span class="token punctuation">:</span><span class="token number">8080</span>
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+        <span class="token key atrule">JAVA_OPTS</span><span class="token punctuation">:</span> <span class="token string">"-Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"</span>
+    <span class="token key atrule">depends_on</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> rmqnamesrv
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token key atrule">rmq</span><span class="token punctuation">:</span>
+        <span class="token key atrule">aliases</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> rmqconsole
  
-<span class="hljs-attr">networks:</span>
-  <span class="hljs-attr">rmq:</span>
-    <span class="hljs-attr">name:</span> <span class="hljs-string">rmq</span>
-    <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
-</div></code></pre>
-<ul>
+<span class="token key atrule">networks</span><span class="token punctuation">:</span>
+  <span class="token key atrule">rmq</span><span class="token punctuation">:</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> rmq
+    <span class="token key atrule">driver</span><span class="token punctuation">:</span> bridge
+</code></pre><ul>
 <li>broker.conf:</li>
 </ul>
-<pre class="hljs"><code><div># 所属集群名字
+<pre data-role="codeBlock" data-info="conf" class="language-conf conf"><code># 所属集群名字
 brokerClusterName=DefaultCluster
  
 # broker 名字，注意此处不同的配置文件填写的不一样，如果在 broker-a.properties 使用: broker-a,
@@ -897,21 +532,20 @@ flushDiskType=ASYNC_FLUSH
 
 #此参数控制是否开启密码
 aclEnable=false
-</div></code></pre>
-<ul>
+</code></pre><ul>
 <li>plain_acl.conf(如果需要配置密码, 则需要这个文件, 否则不需要):</li>
 </ul>
-<pre class="hljs"><code><div># Licensed to the Apache Software Foundation (ASF) under one or more
+<pre data-role="codeBlock" data-info="conf" class="language-conf conf"><code># Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
 # The ASF licenses this file to You under the Apache License, Version 2.0
-# (the &quot;License&quot;); you may not use this file except in compliance with
+# (the "License"); you may not use this file except in compliance with
 # the License.  You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 #  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+#  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
@@ -937,8 +571,63 @@ accounts:
   secretKey: 12345678
   # if it is admin, it could access all resources
   admin: true
-</div></code></pre>
-<h2 id="centos7-docker%E5%AE%89%E8%A3%85">CentOS7 docker安装</h2>
+</code></pre><h2 id="milvus">Milvus </h2>
+<p>docker-compose.yml:</p>
+<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">'3.5'</span>
+
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">milvus-standalone</span><span class="token punctuation">:</span>
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> milvus<span class="token punctuation">-</span>standalone
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> milvusdb/milvus<span class="token punctuation">:</span>v2.5.1
+    <span class="token key atrule">command</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"milvus"</span><span class="token punctuation">,</span> <span class="token string">"run"</span><span class="token punctuation">,</span> <span class="token string">"standalone"</span><span class="token punctuation">]</span>
+    <span class="token key atrule">security_opt</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> seccomp<span class="token punctuation">:</span>unconfined
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> ETCD_USE_EMBED=true
+      <span class="token punctuation">-</span> ETCD_DATA_DIR=/var/lib/milvus/etcd
+      <span class="token punctuation">-</span> ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+      <span class="token punctuation">-</span> COMMON_STORAGETYPE=local
+      <span class="token punctuation">-</span> DEPLOY_MODE=STANDALONE
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> $<span class="token punctuation">{</span>DOCKER_VOLUME_DIRECTORY<span class="token punctuation">:</span><span class="token punctuation">-</span>.<span class="token punctuation">}</span>/milvus/volumes/milvus<span class="token punctuation">:</span>/var/lib/milvus
+      <span class="token punctuation">-</span> $<span class="token punctuation">{</span>DOCKER_VOLUME_DIRECTORY<span class="token punctuation">:</span><span class="token punctuation">-</span>.<span class="token punctuation">}</span>/milvus/configs/user.yaml<span class="token punctuation">:</span>/milvus/configs/user.yaml  <span class="token comment"># 需要预先有这个文件: </span>
+      <span class="token punctuation">-</span> $<span class="token punctuation">{</span>DOCKER_VOLUME_DIRECTORY<span class="token punctuation">:</span><span class="token punctuation">-</span>.<span class="token punctuation">}</span>/milvus/configs/embedEtcd.yaml<span class="token punctuation">:</span>/milvus/configs/embedEtcd.yaml <span class="token comment"># 需要预先有这个文件</span>
+    <span class="token key atrule">healthcheck</span><span class="token punctuation">:</span>
+      <span class="token key atrule">test</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"CMD"</span><span class="token punctuation">,</span> <span class="token string">"curl"</span><span class="token punctuation">,</span> <span class="token string">"-f"</span><span class="token punctuation">,</span> <span class="token string">"http://localhost:9091/healthz"</span><span class="token punctuation">]</span>
+      <span class="token key atrule">interval</span><span class="token punctuation">:</span> 30s
+      <span class="token key atrule">start_period</span><span class="token punctuation">:</span> 90s
+      <span class="token key atrule">timeout</span><span class="token punctuation">:</span> 20s
+      <span class="token key atrule">retries</span><span class="token punctuation">:</span> <span class="token number">3</span>
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"19530:19530"</span>
+      <span class="token punctuation">-</span> <span class="token string">"9091:9091"</span>
+      <span class="token punctuation">-</span> <span class="token string">"2379:2379"</span>
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> default
+  <span class="token key atrule">attu</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> zilliz/attu
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> attu
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> MILVUS_URL=milvus<span class="token punctuation">-</span>standalone<span class="token punctuation">:</span><span class="token number">19530</span>
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"8000:3000"</span>
+    <span class="token key atrule">depends_on</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> milvus<span class="token punctuation">-</span>standalone
+    <span class="token key atrule">networks</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> default
+
+<span class="token key atrule">networks</span><span class="token punctuation">:</span>
+  <span class="token key atrule">default</span><span class="token punctuation">:</span>
+    <span class="token key atrule">driver</span><span class="token punctuation">:</span> bridge
+</code></pre><p>user.yaml:</p>
+<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token comment"># Extra config to override default milvus.yaml</span>
+</code></pre><p>embedEtcd.yaml:</p>
+<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token key atrule">listen-client-urls</span><span class="token punctuation">:</span> http<span class="token punctuation">:</span>//0.0.0.0<span class="token punctuation">:</span><span class="token number">2379</span>
+<span class="token key atrule">advertise-client-urls</span><span class="token punctuation">:</span> http<span class="token punctuation">:</span>//0.0.0.0<span class="token punctuation">:</span><span class="token number">2379</span>
+<span class="token key atrule">quota-backend-bytes</span><span class="token punctuation">:</span> <span class="token number">4294967296</span>
+<span class="token key atrule">auto-compaction-mode</span><span class="token punctuation">:</span> revision
+<span class="token key atrule">auto-compaction-retention</span><span class="token punctuation">:</span> <span class="token string">'1000'</span>
+</code></pre><h2 id="centos7-docker安装">CentOS7 docker安装 </h2>
 <ol>
 <li>更新yum包, 防止安装过程中出现问题<code>yum update</code>;</li>
 <li>安装依赖软件包, <code>yum install -y yum-utils device-mapper-persistent-data lvm2</code>;</li>
@@ -951,5 +640,14 @@ accounts:
 </ol>
 <p>卸载: <code>yum remove docker docker-common docker-selinux docker-engine</code></p>
 
-</body>
-</html>
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
