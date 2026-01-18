@@ -162,6 +162,28 @@ git submodule update
 > 有时候需要再执行一下```git add .gitmodules```
 > 有时候需要再执行一下```git rm --cached 子模块名称```
 
+## 多账号管理
+
+假如有两个github账号, 可以这样维护:
+
+1. 编辑`xxxuser/.ssh/config`文件, 示例如下:
+
+```
+Host github-work
+HostName github.com
+User account1
+IdentityFile ～/.ssh/id_ed25519_work
+
+Host github-personal
+HostName github.com
+User account2
+IdentityFile ～/.ssh/id_ed25519_personal
+```
+
+2. 执行clone命令时, 调整地址. 例如: `git@github.com:FrogIf/FrogNotebook.git`, 调整为: `git@github-work:FrogIf/FrogNotebook.git`;
+3. 进入clone后的目录, 对当前仓库配置用户名和邮箱: `git config user.email "account1@aaa.com"`, `git config user.name "account1"`;
+
+
 ## 其他
 
 * 更新远程分支列表: ```git remote update origin --prune```
