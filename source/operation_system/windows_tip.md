@@ -217,3 +217,32 @@ net start winnat
    * ```netsh interface portproxy delete v4tov4 listenport=8443 listenaddress=192.168.77.77``` 删除转发规则
 
 > 这里只支持tcp协议, 如果是udp, 推荐使用sokit(https://github.com/sinpolib/sokit)
+
+
+## win + E快捷键报错
+
+如图:
+
+![image](img/win_e_issue.png)
+
+解决方案:
+
+新建一个`xxx.reg`文件, 写入以下内容:
+
+```reg
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Folder\shell\explore\command]
+
+"DelegateExecute"="{11dbb47c-a525-400b-9e80-a54615a090c0}"
+
+[HKEY_CLASSES_ROOT\Folder\shell\opennewprocess\command]
+
+"DelegateExecute"="{11dbb47c-a525-400b-9e80-a54615a090c0}"
+
+[HKEY_CLASSES_ROOT\Folder\shell\opennewwindow\command]
+
+"DelegateExecute"="{11dbb47c-a525-400b-9e80-a54615a090c0}"
+```
+
+然后执行, 即可.
