@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>vibe-coding.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="vibe-coding">Vibe Coding</h1>
+<h2 id="nodejs">nodejs</h2>
+<ol>
+<li>访问: https://nodejs.org/, 下载最新长期支持版v24.14.0;</li>
+<li>安装时推荐勾选安装其他依赖, 因为有可能缺少python等其他依赖项;</li>
+</ol>
+<p><img src="img/nodejs.png" alt="image"></p>
+<ol start="3">
+<li>安装后, 可以通过<code>node --version</code>检查当前版本;</li>
+</ol>
+<ul>
+<li>npm镜像源配置:</li>
+</ul>
+<ol>
+<li>临时指定镜像源: <code>npm xxxx --registry=https://registry.npmmirror.com</code></li>
+<li>永久配置镜像源: <code>npm config set registry https://registry.npmmirror.com</code></li>
+</ol>
+<h2 id="opencode">opencode</h2>
+<h3 id="%E5%AE%89%E8%A3%85">安装</h3>
+<p>安装: <code>npm i -g opencode-ai --registry=https://mirrors.aliyun.com/npm/</code></p>
+<h3 id="%E4%BD%BF%E7%94%A8">使用</h3>
+<p>官方文档: https://opencode.ai/docs/zh-cn/tui/</p>
+<p>常用命令:</p>
+<ul>
+<li><code>/init</code>: 创建/更新Agents.md文件, 该文件用于这有助于 opencode 更好地导航您的项目;</li>
+<li><code>/models</code>: 列出以及切换使用的大模型;</li>
+<li><code>/connect</code>: 将提供商添加到 OpenCode。允许您从可用的提供商中选择并添加其 API 密钥;</li>
+<li><code>/compact</code>: 压缩上下文, 在上下文比较大时, 后续大模型分析推理会变慢, 压缩上下文可以提速;</li>
+<li><code>/new</code>: 开始新的会话;</li>
+<li><code>/sessions</code>: 列出会话并在会话之间切换;</li>
+<li><code>/undo</code>: 撤销对话中的最后一条消息。移除最近的用户消息、所有后续响应以及所有文件更改。
+<ul>
+<li>在内部，这使用 Git 来管理文件更改。因此您的项目需要是一个 Git 仓库。</li>
+</ul>
+</li>
+<li><code>/redo</code>: 重做之前撤销的消息。仅在使用 /undo 后可用。
+<ul>
+<li>在内部，这使用 Git 来管理文件更改。因此您的项目需要是一个 Git 仓库。</li>
+</ul>
+</li>
+<li><code>/exit</code>: 退出</li>
+</ul>
+<h2 id="openspec">openspec</h2>
+<h3 id="%E5%AE%89%E8%A3%85">安装</h3>
+<p>安装: <code>npm install -g @fission-ai/openspec</code></p>
+<h3 id="%E4%BD%BF%E7%94%A8">使用</h3>
+<p>openspec目录结构:</p>
+<pre class="hljs"><code><div>openspec/
+├── specs/        # 系统当前行为的&quot;源真相&quot;(&quot;系统现在是什么样的&quot;)
+│   ├── auth/
+│   ├── payments/
+│   └── ...
+├── changes/      # 每个变更的独立工作目录(&quot;我们打算改什么&quot;)
+│   ├── add-dark-mode/
+│   |    ├── specs   #  
+│   |    ├── proposal.md
+│   |    ├── design.md
+│   |    └── tasks.md
+│   └── fix-login-bug/
+└── config.yaml   # 项目配置
+</div></code></pre>
+<p>对于没有运行过openspec的新项目, 需要先执行<code>openspec init</code>, 对当前所在目录的项目进行初始化:</p>
+<ul>
+<li>初始化会生成<code>openspec</code>文件夹用来存储后续的规格文件;</li>
+<li>初始化时需选择使用的coding工具, 比如<code>opencode</code>, 就会在<code>.opencode</code>目录中注册openspec相关skills</li>
+</ul>
+<p>常用命令:</p>
+<ol>
+<li><code>/opsx:propose xxx</code>: 告诉AI你的需求, 触发它去写各种规格文件(工件);</li>
+<li><code>/opsx:apply</code>: 工件准备好了，可以人工检查一下, 没问题, 就让 AI 按 tasks.md 里的清单逐条干活;</li>
+<li><code>/opsx:archive</code>: 功能实现完了，归档这个变更
+<ul>
+<li>把增量的specs合并进 openspec/specs/ 主规格——系统的&quot;行为手册&quot;因此更新</li>
+<li>把变更目录整体移到带时间戳的归档目录，留作审计记录</li>
+<li>这个变更的生命周期正式结束</li>
+</ul>
+</li>
+<li><code>/opsx:explore xxx</code>: 对于有些需求模糊不确定的, 让AI主动探索, 明确需求, 然后再执行上面3步</li>
+<li><code>/opsx:verify</code>: 扩展指令, 在需求开发完, 未归档之前, 让AI检查一下是否有工作遗漏</li>
+</ol>
+<blockquote>
+<p>常用工作流: /opsx:propose → 人工审查 → /opsx:apply → /opsx:verify → /opsx:archive</p>
+</blockquote>
+<p>扩展指令的启用:</p>
+<ol>
+<li>执行<code>openspec config profile</code>;</li>
+<li>选择<code>Delivery and workflows</code>;</li>
+<li>选择<code>Both</code>;</li>
+<li><code>空格</code>勾选需要开启的命令;</li>
+</ol>
+
+</body>
+</html>

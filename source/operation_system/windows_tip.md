@@ -224,3 +224,31 @@ net start winnat
 控制面板—>时钟和区域—>区域->管理—>更改系统区域设置
 
 勾选：使用 Unicode UTF-8 提供全球语音支持
+
+## win + E快捷键报错
+
+如图:
+
+![image](img/win_e_issue.png)
+
+解决方案:
+
+新建一个`xxx.reg`文件, 写入以下内容:
+
+```reg
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Folder\shell\explore\command]
+
+"DelegateExecute"="{11dbb47c-a525-400b-9e80-a54615a090c0}"
+
+[HKEY_CLASSES_ROOT\Folder\shell\opennewprocess\command]
+
+"DelegateExecute"="{11dbb47c-a525-400b-9e80-a54615a090c0}"
+
+[HKEY_CLASSES_ROOT\Folder\shell\opennewwindow\command]
+
+"DelegateExecute"="{11dbb47c-a525-400b-9e80-a54615a090c0}"
+```
+
+然后执行, 即可.
