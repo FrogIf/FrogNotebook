@@ -217,3 +217,10 @@ net start winnat
    * ```netsh interface portproxy delete v4tov4 listenport=8443 listenaddress=192.168.77.77``` 删除转发规则
 
 > 这里只支持tcp协议, 如果是udp, 推荐使用sokit(https://github.com/sinpolib/sokit)
+
+
+## PowerShell乱码
+
+控制面板—>时钟和区域—>区域->管理—>更改系统区域设置
+
+勾选：使用 Unicode UTF-8 提供全球语音支持
