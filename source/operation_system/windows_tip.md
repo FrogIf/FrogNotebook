@@ -221,9 +221,17 @@ net start winnat
 
 ## PowerShell乱码
 
-控制面板—>时钟和区域—>区域->管理—>更改系统区域设置
+1. 执行`notepad $PROFILE`打开配置文件;
+2. 修改为:
+```
+chcp 65001 | Out-Null
+[Console]::InputEncoding = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$PSDefaultParameterValues['Get-Content:Encoding'] = 'UTF8'
+```
+3. 保存后, 重启powershell.
 
-勾选：使用 Unicode UTF-8 提供全球语音支持
+> 还不行的话, 可能是字体问题, 调整字体, 选择一种支持完整Unicode的字体, 如"新宋体".
 
 ## win + E快捷键报错
 
