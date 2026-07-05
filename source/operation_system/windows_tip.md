@@ -219,6 +219,20 @@ net start winnat
 > 这里只支持tcp协议, 如果是udp, 推荐使用sokit(https://github.com/sinpolib/sokit)
 
 
+## PowerShell乱码
+
+1. 执行`notepad $PROFILE`打开配置文件;
+2. 修改为:
+```
+chcp 65001 | Out-Null
+[Console]::InputEncoding = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$PSDefaultParameterValues['Get-Content:Encoding'] = 'UTF8'
+```
+3. 保存后, 重启powershell.
+
+> 还不行的话, 可能是字体问题, 调整字体, 选择一种支持完整Unicode的字体, 如"新宋体".
+
 ## win + E快捷键报错
 
 如图:
