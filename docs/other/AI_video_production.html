@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI_video_production.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> or <div class="page"></div> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="概述">概述</h2>
+<ul>
+<li>剧本/脚本创作: 千问/豆包</li>
+<li>文生图: 千问/豆包/Running Hub</li>
+<li>视频生成: 即梦/可灵/comfyui</li>
+<li>视频剪辑: 剪映</li>
+<li>配音: 剪映</li>
+<li>配乐: 即梦/可灵/剪映/豆包</li>
+<li>一站式制作: lovart</li>
+</ul>
+<blockquote>
+<p>文中示例实际使用软件: 1. 千问(剧本创作/脚本创作/文生图); 3. 360图片编辑(去水印); 3. 即梦(视频生成); 4. 剪映(剪辑/配音)</p>
+</blockquote>
+<h2 id="1-剧本">1. 剧本</h2>
+<p>提示词示例:</p>
+<pre class="hljs"><code><div>你是一个经验丰富的动画电影导演, 现在我需要你写一个动画电影短片的故事剧本《小明夏日河边捕鱼》,情节简单, 故事有逻辑, 3D卡通风格, 以写故事的方式提供给我, 以便于我能快速了解故事内容, 不超过100字.  
+</div></code></pre>
+<p>生成结果:</p>
+<pre class="hljs"><code><div>夏日河边，卡通小明戴草帽持网兜捕鱼。屡扑空后静观水面，终见大鱼跃起，他轻巧兜住却心生怜悯，笑着放生。夕阳下空桶归家，虽无鱼获，心中满载对自然的敬意与夏日欢愉。
+</div></code></pre>
+<blockquote>
+<p>通常情况下, 400字的剧本对应2分钟的视频时长.</p>
+</blockquote>
+<h2 id="2-脚本">2. 脚本</h2>
+<p>提示词示例:</p>
+<pre class="hljs"><code><div>你是一位专业的影视分镜脚本攥写师，擅长为AI短视频生成设计场景与镜头语言。请你根据以下要求编写一段【30秒左右】的视频脚本。
+
+内容是：夏日河边，卡通小明戴草帽持网兜捕鱼。屡扑空后静观水面，终见大鱼跃起。夕阳下空桶归家，虽无鱼获，心中满载对自然的敬意与夏日欢愉。
+
+要求如下：
+1.将视频拆分成4个镜头（每个镜头大约5秒）；
+2.每个镜头需包括镜头类型（如远景、俯拍、跟拍等）、画面内容、动作描述、情绪渲染；
+3.保证画面主体一致性、风格一致性。
+4.视频为无对白表现，请用画面细节和镜头语言传达节奏；
+5.输出格式：镜头编号+画面描述+AI绘画提示词（汉语），并以表格的形式回答。
+</div></code></pre>
+<blockquote>
+<p>需要保证AI生成的画面描述客观直观, 不要有比喻/拟人等修辞, 会误导AI生成.</p>
+</blockquote>
+<p>生成结果:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">镜头编号</th>
+<th style="text-align:left">画面描述（含镜头类型、内容、动作、情绪）</th>
+<th style="text-align:left">AI绘画提示词（汉语）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left"><strong>远景·横移跟拍</strong>：夏日午后河畔，绿柳垂丝，波光粼粼。卡通小明头戴宽檐草帽、身穿蓝白条纹短袖短裤，手持长柄网兜沿河岸轻快小跑，身影在草地上投下跳跃的影子。情绪：活泼期待。</td>
+<td style="text-align:left">夏日河边远景，卡通风格小男孩戴草帽穿蓝白条纹衣裤，手持网兜沿河岸奔跑，绿柳垂丝水面波光粼粼，明亮暖色调，吉卜力动画风格，无文字</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left"><strong>中景·固定镜头</strong>：小明连续三次挥网扑空，水花四溅却一无所获。他停下动作，双手撑膝微微喘气，草帽歪斜，表情从兴奋转为些许失落。情绪：挫败但童真未减。</td>
+<td style="text-align:left">卡通小男孩河边挥网捕鱼扑空，水花飞溅，双手撑膝喘气，草帽歪斜表情失落，蓝白条纹衣裤，夏日河岸背景，柔和自然光，手绘动画质感，无对白</td>
+</tr>
+<tr>
+<td style="text-align:left">3</td>
+<td style="text-align:left"><strong>特写·低角度仰拍</strong>：小明蹲在水边静观水面，眼神专注而温柔。突然一条金色大鱼跃出水面，鳞光闪烁；他迅速而轻柔地用网兜接住，动作流畅如舞蹈。情绪：惊喜与敬畏交织。</td>
+<td style="text-align:left">低角度特写，卡通小男孩蹲在水边凝视水面，金色大鱼跃出瞬间被网兜轻柔接住，水珠晶莹鳞光闪烁，眼神温柔专注，夕照初现，清新水彩画风，无文字</td>
+</tr>
+<tr>
+<td style="text-align:left">4</td>
+<td style="text-align:left"><strong>远景·逆光剪影</strong>：夕阳熔金，小明提着空桶踏着余晖归家，身影拉得细长。河面泛着琥珀色光泽，晚风轻拂草帽飘带。虽桶空无一物，步伐却轻盈欢快。情绪：宁静丰盈，对自然的礼赞。</td>
+<td style="text-align:left">夕阳逆光远景，卡通小男孩提空桶踏余晖归家，剪影修长草帽飘带轻扬，河面琥珀色波光，温暖橙黄调，诗意手绘风格，传达宁静欢愉与自然敬意，无文字无面部细节</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-分镜图片">3. 分镜图片</h2>
+<h3 id="31-角色设定">3.1 角色设定</h3>
+<p>角色设定生成提示词:</p>
+<pre class="hljs"><code><div>帮我生成小明的角色设定: 主要包括以下几方面: 1. 外貌; 2. 服装; 3. 特征. 4. 视觉关键词
+</div></code></pre>
+<p>生成结果:</p>
+<pre class="hljs"><code><div><span class="hljs-section">### 卡通小明角色设定</span>
+
+<span class="hljs-section">#### 1. 外貌</span>
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**年龄感**</span>：7-8岁男童身形，头身比约为1:4，保留幼儿圆润感但四肢已显修长，符合“活泼好动”的年龄特征。
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**面部特征**</span>：圆脸配短下巴，脸颊带自然腮红；黑色短发微翘，额前有几缕不服帖的碎发，体现户外活动的随性；眼睛为深棕色大圆眼，瞳仁高光点偏上，传递清澈、好奇与善良的神态；鼻梁小巧，嘴角默认微扬，自带亲和力。
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**肤色与体态**</span>：健康的小麦色皮肤（非苍白），暗示长期户外活动；体型偏瘦但结实，手臂与小腿有轻微肌肉线条，支撑“挥网捕鱼”“奔跑”等动作的合理性。
+
+<span class="hljs-section">#### 2. 服装</span>
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**上衣**</span>：蓝白细条纹短袖T恤，领口为白色罗纹圆领，袖口微微卷起露出手腕；面料呈现棉质褶皱感，避免光滑塑料质感，增强真实童趣。
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**下装**</span>：卡其色工装短裤，裤长至膝盖上方3cm，侧边有两个立体贴袋（袋盖可翻折），裤脚有磨损痕迹与浅色泥点，呼应“河边扑空”的情节细节。
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**配饰**</span>：宽檐米黄色草帽，帽檐边缘有手工编织的不规则纹理，帽顶系一条褪色红绳（防止被风吹走）；脚穿棕色皮质凉鞋，鞋带为交叉绑带式，鞋底沾有少量河泥，强化场景代入感。
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**道具**</span>：手持长柄竹制网兜，网兜为白色尼龙材质，网眼大小适中（能看清鱼形但不显密集），竹柄表面有使用留下的光滑包浆，末端缠一圈防滑麻绳。
+
+<span class="hljs-section">#### 3. 特征</span>
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**动态标识**</span>：奔跑时草帽会随惯性向后倾斜，红绳飘动；挥网时身体重心前倾，手臂伸展幅度大，衣摆随动作掀起一角；静观水面时会不自觉用食指轻点下巴，体现专注思考的习惯性小动作。
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**情绪符号**</span>：失落时草帽会遮住半张脸，肩膀微微下沉；惊喜时眼睛弯成月牙，腮红更明显；放生时嘴角上扬弧度柔和，眼神向下凝视，传递温柔的共情力。
+<span class="hljs-bullet">-</span>   <span class="hljs-strong">**环境互动痕迹**</span>：衣服下摆偶尔沾有水渍，裤袋里露出一截狗尾巴草（暗示途中采摘），草帽内侧有汗渍形成的深色印记，所有细节均服务于“夏日河边”的场景真实性，避免角色悬浮于画面。
+
+<span class="hljs-section">#### 4. 视觉关键词</span>
+吉卜力手绘风、蓝白条纹、米黄草帽、小麦肤色、圆润童颜、竹柄网兜、工装短裤、自然光影、治愈系配色、动态褶皱、环境互动细节、无文字符号、高饱和度暖调、柔软线条、童真神态
+</div></code></pre>
+<blockquote>
+<p>在上述结果的最后追加一段图片比例控制(或者大部分文生图都可以选择比例): <code>根据以上描述生成小明的正面全身照, 比例 [16:9]</code> (横屏推荐: 16:9, 竖屏推荐: 9:16)</p>
+</blockquote>
+<p>小鱼角色设定:</p>
+<pre class="hljs"><code><div>帮我生成小鱼的角色设定: 主要包括以下几方面: 1. 特征. 2. 视觉关键词
+</div></code></pre>
+<p>生成结果:</p>
+<p><img src="img/role_boy.png" alt="img"></p>
+<p><img src="img/role_boy2.png" alt="img"></p>
+<h3 id="32-关键帧">3.2 关键帧</h3>
+<p>核心维度:</p>
+<ul>
+<li>景别: 特写(特写), 中景(中景), 远景(广角)</li>
+<li>主体: 张三, 李四, 王五</li>
+<li>光影: 柔和侧光, 丁达尔效应, 逆光, 黄金小时</li>
+<li>色调: 复古电影色调, 冷色调, 莫兰迪色, 高饱和度</li>
+<li>构图: 三分法构图, 对称构图, S形曲线, 低角度仰拍</li>
+<li>质感: 胶片质感, 8K分辨率, 虚幻引擎渲染, 细腻纹理</li>
+</ul>
+<p>提示词技巧:</p>
+<ol>
+<li>直观与客观: 拒绝文学修饰, 拥抱物理语言</li>
+<li>导演式拆解: 脚本只是辅助参考, 真正的画面拆解必须靠我们自己独立思考(大模型生成的会有问题, 必须自己检查修正)</li>
+<li>平替与优化: 要适当的修改提示词描述的内容</li>
+<li>对口型: 必须使用近景正面镜头, 以确保数字人驱动时的口型匹配度与面部自然度.</li>
+</ol>
+<p>操作流程:</p>
+<ul>
+<li>输入: 角色图, 描述</li>
+<li>输出: 场景图(关键帧)</li>
+</ul>
+<p>示例:</p>
+<table>
+<thead>
+<tr>
+<th>帧描述</th>
+<th>提示词</th>
+<th>图片</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>分镜1</td>
+<td>根据这个小男孩的形象生成. 夏日河边超广角远景，小男孩手持网兜沿河岸奔跑，绿柳垂丝水面波光粼粼，明亮暖色调，吉卜力动画风格，(小男孩占比小些)</td>
+<td><img src="img/scene1_0.png" alt="img"></td>
+<td>无</td>
+</tr>
+<tr>
+<td>分镜2(首帧)</td>
+<td>根据这个小男孩的形象生成. 夏日河边中景. 小男孩河边将网放入河水里, 紧张的尝试捕鱼，夏日河岸背景，柔和自然光，手绘动画质感，无对白</td>
+<td><img src="img/scene2_0.png" alt="img"></td>
+<td>无</td>
+</tr>
+<tr>
+<td>分镜2(中间帧)</td>
+<td>参考这个场景生成. 夏日河边中景. 小男孩向空中扬起抄网, 有水滴从抄网上飞溅</td>
+<td><img src="img/scene2_1.png" alt="img"></td>
+<td>参考分镜2首帧图</td>
+</tr>
+<tr>
+<td>分镜2(尾帧)</td>
+<td>根据这个小男孩的形象生成. 夏日河边中景. 小男孩河边挥网捕鱼扑空，水花飞溅，双手撑膝喘气，草帽歪斜表情失落，蓝白条纹衣裤，夏日河岸背景，柔和自然光，手绘动画质感，无对白</td>
+<td><img src="img/scene2_2.png" alt="img"></td>
+<td>无</td>
+</tr>
+<tr>
+<td>分镜3(首帧)</td>
+<td>从小男孩身后俯视特写, 小男孩手持抄网蹲在水边凝视水面. 注意: 画面上看见的是小男孩的帽顶帽檐, 以及水面, 以及水中若隐若现的小鱼影子. 看不到面部.</td>
+<td><img src="img/scene3_0.png" alt="img"></td>
+<td>参考分镜2(尾帧)</td>
+</tr>
+<tr>
+<td>分镜3(中间帧)</td>
+<td>突然金色小小小鱼跃出水面, 鱼尺寸要很小, 并且在抄网左侧一定距离</td>
+<td><img src="img/scene3_1.png" alt="img"></td>
+<td>参考分镜3(首帧)</td>
+</tr>
+<tr>
+<td>分镜3(尾帧)</td>
+<td>小男孩兴奋抬起照抄网, 将小鱼轻柔收入网中，水珠晶莹</td>
+<td><img src="img/scene3_2.png" alt="img"></td>
+<td>参考分镜3(中间帧)</td>
+</tr>
+<tr>
+<td>分镜4(首帧)</td>
+<td>根据这个小男孩的形象生成. 远景·逆光剪影: 夕阳熔金，小男孩斜背对镜头, 提着水桶拿着抄网, 踏着余晖归家，身影拉得细长。河面泛着琥珀色光泽，晚风轻拂草帽飘带。步伐却轻盈欢快。明亮暖色调，吉卜力动画风格，(小男孩占比小些) 画面尺寸 16:9</td>
+<td><img src="img/scene4_0.png" alt="img"></td>
+<td>参考分镜1和角色背景图</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<ol>
+<li>就是把脚本生成的AI绘画提示词微调后放进去</li>
+<li>注意生成的图片是否有水印</li>
+</ol>
+</blockquote>
+<h2 id="4-视频生成">4. 视频生成</h2>
+<p>操作流程:</p>
+<ul>
+<li>输入: 首帧/尾帧/多帧生成, 描述</li>
+<li>输出: 视频</li>
+</ul>
+<blockquote>
+<p>对口型需使用数字人功能(即梦)</p>
+</blockquote>
+<ul>
+<li>分镜1:
+<ul>
+<li>提示词: 远景·横移跟拍：夏日午后河畔，绿柳垂丝，波光粼粼。小明头戴宽檐草帽、身穿蓝白条纹短袖短裤，手持长柄网兜和水桶沿河岸轻快小跑，身影在草地上投下跳跃的影子。情绪：活泼期待。</li>
+</ul>
+</li>
+<li>分镜2:
+<ul>
+<li>提示词1: 小明在水中反复移动抄网, 然后突然抬起, 抄网中空无一物, 水花四溅</li>
+<li>提示词2: 抄网中一无所获。他停下动作, 扔下抄网，双手撑膝微微喘气，草帽歪斜，表情从兴奋转为些许失落。情绪：挫败但童真未减。</li>
+</ul>
+</li>
+<li>分镜3:
+<ul>
+<li>提示词1: 小明蹲在水边静观水面，眼神专注而温柔。突然旁边一条金色小小小小鱼跃出水面</li>
+<li>提示词2: 小明迅速而轻柔地用网兜接住跃出水面的小鱼</li>
+</ul>
+</li>
+<li>分镜4:
+<ul>
+<li>提示词: 夕阳熔金，小明提着水桶拿着抄网, 踏着余晖归家，身影拉得细长。河面泛着琥珀色光泽，晚风轻拂草帽飘带。情绪：宁静丰盈，夏日礼赞。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>实际制作过程中, 发现分镜3比较复杂, 因此将分镜3拆分成了两个分镜, 分别生成视频, 最后拼接在一起了.</p>
+</blockquote>
+<h2 id="5-配音配乐">5. 配音/配乐</h2>
+<ul>
+<li>配音
+<ul>
+<li>旁白配音</li>
+<li>角色配音</li>
+<li>其他音效(水声等)</li>
+</ul>
+</li>
+<li>配乐
+<ul>
+<li>纯音乐</li>
+<li>bgm</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-剪辑成片">6. 剪辑成片</h2>
+<p>软件: 剪映</p>
+
+</body>
+</html>
